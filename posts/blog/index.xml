@@ -16,14 +16,5 @@
       <description>1. 网络编程流程 2. 堵塞IO 3. 非堵塞IO 4. 信号驱动IO 5. 异步io模型 6. 多路复用 7. 单reactor 代表作：redis 内存数据库 注意：redis 6.0 以</description>
     </item>
     
-    <item>
-      <title>Blog</title>
-      <link>https://frog-game.github.io/posts/blog/blog/</link>
-      <pubDate>Thu, 05 May 2022 00:18:23 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/blog/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>
