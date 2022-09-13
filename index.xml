@@ -8,6 +8,15 @@
     <language>zh-cn</language>
     <lastBuildDate>Tue, 13 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana 游戏监控日志系统部署</title>
+      <link>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
+      <description>安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent 创</description>
+    </item>
+    
+    <item>
       <title>网络IO模型总结</title>
       <link>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</link>
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
