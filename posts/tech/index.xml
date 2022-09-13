@@ -5,16 +5,6 @@
     <link>https://frog-game.github.io/posts/tech/</link>
     <description>Recent content in 👨🏻‍💻 技术 on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Thu, 05 May 2022 00:17:58 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/tech/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Tech</title>
-      <link>https://frog-game.github.io/posts/tech/tech/</link>
-      <pubDate>Thu, 05 May 2022 00:17:58 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/tech/tech/</guid>
-      <description></description>
-    </item>
-    
+    <language>zh-cn</language><atom:link href="https://frog-game.github.io/posts/tech/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
