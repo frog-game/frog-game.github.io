@@ -13,7 +13,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
-      <description>利用bspTree原理对地图进行动态切割 演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix</description>
+      <description>演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt</description>
     </item>
     
     <item>
@@ -49,7 +49,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</guid>
-      <description>1. 微服务器框架lua调试器 针对skynet这种微服器框架和自己从0开发的frog微服务框架编写的lua调试器，感兴趣的可以去vscode商店</description>
+      <description>微服务器框架lua调试器 针对skynet这种微服器框架和自己从0开发的frog微服务框架编写的lua调试器，感兴趣的可以去vscode商店进</description>
     </item>
     
   </channel>
