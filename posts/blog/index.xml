@@ -17,6 +17,24 @@
     </item>
     
     <item>
+      <title>无缝大世界</title>
+      <link>https://frog-game.github.io/posts/blog/wufengdashijie/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/wufengdashijie/</guid>
+      <description>1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电</description>
+    </item>
+    
+    <item>
+      <title>环形buff</title>
+      <link>https://frog-game.github.io/posts/blog/ringbuff/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/ringbuff/</guid>
+      <description>1. 图解释 2. 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteInde</description>
+    </item>
+    
+    <item>
       <title>网络IO模型总结</title>
       <link>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</link>
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
