@@ -9,10 +9,10 @@
     <lastBuildDate>Tue, 13 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>网络IO模型总结</title>
-      <link>https://frog-game.github.io/posts/blog/wangluo/</link>
+      <link>https://frog-game.github.io/post/blog/wangluo_io_zongjie/</link>
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
-      <guid>https://frog-game.github.io/posts/blog/wangluo/</guid>
+      <guid>https://frog-game.github.io/post/blog/wangluo_io_zongjie/</guid>
       <description>1. 网络编程流程 2. 堵塞IO 3. 非堵塞IO 4. 信号驱动IO 5. 异步io模型 6. 多路复用 7. 单reactor 代表作：redis 内存数据库 注意：redis 6.0 以</description>
     </item>
     
