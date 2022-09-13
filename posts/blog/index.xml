@@ -8,6 +8,15 @@
     <language>zh-cn</language>
     <lastBuildDate>Tue, 13 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>lua源码赏析笔记</title>
+      <link>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</guid>
+      <description>1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被</description>
+    </item>
+    
+    <item>
       <title>skynet赏析</title>
       <link>https://frog-game.github.io/posts/blog/skynet/</link>
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
@@ -31,7 +40,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</guid>
-      <description>1. 微服务器框架lua调试器 针对skynet这种微服器框架和自己从 0开发的frog微服务框架编写的lua调试器，感兴趣的可以去vscode商店</description>
+      <description>1. luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟</description>
     </item>
     
     <item>
@@ -59,6 +68,15 @@
       
       <guid>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</guid>
       <description>1. 网络编程流程 2. 堵塞IO 3. 非堵塞IO 4. 信号驱动IO 5. 异步io模型 6. 多路复用 7. 单reactor 代表作：redis 内存数据库 注意：redis 6.0 以</description>
+    </item>
+    
+    <item>
+      <title>网络底层总结</title>
+      <link>https://frog-game.github.io/posts/blog/wangluozongjie/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/wangluozongjie/</guid>
+      <description>1. tcp 握手挥手 序列号: 在建立连接的时候有计算机生成的随机数并作为初始值，通过syn包传给接收端主机，每发一次数据，就累加一次该数据字节数的大小</description>
     </item>
     
   </channel>
