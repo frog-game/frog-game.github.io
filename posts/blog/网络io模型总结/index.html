@@ -342,6 +342,7 @@ var _hmt = _hmt || [];
     }
 </script>
         
+<<<<<<< HEAD
         <div class="post-content"><h2 id="网络编程流程">网络编程流程<a hidden class="anchor" aria-hidden="true" href="#网络编程流程">#</a></h2>
 <p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9cIO%e6%a8%a1%e5%9e%8b%e6%80%bb%e7%bb%93.assets/image-20220912104923737.png" alt=""  />
 </p>
@@ -383,6 +384,49 @@ var _hmt = _hmt || [];
 <p>代表作：memcache</p>
 <h2 id="多reactor--多线程-协程池">多reactor + 多线程 +协程池<a hidden class="anchor" aria-hidden="true" href="#多reactor--多线程-协程池">#</a></h2>
 <p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9cIO%e6%a8%a1%e5%9e%8b%e6%80%bb%e7%bb%93.assets/image-20220912104016515.png" alt="image-20220912104016515"  />
+=======
+        <div class="post-content"><h2 id="1-网络编程流程">1. 网络编程流程<a hidden class="anchor" aria-hidden="true" href="#1-网络编程流程">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912104923737.png" alt=""  />
+</p>
+<h2 id="2-堵塞io">2. 堵塞IO<a hidden class="anchor" aria-hidden="true" href="#2-堵塞io">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets//image-20220912141757964.png" alt=""  />
+</p>
+<h2 id="3-非堵塞io">3. 非堵塞IO<a hidden class="anchor" aria-hidden="true" href="#3-非堵塞io">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912141809146.png" alt=""  />
+</p>
+<h2 id="4-信号驱动io">4. 信号驱动IO<a hidden class="anchor" aria-hidden="true" href="#4-信号驱动io">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912142709884.png" alt=""  />
+</p>
+<h2 id="5-异步io模型">5. 异步io模型<a hidden class="anchor" aria-hidden="true" href="#5-异步io模型">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912143406827.png" alt=""  />
+</p>
+<h2 id="6-多路复用">6. 多路复用<a hidden class="anchor" aria-hidden="true" href="#6-多路复用">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912141923315.png" alt=""  />
+</p>
+<h2 id="7-单reactor">7. 单reactor<a hidden class="anchor" aria-hidden="true" href="#7-单reactor">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912115933887.png" alt=""  />
+</p>
+<p>代表作：redis 内存数据库</p>
+<p>注意：<code>redis 6.0 以后是多线程</code></p>
+<h2 id="8-单reactor-多进程模型">8. 单reactor 多进程模型<a hidden class="anchor" aria-hidden="true" href="#8-单reactor-多进程模型">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912133954912.png" alt=""  />
+</p>
+<p>代表：nginx</p>
+<h2 id="9-单reactor模型--任务队列--线程池">9. 单reactor模型 + 任务队列 + 线程池<a hidden class="anchor" aria-hidden="true" href="#9-单reactor模型--任务队列--线程池">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912103644712.png" alt=""  />
+</p>
+<p>代表作:skynet</p>
+<h2 id="10-主从-reactor">10. 主从 reactor<a hidden class="anchor" aria-hidden="true" href="#10-主从-reactor">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912125034816.png" alt=""  />
+</p>
+<p>代表作：netty</p>
+<h2 id="11-多reactor--多线程">11. 多reactor + 多线程<a hidden class="anchor" aria-hidden="true" href="#11-多reactor--多线程">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912140325111.png" alt=""  />
+</p>
+<p>代表作：memcache</p>
+<h2 id="12-多reactor--多线程-协程池">12. 多reactor + 多线程 +协程池<a hidden class="anchor" aria-hidden="true" href="#12-多reactor--多线程-协程池">#</a></h2>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/frog-game/typora-notes/main/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BD%91%E7%BB%9C/image/%E7%BD%91%E7%BB%9CIO%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93.assets/image-20220912104016515.png" alt=""  />
+>>>>>>> ff9157e461f7f73f0285bdc7bdc778bfc205b28a
 </p>
 
 
@@ -417,6 +461,7 @@ var _hmt = _hmt || [];
 
         <footer class="post-footer">
             
+<<<<<<< HEAD
 
 
 <div class="share-buttons">
@@ -463,6 +508,8 @@ var _hmt = _hmt || [];
         </svg>
     </a>
 </div>
+=======
+>>>>>>> ff9157e461f7f73f0285bdc7bdc778bfc205b28a
 
         </footer>
     </div>
@@ -521,7 +568,11 @@ var _hmt = _hmt || [];
 
     <span>
         <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+<<<<<<< HEAD
             <img src="img/beian.png" style="float:left;margin: 0px 5px 0px 0px;"/>
+=======
+            <img src="https://img.sj33.cn/uploads/allimg/201401/7-140124152429.jpg" style="float:left;margin: 0px 5px 0px 0px;"/>
+>>>>>>> ff9157e461f7f73f0285bdc7bdc778bfc205b28a
             公网安备
         </a>
     </span>

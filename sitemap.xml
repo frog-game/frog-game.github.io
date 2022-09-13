@@ -9,6 +9,7 @@
     <lastmod>2021-11-06T14:57:28+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/posts/blog/%E7%BD%91%E7%BB%9Cio%E6%A8%A1%E5%9E%8B%E6%80%BB%E7%BB%93/</loc>
+<<<<<<< HEAD
   </url><url>
     <loc>https://frog-game.github.io/archives/</loc>
   </url><url>
@@ -21,15 +22,40 @@
     <loc>https://frog-game.github.io/search/</loc>
   </url><url>
     <loc>https://frog-game.github.io/categories/</loc>
+=======
+    <lastmod>2022-09-13T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/posts/blog/</loc>
+    <lastmod>2022-09-13T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/links/</loc>
+    <lastmod>2021-11-06T15:15:53+08:00</lastmod>
+>>>>>>> ff9157e461f7f73f0285bdc7bdc778bfc205b28a
   </url><url>
     <loc>https://frog-game.github.io/</loc>
   </url><url>
     <loc>https://frog-game.github.io/series/</loc>
   </url><url>
+<<<<<<< HEAD
     <loc>https://frog-game.github.io/tags/</loc>
+=======
+    <loc>https://frog-game.github.io/posts/tech/</loc>
+  </url><url>
+    <loc>https://frog-game.github.io/posts/read/</loc>
+  </url><url>
+    <loc>https://frog-game.github.io/search/</loc>
+>>>>>>> ff9157e461f7f73f0285bdc7bdc778bfc205b28a
   </url><url>
     <loc>https://frog-game.github.io/posts/life/</loc>
   </url><url>
+<<<<<<< HEAD
     <loc>https://frog-game.github.io/posts/blog/</loc>
+=======
+    <loc>https://frog-game.github.io/series/</loc>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/</loc>
+  </url><url>
+    <loc>https://frog-game.github.io/posts/life/</loc>
+>>>>>>> ff9157e461f7f73f0285bdc7bdc778bfc205b28a
   </url>
 </urlset>
