@@ -13,7 +13,7 @@
       <pubDate>Sun, 18 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</guid>
-      <description>背景 每当我们接收一份新的版本，代码拿到手要做的第一件事就是查看 git log，看看这份代码的提交记录，最近代码做什么修改。如果我们看到 git log 杂乱无章</description>
+      <description>每当我们接收一份新的版本，代码拿到手要做的第一件事就是查看 git log，看看这份代码的提交记录</description>
     </item>
     
     <item>
@@ -22,7 +22,7 @@
       <pubDate>Sat, 17 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</guid>
-      <description>基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋</description>
+      <description>除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾</description>
     </item>
     
     <item>
@@ -31,7 +31,7 @@
       <pubDate>Fri, 16 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/ringbuff/</guid>
-      <description>图解释 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteIndex;</description>
+      <description>假设要申请的空间 环形buff`结构体大小为8 nWriteIndex 写指针索引 nReadIndex 读指针索引 环形buff初始化 清空结构体</description>
     </item>
     
     <item>
@@ -40,7 +40,7 @@
       <pubDate>Thu, 15 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/skynet/</guid>
-      <description>linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket</description>
+      <description>每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket在Skynet内部对应一个Lua虚拟机和一个客户特定的消息队列per client mq。当客户特定消息队列中有消息时，该队列会挂载到全局队列global message queue上供工作线程worker Threads进行调度处理。</description>
     </item>
     
     <item>
@@ -49,7 +49,7 @@
       <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</guid>
-      <description>luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机</description>
+      <description>先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子</description>
     </item>
     
     <item>
@@ -58,7 +58,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
-      <description>演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf</description>
+      <description>Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana</description>
     </item>
     
     <item>
@@ -67,7 +67,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wufengdashijie/</guid>
-      <description>前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑</description>
+      <description>无缝大地图只是外在表现，其实都是有缝隙的</description>
     </item>
     
     <item>
@@ -76,7 +76,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</guid>
-      <description>网络编程流程 塞IO 非堵塞IO 信号驱动IO 异步io模型 多路复用 单reactor 代表作：redis 内存数据库 注意：redis 6.0 以后是多线程 单re</description>
+      <description>网络编程流程 堵塞IO 非堵塞IO 信号驱动IO 异步io模型 多路复用 单reactor 单reactor 多进程模型 单reactor模型 &#43; 任务队列 &#43; 线程池</description>
     </item>
     
     <item>
@@ -85,7 +85,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wangluozongjie/</guid>
-      <description>1. tcp 握手挥手 序列号: 在建立连接的时候有计算机生成的随机数并作为初始值，通过syn包传给接收端主机，每发一次数据，就累加一次该数据字节数的大小</description>
+      <description>序列号: 在建立连接的时候有计算机生成的随机数并作为初始值，通过syn包传给接收端主机，每发一次数据，就累加一次该数据字节数的大小，主要是用来解决网络包乱序问题</description>
     </item>
     
     <item>
