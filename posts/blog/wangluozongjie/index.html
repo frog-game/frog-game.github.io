@@ -528,7 +528,7 @@ var _hmt = _hmt || [];
 </script>
         
         <div class="post-content"><h2 id="tcp-握手挥手">tcp 握手挥手<a hidden class="anchor" aria-hidden="true" href="#tcp-握手挥手">#</a></h2>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220224184102800.png" alt="Typoraimage-20220224184102800"  />
+<p><img loading="lazy" src="Typoraimage-20220224184102800.png" alt="Typoraimage-20220224184102800"  />
 </p>
 <p>序列号: 在建立连接的时候有计算机生成的随机数并作为初始值，通过syn包传给接收端主机，每发一次数据，就累加一次该数据字节数的大小，主要是用来解决网络包乱序问题</p>
 <p>确认应答号:指下一次期望收到的数据的序列号，发送端收到这个确认应答以后可以认为这个序号之前的数据都被正常接收了，主要用来解决不丢包的问题</p>
@@ -552,7 +552,7 @@ var _hmt = _hmt || [];
 <p>窗口大小：主要用来做流量控制</p>
 </blockquote>
 <h3 id="tcp四元组">TCP四元组<a hidden class="anchor" aria-hidden="true" href="#tcp四元组">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220224221406178.png" alt="Typoraimage-20220224221406178"  />
+<p><img loading="lazy" src="Typoraimage-20220224221406178.png" alt="Typoraimage-20220224221406178"  />
 </p>
 <h3 id="有一个ip的服务器监听了一个端口他的tcp的最大连接数是多少">有一个ip的服务器监听了一个端口，他的TCP的最大连接数是多少<a hidden class="anchor" aria-hidden="true" href="#有一个ip的服务器监听了一个端口他的tcp的最大连接数是多少">#</a></h3>
 <blockquote>
@@ -565,7 +565,7 @@ var _hmt = _hmt || [];
 <p>另一个就是内存限制，每个tcp链接都要占用一定的内存，操作系统的内存是有限的</p>
 </blockquote>
 <h3 id="udp和tcp的区别">udp和tcp的区别<a hidden class="anchor" aria-hidden="true" href="#udp和tcp的区别">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220224223114443.png" alt="Typoraimage-20220224223114443"  />
+<p><img loading="lazy" src="Typoraimage-20220224223114443.png" alt="Typoraimage-20220224223114443"  />
 </p>
 <blockquote>
 <p>目标和源端口号：主要是告诉udp协议应该吧报文发给那个进程</p>
@@ -651,7 +651,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>帖子里面提到的1480，猜测可能是尽量设小一点，避免二次拨号带来的又一次PPPoE的封装，因为时间久远，没办法回到当时的场景再去抓包了。</p>
 </blockquote>
 <h3 id="tcp-连接建立3次握手">TCP 连接建立(3次握手)<a hidden class="anchor" aria-hidden="true" href="#tcp-连接建立3次握手">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225100510426.png" alt="Typoraimage-20220225100510426"  />
+<p><img loading="lazy" src="Typoraimage-20220225100510426.png" alt="Typoraimage-20220225100510426"  />
 </p>
 <p>一开始客户端和服务器都处于close状态</p>
 <ol>
@@ -661,18 +661,18 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <li>
 <p>客户端会随机初始化序列号 client_isn，然后把这个初始值付给tcp首部的序列号字段，并把标识位syn设置成1，代表这是一个syn包，此包不包含应用层数据，发送出去以后，客服端处于sys_sent状态</p>
 <p>​														<strong><font color='red'>三次握手第一个报文 SYN 报文</font></strong></p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225104211781.png" alt="Typoraimage-20220225104211781"  />
+<p><img loading="lazy" src="Typoraimage-20220225104211781.png" alt="Typoraimage-20220225104211781"  />
 </p>
 </li>
 <li>
 <p>服务器收到客户端报文，首先服务器会随机初始化自己的server_isn ,将server _isn号存入序列号中，并把客服端的client_isn +1 存入确认应答号中，同时吧SYN和ACK标志位置为1，此包不会包含应用层数据，发送出去以后服务器进入syc_rcvd状态</p>
 <p>​														<strong><font color='red'>三次握手第二个报文 SYN  + ACK报文</font></strong></p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225112002291.png" alt="Typoraimage-20220225112002291"  />
+<p><img loading="lazy" src="Typoraimage-20220225112002291.png" alt="Typoraimage-20220225112002291"  />
 </p>
 </li>
 <li>
 <p>客服端收到服务器发送的syn + ack 报文以后，最后还会向服务器发送一个ACK确认报文，并把server_isn 序列号 + 1 存入确认应答号，然后把ACK标志位设置成1，此包这个时候可以带应用层数据发过去，这个时候客户端进入进入established状态，服务器收到ACK确认应答包以后也进入established状态</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225112428023.png" alt="Typoraimage-20220225112428023"  />
+<p><img loading="lazy" src="Typoraimage-20220225112428023.png" alt="Typoraimage-20220225112428023"  />
 </p>
 <p>从这一步可以看出前两步是不带数据的，第三步可以带数据发送</p>
 </li>
@@ -683,10 +683,10 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <ol>
 <li>
 <p>可以防止重复历史链接数</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225142755404.png" alt="Typoraimage-20220225142755404"  />
+<p><img loading="lazy" src="Typoraimage-20220225142755404.png" alt="Typoraimage-20220225142755404"  />
 </p>
 <ol start="2">
-<li>同步双方初始序列号<img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225192654067.png" alt="Typoraimage-20220225192654067"  />
+<li>同步双方初始序列号<img loading="lazy" src="Typoraimage-20220225192654067.png" alt="Typoraimage-20220225192654067"  />
 </li>
 </ol>
 </li>
@@ -698,7 +698,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>避免资源浪费</p>
 <p>如果只有两次握手，当客服端的syn请求连接在网络中堵塞，客服端没有接收到ACK报文，就会重新发送syn，由于没有第三次握手，服务器不清楚客户端是否收到了自己发送链接的ack确认信号，所以只能自己创建链接，</p>
 <p>如果多次堵塞，多次发送syn，那么服务器就会多次创建，造成冗余的链接。</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225200151650.png" alt="Typoraimage-20220225200151650"  />
+<p><img loading="lazy" src="Typoraimage-20220225200151650.png" alt="Typoraimage-20220225200151650"  />
 </p>
 <p>总结：为什么不使用两次握手或者四次握手</p>
 <p>两次握手：<strong><font color='red'>无法防止历史链接的建立，会造成双方资源的浪费，也无法可靠的同步双方序列号</font></strong></p>
@@ -712,7 +712,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </ol>
 <h3 id="syn攻击">syn攻击<a hidden class="anchor" aria-hidden="true" href="#syn攻击">#</a></h3>
 <p>我们知道tcp链接需要3次握手，假设攻击者短时间内，伪造不同的ip地址syn报文，服务器每接收一个就进入syn_rcvd 状态，但服务器发送出去的ack + syn报文，无法得知位置ip主机的ack应答，久而久之就会占满服务器syn接收队列（未连接队列）使得服务器不能为正常用户服务</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225213045690.png" alt="Typoraimage-20220225213045690"  />
+<p><img loading="lazy" src="Typoraimage-20220225213045690.png" alt="Typoraimage-20220225213045690"  />
 </p>
 <p>解决办法一</p>
 <ol>
@@ -731,14 +731,14 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </ol>
 <p>​	解决方法二</p>
 <p>​	首先是正常的3次握手流程</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225222303853.png" alt="Typoraimage-20220225222303853"  />
+<p><img loading="lazy" src="Typoraimage-20220225222303853.png" alt="Typoraimage-20220225222303853"  />
 </p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225222315043.png" alt="Typoraimage-20220225222315043"  />
+<p><img loading="lazy" src="Typoraimage-20220225222315043.png" alt="Typoraimage-20220225222315043"  />
 </p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220225222353516.png" alt="Typoraimage-20220225222353516"  />
+<p><img loading="lazy" src="Typoraimage-20220225222353516.png" alt="Typoraimage-20220225222353516"  />
 </p>
 <h3 id="tcp-连接断开">TCP 连接断开<a hidden class="anchor" aria-hidden="true" href="#tcp-连接断开">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226122921061.png" alt="Typoraimage-20220226122921061"  />
+<p><img loading="lazy" src="Typoraimage-20220226122921061.png" alt="Typoraimage-20220226122921061"  />
 </p>
 <ol>
 <li>
@@ -801,7 +801,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <ol>
 <li>
 <p>防止旧链接的数据包</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226140416629.png" alt="Typoraimage-20220226140416629"  />
+<p><img loading="lazy" src="Typoraimage-20220226140416629.png" alt="Typoraimage-20220226140416629"  />
 </p>
 <p>如上图的sql =301的包被网络延迟了，这个时候time_wait设置的时间很短，或者没有，上次的链接的被关闭</p>
 <p>这个时候如果重新建立相同端口号的连接被重用，而网络中还有seq =301的消息包这个时候抵达，那么这个</p>
@@ -810,7 +810,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </li>
 <li>
 <p>保证连接正确关闭</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226142154704.png" alt="Typoraimage-20220226142154704"  />
+<p><img loading="lazy" src="Typoraimage-20220226142154704.png" alt="Typoraimage-20220226142154704"  />
 </p>
 <p>如果最后的ack丢失了，服务器就会一直处于last_ack状态，如果这个时候客服端发起新的连接，那么这个时候服务器因为处于last_ack状态，所以会发送rst报文给客服端，让客服端直接终止链接</p>
 </li>
@@ -861,12 +861,12 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <ol>
 <li>服务器调用close(),不管什么数据一缕发送rst报文进行强制关闭</li>
 </ol>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226153823549.png" alt="Typoraimage-20220226153823549"  />
+<p><img loading="lazy" src="Typoraimage-20220226153823549.png" alt="Typoraimage-20220226153823549"  />
 </p>
 <ol start="2">
 <li>
 <p>服务器调用shutdown() ，如果是正常数据还是走正常数据接收流程，一直到数据发送完毕，然后发送fin报文正常关闭</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226154426825.png" alt="Typoraimage-20220226154426825"  />
+<p><img loading="lazy" src="Typoraimage-20220226154426825.png" alt="Typoraimage-20220226154426825"  />
 </p>
 </li>
 </ol>
@@ -877,12 +877,12 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <ol>
 <li>
 <p>数据包丢失，因为数据包丢失，所以B无法发送ack确认码下去，A无法收到ACK确认码，无法知道服务器是否收到数据就会在特定时间间隔内，触发重传</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226163246921.png" alt="Typoraimage-20220226163246921"  />
+<p><img loading="lazy" src="Typoraimage-20220226163246921.png" alt="Typoraimage-20220226163246921"  />
 </p>
 </li>
 <li>
 <p>确认应答丢失</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226163627122.png" alt="Typoraimage-20220226163627122"  />
+<p><img loading="lazy" src="Typoraimage-20220226163627122.png" alt="Typoraimage-20220226163627122"  />
 </p>
 </li>
 </ol>
@@ -890,14 +890,14 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <ol>
 <li>
 <p>RTT 包的往返时间</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226164331620.png" alt="Typoraimage-20220226164331620"  />
+<p><img loading="lazy" src="Typoraimage-20220226164331620.png" alt="Typoraimage-20220226164331620"  />
 </p>
 <ol start="2">
 <li>
 <p>时间设置的过长过短发生的情况</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226170929156.png" alt="Typoraimage-20220226170929156"  />
+<p><img loading="lazy" src="Typoraimage-20220226170929156.png" alt="Typoraimage-20220226170929156"  />
 </p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226171032355.png" alt="Typoraimage-20220226171032355"  />
+<p><img loading="lazy" src="Typoraimage-20220226171032355.png" alt="Typoraimage-20220226171032355"  />
 </p>
 </li>
 </ol>
@@ -906,11 +906,11 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>当RTO较大时候，重发就满，丢了老半天才重发，没有效率，性能差</p>
 <p>当RTO较小时候，可能是因为波动大，然后设置RTO又短，这个时候触发了重传，但是旧包却很快恢复了传输</p>
 <p>所有综合上述，所以我们应该 RTO应该略大于RTT</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226171549098.png" alt="Typoraimage-20220226171549098"  />
+<p><img loading="lazy" src="Typoraimage-20220226171549098.png" alt="Typoraimage-20220226171549098"  />
 </p>
 <h3 id="快速重传">快速重传<a hidden class="anchor" aria-hidden="true" href="#快速重传">#</a></h3>
 <p>这个不是以时间为驱动，而是以数据为驱动</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226173602996.png" alt="Typoraimage-20220226173602996"  />
+<p><img loading="lazy" src="Typoraimage-20220226173602996.png" alt="Typoraimage-20220226173602996"  />
 </p>
 <p>如上发了1，2，3，4，5 共5份数据</p>
 <p>1号数据发过去了，这个时候ACK变成了2</p>
@@ -923,25 +923,25 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <h4 id="sack">SACK<a hidden class="anchor" aria-hidden="true" href="#sack">#</a></h4>
 <p>解决快速重传应该重传所有还是重传丢失者问题</p>
 <p>SACK方法[如果能支持SACK，那么必须双方都打开]</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226222628426.png" alt="Typoraimage-20220226222628426"  />
+<p><img loading="lazy" src="Typoraimage-20220226222628426.png" alt="Typoraimage-20220226222628426"  />
 </p>
 <p>Left Edge:代表已收到的第一个不连续的第一个序号</p>
 <p>​	Right Edge:表示已收到的不连续块的最后一个序号+1</p>
 <p>​	即左闭右开区间，通过ACK和sack发送方就能很快的确定接收方有哪些数据没有被收到</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226223058055.png" alt="Typoraimage-20220226223058055"  />
+<p><img loading="lazy" src="Typoraimage-20220226223058055.png" alt="Typoraimage-20220226223058055"  />
 </p>
 <p>如果上面触发了重传会这样处理</p>
 <blockquote>
 <p>直接重传300 -499丢失的块，然后把ack变成700再次触发快速重传把700 -899补上</p>
 </blockquote>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226223125480.png" alt="Typoraimage-20220226223125480"  />
+<p><img loading="lazy" src="Typoraimage-20220226223125480.png" alt="Typoraimage-20220226223125480"  />
 </p>
 <h4 id="dack">DACK<a hidden class="anchor" aria-hidden="true" href="#dack">#</a></h4>
 <p>主要是告诉发送方，主要通过SACK告诉发送方有哪些数据被重复接受了</p>
 <ol>
 <li>
 <p>ACK 丢包</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226225136413.png" alt="Typoraimage-20220226225136413"  />
+<p><img loading="lazy" src="Typoraimage-20220226225136413.png" alt="Typoraimage-20220226225136413"  />
 </p>
 <ul>
 <li>
@@ -958,7 +958,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </li>
 <li>
 <p>网络延迟</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220226231034362.png" alt="Typoraimage-20220226231034362"  />
+<p><img loading="lazy" src="Typoraimage-20220226231034362.png" alt="Typoraimage-20220226231034362"  />
 </p>
 <ul>
 <li>
@@ -994,11 +994,11 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>两个人聊天，你发一句，然后我给你个ack报文，我发一句，然后你给我一个ack报文，这样其实效率很低的。</p>
 <p>如果你说完一句话，我在处理别的事情，没有及时给你回复ack报文，那么你就只能干等着，一直等到我处理完事情，	然后给你回复ack码，这样处理的话效率太低了，如果是这个逻辑，那么tcp协议也就不用在完了</p>
 <p>所以这样的传输方式很大的弊端：就是包的往返时间越长，网络的吞吐就越大</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227001725523.png" alt="Typoraimage-20220227001725523"  />
+<p><img loading="lazy" src="Typoraimage-20220227001725523.png" alt="Typoraimage-20220227001725523"  />
 </p>
 <p>为了解决这样的问题，TCP发明了一个牛逼的概念：<strong><font color='red'>滑动窗口</font></strong></p>
 <p>如果有了滑动窗口，那么就可以指定窗口的大小，窗口的大小无需等待对方的确认应答，就可以继续发送数据的最大值</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227002300682.png" alt="Typoraimage-20220227002300682"  />
+<p><img loading="lazy" src="Typoraimage-20220227002300682.png" alt="Typoraimage-20220227002300682"  />
 </p>
 <p>上面ack300 即使丢了，但是因为我们收到了ack400 那么我们就可以认为400之前的数据都收到了，这种方式我们称为累计确认</p>
 <h3 id="窗口大小由哪一方决定">窗口大小由哪一方决定<a hidden class="anchor" aria-hidden="true" href="#窗口大小由哪一方决定">#</a></h3>
@@ -1007,7 +1007,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>所以窗口的大小，一般由接收方窗口的大小来决定</p>
 <p><strong><font color='red'>发送方，发送的数据不能超过接收方窗口的大小，否则接收方就无法接受数据</font></strong></p>
 <h3 id="发送窗口">发送窗口<a hidden class="anchor" aria-hidden="true" href="#发送窗口">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227093925294.png" alt="Typoraimage-20220227093925294"  />
+<p><img loading="lazy" src="Typoraimage-20220227093925294.png" alt="Typoraimage-20220227093925294"  />
 </p>
 <p>SND.WND : 表示发送窗口的大小,由接收窗口控制</p>
 <p>SND.UNA : 表示已发送但未确认ack报文的空间的第一个字节位置</p>
@@ -1017,7 +1017,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>取决于接收端的大小[rwnd]和拥塞窗口[cwnd]的大小</p>
 <p>发送窗口 = min{rwnd,cwnd}</p>
 <h3 id="接收窗口">接收窗口<a hidden class="anchor" aria-hidden="true" href="#接收窗口">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227095004353.png" alt="Typoraimage-20220227095004353"  />
+<p><img loading="lazy" src="Typoraimage-20220227095004353.png" alt="Typoraimage-20220227095004353"  />
 </p>
 <p>RCV.NXT :  希望从发送方发过来的下一个字节数据的序列号</p>
 <p>RCV.WND : 接收窗口的大小，会通过tcp头部报文里面的window字段，通知发送窗口大小</p>
@@ -1034,23 +1034,23 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <li>假设接收端和发送端窗口相同，都为200</li>
 <li>假设两个设备在传输过程中都保证窗口大小不变，不收外界影响</li>
 </ul>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227162814714.png" alt="Typoraimage-20220227162814714"  />
+<p><img loading="lazy" src="Typoraimage-20220227162814714.png" alt="Typoraimage-20220227162814714"  />
 </p>
 <h3 id="动态变化窗口大小场景">动态变化窗口大小场景<a hidden class="anchor" aria-hidden="true" href="#动态变化窗口大小场景">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227171544548.png" alt="Typoraimage-20220227171544548"  />
+<p><img loading="lazy" src="Typoraimage-20220227171544548.png" alt="Typoraimage-20220227171544548"  />
 </p>
 <p>当发送方变成窗口变成0的时候其实发送方还会定时的发送探测报文，以便知道接收方改变了窗口</p>
 <h3 id="丢包情况">丢包情况<a hidden class="anchor" aria-hidden="true" href="#丢包情况">#</a></h3>
 <p>当服务端系统资源⾮常紧张的时候，操⼼系统可能会直接减少了接收缓冲区⼤⼩，这时应⽤程序⼜⽆法及时读取缓 存数据，那么这时候就有严᯿的事情发⽣了，会出现数据包丢失的现象。</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227172125598.png" alt="Typoraimage-20220227172125598"  />
+<p><img loading="lazy" src="Typoraimage-20220227172125598.png" alt="Typoraimage-20220227172125598"  />
 </p>
 <p>为了避免这种情况 TCP规定不允许系统收缩缓存的时候同时减少窗口大小，而是采用先收缩窗口，过段时间在减少缓存的办法</p>
 <h3 id="窗口关闭死锁问题">窗口关闭死锁问题<a hidden class="anchor" aria-hidden="true" href="#窗口关闭死锁问题">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227172125598-16530998366678.png" alt="Typoraimage-20220227172125598"  />
+<p><img loading="lazy" src="Typoraimage-20220227172125598-16530998366678.png" alt="Typoraimage-20220227172125598"  />
 </p>
 <h3 id="如果解决这种死锁问题">如果解决这种死锁问题<a hidden class="anchor" aria-hidden="true" href="#如果解决这种死锁问题">#</a></h3>
 <p>为了解决这种死锁问题，TCP为每个连接设有与一个持续定时器如果定时器超时就会发送窗口探测报文</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227172621985.png" alt="Typoraimage-20220227172621985"  />
+<p><img loading="lazy" src="Typoraimage-20220227172621985.png" alt="Typoraimage-20220227172621985"  />
 </p>
 <ul>
 <li>如果接收窗⼝仍然为 0，那么收到这个报⽂的⼀⽅就会᯿新启动持续计时器；</li>
@@ -1058,7 +1058,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </ul>
 <p>窗⼝探测的次数⼀般为 3 次，每次⼤约 30-60 秒（不同的实现可能会不⼀样）。如果 3 次过后接收窗⼝还是 0 的 话，有的 TCP 实现就会发 RST 报⽂来中断连接。</p>
 <h3 id="糊涂窗口综合症">糊涂窗口综合症<a hidden class="anchor" aria-hidden="true" href="#糊涂窗口综合症">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227181346332.png" alt="Typoraimage-20220227181346332"  />
+<p><img loading="lazy" src="Typoraimage-20220227181346332.png" alt="Typoraimage-20220227181346332"  />
 </p>
 <p>于是，要解决糊涂窗⼝综合症，就解决上⾯两个问题就可以了</p>
 <ul>
@@ -1123,7 +1123,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </ol>
 <h4 id="慢启动">慢启动<a hidden class="anchor" aria-hidden="true" href="#慢启动">#</a></h4>
 <p>慢启动的算法就是，当发送方每收到一个ack，拥塞窗口cwnd的大小就加1</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227183510546.png" alt="Typoraimage-20220227183510546"  />
+<p><img loading="lazy" src="Typoraimage-20220227183510546.png" alt="Typoraimage-20220227183510546"  />
 </p>
 <p>那么慢启动什么时候是个头呢，</p>
 <blockquote>
@@ -1133,13 +1133,13 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </blockquote>
 <h4 id="拥塞避免">拥塞避免<a hidden class="anchor" aria-hidden="true" href="#拥塞避免">#</a></h4>
 <p>它的规则是：每当收到⼀个 ACK 时，cwnd 增加 1/cwnd</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227183953349.png" alt="Typoraimage-20220227183953349"  />
+<p><img loading="lazy" src="Typoraimage-20220227183953349.png" alt="Typoraimage-20220227183953349"  />
 </p>
 <p>拥塞避免算法就是将原本慢启动算法的指数增⻓变成了线性增⻓，还是增⻓阶段，但是增⻓ 速度缓慢了⼀些。 就这么⼀直增⻓着后，⽹络就会慢慢进⼊了拥塞的状况了，于是就会出现丢包现象，这时就需要对丢失的数据包进 ⾏᯿传。 当触发了᯿传机制，也就进⼊了**<font color='red'>拥塞发⽣算法</font>**。</p>
 <h4 id="拥塞发生">拥塞发生<a hidden class="anchor" aria-hidden="true" href="#拥塞发生">#</a></h4>
 <p>其实这个时候就是写的tcp重传机制主要是两种</p>
 <p>超时重传</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227184235541.png" alt="Typoraimage-20220227184235541"  />
+<p><img loading="lazy" src="Typoraimage-20220227184235541.png" alt="Typoraimage-20220227184235541"  />
 </p>
 <p>因为想途中的cwnd从12突然变到了1，然后开始慢启动，可以看到此种方法很容易马上回到解放前，方法也很激进，容易造成网络卡顿，那么发生这种情况我们还有没有更好的办法呢，其实有的也就是前面写的快速重传</p>
 <p>在收到3次相同的ack码的时候我们可以在超时重传还没发生之前就重传数据过去，而不必等到超时重传</p>
@@ -1157,7 +1157,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </li>
 <li>
 <p>ssthresh = cwnd</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220227185521711.png" alt="Typoraimage-20220227185521711"  />
+<p><img loading="lazy" src="Typoraimage-20220227185521711.png" alt="Typoraimage-20220227185521711"  />
 </p>
 </li>
 </ul>
@@ -1182,7 +1182,7 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 </span></span><span style="display:flex;"><span>} message;
 </span></span></code></pre></div><p>这样当客服端可以先解析包头里面消息的长度，然后在读满这个长度大小的数据，就可以认为收到了一个完整的包</p>
 <h2 id="rst-标识">RST 标识<a hidden class="anchor" aria-hidden="true" href="#rst-标识">#</a></h2>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220228175226746.png" alt="Typoraimage-20220228175226746"  />
+<p><img loading="lazy" src="Typoraimage-20220228175226746.png" alt="Typoraimage-20220228175226746"  />
 </p>
 <h3 id="收到rst应用层处理情况">收到RST应用层处理情况<a hidden class="anchor" aria-hidden="true" href="#收到rst应用层处理情况">#</a></h3>
 <ol>
@@ -1225,12 +1225,12 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <h3 id="收到rst一定会端开吗">收到RST一定会端开吗<a hidden class="anchor" aria-hidden="true" href="#收到rst一定会端开吗">#</a></h3>
 <p>不一定会端开，因为在收到<code>RST</code>之后，会进行检查<code>seq</code>是否合法，其实也是看这个<code>seq</code>是不是在合法的接收范围内，如果不在就丢弃这个<code>RST</code>包</p>
 <p>至于这个接收窗口是啥，如下图</p>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220228215232168.png" alt="Typoraimage-20220228215232168"  />
+<p><img loading="lazy" src="Typoraimage-20220228215232168.png" alt="Typoraimage-20220228215232168"  />
 </p>
 <h3 id="为什么一定要校验在范围内">为什么一定要校验在范围内<a hidden class="anchor" aria-hidden="true" href="#为什么一定要校验在范围内">#</a></h3>
 <p>因为如果不校验的话，不怀好意的第三方伪造了<code>seq</code>的包，这个时候就会让客服端或者服务断开连接，如果效验的话毕竟因为窗口是在不断变化的，<code>seq</code>也在不断的变化，所以在范围内的<code>seq</code>很难被伪造出来</p>
 <h3 id="socket-recv和send-情况">socket recv和send 情况<a hidden class="anchor" aria-hidden="true" href="#socket-recv和send-情况">#</a></h3>
-<p><img loading="lazy" src="image/%e7%bd%91%e7%bb%9c%e7%9b%b8%e5%85%b3.assets/Typoraimage-20220228220953537.png" alt="Typoraimage-20220228220953537"  />
+<p><img loading="lazy" src="Typoraimage-20220228220953537.png" alt="Typoraimage-20220228220953537"  />
 </p>
 <h3 id="如果接收缓冲区有数据这个时候close">如果接收缓冲区有数据，这个时候close<a hidden class="anchor" aria-hidden="true" href="#如果接收缓冲区有数据这个时候close">#</a></h3>
 <p>如果接收缓冲区还有数据未读，会先把接收缓冲区的数据清空，然后给对端发送一个<code>RST</code></p>
