@@ -5,13 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>zabbix游戏监控日志系统部署 | frog&#39;s Blog</title>
+<title>zabbix游戏日志监控 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt">
+<meta name="description" content="演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/zabbix-mysql8.0/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d8a1c95b1eb964516f02dd7068e2fd42017af5baba0751df317cf8a081744b14.css" integrity="sha256-2KHJWx65ZFFvAt1waOL9QgF69bq6B1HfMXz4oIF0SxQ=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.905fe131597072fcbc87e1225756e27ba28555e0f5e049157c9a9ae308ef3b2b.css" integrity="sha256-kF/hMVlwcvy8h&#43;EiV1bie6KFVeD14EkVfJqa4wjvOys=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -67,16 +67,16 @@ var _hmt = _hmt || [];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>
-<meta property="og:title" content="zabbix游戏监控日志系统部署" />
-<meta property="og:description" content="演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt" />
+<meta property="og:title" content="zabbix游戏日志监控" />
+<meta property="og:description" content="演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/zabbix-mysql8.0/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2022-09-13T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="zabbix游戏监控日志系统部署"/>
-<meta name="twitter:description" content="演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt"/>
+<meta name="twitter:title" content="zabbix游戏日志监控"/>
+<meta name="twitter:description" content="演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1&#43;ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf"/>
 
 
 <script type="application/ld+json">
@@ -99,7 +99,7 @@ var _hmt = _hmt || [];
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "zabbix游戏监控日志系统部署",
+      "name": "zabbix游戏日志监控",
       "item": "https://frog-game.github.io/posts/blog/zabbix-mysql8.0/"
     }
   ]
@@ -109,14 +109,14 @@ var _hmt = _hmt || [];
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "zabbix游戏监控日志系统部署",
-  "name": "zabbix游戏监控日志系统部署",
-  "description": "演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt",
+  "headline": "zabbix游戏日志监控",
+  "name": "zabbix游戏日志监控",
+  "description": "演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf",
   "keywords": [
     ""
   ],
-  "articleBody": " 演示\n安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana\n1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent 1.4. 创建初始数据库 mysql -uroot -p123456 mysql\u003e create database zabbix character set utf8mb4 collate utf8mb4_bin; mysql\u003e create user zabbix@`%` identified by '123456'; mysql\u003e grant all privileges on zabbix.* to zabbix@`%`; mysql\u003e quit; 1.5. 导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 123456 zcat /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -p -h10.40.38.67 zabbix # 指定本地的IP地址，不默认就会指向本地localhost 如果报ERROR 2003 (HY000): Can't connect to MySQL server on '10.40.38.67:3306' (111) 看第5章mysql操作指导，多半是因为权限和密码问题\n1.6. 为Zabbix server配置数据库 sudo vim /etc/zabbix/zabbix_server.conf 修改 DBPassword=123456 1.7. 启动Zabbix server和agent进程 sudo systemctl restart zabbix-server zabbix-agent apache2 grafana-server sudo systemctl enable zabbix-server zabbix-agent apache2 grafana-server 1.8. 连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开] http://10.40.38.67/zabbix 默认的用户名是Admin(A是大写)，Password：zabbix 1.9. 修改时区 sudo vi /etc/apache2/conf-enabled/zabbix.conf 修改标准时区为 Asia/Shanghai 1.10. 中文显示 sudo apt install language-pack-zh-hans #安装中文语言包 sudo vim /etc/locale.gen #找到zh_CN.UTF-8 UTF-8 并取消#号注释，然后保存并退出 sudo locale-gen #编译语言包 sudo vim /etc/default/locale #修改默认语言为中文，将原来的内容改为 LANG=zh_CN.UTF-8 1.11. 安装出现的问题 1.11.1. Minimum required size of PHP post is 16M (configuration option “post_max_size”). 解决步骤：\nsudo vi /etc/php/8.1/apache2/php.ini post_max_size8M 16M\nmax_execution_time30 300\nmax_input_time60 300\ndate.timezone = Asia/Shanghai\nsudo systemctl restart zabbix-server zabbix-agent apache2 grafana-server 1.11.2. ERROR 1396 (HY000): Operation CREATE USER failed for 'zabbix'@'%' mysql\u003e create user zabbix@`%` identified by '123456'; ERROR 1396 (HY000): Operation CREATE USER failed for 'zabbix'@'%' 原因分析：\n已经存在了zabbix用户 在执行删除zabbix用户的时候没有删除干净 解决方法：\n重新进行删除。\ndrop user zabbix@'%'; flush privileges; 1.12. 卸载 zabbix 删除软件\nsudo apt-get --purge remove zabbix-server-mysql -y sudo apt-get autoremove zabbix-server-mysql -y sudo apt-get --purge remove zabbix-frontend-php -y sudo apt-get autoremove zabbix-frontend-php -y sudo apt-get --purge remove abbix-apache-conf -y sudo apt-get autoremove abbix-apache-conf -y sudo apt-get --purge remove zabbix-agent -y #删除软件其配置 sudo apt-get autoremove zabbix-agent -y #删除软件依赖包 清理数据\nsudo dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 删除以上apt-get下载的软件包\nsudo apt-get autoclean 删除缓存的所有软件包\nsudo apt-get clean 删除其他软件依赖的但现在已不用的软件包（保留配置文件）\n```sh sudo apt-get autoremove ``` 查询出冗余文件并删除\nsudo find / -name zabbix 执行rm-rf 删除冗余文件\nsudo rm -rf /run/zabbix sudo rm -rf /etc/zabbix sudo rm -rf /usr/share/zabbix sudo rm -rf /var/log/zabbix sudo rm -rf /var/lib/mysql/zabbix 删除包含zabbix关键字的文件或者文件夹\n```sh sudo find / -name \"zabbix*\" | sudo xargs rm -rf ``` 2 . grafana 2.1. 下载grafana deb安装包 sudo apt-get install -y adduser libfontconfig1 sudo wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.5.4_amd64.deb sudo dpkg -i grafana-enterprise_8.5.4_amd64.deb 2.2. 启动grafana-server sudo systemctl restart grafana-server sudo systemctl enable grafana-server 2.3安装zabbix插件 grafana-cli plugins list-remote sudo grafana-cli plugins install alexanderzobnin-zabbix-app #重启grafana-server sudo systemctl restart grafana-server 也可以在grafana-\u003eplugins这里安装\n2.4. 登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开] http:/10.40.38.67:3000/ #默认用户名和密码为admin、admin 2.5. grafana 配置zabbix数据源 2.6. grafana 配置zabbix监控面板 在点击完new dashboard 按钮以后 按ctrl + s 保存一个自己定义的仪表盘\n2.7. grafana增加主题 安装插件：grafana-cli plugins install yesoreyeram-boomtheme-panel grafana主题地址：https://github.com/charles1503/grafana-theme/tree/master/CSS/themes/grafanas grafana更改主题教程：https://www.bilibili.com/read/cv7004400 视频教程：https://cloud.tencent.com/developer/video/11330 http://10.40.38.67:3000/public/themes/aquamarine.css 具体操作步骤：\n创建一个目录，用于存放下载对应主题的css文件\nsudo mkdir /usr/share/grafana/public/themes/ cd /usr/share/grafana/public/themes/ 使用一个for 循环下载对应的所有主题css文件\nfor f in grafana-base.css aquamarine.css hotline.css dark.css plex.css space-gray.css organizr-dashboard.css;do wget https://raw.githubusercontent.com/505384662/grafana-theme/master/CSS/themes/grafana/$f;done 为Grafana安装社区插件Boom Theme\nsudo grafana-cli plugins install yesoreyeram-boomtheme-panel sudo systemctl restart grafana-server 在Dashboard中添加Boom Theme\n2.8. grafana 主题修改地址 cd /usr/share/grafana/public/themes 2.9. grafana 加时钟 grafana-cli plugins install grafana-clock-panel systemctl restart grafana-server 2.10. grafana flowcharting安装 sudo grafana-cli plugins install agenty-flowcharting-panel sudo systemctl restart grafana-server 2.11 grafana 修改模板地址 https://grafana.com/grafana/dashboards zabbix 修改配置地址：http://192.168.70.130/zabbix/setup.php zabbix 展示地址：http://192.168.70.130/zabbix/zabbix.php?action=dashboard.view grafana 展示地址: http://192.168.70.130:3000/d/tYxzFya7z/test_zabbix?orgId=1 2.12. Grafana 匿名访问（免登录） 修改Grafana配置文件\n在Grafana的配置文件 /etc/grafana/grafana.ini 中，找到 [auth.anonymous] 配置块，将其下的匿名访问控制 enabled 设置为 true，组织权限设置为 Viewer\nViewer:**只读**模式\nEditor:**可编辑**模式\nAdmin:**管理员**模式\n#################################### Anonymous Auth ###################### # Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false disable_login_form = true [auth.anonymous] # enable anonymous access enabled = true # specify organization name that should be used for unauthenticated users org_name = Main Org. # specify role for unauthenticated users org_role = Viewer 重启Grafana服务\n修改完配置文件，重启Grafana服务，命令如下：\nsudo systemctl restart grafana-server 2.13. 卸载 grafana 查找到安装软件名\nsudo dpkg -l | grep grafana 删除软件\n```sh sudo dpkg -r grafana-enterprise ``` 查询出冗余文件并删除\nfind / -name grafana 用rm-rf 命令删除\nrm -rf /etc/grafana rm -rf /usr/share/grafana rm -rf /usr/share/grafana/public/themes/grafana-theme/CSS/themes/grafana rm -rf /var/log/grafana rm -rf /var/lib/grafana 3. apache2 3.1. apache2启动报错 大致意思没有导入apache 环境变量 解决办法:\nsource /etc/apache2/envvars 还是报错\n大致意思是80端口被占用了 我选择的方法是kill占用进程在重启\nroot@hls:/root# netstat -lnp|grep 80 tcp 0 0 0.0.0.0:80 0.0.0.0:* LISTEN 950/nginx: master p tcp6 0 0 :::80 :::* LISTEN 950/nginx: master p unix 2 [ ACC ] STREAM LISTENING 41930 1228/zabbix-plugin_ /tmp/plugin835680808 root@hls:/root# kill -9 950 root@hls:/root# systemctl restart zabbix-server zabbix-agent apache2 3.2. 卸载apache2 删除软件\n//1. 删除apache sudo apt-get --purge remove apache2 sudo apt-get --purge remove apache2.2-common //2.找到没有删除掉的配置文件，一并删除 sudo find /etc -name \"*apache*\" |xargs rm -rf sudo rm -rf /var/www sudo rm -rf /etc/libapache2-mod-jk //3.删除关联，这样就可以再次用apt-get install apache2 重装了 #dpkg -l |grep apache2|awk '{print $2}'|xargs dpkg -P//注意：这一步可能会报错，但也没关系 查询出冗余文件并删除\nsudo find / -name apache2 用rm -rf 命令删除\n4. Nginx 4.1. 官网下载地址 http://nginx.org/en/download.html 4.2. 一些环境准备 安装编译工具\nsudo apt-get install build-essential 安装编译工具 安装gcc什么的好便于下面编译安装 安装pcre包\nsudo apt-get update sudo apt-get install libpcre3 libpcre3-dev sudo apt-get install openssl libssl-dev 安装 zlib 库\nsudo apt install zlib1g-dev 4.3. 下载安装Nginx sudo wget http://nginx.org/download/nginx-1.21.6.tar.gz sudo tar -xzvf nginx-1.21.6.tar.gz cd nginx-1.21.6 sudo ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-stream --with-mail=dynamic #最好用 --prefix指定路径，便于后面删除[只需要删除prefix指定的文件夹就行了]，不指定的话后面删除比较麻烦 sudo make sudo make install 4.4. 制作软连接 ln -s /usr/local/nginx/sbin/nginx /usr/local/sbin/ 4.5. 配置环境变量 编辑/etc/profile并且追加Nginx的环境变量 export NGINX_HOME=/usr/local/nginx export PATH=$PATH:$NGINX_HOME/sbin 4.5.1. 生效环境变量 source /etc/profile 4.6. 测试是否安装成功 nginx -v 4.7. 启动Nginx sudo nginx 4.8. 强制停止Nginx sudo pkill -9 nginx 4.9. 查看Nginx进程 ps aux|grep nginx 4.10. 配置防火墙 sudo ufw allow 'Nginx Full' 4.11. 验证防火墙是否允许 出现下面两种情况都认为可以 Status: active To Action From -- ------ ---- 22/tcp ALLOW Anywhere Nginx Full ALLOW Anywhere 22/tcp (v6) ALLOW Anywhere (v6) Nginx Full (v6) ALLOW Anywhere (v6) sudo ufw status 状态：不活动 4.12. 测试访问 http://192.168.70.132:7000 4.13. Nginx 相关文件位置 nginx path prefix: \"/usr/local/nginx\" nginx binary file: \"/usr/local/nginx/sbin/nginx\" nginx modules path: \"/usr/local/nginx/modules\" nginx configuration prefix: \"/usr/local/nginx/conf\" nginx configuration file: \"/usr/local/nginx/conf/nginx.conf\" nginx pid file: \"/usr/local/nginx/logs/nginx.pid\" nginx error log file: \"/usr/local/nginx/logs/error.log\" nginx http access log file: \"/usr/local/nginx/logs/access.log\" nginx http client request body temporary files: \"client_body_temp\" nginx http proxy temporary files: \"proxy_temp\" nginx http fastcgi temporary files: \"fastcgi_temp\" nginx http uwsgi temporary files: \"uwsgi_temp\" nginx http scgi temporary files: \"scgi_temp\" 4.14 卸载 Nginx sudo rm -rf /usr/local/nginx sudo rm -rf /usr/local/nginx/sbin/nginx #软连接也记得删除 如果想完全干净，/etc/profile 配置文件中指定的环境变量也可以删除 5. mysql 5.1. 安装mysql sudo apt update sudo apt install mysql-server 安装完成后，MySQL服务将自动启动。要验证MySQL服务器正在运行，请输入：\nsudo systemctl status mysql 5.2. 彻底卸载mysql方法 查看依赖包\ndpkg --list | grep mysql 先依次执行以下命令\nsudo apt-get remove mysql-common sudo apt-get autoremove --purge mysql-server-5.0 # 卸载 MySQL 5.x 使用, 非5.x版本可跳过该步骤 sudo apt-get autoremove --purge mysql-server 然后再用\ndpkg --list | grep mysql 查看一下依赖包最后用下面命令清除残留数据\ndpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 查看从MySQL APT安装的软件列表, 执行后没有显示列表, 证明MySQL服务已完全卸载\ndpkg -l | grep mysql | grep i 博客地址\nhttps://blog.csdn.net/PY0312/article/details/89481421 5.3. MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘ rm -rf /etc/apparmor.d/abstractions/mysql rm -rf /etc/apparmor.d/cache/usr.sbin.mysqld find / -name 'mysql*' -exec rm -rf {} \\; 5.2. 连接MySql报错“can’t connect to local mysql server through socket ‘/var/run/mysqld/mysqld.sock’ cd /etc/init.d sudo service mysql stop sudo service mysql start 5.5. mysql Ubuntu 20.04 Access denied for user ‘root’@’localhost 首先输入以下指令 获取密码：\nsudo cat /etc/mysql/debian.cnf 再输入以下指令进入mysql\n查询user关键字段\nselect user, authentication_string,plugin,Host from mysql.user; 修改密码格式\nuse mysql; update user set plugin='mysql_native_password' where user='root'; flush privileges; 修改密码\nuse mysql; ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456'; flush privileges; 输入\nmysql -uroot -p123456; 查看效果 让别的ip能连上wsl数据库\nuse mysql; update user set Host='%' where user='root'; flush privileges; 输入\nselect user, authentication_string,plugin,Host from mysql.user; 查看效果\n开启远程访问\nsudo vi /etc/mysql/mysql.conf.d/mysqld.cnf # 注释 bind-address = 127.0.0.1 重启mysql\nsudo service mysql restart 效果\n6. ELK 6.1. 一些准备 6.1.1. 官网地址 https://www.elastic.co/guide/en/elasticsearch/reference/8.0/deb.html#deb-repo 6.1.2. 虚拟机 想要多开最好是克隆一份出来 比如2就是克隆的1的镜像\n修改 克隆的虚拟机网卡地址\nsudo vim /etc/netplan/00-installer-config.yaml 修改内容:\nnetwork: ethernets: ens33: #配置的网卡的名称 addresses: [192.168.70.130/24] #配置的静态ip地址和掩码 dhcp4: no #关闭DHCP，如果需要打开DHCP则写yes optional: true gateway4: 192.168.70.2 #网关地址 nameservers: addresses: [192.168.70.2,114.114.114.114] #DNS服务器地址，多个DNS服务器地址需要用英文逗号分隔开 version: 2 renderer: networkd #指定后端采用systemd-networkd或者Network Manager，可不填写则默认使用systemd-workd 使配置生效\nsudo netplan apply 注意事项\n1、ip地址和DNS服务器地址需要用[]括起来，但是网关地址不需要 2、注意每个冒号后边都要先加一个空格 3、注意每一层前边的缩进，至少比上一层多两个空格 6.1.3. 安装java环境 安装java sudo apt install openjdk-8-jdk 查看java 版本\nsudo java -version 查看 java 路径\nsudo which java ls -l /usr/bin/java 看看这是否是个软连接，找出这个软连接指向的路径\nls -l /usr/bin/java 的确为软连接，继续往下找指向的路径\n至此，java 的安装路径即为 /usr/lib/jvm/java-11-openjdk-amd64/bin/java\n配置 java 环境\nsudo vim /etc/profile 在弹出的 vim 编辑器中输入\n# JAVA JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 PATH=$JAVA_HOME/bin:$PATH export JAVA_HOME PATH esc 退出编辑模式，输入 :x后，单击回车退出。\n在终端输入\nsource /etc/profile 使之前的配置生效。\n验证\njava -version\n$JAVA_HOME/bin/java -version\n6.1.4. python3 [不是必须装主要是想使用 json.tool 格式化输出]\n安装python3.8\nsudo apt-get install python3.8 建立软连接\nsudo ln -s /usr/bin/python3.8 /usr/bin/python 如果想要删除软连接\nsudo rm -rf /usr/bin/python 格式化输出\ncurl -XGET http://192.168.70.131:9200/_mapping | python -m json.tool 6.2. Elasticsearch 6.2.1. 基础知识 6.2.1.1. 和关系型数据库的比较 DBMS Elasticsearch database Index table type(在7.0之后type为固定值_doc) Row Document Column Field Schema Mapping SQL DSL(Descriptor Structure Language) 6.2.2 安装Elasticsearch deb包安装方式\nsudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.2.2-amd64.deb sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.2.2-amd64.deb.sha512 shasum -a 512 -c elasticsearch-8.2.2-amd64.deb.sha512 sudo dpkg -i elasticsearch-8.2.2-amd64.deb 执行**sudo dpkg -i elasticsearch-8.2.2-amd64.deb** 回生成超级用户密码 0NgzdrlHquc1YdXrQout\n--------------------------- Security autoconfiguration information ------------------------------ Authentication and authorization are enabled. TLS for the transport and HTTP layers is enabled and configured. The generated password for the elastic built-in superuser is : 0NgzdrlHquc1YdXrQout If this node should join an existing cluster, you can reconfigure this with '/usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token ' after creating an enrollment token on your existing cluster. You can complete the following actions at any time: Reset the password of the elastic built-in superuser with '/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic'. Generate an enrollment token for Kibana instances with '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana'. Generate an enrollment token for Elasticsearch nodes with '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node'. ------------------------------------------------------------------------------------------------- 生成 ca 、生成 证书\n# 生成 ca # 根据提示： # 输入 ca 的密码（密码不要忘记，后面生成证书需要） # 输入生成 ca 的文件名（默认会让你输入 elastic-stack-ca.p12，这里就按照默认的来） sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca # 生成证书 # 根据提示： # 输入之前 ca 的密码 # 输入生成证书的文件名（默认让你输入 elastic-certificates.p12，这里就按照默认的来） # 输入生成证书的密码（密码不要忘记，这个密码在配置 ES keystore 的时候需要） # --ca 后面的文件是上面步骤生成的 elastic-stack-ca.p12 文件，如果修改了的话，这里也需要修改 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12 ​\t为了方便管理，一般将 ca 与证书放到 ~/.config/certs 目录下\n# 创建目录并移动 ca 与证书 sudo mkdir -p ~/.config/certs \u0026\u0026 sudo mv /usr/share/elasticsearch/elastic-stack-ca.p12 /usr/share/elasticsearch/elastic-certificates.p12 ~/.config/certs 6.2.3. 启动 Elasticsearch ​\t[为了安全考虑Elasticsearch不允许使用root用户来启动]\n打开 elasticsearch 配置文件\nsudo vim /etc/elasticsearch/elasticsearch.yml #打开配置文件 修改 netWork.host, http.port 字段\nnetwork.host: 10.40.38.66 #注意 network.host:和10.40.38.66 之间需要空格要不启动会有问题，因为配置文件类型为key-vale格式 http.port: 9200 #注意 http.port:和9200 之间需要空格要不启动会有问题，因为配置文件类型为key-vale格式 因为是内网测试暂时关闭 xpack 安全验证方面选项,以后需要再去开启\n启动Elasticsearch\nsudo systemctl start elasticsearch.service 开机启动elasticsearch\nsudo systemctl enable elasticsearch.service 6.2.4. 连接grafana 5.2.5. Elasticsearch 操作命令 用jps命令关闭Elasticsearch\n$ jps | grep Elasticsearch 14542 Elasticsearch kill -9 14542 查看 Elasticsearch 端口\nsudo netstat -tnlp |grep java 检测是否启动成功\ncurl -XGET 'http://192.168.70.131:9200/' -H 'Content-Type: application/json' 用journal 查看系统日志\nsudo journalctl -f 用 journal 查看elasticsearch 服务日志\nsudo journalctl --unit elasticsearch 用journal 查看elasticsearch 指定时间范围的日志\nsudo journalctl --unit elasticsearch --since \"2022-02-01 18:17:16\" 查看 elasticsearch.log\nsudo vim /var/log/elasticsearch/elasticsearch.log 6.2.6. Elasticsearch 卸载 # 查看安装的软件 sudo dpkg -l | grep elasticsearch #查看安装关联 sudo dpkg -L elasticsearch #移除安装软件 sudo dpkg -P elasticsearch #继续查看未卸载的目录和文件 sudo find / -name elasticsearch #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/elasticsearch \u0026\u0026 sudo rm -rf /var/lib/dpkg/info/elasticsearch.* \u0026\u0026 sudo rm -rf /etc/default/elasticsearch \u0026\u0026 sudo rm -rf /etc/init.d/elasticsearch \u0026\u0026 sudo rm -rf /var/log/elasticsearch \u0026\u0026 sudo rm -rf /usr/share/elasticsearch #在此查看是否有关联的目录和文件 sudo find / -name elasticsearch 6.3. Logstash 6.3.1. 安装 Logstash 下载安装公共签名\nsudo wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - 接下安装 apt-transport-https 包\nsudo apt-get install apt-transport-https 将存储库保存到 /etc/apt/sources.list.d/elastic-8.x.list\necho \"deb https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-8.x.list 然后你就能安装Elasticsearch了\nsudo apt-get update \u0026\u0026 sudo apt-get install logstash 6.3.2. 插件地址 https://www.elastic.co/guide/en/logstash-versioned-plugins/current/index.html 6.3.3. 配置表字段解释 https://blog.csdn.net/weixin_42073629/article/details/110154037?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-1-110154037.pc_agg_new_rank\u0026utm_term=logstash%E5%8F%82%E6%95%B0convert\u0026spm=1000.2123.3001.4430 6.3.4. 查看安装的插件 sudo /usr/share/logstash/bin/logstash-plugin list 6.3.5. 启动Lostash 修改 logstash.yml 配置\nsudo vim /etc/logstash/logstash.yml 6.3.6. 导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式] ​\t收集流程: movies.csv-\u003elogstash-\u003eelasticdearch-\u003egrafana\n下载ml-latest.zip 数据\nsudo wget https://files.grouplens.org/datasets/movielens/ml-latest.zip 解压 ml-latest.zip\nsudo unzip ml-latest.zip 在/etc/logstash 目录下创建logstash.conf 文件\nsudo vim /etc/logstash/logstash.conf 把以下内容写入logstash.conf\ninput { file { #监听文件的路径 path =\u003e \"/home/hls/downs/ml-latest/movies.csv\" #监听文件的起始位置，默认是end start_position =\u003e \"beginning\" #监听文件读取信息记录的位置 sincedb_path =\u003e \"/home/hls/downs/ml-latest/db_path.log\" } } filter { csv { separator =\u003e \",\" columns =\u003e [\"id\",\"content\",\"genre\",\"@timestamp\"] } mutate { # split =\u003e { \"genre\" =\u003e \"|\" } # remove_field =\u003e [\"path\", \"host\",\"@timestamp\",\"message\"] #删除无用字段 } mutate { split =\u003e [\"content\", \"(\"] #左括号分割 add_field =\u003e { \"title\" =\u003e \"%{[content][0]}\"} #增加字段 add_field =\u003e { \"year\" =\u003e \"%{[content][1]}\"} #增加字段 } mutate { convert =\u003e { #year 转换成整型 \"year\" =\u003e \"integer\" } strip =\u003e [\"title\"] #去掉字段首尾的空格 # remove_field =\u003e [\"path\", \"host\",\"@timestamp\",\"message\",\"content\"] #删除无用字段 } } output { elasticsearch { # 双引号中的内容为ES的地址，视实际情况而定 hosts =\u003e \"http://192.168.70.131:9200\" index =\u003e \"movies\" document_id =\u003e \"%{id}\" #docId 等价于_id 字段 } stdout {} } 如果需要重新导入，先删除db_path.log 文件\nsudo rm -rf /var/lib/logstash/.lock sudo rm -rf /home/hls/downs/ml-latest/db_path.log sudo /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf 报错\n执行命令**sudo /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf** 后如果报错\nWARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults 那么就创建软连接\ncd /usr/share/logstash sudo ln -s /etc/logstash ./config 执行命令**sudo /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf** 后如果报错\nLogstash could not be started because there is already another instance using the configured data directory. If you wish to run multiple instances, you must change the \"path.data\" setting. 那么就去 logstash.yml 中path.data 指定的路径上去删除.lock文件\ncd /var/lib/logstash sudo ls -a sudo rm -rf .lock 或者直接一句话\nsudo rm -rf /var/lib/logstash/.lock 6.3.7. 强制查看输出 logstash.conf 修改成你自己的文件 sudo /usr/share/logstash/bin/logstash /etc/logstash/logstash.conf --verbose --debug 6.3.8. 查看数据 用Kibana的命令行工具执行 GET _cat/indices 命令，就能看见导入到Elasticsearch的索引\n用kibana的命令行工具执行**GET /lua_cpu_monitor-2022.06.03/_search**命令,就能看见导入到Elasticsearch的数据\n6.3.9. 自动重新加载配置命令 logstash.conf 修改成你自己的文件\nsudo /usr/share/logstash/bin/logstash /etc/logstash/logstash.conf --config.reload.automatic 默认检测时间是**3**秒 可以通过下列命令修改 把\u003c\u003e号里面的2换成你想要的时间\nsudo /usr/share/logstash/bin/logstash /etc/logstash/logstash.conf --config.reload.interval \u003c2\u003e 5.3.9. 卸载Logstash # 查看安装的软件 sudo dpkg -l | grep logstash #查看安装关联 sudo dpkg -L logstash #移除安装软件 sudo dpkg -P logstash #继续查看未卸载的目录和文件 sudo find / -name logstash #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/logstash \u0026\u0026 sudo rm -rf /var/lib/dpkg/info/logstash.* \u0026\u0026 sudo rm -rf /etc/default/logstash \u0026\u0026 sudo rm -rf /etc/init.d/logstash \u0026\u0026 sudo rm -rf /etc/logstash \u0026\u0026 sudo rm -rf /var/log/logstash \u0026\u0026 sudo rm -rf /usr/share/logstash #在此查看是否有关联的目录和文件 sudo find / -name logstash 6.4. Kibana 6.4.1. 安装Kibana 下载安装公共签名\nwget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - 接下安装 apt-transport-https 包\nsudo apt-get install apt-transport-https 将存储库保存到 /etc/apt/sources.list.d/elastic-8.x.list\necho \"deb https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-8.x.list 然后你就能安装Kibana了\nsudo apt-get update \u0026\u0026 sudo apt-get install kibana 6.4.2. 启动Kibana 打开kibana.yml 文档\nsudo vim /etc/kibana/kibana.yml 修改 server.port,server.host 字段\n启动\nsudo systemctl start kibana.service 自启动\nsudo systemctl enable kibana.service 查看 kibana日志\nsudo vim /var/log/kibana 用谷歌或者微软自带浏览器打开地址\nhttp://10.40.38.66:5601 56.4.3. 卸载Kibana # 查看安装的软件 sudo dpkg -l | grep kibana #查看安装关联 sudo dpkg -L kibana #移除安装软件 sudo dpkg -P kibana #继续查看未卸载的目录和文件 sudo find / -name kibana #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/kibana \u0026\u0026 sudo rm -rf /var/lib/dpkg/info/kibana.* \u0026\u0026 sudo rm -rf /etc/kibana #在此查看是否有关联的目录和文件 sudo find / -name kibana 6.5. Filebeat 搭配filebeat主要使用收集nginx数据, 和上面的利用logstash解析movies.csv，然后收集数据给elasticsearch的方式不一样\n收集流程: nginx-\u003efilebeat-\u003elogstash-\u003eelasticdearch-\u003egrafana\n6.5.1. 安装Filebeat sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.2.2-amd64.deb sudo dpkg -i filebeat-8.2.2-amd64.deb 6.5.2. 修改 filebat.yml 配置文件 sudo vim /etc/filebeat/filebeat.yml 修改下列几项\n# ============================== Filebeat inputs =============================== filebeat.inputs: - type: filestream id: my-filestream-id enabled: true paths: - /home/hls/work/blueprint-server-runtime/log/lua_cpu_monitor.log tags: [\"lua_cpu_monitor_log\"] - type: filestream id: my-filestream-id enabled: true paths: - /home/hls/work/blueprint-server-runtime/log/lua_mem_monitor.log tags: [\"lua_mem_monitor_log\"] # ============================== Filebeat modules ============================== filebeat.config.modules: path: ${path.config}/modules.d/*.yml reload.enabled: false setup.template.settings: index.number_of_shards: 1 # ------------------------------ Logstash Output ------------------------------- output.logstash: # The Logstash hosts hosts: [\"10.40.38.66:5555\"] # ================================= Processors ================================= processors: - add_host_metadata: when.not.contains.tags: forwarded - add_cloud_metadata: ~ - add_docker_metadata: ~ - add_kubernetes_metadata: ~ 6.5.3. 测试filebeat启动后，查看相关输出信息 sudo filebeat -e -c /etc/filebeat/filebeat.yml -d \"publish\" 6.5.4. 后台方式启动filebeat nohup filebeat -e -c /etc/filebeat/filebeat.yml \u003e/dev/null 2\u003e\u00261 \u0026 #将所有标准输出及标准错误输出到/dev/null空设备，即没有任何输出 nohup filebeat -e -c /etc/filebeat/filebeat.yml \u003e filebeat.log \u0026 6.5.5. 停止filebeat ps -ef | grep filebeat kill -9 进程号 6.5.6. 启动出现的问题 执行命令systemctl start filebeat.service就能够启动了。而后执行ps -ef|grep filebeat查看一下\n能够看到已经启动胜利了，如果你发现没有启动成功，那么就执行 cd /usr/bin，在这个目录下执行./filebeat -c /etc/filebeat/filebeat.yml -e，这样会提醒具体的错误信息。而用systemctl start filebeat.service启动的时候没有任何提醒，连在 /var/log/filebeat/ 和 /var/lib/filebeat/registry/filebeat/ 都没找到错误信息，这里属实有点坑。\n重新启动命令systemctl restart filebeat.service\n6.5.7 去安装logstash的机器启动logstash 增加 logstash_filebeat.conf 文档\nsudo vim /etc/logstash/conf.d/logstash_filebeat.conf 把以下内容粘贴上保存\ninput { beats { port =\u003e 5555 #这个地址不能和logstash.yml 里面的api.http.host: 9600 一样，要不会出现地址已经被绑定的错误 } } output { if \"lua_cpu_monitor_log\" in [tags] { elasticsearch { hosts =\u003e [\"10.40.38.66:9200\"] index =\u003e \"lua_cpu_monitor-%{+YYYY.MM.dd}\" } } if \"lua_men_monitor_log\" in [tags] { elasticsearch { hosts =\u003e [\"10.40.38.66:9200\"] index =\u003e \"lua_men_monitor-%{+YYYY.MM.dd}\" } } } 重新加载新的配置并启动logstash\n先启动logstash，然后在启动filebeat，不然的话filebeat会找不到beats插件的:5555端口\nsudo rm -rf /var/lib/logstash/.lock sudo /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/logstash_filebeat.conf --verbose --debug 6.5.8. 用filebeat 监控 nginx 修改 nginx conf 配置表\nsudo vim /usr/local/nginx/conf/nginx.conf 加入如下日志格式\nlog_format main '{\"@timestamp\":\"$time_iso8601\",' '\"@source\":\"$server_addr\",' '\"hostname\":\"$hostname\",' '\"ip\":\"$remote_addr\",' '\"client\":\"$remote_addr\",' '\"request_method\":\"$request_method\",' '\"scheme\":\"$scheme\",' '\"domain\":\"$server_name\",' '\"referer\":\"$http_referer\",' '\"request\":\"$request_uri\",' '\"args\":\"$args\",' '\"size\":$body_bytes_sent,' '\"status\": $status,' '\"responsetime\":$request_time,' '\"upstreamtime\":\"$upstream_response_time\",' '\"upstreamaddr\":\"$upstream_addr\",' '\"http_user_agent\":\"$http_user_agent\",' '\"https\":\"$https\"' '}'; 对比修改下图对应的3个红框地方\n重启 nginx\nsudo pkill -9 nginx \u0026\u0026 sudo nginx 用 http:192.168.70.132:7000 登录nginx 网站生成登录日志，然后打开 access.log 日志\nsudo vim /usr/local/nginx/logs/access.log sudo tail -f /usr/local/nginx/logs/access.log 6.5.9. 卸载Filebeat # 查看安装的软件 sudo dpkg -l | grep filebeat #查看安装关联 sudo dpkg -L filebeat #移除安装软件 sudo dpkg -P filebeat #继续查看未卸载的目录和文件 sudo find / -name filebeat #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/filebeat \u0026\u0026 sudo rm -rf /var/log/filebeat/filebeat \u0026\u0026 sudo rm -rf /var/log/filebeat \u0026\u0026 sudo rm -rf /usr/share/filebeat #在此查看是否有关联的目录和文件 sudo find / -name filebeat ",
-  "wordCount" : "7009",
+  "articleBody": " 演示\n安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana\nzabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent 创建初始数据库 mysql -uroot -p123456 mysql\u003e create database zabbix character set utf8mb4 collate utf8mb4_bin; mysql\u003e create user zabbix@`%` identified by '123456'; mysql\u003e grant all privileges on zabbix.* to zabbix@`%`; mysql\u003e quit; 导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 123456 zcat /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -p -h10.40.38.67 zabbix # 指定本地的IP地址，不默认就会指向本地localhost 如果报ERROR 2003 (HY000): Can't connect to MySQL server on '10.40.38.67:3306' (111) 看第5章mysql操作指导，多半是因为权限和密码问题\n为Zabbix server配置数据库 sudo vim /etc/zabbix/zabbix_server.conf 修改 DBPassword=123456 启动Zabbix server和agent进程 sudo systemctl restart zabbix-server zabbix-agent apache2 grafana-server sudo systemctl enable zabbix-server zabbix-agent apache2 grafana-server 连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开] http://10.40.38.67/zabbix 默认的用户名是Admin(A是大写)，Password：zabbix 修改时区 sudo vi /etc/apache2/conf-enabled/zabbix.conf 修改标准时区为 Asia/Shanghai 中文显示 sudo apt install language-pack-zh-hans #安装中文语言包 sudo vim /etc/locale.gen #找到zh_CN.UTF-8 UTF-8 并取消#号注释，然后保存并退出 sudo locale-gen #编译语言包 sudo vim /etc/default/locale #修改默认语言为中文，将原来的内容改为 LANG=zh_CN.UTF-8 安装出现的问题 Minimum required size of PHP post is 16M (configuration option “post_max_size”). 解决步骤：\nsudo vi /etc/php/8.1/apache2/php.ini post_max_size8M 16M\nmax_execution_time30 300\nmax_input_time60 300\ndate.timezone = Asia/Shanghai\nsudo systemctl restart zabbix-server zabbix-agent apache2 grafana-server ERROR 1396 (HY000): Operation CREATE USER failed for 'zabbix'@'%' mysql\u003e create user zabbix@`%` identified by '123456'; ERROR 1396 (HY000): Operation CREATE USER failed for 'zabbix'@'%' 原因分析：\n已经存在了zabbix用户 在执行删除zabbix用户的时候没有删除干净 解决方法：\n重新进行删除。\ndrop user zabbix@'%'; flush privileges; 卸载 zabbix 删除软件\nsudo apt-get --purge remove zabbix-server-mysql -y sudo apt-get autoremove zabbix-server-mysql -y sudo apt-get --purge remove zabbix-frontend-php -y sudo apt-get autoremove zabbix-frontend-php -y sudo apt-get --purge remove abbix-apache-conf -y sudo apt-get autoremove abbix-apache-conf -y sudo apt-get --purge remove zabbix-agent -y #删除软件其配置 sudo apt-get autoremove zabbix-agent -y #删除软件依赖包 清理数据\nsudo dpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 删除以上apt-get下载的软件包\nsudo apt-get autoclean 删除缓存的所有软件包\nsudo apt-get clean 删除其他软件依赖的但现在已不用的软件包（保留配置文件）\nsudo apt-get autoremove 查询出冗余文件并删除\nsudo find / -name zabbix 执行rm-rf 删除冗余文件\nsudo rm -rf /run/zabbix sudo rm -rf /etc/zabbix sudo rm -rf /usr/share/zabbix sudo rm -rf /var/log/zabbix sudo rm -rf /var/lib/mysql/zabbix 删除包含zabbix关键字的文件或者文件夹\nsudo find / -name \"zabbix*\" | sudo xargs rm -rf grafana 下载grafana deb安装包 sudo apt-get install -y adduser libfontconfig1 sudo wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.5.4_amd64.deb sudo dpkg -i grafana-enterprise_8.5.4_amd64.deb 启动grafana-server sudo systemctl restart grafana-server sudo systemctl enable grafana-server 安装zabbix插件 grafana-cli plugins list-remote sudo grafana-cli plugins install alexanderzobnin-zabbix-app #重启grafana-server sudo systemctl restart grafana-server 也可以在grafana-\u003eplugins这里安装\n登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开] http:/10.40.38.67:3000/ #默认用户名和密码为admin、admin grafana 配置zabbix数据源 grafana 配置zabbix监控面板 在点击完new dashboard 按钮以后 按ctrl + s 保存一个自己定义的仪表盘\ngrafana增加主题 安装插件：grafana-cli plugins install yesoreyeram-boomtheme-panel grafana主题地址：https://github.com/charles1503/grafana-theme/tree/master/CSS/themes/grafanas grafana更改主题教程：https://www.bilibili.com/read/cv7004400 视频教程：https://cloud.tencent.com/developer/video/11330 http://10.40.38.67:3000/public/themes/aquamarine.css 具体操作步骤：\n创建一个目录，用于存放下载对应主题的css文件\nsudo mkdir /usr/share/grafana/public/themes/ cd /usr/share/grafana/public/themes/ 使用一个for 循环下载对应的所有主题css文件\nfor f in grafana-base.css aquamarine.css hotline.css dark.css plex.css space-gray.css organizr-dashboard.css;do wget https://raw.githubusercontent.com/505384662/grafana-theme/master/CSS/themes/grafana/$f;done 为Grafana安装社区插件Boom Theme\nsudo grafana-cli plugins install yesoreyeram-boomtheme-panel sudo systemctl restart grafana-server 在Dashboard中添加Boom Theme\ngrafana 主题修改地址 cd /usr/share/grafana/public/themes grafana 加时钟 grafana-cli plugins install grafana-clock-panel systemctl restart grafana-server grafana flowcharting安装 sudo grafana-cli plugins install agenty-flowcharting-panel sudo systemctl restart grafana-server grafana 修改模板地址 https://grafana.com/grafana/dashboards zabbix 修改配置地址：http://192.168.70.130/zabbix/setup.php zabbix 展示地址：http://192.168.70.130/zabbix/zabbix.php?action=dashboard.view grafana 展示地址: http://192.168.70.130:3000/d/tYxzFya7z/test_zabbix?orgId=1 Grafana 匿名访问（免登录） 修改Grafana配置文件\n在Grafana的配置文件 /etc/grafana/grafana.ini 中，找到 [auth.anonymous] 配置块，将其下的匿名访问控制 enabled 设置为 true，组织权限设置为 Viewer\nViewer:**只读**模式\nEditor:**可编辑**模式\nAdmin:**管理员**模式\n#################################### Anonymous Auth ###################### # Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false disable_login_form = true [auth.anonymous] # enable anonymous access enabled = true # specify organization name that should be used for unauthenticated users org_name = Main Org. # specify role for unauthenticated users org_role = Viewer 重启Grafana服务\n修改完配置文件，重启Grafana服务，命令如下：\nsudo systemctl restart grafana-server 卸载 grafana 查找到安装软件名\nsudo dpkg -l | grep grafana 删除软件\nsudo dpkg -r grafana-enterprise 查询出冗余文件并删除\nfind / -name grafana 用rm-rf 命令删除\nrm -rf /etc/grafana rm -rf /usr/share/grafana rm -rf /usr/share/grafana/public/themes/grafana-theme/CSS/themes/grafana rm -rf /var/log/grafana rm -rf /var/lib/grafana apache2 apache2启动报错 大致意思没有导入apache 环境变量 解决办法:\nsource /etc/apache2/envvars 还是报错\n大致意思是80端口被占用了 我选择的方法是kill占用进程在重启\nroot@hls:/root# netstat -lnp|grep 80 tcp 0 0 0.0.0.0:80 0.0.0.0:* LISTEN 950/nginx: master p tcp6 0 0 :::80 :::* LISTEN 950/nginx: master p unix 2 [ ACC ] STREAM LISTENING 41930 1228/zabbix-plugin_ /tmp/plugin835680808 root@hls:/root# kill -9 950 root@hls:/root# systemctl restart zabbix-server zabbix-agent apache2 卸载apache2 删除软件\n//1. 删除apache sudo apt-get --purge remove apache2 sudo apt-get --purge remove apache2.2-common //2.找到没有删除掉的配置文件，一并删除 sudo find /etc -name \"*apache*\" |xargs rm -rf sudo rm -rf /var/www sudo rm -rf /etc/libapache2-mod-jk //3.删除关联，这样就可以再次用apt-get install apache2 重装了 #dpkg -l |grep apache2|awk '{print $2}'|xargs dpkg -P//注意：这一步可能会报错，但也没关系 查询出冗余文件并删除\nsudo find / -name apache2 用rm -rf 命令删除\nNginx 官网下载地址 http://nginx.org/en/download.html 一些环境准备 安装编译工具\nsudo apt-get install build-essential 安装编译工具 安装gcc什么的好便于下面编译安装 安装pcre包\nsudo apt-get update sudo apt-get install libpcre3 libpcre3-dev sudo apt-get install openssl libssl-dev 安装 zlib 库\nsudo apt install zlib1g-dev 下载安装Nginx sudo wget http://nginx.org/download/nginx-1.21.6.tar.gz sudo tar -xzvf nginx-1.21.6.tar.gz cd nginx-1.21.6 sudo ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-stream --with-mail=dynamic #最好用 --prefix指定路径，便于后面删除[只需要删除prefix指定的文件夹就行了]，不指定的话后面删除比较麻烦 sudo make sudo make install 制作软连接 ln -s /usr/local/nginx/sbin/nginx /usr/local/sbin/ 配置环境变量 编辑/etc/profile并且追加Nginx的环境变量 # nginx export NGINX_HOME=/usr/local/nginx export PATH=$PATH:$NGINX_HOME/sbin 生效环境变量 source /etc/profile 测试是否安装成功 nginx -v 启动Nginx sudo nginx 强制停止Nginx sudo pkill -9 nginx 查看Nginx进程 ps aux|grep nginx 配置防火墙 sudo ufw allow 'Nginx Full' 验证防火墙是否允许 出现下面两种情况都认为可以 Status: active To Action From -- ------ ---- 22/tcp ALLOW Anywhere Nginx Full ALLOW Anywhere 22/tcp (v6) ALLOW Anywhere (v6) Nginx Full (v6) ALLOW Anywhere (v6) sudo ufw status 状态：不活动 测试访问 http://192.168.70.132:7000 Nginx 相关文件位置 nginx path prefix: \"/usr/local/nginx\" nginx binary file: \"/usr/local/nginx/sbin/nginx\" nginx modules path: \"/usr/local/nginx/modules\" nginx configuration prefix: \"/usr/local/nginx/conf\" nginx configuration file: \"/usr/local/nginx/conf/nginx.conf\" nginx pid file: \"/usr/local/nginx/logs/nginx.pid\" nginx error log file: \"/usr/local/nginx/logs/error.log\" nginx http access log file: \"/usr/local/nginx/logs/access.log\" nginx http client request body temporary files: \"client_body_temp\" nginx http proxy temporary files: \"proxy_temp\" nginx http fastcgi temporary files: \"fastcgi_temp\" nginx http uwsgi temporary files: \"uwsgi_temp\" nginx http scgi temporary files: \"scgi_temp\" 卸载 Nginx sudo rm -rf /usr/local/nginx sudo rm -rf /usr/local/nginx/sbin/nginx #软连接也记得删除 如果想完全干净，/etc/profile 配置文件中指定的环境变量也可以删除 mysql 安装mysql sudo apt update sudo apt install mysql-server 安装完成后，MySQL服务将自动启动。要验证MySQL服务器正在运行，请输入：\nsudo systemctl status mysql 彻底卸载mysql方法 查看依赖包\ndpkg --list | grep mysql 先依次执行以下命令\nsudo apt-get remove mysql-common sudo apt-get autoremove --purge mysql-server-5.0 # 卸载 MySQL 5.x 使用, 非5.x版本可跳过该步骤 sudo apt-get autoremove --purge mysql-server 然后再用\ndpkg --list | grep mysql 查看一下依赖包最后用下面命令清除残留数据\ndpkg -l |grep ^rc|awk '{print $2}' |sudo xargs dpkg -P 查看从MySQL APT安装的软件列表, 执行后没有显示列表, 证明MySQL服务已完全卸载\ndpkg -l | grep mysql | grep i 博客地址\nhttps://blog.csdn.net/PY0312/article/details/89481421 MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘ rm -rf /etc/apparmor.d/abstractions/mysql rm -rf /etc/apparmor.d/cache/usr.sbin.mysqld find / -name 'mysql*' -exec rm -rf {} \\; 连接MySql报错“can’t connect to local mysql server through socket ‘/var/run/mysqld/mysqld.sock’ cd /etc/init.d sudo service mysql stop sudo service mysql start mysql Ubuntu 20.04 Access denied for user ‘root’@’localhost 首先输入以下指令 获取密码：\nsudo cat /etc/mysql/debian.cnf 再输入以下指令进入mysql\n查询user关键字段\nselect user, authentication_string,plugin,Host from mysql.user; 修改密码格式\nuse mysql; update user set plugin='mysql_native_password' where user='root'; flush privileges; 修改密码\nuse mysql; ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456'; flush privileges; 输入\nmysql -uroot -p123456; 查看效果\n让别的ip能连上wsl数据库\nuse mysql; update user set Host='%' where user='root'; flush privileges; 输入\nselect user, authentication_string,plugin,Host from mysql.user; 查看效果\n开启远程访问\nsudo vi /etc/mysql/mysql.conf.d/mysqld.cnf # 注释 bind-address = 127.0.0.1 重启mysql\nsudo service mysql restart 效果\nELK 一些准备 官网地址 https://www.elastic.co/guide/en/elasticsearch/reference/8.0/deb.html#deb-repo 虚拟机 想要多开最好是克隆一份出来 比如2就是克隆的1的镜像\n修改 克隆的虚拟机网卡地址\nsudo vim /etc/netplan/00-installer-config.yaml 修改内容:\nnetwork: ethernets: ens33: #配置的网卡的名称 addresses: [192.168.70.130/24] #配置的静态ip地址和掩码 dhcp4: no #关闭DHCP，如果需要打开DHCP则写yes optional: true gateway4: 192.168.70.2 #网关地址 nameservers: addresses: [192.168.70.2,114.114.114.114] #DNS服务器地址，多个DNS服务器地址需要用英文逗号分隔开 version: 2 renderer: networkd #指定后端采用systemd-networkd或者Network Manager，可不填写则默认使用systemd-workd 使配置生效\nsudo netplan apply 注意事项\n1、ip地址和DNS服务器地址需要用[]括起来，但是网关地址不需要 2、注意每个冒号后边都要先加一个空格 3、注意每一层前边的缩进，至少比上一层多两个空格 安装java环境 安装java\nsudo apt install openjdk-8-jdk 查看java 版本\nsudo java -version 查看 java 路径\nsudo which java ls -l /usr/bin/java 看看这是否是个软连接，找出这个软连接指向的路径\nls -l /usr/bin/java 的确为软连接，继续往下找指向的路径\n至此，java 的安装路径即为 /usr/lib/jvm/java-11-openjdk-amd64/bin/java\n配置 java 环境\nsudo vim /etc/profile 在弹出的 vim 编辑器中输入\n# JAVA JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64 PATH=$JAVA_HOME/bin:$PATH export JAVA_HOME PATH esc 退出编辑模式，输入 :x后，单击回车退出。\n在终端输入\nsource /etc/profile 使之前的配置生效。\n验证\njava -version\n$JAVA_HOME/bin/java -version\npython3 [不是必须装主要是想使用 json.tool 格式化输出]\n安装python3.8\nsudo apt-get install python3.8 建立软连接\nsudo ln -s /usr/bin/python3.8 /usr/bin/python 如果想要删除软连接\nsudo rm -rf /usr/bin/python 格式化输出\ncurl -XGET http://192.168.70.131:9200/_mapping | python -m json.tool Elasticsearch 基础知识 和关系型数据库的比较 DBMS Elasticsearch database Index table type(在7.0之后type为固定值_doc) Row Document Column Field Schema Mapping SQL DSL(Descriptor Structure Language) 安装Elasticsearch deb包安装方式\nsudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.2.2-amd64.deb sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.2.2-amd64.deb.sha512 shasum -a 512 -c elasticsearch-8.2.2-amd64.deb.sha512 sudo dpkg -i elasticsearch-8.2.2-amd64.deb 执行**sudo dpkg -i elasticsearch-8.2.2-amd64.deb** 回生成超级用户密码 0NgzdrlHquc1YdXrQout\n--------------------------- Security autoconfiguration information ------------------------------ Authentication and authorization are enabled. TLS for the transport and HTTP layers is enabled and configured. The generated password for the elastic built-in superuser is : 0NgzdrlHquc1YdXrQout If this node should join an existing cluster, you can reconfigure this with '/usr/share/elasticsearch/bin/elasticsearch-reconfigure-node --enrollment-token ' after creating an enrollment token on your existing cluster. You can complete the following actions at any time: Reset the password of the elastic built-in superuser with '/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic'. Generate an enrollment token for Kibana instances with '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana'. Generate an enrollment token for Elasticsearch nodes with '/usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node'. ------------------------------------------------------------------------------------------------- 生成 ca 、生成 证书\n# 生成 ca # 根据提示： # 输入 ca 的密码（密码不要忘记，后面生成证书需要） # 输入生成 ca 的文件名（默认会让你输入 elastic-stack-ca.p12，这里就按照默认的来） sudo /usr/share/elasticsearch/bin/elasticsearch-certutil ca # 生成证书 # 根据提示： # 输入之前 ca 的密码 # 输入生成证书的文件名（默认让你输入 elastic-certificates.p12，这里就按照默认的来） # 输入生成证书的密码（密码不要忘记，这个密码在配置 ES keystore 的时候需要） # --ca 后面的文件是上面步骤生成的 elastic-stack-ca.p12 文件，如果修改了的话，这里也需要修改 sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12 ​\t为了方便管理，一般将 ca 与证书放到 ~/.config/certs 目录下\n# 创建目录并移动 ca 与证书 sudo mkdir -p ~/.config/certs \u0026\u0026 sudo mv /usr/share/elasticsearch/elastic-stack-ca.p12 /usr/share/elasticsearch/elastic-certificates.p12 ~/.config/certs 启动 Elasticsearch ​\t[为了安全考虑Elasticsearch不允许使用root用户来启动]\n打开 elasticsearch 配置文件\nsudo vim /etc/elasticsearch/elasticsearch.yml #打开配置文件 修改 netWork.host, http.port 字段\nnetwork.host: 10.40.38.66 #注意 network.host:和10.40.38.66 之间需要空格要不启动会有问题，因为配置文件类型为key-vale格式 http.port: 9200 #注意 http.port:和9200 之间需要空格要不启动会有问题，因为配置文件类型为key-vale格式 因为是内网测试暂时关闭 xpack 安全验证方面选项,以后需要再去开启\n启动Elasticsearch\nsudo systemctl start elasticsearch.service 开机启动elasticsearch\nsudo systemctl enable elasticsearch.service 连接grafana Elasticsearch 操作命令 用jps命令关闭Elasticsearch\n$ jps | grep Elasticsearch 14542 Elasticsearch kill -9 14542 查看 Elasticsearch 端口\nsudo netstat -tnlp |grep java 检测是否启动成功\ncurl -XGET 'http://192.168.70.131:9200/' -H 'Content-Type: application/json' 用journal 查看系统日志\nsudo journalctl -f 用 journal 查看elasticsearch 服务日志\nsudo journalctl --unit elasticsearch 用journal 查看elasticsearch 指定时间范围的日志\nsudo journalctl --unit elasticsearch --since \"2022-02-01 18:17:16\" 查看 elasticsearch.log\nsudo vim /var/log/elasticsearch/elasticsearch.log Elasticsearch 卸载 # 查看安装的软件 sudo dpkg -l | grep elasticsearch #查看安装关联 sudo dpkg -L elasticsearch #移除安装软件 sudo dpkg -P elasticsearch #继续查看未卸载的目录和文件 sudo find / -name elasticsearch #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/elasticsearch \u0026\u0026 sudo rm -rf /var/lib/dpkg/info/elasticsearch.* \u0026\u0026 sudo rm -rf /etc/default/elasticsearch \u0026\u0026 sudo rm -rf /etc/init.d/elasticsearch \u0026\u0026 sudo rm -rf /var/log/elasticsearch \u0026\u0026 sudo rm -rf /usr/share/elasticsearch #在此查看是否有关联的目录和文件 sudo find / -name elasticsearch Logstash 安装 Logstash 下载安装公共签名\nsudo wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - 接下安装 apt-transport-https 包\nsudo apt-get install apt-transport-https 将存储库保存到 /etc/apt/sources.list.d/elastic-8.x.list\necho \"deb https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-8.x.list 然后你就能安装Elasticsearch了\nsudo apt-get update \u0026\u0026 sudo apt-get install logstash 插件地址 https://www.elastic.co/guide/en/logstash-versioned-plugins/current/index.html 配置表字段解释 https://blog.csdn.net/weixin_42073629/article/details/110154037?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-1-110154037.pc_agg_new_rank\u0026utm_term=logstash%E5%8F%82%E6%95%B0convert\u0026spm=1000.2123.3001.4430 查看安装的插件 sudo /usr/share/logstash/bin/logstash-plugin list 启动Lostash 修改 logstash.yml 配置\nsudo vim /etc/logstash/logstash.yml 导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式] ​\t收集流程: movies.csv-\u003elogstash-\u003eelasticdearch-\u003egrafana\n下载ml-latest.zip 数据\nsudo wget https://files.grouplens.org/datasets/movielens/ml-latest.zip 解压 ml-latest.zip\nsudo unzip ml-latest.zip 在/etc/logstash 目录下创建logstash.conf 文件\nsudo vim /etc/logstash/logstash.conf 把以下内容写入logstash.conf\ninput { file { #监听文件的路径 path =\u003e \"/home/hls/downs/ml-latest/movies.csv\" #监听文件的起始位置，默认是end start_position =\u003e \"beginning\" #监听文件读取信息记录的位置 sincedb_path =\u003e \"/home/hls/downs/ml-latest/db_path.log\" } } filter { csv { separator =\u003e \",\" columns =\u003e [\"id\",\"content\",\"genre\",\"@timestamp\"] } mutate { # split =\u003e { \"genre\" =\u003e \"|\" } # remove_field =\u003e [\"path\", \"host\",\"@timestamp\",\"message\"] #删除无用字段 } mutate { split =\u003e [\"content\", \"(\"] #左括号分割 add_field =\u003e { \"title\" =\u003e \"%{[content][0]}\"} #增加字段 add_field =\u003e { \"year\" =\u003e \"%{[content][1]}\"} #增加字段 } mutate { convert =\u003e { #year 转换成整型 \"year\" =\u003e \"integer\" } strip =\u003e [\"title\"] #去掉字段首尾的空格 # remove_field =\u003e [\"path\", \"host\",\"@timestamp\",\"message\",\"content\"] #删除无用字段 } } output { elasticsearch { # 双引号中的内容为ES的地址，视实际情况而定 hosts =\u003e \"http://192.168.70.131:9200\" index =\u003e \"movies\" document_id =\u003e \"%{id}\" #docId 等价于_id 字段 } stdout {} } 如果需要重新导入，先删除db_path.log 文件\nsudo rm -rf /var/lib/logstash/.lock sudo rm -rf /home/hls/downs/ml-latest/db_path.log sudo /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf 报错\n执行命令**sudo /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf** 后如果报错\nWARNING: Could not find logstash.yml which is typically located in $LS_HOME/config or /etc/logstash. You can specify the path using --path.settings. Continuing using the defaults 那么就创建软连接\ncd /usr/share/logstash sudo ln -s /etc/logstash ./config 执行命令**sudo /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf** 后如果报错\nLogstash could not be started because there is already another instance using the configured data directory. If you wish to run multiple instances, you must change the \"path.data\" setting. 那么就去 logstash.yml 中path.data 指定的路径上去删除.lock文件\ncd /var/lib/logstash sudo ls -a sudo rm -rf .lock 或者直接一句话\nsudo rm -rf /var/lib/logstash/.lock 强制查看输出 logstash.conf 修改成你自己的文件 sudo /usr/share/logstash/bin/logstash /etc/logstash/logstash.conf --verbose --debug 查看数据 用Kibana的命令行工具执行 GET _cat/indices 命令，就能看见导入到Elasticsearch的索引\n用kibana的命令行工具执行**GET /lua_cpu_monitor-2022.06.03/_search**命令,就能看见导入到Elasticsearch的数据\n自动重新加载配置命令 logstash.conf 修改成你自己的文件\nsudo /usr/share/logstash/bin/logstash /etc/logstash/logstash.conf --config.reload.automatic 默认检测时间是**3**秒 可以通过下列命令修改 把\u003c\u003e号里面的2换成你想要的时间\nsudo /usr/share/logstash/bin/logstash /etc/logstash/logstash.conf --config.reload.interval \u003c2\u003e 卸载Logstash # 查看安装的软件 sudo dpkg -l | grep logstash #查看安装关联 sudo dpkg -L logstash #移除安装软件 sudo dpkg -P logstash #继续查看未卸载的目录和文件 sudo find / -name logstash #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/logstash \u0026\u0026 sudo rm -rf /var/lib/dpkg/info/logstash.* \u0026\u0026 sudo rm -rf /etc/default/logstash \u0026\u0026 sudo rm -rf /etc/init.d/logstash \u0026\u0026 sudo rm -rf /etc/logstash \u0026\u0026 sudo rm -rf /var/log/logstash \u0026\u0026 sudo rm -rf /usr/share/logstash #在此查看是否有关联的目录和文件 sudo find / -name logstash Kibana 安装Kibana 下载安装公共签名\nwget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add - 接下安装 apt-transport-https 包\nsudo apt-get install apt-transport-https 将存储库保存到 /etc/apt/sources.list.d/elastic-8.x.list\necho \"deb https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-8.x.list 然后你就能安装Kibana了\nsudo apt-get update \u0026\u0026 sudo apt-get install kibana 启动Kibana 打开kibana.yml 文档\nsudo vim /etc/kibana/kibana.yml 修改 server.port,server.host 字段\n启动\nsudo systemctl start kibana.service 自启动\nsudo systemctl enable kibana.service 查看 kibana日志\nsudo vim /var/log/kibana 用谷歌或者微软自带浏览器打开地址\nhttp://10.40.38.66:5601 卸载Kibana # 查看安装的软件 sudo dpkg -l | grep kibana #查看安装关联 sudo dpkg -L kibana #移除安装软件 sudo dpkg -P kibana #继续查看未卸载的目录和文件 sudo find / -name kibana #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/kibana \u0026\u0026 sudo rm -rf /var/lib/dpkg/info/kibana.* \u0026\u0026 sudo rm -rf /etc/kibana #在此查看是否有关联的目录和文件 sudo find / -name kibana Filebeat 搭配filebeat主要使用收集nginx数据, 和上面的利用logstash解析movies.csv，然后收集数据给elasticsearch的方式不一样\n收集流程: nginx-\u003efilebeat-\u003elogstash-\u003eelasticdearch-\u003egrafana\n安装Filebeat sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.2.2-amd64.deb sudo dpkg -i filebeat-8.2.2-amd64.deb 修改 filebat.yml 配置文件 sudo vim /etc/filebeat/filebeat.yml 修改下列几项\n# ============================== Filebeat inputs =============================== filebeat.inputs: - type: filestream id: my-filestream-id enabled: true paths: - /home/hls/work/blueprint-server-runtime/log/lua_cpu_monitor.log tags: [\"lua_cpu_monitor_log\"] - type: filestream id: my-filestream-id enabled: true paths: - /home/hls/work/blueprint-server-runtime/log/lua_mem_monitor.log tags: [\"lua_mem_monitor_log\"] # ============================== Filebeat modules ============================== filebeat.config.modules: path: ${path.config}/modules.d/*.yml reload.enabled: false setup.template.settings: index.number_of_shards: 1 # ------------------------------ Logstash Output ------------------------------- output.logstash: # The Logstash hosts hosts: [\"10.40.38.66:5555\"] # ================================= Processors ================================= processors: - add_host_metadata: when.not.contains.tags: forwarded - add_cloud_metadata: ~ - add_docker_metadata: ~ - add_kubernetes_metadata: ~ 测试filebeat启动后，查看相关输出信息 sudo filebeat -e -c /etc/filebeat/filebeat.yml -d \"publish\" 后台方式启动filebeat nohup filebeat -e -c /etc/filebeat/filebeat.yml \u003e/dev/null 2\u003e\u00261 \u0026 #将所有标准输出及标准错误输出到/dev/null空设备，即没有任何输出 nohup filebeat -e -c /etc/filebeat/filebeat.yml \u003e filebeat.log \u0026 停止filebeat ps -ef | grep filebeat kill -9 进程号 启动出现的问题 执行命令systemctl start filebeat.service就能够启动了。而后执行ps -ef|grep filebeat查看一下\n能够看到已经启动胜利了，如果你发现没有启动成功，那么就执行 cd /usr/bin，在这个目录下执行./filebeat -c /etc/filebeat/filebeat.yml -e，这样会提醒具体的错误信息。而用systemctl start filebeat.service启动的时候没有任何提醒，连在 /var/log/filebeat/ 和 /var/lib/filebeat/registry/filebeat/ 都没找到错误信息，这里属实有点坑。\n重新启动命令systemctl restart filebeat.service\n去安装logstash的机器启动logstash 增加 logstash_filebeat.conf 文档\nsudo vim /etc/logstash/conf.d/logstash_filebeat.conf 把以下内容粘贴上保存\ninput { beats { port =\u003e 5555 #这个地址不能和logstash.yml 里面的api.http.host: 9600 一样，要不会出现地址已经被绑定的错误 } } output { if \"lua_cpu_monitor_log\" in [tags] { elasticsearch { hosts =\u003e [\"10.40.38.66:9200\"] index =\u003e \"lua_cpu_monitor-%{+YYYY.MM.dd}\" } } if \"lua_men_monitor_log\" in [tags] { elasticsearch { hosts =\u003e [\"10.40.38.66:9200\"] index =\u003e \"lua_men_monitor-%{+YYYY.MM.dd}\" } } } 重新加载新的配置并启动logstash\n先启动logstash，然后在启动filebeat，不然的话filebeat会找不到beats插件的:5555端口\nsudo rm -rf /var/lib/logstash/.lock sudo /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/logstash_filebeat.conf --verbose --debug 用filebeat 监控 nginx 修改 nginx conf 配置表\nsudo vim /usr/local/nginx/conf/nginx.conf 加入如下日志格式\nlog_format main '{\"@timestamp\":\"$time_iso8601\",' '\"@source\":\"$server_addr\",' '\"hostname\":\"$hostname\",' '\"ip\":\"$remote_addr\",' '\"client\":\"$remote_addr\",' '\"request_method\":\"$request_method\",' '\"scheme\":\"$scheme\",' '\"domain\":\"$server_name\",' '\"referer\":\"$http_referer\",' '\"request\":\"$request_uri\",' '\"args\":\"$args\",' '\"size\":$body_bytes_sent,' '\"status\": $status,' '\"responsetime\":$request_time,' '\"upstreamtime\":\"$upstream_response_time\",' '\"upstreamaddr\":\"$upstream_addr\",' '\"http_user_agent\":\"$http_user_agent\",' '\"https\":\"$https\"' '}'; 对比修改下图对应的3个红框地方\n重启 nginx\nsudo pkill -9 nginx \u0026\u0026 sudo nginx 用 http:192.168.70.132:7000 登录nginx 网站生成登录日志，然后打开 access.log 日志\nsudo vim /usr/local/nginx/logs/access.log sudo tail -f /usr/local/nginx/logs/access.log 卸载Filebeat # 查看安装的软件 sudo dpkg -l | grep filebeat #查看安装关联 sudo dpkg -L filebeat #移除安装软件 sudo dpkg -P filebeat #继续查看未卸载的目录和文件 sudo find / -name filebeat #移除目录和文件具体参考自己的环境 sudo rm -rf /var/lib/filebeat \u0026\u0026 sudo rm -rf /var/log/filebeat/filebeat \u0026\u0026 sudo rm -rf /var/log/filebeat \u0026\u0026 sudo rm -rf /usr/share/filebeat #在此查看是否有关联的目录和文件 sudo find / -name filebeat ",
+  "wordCount" : "6909",
   "inLanguage": "en",
   "datePublished": "2022-09-13T01:30:29+08:00",
   "dateModified": "2022-09-13T01:30:29+08:00",
@@ -226,9 +226,9 @@ var _hmt = _hmt || [];
         <header class="post-header">
             <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/blog/">🧱 搬砖</a></div>
             <h1 class="post-title">
-                zabbix游戏监控日志系统部署
+                zabbix游戏日志监控
             </h1>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;7009字&nbsp;|&nbsp;时长:&nbsp;14分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;6909字&nbsp;|&nbsp;时长:&nbsp;14分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -253,217 +253,217 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-zabbix-60" aria-label="1. zabbix 6.0">1. zabbix 6.0</a><ul>
+                    <a href="#zabbix-60" aria-label="zabbix 6.0">zabbix 6.0</a><ul>
                         
                 <li>
-                    <a href="#11-%e9%98%bf%e9%87%8c%e4%ba%91%e9%95%9c%e5%83%8f%e5%9c%b0%e5%9d%80" aria-label="1.1. 阿里云镜像地址">1.1. 阿里云镜像地址</a></li>
+                    <a href="#%e9%98%bf%e9%87%8c%e4%ba%91%e9%95%9c%e5%83%8f%e5%9c%b0%e5%9d%80" aria-label="阿里云镜像地址">阿里云镜像地址</a></li>
                 <li>
-                    <a href="#12-%e4%b8%8b%e8%bd%bd-zabbix" aria-label="1.2. 下载 zabbix">1.2. 下载 zabbix</a></li>
+                    <a href="#%e4%b8%8b%e8%bd%bd-zabbix" aria-label="下载 zabbix">下载 zabbix</a></li>
                 <li>
-                    <a href="#13-%e5%ae%89%e8%a3%85zabbix-serverweb%e5%89%8d%e7%ab%afagent" aria-label="1.3. 安装Zabbix server，Web前端，agent">1.3. 安装Zabbix server，Web前端，agent</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85zabbix-serverweb%e5%89%8d%e7%ab%afagent" aria-label="安装Zabbix server，Web前端，agent">安装Zabbix server，Web前端，agent</a></li>
                 <li>
-                    <a href="#14-%e5%88%9b%e5%bb%ba%e5%88%9d%e5%a7%8b%e6%95%b0%e6%8d%ae%e5%ba%93" aria-label="1.4. 创建初始数据库">1.4. 创建初始数据库</a></li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e5%88%9d%e5%a7%8b%e6%95%b0%e6%8d%ae%e5%ba%93" aria-label="创建初始数据库">创建初始数据库</a></li>
                 <li>
-                    <a href="#15-%e5%af%bc%e5%85%a5%e5%88%9d%e5%a7%8b%e6%9e%b6%e6%9e%84%e5%92%8c%e6%95%b0%e6%8d%ae%e7%b3%bb%e7%bb%9f%e5%b0%86%e6%8f%90%e7%a4%ba%e6%82%a8%e8%be%93%e5%85%a5%e6%96%b0%e5%88%9b%e5%bb%ba%e7%9a%84%e5%af%86%e7%a0%81%e9%bb%98%e8%ae%a4%e5%af%86%e7%a0%81%e7%8e%b0%e5%9c%a8%e8%ae%be%e7%bd%ae%e4%b8%ba-123456" aria-label="1.5. 导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 123456">1.5. 导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 <code>123456</code></a></li>
+                    <a href="#%e5%af%bc%e5%85%a5%e5%88%9d%e5%a7%8b%e6%9e%b6%e6%9e%84%e5%92%8c%e6%95%b0%e6%8d%ae%e7%b3%bb%e7%bb%9f%e5%b0%86%e6%8f%90%e7%a4%ba%e6%82%a8%e8%be%93%e5%85%a5%e6%96%b0%e5%88%9b%e5%bb%ba%e7%9a%84%e5%af%86%e7%a0%81%e9%bb%98%e8%ae%a4%e5%af%86%e7%a0%81%e7%8e%b0%e5%9c%a8%e8%ae%be%e7%bd%ae%e4%b8%ba-123456" aria-label="导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 123456">导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 <code>123456</code></a></li>
                 <li>
-                    <a href="#16-%e4%b8%bazabbix-server%e9%85%8d%e7%bd%ae%e6%95%b0%e6%8d%ae%e5%ba%93" aria-label="1.6. 为Zabbix server配置数据库">1.6. 为Zabbix server配置数据库</a></li>
+                    <a href="#%e4%b8%bazabbix-server%e9%85%8d%e7%bd%ae%e6%95%b0%e6%8d%ae%e5%ba%93" aria-label="为Zabbix server配置数据库">为Zabbix server配置数据库</a></li>
                 <li>
-                    <a href="#17-%e5%90%af%e5%8a%a8zabbix-server%e5%92%8cagent%e8%bf%9b%e7%a8%8b" aria-label="1.7. 启动Zabbix server和agent进程">1.7. 启动Zabbix server和agent进程</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8zabbix-server%e5%92%8cagent%e8%bf%9b%e7%a8%8b" aria-label="启动Zabbix server和agent进程">启动Zabbix server和agent进程</a></li>
                 <li>
-                    <a href="#18-%e8%bf%9e%e6%8e%a5web%e5%89%8d%e7%ab%af10403867-%e6%8d%a2%e6%88%90%e4%bd%a0%e7%9a%84ip%e5%9c%b0%e5%9d%80-%e7%94%a8%e8%b0%b7%e6%ad%8c%e6%b5%8f%e8%a7%88%e5%99%a8%e6%88%96%e8%80%85microsoft-edge%e6%b5%8f%e8%a7%88%e5%99%a8%e6%89%93%e5%bc%80" aria-label="1.8. 连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]">1.8. 连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]</a></li>
+                    <a href="#%e8%bf%9e%e6%8e%a5web%e5%89%8d%e7%ab%af10403867-%e6%8d%a2%e6%88%90%e4%bd%a0%e7%9a%84ip%e5%9c%b0%e5%9d%80-%e7%94%a8%e8%b0%b7%e6%ad%8c%e6%b5%8f%e8%a7%88%e5%99%a8%e6%88%96%e8%80%85microsoft-edge%e6%b5%8f%e8%a7%88%e5%99%a8%e6%89%93%e5%bc%80" aria-label="连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]">连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]</a></li>
                 <li>
-                    <a href="#19-%e4%bf%ae%e6%94%b9%e6%97%b6%e5%8c%ba" aria-label="1.9. 修改时区">1.9. 修改时区</a></li>
+                    <a href="#%e4%bf%ae%e6%94%b9%e6%97%b6%e5%8c%ba" aria-label="修改时区">修改时区</a></li>
                 <li>
-                    <a href="#110-%e4%b8%ad%e6%96%87%e6%98%be%e7%a4%ba" aria-label="1.10. 中文显示">1.10. 中文显示</a></li>
+                    <a href="#%e4%b8%ad%e6%96%87%e6%98%be%e7%a4%ba" aria-label="中文显示">中文显示</a></li>
                 <li>
-                    <a href="#111-%e5%ae%89%e8%a3%85%e5%87%ba%e7%8e%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="1.11. 安装出现的问题">1.11. 安装出现的问题</a><ul>
+                    <a href="#%e5%ae%89%e8%a3%85%e5%87%ba%e7%8e%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="安装出现的问题">安装出现的问题</a><ul>
                         
                 <li>
-                    <a href="#1111-minimum-required-size-of-php-post-is-16m-configuration-option-post_max_size" aria-label="1.11.1. Minimum required size of PHP post is 16M (configuration option &amp;ldquo;post_max_size&amp;rdquo;).">1.11.1. Minimum required size of PHP post is 16M (configuration option &ldquo;post_max_size&rdquo;).</a></li>
+                    <a href="#minimum-required-size-of-php-post-is-16m-configuration-option-post_max_size" aria-label="Minimum required size of PHP post is 16M (configuration option &amp;ldquo;post_max_size&amp;rdquo;).">Minimum required size of PHP post is 16M (configuration option &ldquo;post_max_size&rdquo;).</a></li>
                 <li>
-                    <a href="#1112-error-1396-hy000-operation-create-user-failed-for-zabbix" aria-label="1.11.2. ERROR 1396 (HY000): Operation CREATE USER failed for &#39;zabbix&#39;@&#39;%&#39;">1.11.2. ERROR 1396 (HY000): Operation CREATE USER failed for <code>'zabbix'@'%'</code></a></li></ul>
+                    <a href="#error-1396-hy000-operation-create-user-failed-for-zabbix" aria-label="ERROR 1396 (HY000): Operation CREATE USER failed for &#39;zabbix&#39;@&#39;%&#39;">ERROR 1396 (HY000): Operation CREATE USER failed for <code>'zabbix'@'%'</code></a></li></ul>
                 </li>
                 <li>
-                    <a href="#112-%e5%8d%b8%e8%bd%bd-zabbix" aria-label="1.12. 卸载 zabbix">1.12. 卸载 <code>zabbix</code></a></li></ul>
+                    <a href="#%e5%8d%b8%e8%bd%bd-zabbix" aria-label="卸载 zabbix">卸载 <code>zabbix</code></a></li></ul>
                 </li>
                 <li>
-                    <a href="#2--grafana" aria-label="2 . grafana">2 . grafana</a><ul>
+                    <a href="#grafana" aria-label="grafana">grafana</a><ul>
                         
                 <li>
-                    <a href="#21-%e4%b8%8b%e8%bd%bdgrafana-deb%e5%ae%89%e8%a3%85%e5%8c%85" aria-label="2.1. 下载grafana deb安装包">2.1. 下载grafana deb安装包</a></li>
+                    <a href="#%e4%b8%8b%e8%bd%bdgrafana-deb%e5%ae%89%e8%a3%85%e5%8c%85" aria-label="下载grafana deb安装包">下载grafana deb安装包</a></li>
                 <li>
-                    <a href="#22-%e5%90%af%e5%8a%a8grafana-server" aria-label="2.2. 启动grafana-server">2.2. 启动grafana-server</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8grafana-server" aria-label="启动grafana-server">启动grafana-server</a></li>
                 <li>
-                    <a href="#23%e5%ae%89%e8%a3%85zabbix%e6%8f%92%e4%bb%b6" aria-label="2.3安装zabbix插件">2.3安装zabbix插件</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85zabbix%e6%8f%92%e4%bb%b6" aria-label="安装zabbix插件">安装zabbix插件</a></li>
                 <li>
-                    <a href="#24-%e7%99%bb%e5%bd%95grafana%e6%9c%8d%e5%8a%a1%e5%99%a810403867-%e6%8d%a2%e6%88%90%e4%bd%a0%e7%9a%84ip%e5%9c%b0%e5%9d%80-%e7%94%a8%e8%b0%b7%e6%ad%8c%e6%b5%8f%e8%a7%88%e5%99%a8%e6%88%96%e8%80%85microsoft-edge%e6%b5%8f%e8%a7%88%e5%99%a8%e6%89%93%e5%bc%80" aria-label="2.4. 登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]">2.4. 登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]</a></li>
+                    <a href="#%e7%99%bb%e5%bd%95grafana%e6%9c%8d%e5%8a%a1%e5%99%a810403867-%e6%8d%a2%e6%88%90%e4%bd%a0%e7%9a%84ip%e5%9c%b0%e5%9d%80-%e7%94%a8%e8%b0%b7%e6%ad%8c%e6%b5%8f%e8%a7%88%e5%99%a8%e6%88%96%e8%80%85microsoft-edge%e6%b5%8f%e8%a7%88%e5%99%a8%e6%89%93%e5%bc%80" aria-label="登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]">登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]</a></li>
                 <li>
-                    <a href="#25-grafana-%e9%85%8d%e7%bd%aezabbix%e6%95%b0%e6%8d%ae%e6%ba%90" aria-label="2.5. grafana 配置zabbix数据源">2.5. grafana 配置zabbix数据源</a></li>
+                    <a href="#grafana-%e9%85%8d%e7%bd%aezabbix%e6%95%b0%e6%8d%ae%e6%ba%90" aria-label="grafana 配置zabbix数据源">grafana 配置zabbix数据源</a></li>
                 <li>
-                    <a href="#26-grafana-%e9%85%8d%e7%bd%aezabbix%e7%9b%91%e6%8e%a7%e9%9d%a2%e6%9d%bf" aria-label="2.6. grafana 配置zabbix监控面板">2.6. grafana 配置zabbix监控面板</a></li>
+                    <a href="#grafana-%e9%85%8d%e7%bd%aezabbix%e7%9b%91%e6%8e%a7%e9%9d%a2%e6%9d%bf" aria-label="grafana 配置zabbix监控面板">grafana 配置zabbix监控面板</a></li>
                 <li>
-                    <a href="#27-grafana%e5%a2%9e%e5%8a%a0%e4%b8%bb%e9%a2%98" aria-label="2.7. grafana增加主题">2.7. <code>grafana</code>增加主题</a></li>
+                    <a href="#grafana%e5%a2%9e%e5%8a%a0%e4%b8%bb%e9%a2%98" aria-label="grafana增加主题"><code>grafana</code>增加主题</a></li>
                 <li>
-                    <a href="#28-grafana-%e4%b8%bb%e9%a2%98%e4%bf%ae%e6%94%b9%e5%9c%b0%e5%9d%80" aria-label="2.8. grafana 主题修改地址">2.8. grafana 主题修改地址</a></li>
+                    <a href="#grafana-%e4%b8%bb%e9%a2%98%e4%bf%ae%e6%94%b9%e5%9c%b0%e5%9d%80" aria-label="grafana 主题修改地址">grafana 主题修改地址</a></li>
                 <li>
-                    <a href="#29-grafana-%e5%8a%a0%e6%97%b6%e9%92%9f" aria-label="2.9. grafana 加时钟">2.9. grafana 加时钟</a></li>
+                    <a href="#grafana-%e5%8a%a0%e6%97%b6%e9%92%9f" aria-label="grafana 加时钟">grafana 加时钟</a></li>
                 <li>
-                    <a href="#210-grafana-flowcharting%e5%ae%89%e8%a3%85" aria-label="2.10. grafana flowcharting安装">2.10. grafana flowcharting安装</a></li>
+                    <a href="#grafana-flowcharting%e5%ae%89%e8%a3%85" aria-label="grafana flowcharting安装">grafana flowcharting安装</a></li>
                 <li>
-                    <a href="#211-grafana-%e4%bf%ae%e6%94%b9%e6%a8%a1%e6%9d%bf%e5%9c%b0%e5%9d%80" aria-label="2.11 grafana 修改模板地址">2.11 grafana 修改模板地址</a></li>
+                    <a href="#grafana-%e4%bf%ae%e6%94%b9%e6%a8%a1%e6%9d%bf%e5%9c%b0%e5%9d%80" aria-label="grafana 修改模板地址">grafana 修改模板地址</a></li>
                 <li>
-                    <a href="#212-grafana-%e5%8c%bf%e5%90%8d%e8%ae%bf%e9%97%ae%e5%85%8d%e7%99%bb%e5%bd%95" aria-label="2.12. Grafana 匿名访问（免登录）">2.12. <code>Grafana</code> 匿名访问（免登录）</a></li>
+                    <a href="#grafana-%e5%8c%bf%e5%90%8d%e8%ae%bf%e9%97%ae%e5%85%8d%e7%99%bb%e5%bd%95" aria-label="Grafana 匿名访问（免登录）"><code>Grafana</code> 匿名访问（免登录）</a></li>
                 <li>
-                    <a href="#213-%e5%8d%b8%e8%bd%bd-grafana" aria-label="2.13. 卸载 grafana">2.13. 卸载 <code>grafana</code></a></li></ul>
+                    <a href="#%e5%8d%b8%e8%bd%bd-grafana" aria-label="卸载 grafana">卸载 <code>grafana</code></a></li></ul>
                 </li>
                 <li>
-                    <a href="#3-apache2" aria-label="3. apache2">3. apache2</a><ul>
+                    <a href="#apache2" aria-label="apache2">apache2</a><ul>
                         
                 <li>
-                    <a href="#31-apache2%e5%90%af%e5%8a%a8%e6%8a%a5%e9%94%99" aria-label="3.1. apache2启动报错">3.1. apache2启动报错</a></li>
+                    <a href="#apache2%e5%90%af%e5%8a%a8%e6%8a%a5%e9%94%99" aria-label="apache2启动报错">apache2启动报错</a></li>
                 <li>
-                    <a href="#32-%e5%8d%b8%e8%bd%bdapache2" aria-label="3.2. 卸载apache2">3.2. 卸载apache2</a></li></ul>
+                    <a href="#%e5%8d%b8%e8%bd%bdapache2" aria-label="卸载apache2">卸载apache2</a></li></ul>
                 </li>
                 <li>
-                    <a href="#4-nginx" aria-label="4. Nginx">4. Nginx</a><ul>
+                    <a href="#nginx" aria-label="Nginx">Nginx</a><ul>
                         
                 <li>
-                    <a href="#41-%e5%ae%98%e7%bd%91%e4%b8%8b%e8%bd%bd%e5%9c%b0%e5%9d%80" aria-label="4.1. 官网下载地址">4.1. 官网下载地址</a></li>
+                    <a href="#%e5%ae%98%e7%bd%91%e4%b8%8b%e8%bd%bd%e5%9c%b0%e5%9d%80" aria-label="官网下载地址">官网下载地址</a></li>
                 <li>
-                    <a href="#42-%e4%b8%80%e4%ba%9b%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" aria-label="4.2. 一些环境准备">4.2. 一些环境准备</a></li>
+                    <a href="#%e4%b8%80%e4%ba%9b%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87" aria-label="一些环境准备">一些环境准备</a></li>
                 <li>
-                    <a href="#43-%e4%b8%8b%e8%bd%bd%e5%ae%89%e8%a3%85nginx" aria-label="4.3. 下载安装Nginx">4.3. 下载安装Nginx</a></li>
+                    <a href="#%e4%b8%8b%e8%bd%bd%e5%ae%89%e8%a3%85nginx" aria-label="下载安装Nginx">下载安装Nginx</a></li>
                 <li>
-                    <a href="#44-%e5%88%b6%e4%bd%9c%e8%bd%af%e8%bf%9e%e6%8e%a5" aria-label="4.4. 制作软连接">4.4. 制作软连接</a></li>
+                    <a href="#%e5%88%b6%e4%bd%9c%e8%bd%af%e8%bf%9e%e6%8e%a5" aria-label="制作软连接">制作软连接</a></li>
                 <li>
-                    <a href="#45-%e9%85%8d%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f-%e7%bc%96%e8%be%91etcprofile%e5%b9%b6%e4%b8%94%e8%bf%bd%e5%8a%a0nginx%e7%9a%84%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" aria-label="4.5. 配置环境变量 编辑/etc/profile并且追加Nginx的环境变量">4.5. 配置环境变量 编辑<code>/etc/profile</code>并且追加Nginx的环境变量</a><ul>
+                    <a href="#%e9%85%8d%e7%bd%ae%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f-%e7%bc%96%e8%be%91etcprofile%e5%b9%b6%e4%b8%94%e8%bf%bd%e5%8a%a0nginx%e7%9a%84%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" aria-label="配置环境变量 编辑/etc/profile并且追加Nginx的环境变量">配置环境变量 编辑<code>/etc/profile</code>并且追加Nginx的环境变量</a><ul>
                         
                 <li>
-                    <a href="#451-%e7%94%9f%e6%95%88%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" aria-label="4.5.1. 生效环境变量">4.5.1. 生效环境变量</a></li></ul>
+                    <a href="#%e7%94%9f%e6%95%88%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f" aria-label="生效环境变量">生效环境变量</a></li></ul>
                 </li>
                 <li>
-                    <a href="#46-%e6%b5%8b%e8%af%95%e6%98%af%e5%90%a6%e5%ae%89%e8%a3%85%e6%88%90%e5%8a%9f" aria-label="4.6. 测试是否安装成功">4.6. 测试是否安装成功</a></li>
+                    <a href="#%e6%b5%8b%e8%af%95%e6%98%af%e5%90%a6%e5%ae%89%e8%a3%85%e6%88%90%e5%8a%9f" aria-label="测试是否安装成功">测试是否安装成功</a></li>
                 <li>
-                    <a href="#47-%e5%90%af%e5%8a%a8nginx" aria-label="4.7. 启动Nginx">4.7. 启动Nginx</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8nginx" aria-label="启动Nginx">启动Nginx</a></li>
                 <li>
-                    <a href="#48-%e5%bc%ba%e5%88%b6%e5%81%9c%e6%ad%a2nginx" aria-label="4.8. 强制停止Nginx">4.8. 强制停止Nginx</a></li>
+                    <a href="#%e5%bc%ba%e5%88%b6%e5%81%9c%e6%ad%a2nginx" aria-label="强制停止Nginx">强制停止Nginx</a></li>
                 <li>
-                    <a href="#49-%e6%9f%a5%e7%9c%8bnginx%e8%bf%9b%e7%a8%8b" aria-label="4.9. 查看Nginx进程">4.9. 查看Nginx进程</a></li>
+                    <a href="#%e6%9f%a5%e7%9c%8bnginx%e8%bf%9b%e7%a8%8b" aria-label="查看Nginx进程">查看Nginx进程</a></li>
                 <li>
-                    <a href="#410-%e9%85%8d%e7%bd%ae%e9%98%b2%e7%81%ab%e5%a2%99" aria-label="4.10. 配置防火墙">4.10. 配置防火墙</a></li>
+                    <a href="#%e9%85%8d%e7%bd%ae%e9%98%b2%e7%81%ab%e5%a2%99" aria-label="配置防火墙">配置防火墙</a></li>
                 <li>
-                    <a href="#411-%e9%aa%8c%e8%af%81%e9%98%b2%e7%81%ab%e5%a2%99%e6%98%af%e5%90%a6%e5%85%81%e8%ae%b8-%e5%87%ba%e7%8e%b0%e4%b8%8b%e9%9d%a2%e4%b8%a4%e7%a7%8d%e6%83%85%e5%86%b5%e9%83%bd%e8%ae%a4%e4%b8%ba%e5%8f%af%e4%bb%a5" aria-label="4.11. 验证防火墙是否允许 出现下面两种情况都认为可以">4.11. 验证防火墙是否允许 出现下面两种情况都认为可以</a></li>
+                    <a href="#%e9%aa%8c%e8%af%81%e9%98%b2%e7%81%ab%e5%a2%99%e6%98%af%e5%90%a6%e5%85%81%e8%ae%b8-%e5%87%ba%e7%8e%b0%e4%b8%8b%e9%9d%a2%e4%b8%a4%e7%a7%8d%e6%83%85%e5%86%b5%e9%83%bd%e8%ae%a4%e4%b8%ba%e5%8f%af%e4%bb%a5" aria-label="验证防火墙是否允许 出现下面两种情况都认为可以">验证防火墙是否允许 出现下面两种情况都认为可以</a></li>
                 <li>
-                    <a href="#412-%e6%b5%8b%e8%af%95%e8%ae%bf%e9%97%ae" aria-label="4.12. 测试访问">4.12. 测试访问</a></li>
+                    <a href="#%e6%b5%8b%e8%af%95%e8%ae%bf%e9%97%ae" aria-label="测试访问">测试访问</a></li>
                 <li>
-                    <a href="#413-nginx-%e7%9b%b8%e5%85%b3%e6%96%87%e4%bb%b6%e4%bd%8d%e7%bd%ae" aria-label="4.13. Nginx 相关文件位置">4.13. Nginx 相关文件位置</a></li>
+                    <a href="#nginx-%e7%9b%b8%e5%85%b3%e6%96%87%e4%bb%b6%e4%bd%8d%e7%bd%ae" aria-label="Nginx 相关文件位置">Nginx 相关文件位置</a></li>
                 <li>
-                    <a href="#414-%e5%8d%b8%e8%bd%bd-nginx" aria-label="4.14 卸载 Nginx">4.14 卸载 Nginx</a></li></ul>
+                    <a href="#%e5%8d%b8%e8%bd%bd-nginx" aria-label="卸载 Nginx">卸载 Nginx</a></li></ul>
                 </li>
                 <li>
-                    <a href="#5-mysql" aria-label="5. mysql">5. mysql</a><ul>
+                    <a href="#mysql" aria-label="mysql">mysql</a><ul>
                         
                 <li>
-                    <a href="#51-%e5%ae%89%e8%a3%85mysql" aria-label="5.1. 安装mysql">5.1. 安装mysql</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85mysql" aria-label="安装mysql">安装mysql</a></li>
                 <li>
-                    <a href="#52-%e5%bd%bb%e5%ba%95%e5%8d%b8%e8%bd%bdmysql%e6%96%b9%e6%b3%95" aria-label="5.2. 彻底卸载mysql方法">5.2. 彻底卸载mysql方法</a></li>
+                    <a href="#%e5%bd%bb%e5%ba%95%e5%8d%b8%e8%bd%bdmysql%e6%96%b9%e6%b3%95" aria-label="彻底卸载mysql方法">彻底卸载mysql方法</a></li>
                 <li>
-                    <a href="#53-mysql%e5%9c%a8ubuntu%e4%b8%8a%e5%90%af%e5%8a%a8%e5%87%ba%e9%94%99could-not-open-abstractionsmysql" aria-label="5.3. MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘">5.3. MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘</a></li>
+                    <a href="#mysql%e5%9c%a8ubuntu%e4%b8%8a%e5%90%af%e5%8a%a8%e5%87%ba%e9%94%99could-not-open-abstractionsmysql" aria-label="MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘">MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘</a></li>
                 <li>
-                    <a href="#52-%e8%bf%9e%e6%8e%a5mysql%e6%8a%a5%e9%94%99cant-connect-to-local-mysql-server-through-socket-varrunmysqldmysqldsock" aria-label="5.2. 连接MySql报错“can&amp;rsquo;t connect to local mysql server through socket &amp;lsquo;/var/run/mysqld/mysqld.sock&amp;rsquo;">5.2. 连接MySql报错“can&rsquo;t connect to local mysql server through socket &lsquo;/var/run/mysqld/mysqld.sock&rsquo;</a></li>
+                    <a href="#%e8%bf%9e%e6%8e%a5mysql%e6%8a%a5%e9%94%99cant-connect-to-local-mysql-server-through-socket-varrunmysqldmysqldsock" aria-label="连接MySql报错“can&amp;rsquo;t connect to local mysql server through socket &amp;lsquo;/var/run/mysqld/mysqld.sock&amp;rsquo;">连接MySql报错“can&rsquo;t connect to local mysql server through socket &lsquo;/var/run/mysqld/mysqld.sock&rsquo;</a></li>
                 <li>
-                    <a href="#55-mysql-ubuntu-2004---access-denied-for-user-rootlocalhost" aria-label="5.5. mysql Ubuntu 20.04   Access denied for user &amp;lsquo;root&amp;rsquo;@&amp;rsquo;localhost">5.5. mysql Ubuntu 20.04   Access denied for user &lsquo;root&rsquo;@&rsquo;localhost</a></li></ul>
+                    <a href="#mysql-ubuntu-2004---access-denied-for-user-rootlocalhost" aria-label="mysql Ubuntu 20.04   Access denied for user &amp;lsquo;root&amp;rsquo;@&amp;rsquo;localhost">mysql Ubuntu 20.04   Access denied for user &lsquo;root&rsquo;@&rsquo;localhost</a></li></ul>
                 </li>
                 <li>
-                    <a href="#6-elk" aria-label="6. ELK">6. ELK</a><ul>
+                    <a href="#elk" aria-label="ELK">ELK</a><ul>
                         
                 <li>
-                    <a href="#61-%e4%b8%80%e4%ba%9b%e5%87%86%e5%a4%87" aria-label="6.1. 一些准备">6.1. 一些准备</a><ul>
+                    <a href="#%e4%b8%80%e4%ba%9b%e5%87%86%e5%a4%87" aria-label="一些准备">一些准备</a><ul>
                         
                 <li>
-                    <a href="#611-%e5%ae%98%e7%bd%91%e5%9c%b0%e5%9d%80" aria-label="6.1.1. 官网地址">6.1.1. 官网地址</a></li>
+                    <a href="#%e5%ae%98%e7%bd%91%e5%9c%b0%e5%9d%80" aria-label="官网地址">官网地址</a></li>
                 <li>
-                    <a href="#612-%e8%99%9a%e6%8b%9f%e6%9c%ba" aria-label="6.1.2. 虚拟机">6.1.2. 虚拟机</a></li>
+                    <a href="#%e8%99%9a%e6%8b%9f%e6%9c%ba" aria-label="虚拟机">虚拟机</a></li>
                 <li>
-                    <a href="#613-%e5%ae%89%e8%a3%85java%e7%8e%af%e5%a2%83" aria-label="6.1.3. 安装java环境">6.1.3. 安装java环境</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85java%e7%8e%af%e5%a2%83" aria-label="安装java环境">安装java环境</a></li>
                 <li>
-                    <a href="#614-python3" aria-label="6.1.4. python3">6.1.4. python3</a></li></ul>
+                    <a href="#python3" aria-label="python3">python3</a></li></ul>
                 </li>
                 <li>
-                    <a href="#62-elasticsearch" aria-label="6.2. Elasticsearch">6.2. Elasticsearch</a><ul>
+                    <a href="#elasticsearch" aria-label="Elasticsearch">Elasticsearch</a><ul>
                         
                 <li>
-                    <a href="#621-%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86" aria-label="6.2.1. 基础知识">6.2.1. 基础知识</a><ul>
+                    <a href="#%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86" aria-label="基础知识">基础知识</a><ul>
                         
                 <li>
-                    <a href="#6211-%e5%92%8c%e5%85%b3%e7%b3%bb%e5%9e%8b%e6%95%b0%e6%8d%ae%e5%ba%93%e7%9a%84%e6%af%94%e8%be%83" aria-label="6.2.1.1. 和关系型数据库的比较">6.2.1.1. 和关系型数据库的比较</a></li></ul>
+                    <a href="#%e5%92%8c%e5%85%b3%e7%b3%bb%e5%9e%8b%e6%95%b0%e6%8d%ae%e5%ba%93%e7%9a%84%e6%af%94%e8%be%83" aria-label="和关系型数据库的比较">和关系型数据库的比较</a></li></ul>
                 </li>
                 <li>
-                    <a href="#622-%e5%ae%89%e8%a3%85elasticsearch" aria-label="6.2.2 安装Elasticsearch">6.2.2 安装Elasticsearch</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85elasticsearch" aria-label="安装Elasticsearch">安装Elasticsearch</a></li>
                 <li>
-                    <a href="#623-%e5%90%af%e5%8a%a8-elasticsearch" aria-label="6.2.3. 启动 Elasticsearch">6.2.3. 启动 Elasticsearch</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8-elasticsearch" aria-label="启动 Elasticsearch">启动 Elasticsearch</a></li>
                 <li>
-                    <a href="#624-%e8%bf%9e%e6%8e%a5grafana" aria-label="6.2.4. 连接grafana">6.2.4. 连接grafana</a></li>
+                    <a href="#%e8%bf%9e%e6%8e%a5grafana" aria-label="连接grafana">连接grafana</a></li>
                 <li>
-                    <a href="#525-elasticsearch-%e6%93%8d%e4%bd%9c%e5%91%bd%e4%bb%a4" aria-label="5.2.5. Elasticsearch 操作命令">5.2.5. Elasticsearch 操作命令</a></li>
+                    <a href="#elasticsearch-%e6%93%8d%e4%bd%9c%e5%91%bd%e4%bb%a4" aria-label="Elasticsearch 操作命令">Elasticsearch 操作命令</a></li>
                 <li>
-                    <a href="#626-elasticsearch-%e5%8d%b8%e8%bd%bd" aria-label="6.2.6. Elasticsearch 卸载">6.2.6. Elasticsearch 卸载</a></li></ul>
+                    <a href="#elasticsearch-%e5%8d%b8%e8%bd%bd" aria-label="Elasticsearch 卸载">Elasticsearch 卸载</a></li></ul>
                 </li>
                 <li>
-                    <a href="#63-logstash" aria-label="6.3. Logstash">6.3. Logstash</a><ul>
+                    <a href="#logstash" aria-label="Logstash">Logstash</a><ul>
                         
                 <li>
-                    <a href="#631-%e5%ae%89%e8%a3%85-logstash" aria-label="6.3.1. 安装 Logstash">6.3.1. 安装 Logstash</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85-logstash" aria-label="安装 Logstash">安装 Logstash</a></li>
                 <li>
-                    <a href="#632-%e6%8f%92%e4%bb%b6%e5%9c%b0%e5%9d%80" aria-label="6.3.2. 插件地址">6.3.2. 插件地址</a></li>
+                    <a href="#%e6%8f%92%e4%bb%b6%e5%9c%b0%e5%9d%80" aria-label="插件地址">插件地址</a></li>
                 <li>
-                    <a href="#633-%e9%85%8d%e7%bd%ae%e8%a1%a8%e5%ad%97%e6%ae%b5%e8%a7%a3%e9%87%8a" aria-label="6.3.3. 配置表字段解释">6.3.3. 配置表字段解释</a></li>
+                    <a href="#%e9%85%8d%e7%bd%ae%e8%a1%a8%e5%ad%97%e6%ae%b5%e8%a7%a3%e9%87%8a" aria-label="配置表字段解释">配置表字段解释</a></li>
                 <li>
-                    <a href="#634-%e6%9f%a5%e7%9c%8b%e5%ae%89%e8%a3%85%e7%9a%84%e6%8f%92%e4%bb%b6" aria-label="6.3.4. 查看安装的插件">6.3.4. 查看安装的插件</a></li>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e5%ae%89%e8%a3%85%e7%9a%84%e6%8f%92%e4%bb%b6" aria-label="查看安装的插件">查看安装的插件</a></li>
                 <li>
-                    <a href="#635-%e5%90%af%e5%8a%a8lostash" aria-label="6.3.5. 启动Lostash">6.3.5. 启动Lostash</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8lostash" aria-label="启动Lostash">启动Lostash</a></li>
                 <li>
-                    <a href="#636-%e5%af%bc%e5%85%a5%e6%95%b0%e6%8d%ae%e5%88%a9%e7%94%a8logstash-%e7%9b%b4%e6%8e%a5%e5%88%86%e6%9e%90moviescsv-%e4%bc%a0%e9%80%81%e7%bb%99elasticsearch%e6%96%b9%e5%bc%8f" aria-label="6.3.6. 导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式]">6.3.6. 导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式]</a></li>
+                    <a href="#%e5%af%bc%e5%85%a5%e6%95%b0%e6%8d%ae%e5%88%a9%e7%94%a8logstash-%e7%9b%b4%e6%8e%a5%e5%88%86%e6%9e%90moviescsv-%e4%bc%a0%e9%80%81%e7%bb%99elasticsearch%e6%96%b9%e5%bc%8f" aria-label="导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式]">导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式]</a></li>
                 <li>
-                    <a href="#637-%e5%bc%ba%e5%88%b6%e6%9f%a5%e7%9c%8b%e8%be%93%e5%87%ba--font-colorredlogstashconffont-%e4%bf%ae%e6%94%b9%e6%88%90%e4%bd%a0%e8%87%aa%e5%b7%b1%e7%9a%84%e6%96%87%e4%bb%b6" aria-label="6.3.7. 强制查看输出 logstash.conf 修改成你自己的文件">6.3.7. 强制查看输出  <strong><font color='red'>logstash.conf</font></strong> 修改成你自己的文件</a></li>
+                    <a href="#%e5%bc%ba%e5%88%b6%e6%9f%a5%e7%9c%8b%e8%be%93%e5%87%ba--font-colorredlogstashconffont-%e4%bf%ae%e6%94%b9%e6%88%90%e4%bd%a0%e8%87%aa%e5%b7%b1%e7%9a%84%e6%96%87%e4%bb%b6" aria-label="强制查看输出 logstash.conf 修改成你自己的文件">强制查看输出  <strong><font color='red'>logstash.conf</font></strong> 修改成你自己的文件</a></li>
                 <li>
-                    <a href="#638-%e6%9f%a5%e7%9c%8b%e6%95%b0%e6%8d%ae" aria-label="6.3.8. 查看数据">6.3.8. 查看数据</a></li>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e6%95%b0%e6%8d%ae" aria-label="查看数据">查看数据</a></li>
                 <li>
-                    <a href="#639-%e8%87%aa%e5%8a%a8%e9%87%8d%e6%96%b0%e5%8a%a0%e8%bd%bd%e9%85%8d%e7%bd%ae%e5%91%bd%e4%bb%a4" aria-label="6.3.9. 自动重新加载配置命令">6.3.9. 自动重新加载配置命令</a></li>
+                    <a href="#%e8%87%aa%e5%8a%a8%e9%87%8d%e6%96%b0%e5%8a%a0%e8%bd%bd%e9%85%8d%e7%bd%ae%e5%91%bd%e4%bb%a4" aria-label="自动重新加载配置命令">自动重新加载配置命令</a></li>
                 <li>
-                    <a href="#539-%e5%8d%b8%e8%bd%bdlogstash" aria-label="5.3.9. 卸载Logstash">5.3.9. 卸载Logstash</a></li></ul>
+                    <a href="#%e5%8d%b8%e8%bd%bdlogstash" aria-label="卸载Logstash">卸载Logstash</a></li></ul>
                 </li>
                 <li>
-                    <a href="#64-kibana" aria-label="6.4. Kibana">6.4. Kibana</a><ul>
+                    <a href="#kibana" aria-label="Kibana">Kibana</a><ul>
                         
                 <li>
-                    <a href="#641-%e5%ae%89%e8%a3%85kibana" aria-label="6.4.1. 安装Kibana">6.4.1. 安装Kibana</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85kibana" aria-label="安装Kibana">安装Kibana</a></li>
                 <li>
-                    <a href="#642-%e5%90%af%e5%8a%a8kibana" aria-label="6.4.2. 启动Kibana">6.4.2. 启动Kibana</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8kibana" aria-label="启动Kibana">启动Kibana</a></li>
                 <li>
-                    <a href="#5643-%e5%8d%b8%e8%bd%bdkibana" aria-label="56.4.3. 卸载Kibana">56.4.3. 卸载Kibana</a></li></ul>
+                    <a href="#%e5%8d%b8%e8%bd%bdkibana" aria-label="卸载Kibana">卸载Kibana</a></li></ul>
                 </li>
                 <li>
-                    <a href="#65-filebeat" aria-label="6.5. Filebeat">6.5. Filebeat</a><ul>
+                    <a href="#filebeat" aria-label="Filebeat">Filebeat</a><ul>
                         
                 <li>
-                    <a href="#651-%e5%ae%89%e8%a3%85filebeat" aria-label="6.5.1. 安装Filebeat">6.5.1. 安装Filebeat</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85filebeat" aria-label="安装Filebeat">安装Filebeat</a></li>
                 <li>
-                    <a href="#652-%e4%bf%ae%e6%94%b9-filebatyml-%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="6.5.2. 修改 filebat.yml 配置文件">6.5.2. 修改 filebat.yml 配置文件</a></li>
+                    <a href="#%e4%bf%ae%e6%94%b9-filebatyml-%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="修改 filebat.yml 配置文件">修改 filebat.yml 配置文件</a></li>
                 <li>
-                    <a href="#653-%e6%b5%8b%e8%af%95filebeat%e5%90%af%e5%8a%a8%e5%90%8e%e6%9f%a5%e7%9c%8b%e7%9b%b8%e5%85%b3%e8%be%93%e5%87%ba%e4%bf%a1%e6%81%af" aria-label="6.5.3. 测试filebeat启动后，查看相关输出信息">6.5.3. 测试filebeat启动后，查看相关输出信息</a></li>
+                    <a href="#%e6%b5%8b%e8%af%95filebeat%e5%90%af%e5%8a%a8%e5%90%8e%e6%9f%a5%e7%9c%8b%e7%9b%b8%e5%85%b3%e8%be%93%e5%87%ba%e4%bf%a1%e6%81%af" aria-label="测试filebeat启动后，查看相关输出信息">测试filebeat启动后，查看相关输出信息</a></li>
                 <li>
-                    <a href="#654-%e5%90%8e%e5%8f%b0%e6%96%b9%e5%bc%8f%e5%90%af%e5%8a%a8filebeat" aria-label="6.5.4. 后台方式启动filebeat">6.5.4. 后台方式启动filebeat</a></li>
+                    <a href="#%e5%90%8e%e5%8f%b0%e6%96%b9%e5%bc%8f%e5%90%af%e5%8a%a8filebeat" aria-label="后台方式启动filebeat">后台方式启动filebeat</a></li>
                 <li>
-                    <a href="#655-%e5%81%9c%e6%ad%a2filebeat" aria-label="6.5.5. 停止filebeat">6.5.5. 停止filebeat</a></li>
+                    <a href="#%e5%81%9c%e6%ad%a2filebeat" aria-label="停止filebeat">停止filebeat</a></li>
                 <li>
-                    <a href="#656-%e5%90%af%e5%8a%a8%e5%87%ba%e7%8e%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="6.5.6. 启动出现的问题">6.5.6. 启动出现的问题</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8%e5%87%ba%e7%8e%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="启动出现的问题">启动出现的问题</a></li>
                 <li>
-                    <a href="#657-%e5%8e%bb%e5%ae%89%e8%a3%85logstash%e7%9a%84%e6%9c%ba%e5%99%a8%e5%90%af%e5%8a%a8logstash" aria-label="6.5.7 去安装logstash的机器启动logstash">6.5.7 去安装logstash的机器启动logstash</a></li>
+                    <a href="#%e5%8e%bb%e5%ae%89%e8%a3%85logstash%e7%9a%84%e6%9c%ba%e5%99%a8%e5%90%af%e5%8a%a8logstash" aria-label="去安装logstash的机器启动logstash">去安装logstash的机器启动logstash</a></li>
                 <li>
-                    <a href="#658-%e7%94%a8filebeat-%e7%9b%91%e6%8e%a7-nginx" aria-label="6.5.8. 用filebeat 监控 nginx">6.5.8. 用filebeat 监控 nginx</a></li>
+                    <a href="#%e7%94%a8filebeat-%e7%9b%91%e6%8e%a7-nginx" aria-label="用filebeat 监控 nginx">用filebeat 监控 nginx</a></li>
                 <li>
-                    <a href="#659-%e5%8d%b8%e8%bd%bdfilebeat" aria-label="6.5.9. 卸载Filebeat">6.5.9. 卸载Filebeat</a>
+                    <a href="#%e5%8d%b8%e8%bd%bdfilebeat" aria-label="卸载Filebeat">卸载Filebeat</a>
                 </li>
             </ul>
             </li>
@@ -561,48 +561,48 @@ var _hmt = _hmt || [];
 </tbody>
 </table>
 <p><strong><font color='red'>Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana</font></strong></p>
-<h2 id="1-zabbix-60">1. zabbix 6.0<a hidden class="anchor" aria-hidden="true" href="#1-zabbix-60">#</a></h2>
-<h3 id="11-阿里云镜像地址">1.1. 阿里云镜像地址<a hidden class="anchor" aria-hidden="true" href="#11-阿里云镜像地址">#</a></h3>
+<h2 id="zabbix-60">zabbix 6.0<a hidden class="anchor" aria-hidden="true" href="#zabbix-60">#</a></h2>
+<h3 id="阿里云镜像地址">阿里云镜像地址<a hidden class="anchor" aria-hidden="true" href="#阿里云镜像地址">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/
-</span></span></code></pre></div><h3 id="12-下载-zabbix">1.2. 下载 zabbix<a hidden class="anchor" aria-hidden="true" href="#12-下载-zabbix">#</a></h3>
+</span></span></code></pre></div><h3 id="下载-zabbix">下载 zabbix<a hidden class="anchor" aria-hidden="true" href="#下载-zabbix">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb 
 </span></span><span style="display:flex;"><span>sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb
 </span></span><span style="display:flex;"><span>sudo apt update
-</span></span></code></pre></div><h3 id="13-安装zabbix-serverweb前端agent">1.3. 安装Zabbix server，Web前端，agent<a hidden class="anchor" aria-hidden="true" href="#13-安装zabbix-serverweb前端agent">#</a></h3>
+</span></span></code></pre></div><h3 id="安装zabbix-serverweb前端agent">安装Zabbix server，Web前端，agent<a hidden class="anchor" aria-hidden="true" href="#安装zabbix-serverweb前端agent">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent
-</span></span></code></pre></div><h3 id="14-创建初始数据库">1.4. 创建初始数据库<a hidden class="anchor" aria-hidden="true" href="#14-创建初始数据库">#</a></h3>
+</span></span></code></pre></div><h3 id="创建初始数据库">创建初始数据库<a hidden class="anchor" aria-hidden="true" href="#创建初始数据库">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mysql -uroot -p123456
 </span></span><span style="display:flex;"><span>mysql&gt; create database zabbix character set utf8mb4 collate utf8mb4_bin;
 </span></span><span style="display:flex;"><span>mysql&gt; create user zabbix@<span style="color:#e6db74">`</span>%<span style="color:#e6db74">`</span> identified by <span style="color:#e6db74">&#39;123456&#39;</span>;
 </span></span><span style="display:flex;"><span>mysql&gt; grant all privileges on zabbix.* to zabbix@<span style="color:#e6db74">`</span>%<span style="color:#e6db74">`</span>;
 </span></span><span style="display:flex;"><span>mysql&gt; quit;
-</span></span></code></pre></div><h3 id="15-导入初始架构和数据系统将提示您输入新创建的密码默认密码现在设置为-123456">1.5. 导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 <code>123456</code><a hidden class="anchor" aria-hidden="true" href="#15-导入初始架构和数据系统将提示您输入新创建的密码默认密码现在设置为-123456">#</a></h3>
+</span></span></code></pre></div><h3 id="导入初始架构和数据系统将提示您输入新创建的密码默认密码现在设置为-123456">导入初始架构和数据，系统将提示您输入新创建的密码[默认密码现在设置为 <code>123456</code><a hidden class="anchor" aria-hidden="true" href="#导入初始架构和数据系统将提示您输入新创建的密码默认密码现在设置为-123456">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>zcat /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -p -h10.40.38.67 zabbix <span style="color:#75715e"># 指定本地的IP地址，不默认就会指向本地localhost</span>
 </span></span></code></pre></div><p><strong>如果报<code>ERROR 2003 (HY000): Can't connect to MySQL server on '10.40.38.67:3306' (111)</code> 看第5章<code>mysql</code>操作指导，多半是因为权限和密码问题</strong></p>
-<h3 id="16-为zabbix-server配置数据库">1.6. 为Zabbix server配置数据库<a hidden class="anchor" aria-hidden="true" href="#16-为zabbix-server配置数据库">#</a></h3>
+<h3 id="为zabbix-server配置数据库">为Zabbix server配置数据库<a hidden class="anchor" aria-hidden="true" href="#为zabbix-server配置数据库">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim  /etc/zabbix/zabbix_server.conf
 </span></span><span style="display:flex;"><span>修改 DBPassword<span style="color:#f92672">=</span><span style="color:#ae81ff">123456</span>
-</span></span></code></pre></div><h3 id="17-启动zabbix-server和agent进程">1.7. 启动Zabbix server和agent进程<a hidden class="anchor" aria-hidden="true" href="#17-启动zabbix-server和agent进程">#</a></h3>
+</span></span></code></pre></div><h3 id="启动zabbix-server和agent进程">启动Zabbix server和agent进程<a hidden class="anchor" aria-hidden="true" href="#启动zabbix-server和agent进程">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo systemctl restart zabbix-server zabbix-agent apache2 grafana-server
 </span></span><span style="display:flex;"><span>sudo systemctl enable zabbix-server zabbix-agent apache2 grafana-server
-</span></span></code></pre></div><h3 id="18-连接web前端10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">1.8. 连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]<a hidden class="anchor" aria-hidden="true" href="#18-连接web前端10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">#</a></h3>
+</span></span></code></pre></div><h3 id="连接web前端10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">连接web前端[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]<a hidden class="anchor" aria-hidden="true" href="#连接web前端10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> http://10.40.38.67/zabbix
 </span></span><span style="display:flex;"><span> 默认的用户名是Admin<span style="color:#f92672">(</span>A是大写<span style="color:#f92672">)</span>，Password：zabbix
-</span></span></code></pre></div><h3 id="19-修改时区">1.9. 修改时区<a hidden class="anchor" aria-hidden="true" href="#19-修改时区">#</a></h3>
+</span></span></code></pre></div><h3 id="修改时区">修改时区<a hidden class="anchor" aria-hidden="true" href="#修改时区">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vi /etc/apache2/conf-enabled/zabbix.conf
 </span></span><span style="display:flex;"><span>修改标准时区为 Asia/Shanghai
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220211220534064.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220211220534064.png" alt="image-20220211220534064"  />
 </p>
-<h3 id="110-中文显示">1.10. 中文显示<a hidden class="anchor" aria-hidden="true" href="#110-中文显示">#</a></h3>
+<h3 id="中文显示">中文显示<a hidden class="anchor" aria-hidden="true" href="#中文显示">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install language-pack-zh-hans  <span style="color:#75715e">#安装中文语言包</span>
 </span></span><span style="display:flex;"><span>sudo vim /etc/locale.gen  <span style="color:#75715e">#找到zh_CN.UTF-8 UTF-8 并取消#号注释，然后保存并退出</span>
 </span></span><span style="display:flex;"><span>sudo locale-gen  <span style="color:#75715e">#编译语言包</span>
 </span></span><span style="display:flex;"><span>sudo vim /etc/default/locale <span style="color:#75715e">#修改默认语言为中文，将原来的内容改为 LANG=zh_CN.UTF-8</span>
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220211221904380.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220211221904380.png" alt="Typoraimage-20220211221904380"  />
 </p>
-<h3 id="111-安装出现的问题">1.11. 安装出现的问题<a hidden class="anchor" aria-hidden="true" href="#111-安装出现的问题">#</a></h3>
-<h4 id="1111-minimum-required-size-of-php-post-is-16m-configuration-option-post_max_size">1.11.1. Minimum required size of PHP post is 16M (configuration option &ldquo;post_max_size&rdquo;).<a hidden class="anchor" aria-hidden="true" href="#1111-minimum-required-size-of-php-post-is-16m-configuration-option-post_max_size">#</a></h4>
-<p><img loading="lazy" src="image-20220601181428220.png" alt=""  />
+<h3 id="安装出现的问题">安装出现的问题<a hidden class="anchor" aria-hidden="true" href="#安装出现的问题">#</a></h3>
+<h4 id="minimum-required-size-of-php-post-is-16m-configuration-option-post_max_size">Minimum required size of PHP post is 16M (configuration option &ldquo;post_max_size&rdquo;).<a hidden class="anchor" aria-hidden="true" href="#minimum-required-size-of-php-post-is-16m-configuration-option-post_max_size">#</a></h4>
+<p><img loading="lazy" src="image-20220601181428220.png" alt="image-20220601181428220"  />
 </p>
 <p><strong>解决步骤：</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vi /etc/php/8.1/apache2/php.ini
@@ -611,10 +611,10 @@ var _hmt = _hmt || [];
 <p><strong>max_input_time</strong>60 <code>300</code></p>
 <p><strong>date.timezone = Asia/Shanghai</strong></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo systemctl restart zabbix-server zabbix-agent apache2 grafana-server
-</span></span></code></pre></div><h4 id="1112-error-1396-hy000-operation-create-user-failed-for-zabbix">1.11.2. ERROR 1396 (HY000): Operation CREATE USER failed for <code>'zabbix'@'%'</code><a hidden class="anchor" aria-hidden="true" href="#1112-error-1396-hy000-operation-create-user-failed-for-zabbix">#</a></h4>
+</span></span></code></pre></div><h4 id="error-1396-hy000-operation-create-user-failed-for-zabbix">ERROR 1396 (HY000): Operation CREATE USER failed for <code>'zabbix'@'%'</code><a hidden class="anchor" aria-hidden="true" href="#error-1396-hy000-operation-create-user-failed-for-zabbix">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>mysql&gt; create user zabbix@<span style="color:#e6db74">`</span>%<span style="color:#e6db74">`</span> identified by <span style="color:#e6db74">&#39;123456&#39;</span>;
 </span></span><span style="display:flex;"><span>ERROR <span style="color:#ae81ff">1396</span> <span style="color:#f92672">(</span>HY000<span style="color:#f92672">)</span>: Operation CREATE USER failed <span style="color:#66d9ef">for</span> <span style="color:#e6db74">&#39;zabbix&#39;</span>@<span style="color:#e6db74">&#39;%&#39;</span>
-</span></span></code></pre></div><p><img loading="lazy" src="image-20220601194844884.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="image-20220601194844884.png" alt="image-20220601194844884"  />
 </p>
 <p><strong>原因分析</strong>：</p>
 <ol>
@@ -625,7 +625,7 @@ var _hmt = _hmt || [];
 <p>重新进行删除。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>drop user zabbix@<span style="color:#e6db74">&#39;%&#39;</span>;
 </span></span><span style="display:flex;"><span>flush privileges;
-</span></span></code></pre></div><h3 id="112-卸载-zabbix">1.12. 卸载 <code>zabbix</code><a hidden class="anchor" aria-hidden="true" href="#112-卸载-zabbix">#</a></h3>
+</span></span></code></pre></div><h3 id="卸载-zabbix">卸载 <code>zabbix</code><a hidden class="anchor" aria-hidden="true" href="#卸载-zabbix">#</a></h3>
 <ol>
 <li>
 <p>删除软件</p>
@@ -655,17 +655,12 @@ var _hmt = _hmt || [];
 </span></span></code></pre></div></li>
 <li>
 <p>删除其他软件依赖的但现在已不用的软件包（保留配置文件）</p>
-</li>
-</ol>
-<pre><code>```sh
-sudo apt-get autoremove
-```
-</code></pre>
-<ol start="6">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt-get autoremove
+</span></span></code></pre></div></li>
 <li>
 <p>查询出冗余文件并删除</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo find / -name zabbix
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220216161855867.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220216161855867.png" alt="Typoraimage-20220216161855867"  />
 </p>
 </li>
 <li>
@@ -678,44 +673,41 @@ sudo apt-get autoremove
 </span></span></code></pre></div></li>
 <li>
 <p>删除包含<code>zabbix</code>关键字的文件或者文件夹</p>
-</li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo find / -name <span style="color:#e6db74">&#34;zabbix*&#34;</span> | sudo xargs rm -rf
+</span></span></code></pre></div></li>
 </ol>
-<pre><code>```sh
-sudo find / -name &quot;zabbix*&quot; | sudo xargs rm -rf
-```
-</code></pre>
-<h2 id="2--grafana">2 . grafana<a hidden class="anchor" aria-hidden="true" href="#2--grafana">#</a></h2>
-<h3 id="21-下载grafana-deb安装包">2.1. 下载grafana deb安装包<a hidden class="anchor" aria-hidden="true" href="#21-下载grafana-deb安装包">#</a></h3>
+<h2 id="grafana">grafana<a hidden class="anchor" aria-hidden="true" href="#grafana">#</a></h2>
+<h3 id="下载grafana-deb安装包">下载grafana deb安装包<a hidden class="anchor" aria-hidden="true" href="#下载grafana-deb安装包">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt-get install -y adduser libfontconfig1
 </span></span><span style="display:flex;"><span>sudo wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.5.4_amd64.deb
 </span></span><span style="display:flex;"><span>sudo dpkg -i grafana-enterprise_8.5.4_amd64.deb
-</span></span></code></pre></div><h3 id="22-启动grafana-server">2.2. 启动grafana-server<a hidden class="anchor" aria-hidden="true" href="#22-启动grafana-server">#</a></h3>
+</span></span></code></pre></div><h3 id="启动grafana-server">启动grafana-server<a hidden class="anchor" aria-hidden="true" href="#启动grafana-server">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo systemctl restart grafana-server
 </span></span><span style="display:flex;"><span>sudo systemctl enable grafana-server
-</span></span></code></pre></div><h3 id="23安装zabbix插件">2.3安装zabbix插件<a hidden class="anchor" aria-hidden="true" href="#23安装zabbix插件">#</a></h3>
+</span></span></code></pre></div><h3 id="安装zabbix插件">安装zabbix插件<a hidden class="anchor" aria-hidden="true" href="#安装zabbix插件">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>grafana-cli plugins list-remote
 </span></span><span style="display:flex;"><span>sudo grafana-cli plugins install alexanderzobnin-zabbix-app
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">#重启grafana-server</span>
 </span></span><span style="display:flex;"><span>sudo systemctl restart grafana-server
 </span></span></code></pre></div><p>也可以在<code>grafana-&gt;plugins</code>这里安装</p>
-<p><img loading="lazy" src="image-20220601201553650.png" alt=""  />
+<p><img loading="lazy" src="image-20220601201553650.png" alt="image-20220601201553650"  />
 </p>
-<p><img loading="lazy" src="image-20220601201145104.png" alt=""  />
+<p><img loading="lazy" src="image-20220601201145104.png" alt="image-20220601201145104"  />
 </p>
-<h3 id="24-登录grafana服务器10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">2.4. 登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]<a hidden class="anchor" aria-hidden="true" href="#24-登录grafana服务器10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">#</a></h3>
+<h3 id="登录grafana服务器10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">登录grafana服务器[10.40.38.67 换成你的ip地址] [用谷歌浏览器或者microsoft Edge浏览器打开]<a hidden class="anchor" aria-hidden="true" href="#登录grafana服务器10403867-换成你的ip地址-用谷歌浏览器或者microsoft-edge浏览器打开">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>http:/10.40.38.67:3000/
 </span></span><span style="display:flex;"><span><span style="color:#75715e">#默认用户名和密码为admin、admin</span>
-</span></span></code></pre></div><h3 id="25-grafana-配置zabbix数据源">2.5. grafana 配置zabbix数据源<a hidden class="anchor" aria-hidden="true" href="#25-grafana-配置zabbix数据源">#</a></h3>
-<p><img loading="lazy" src="Typora1.png" alt=""  />
+</span></span></code></pre></div><h3 id="grafana-配置zabbix数据源">grafana 配置zabbix数据源<a hidden class="anchor" aria-hidden="true" href="#grafana-配置zabbix数据源">#</a></h3>
+<p><img loading="lazy" src="Typora1.png" alt="Typora1"  />
 </p>
-<h3 id="26-grafana-配置zabbix监控面板">2.6. grafana 配置zabbix监控面板<a hidden class="anchor" aria-hidden="true" href="#26-grafana-配置zabbix监控面板">#</a></h3>
-<p><img loading="lazy" src="Typoraimage-20220211222333409.png" alt=""  />
+<h3 id="grafana-配置zabbix监控面板">grafana 配置zabbix监控面板<a hidden class="anchor" aria-hidden="true" href="#grafana-配置zabbix监控面板">#</a></h3>
+<p><img loading="lazy" src="Typoraimage-20220211222333409.png" alt="Typoraimage-20220211222333409"  />
 </p>
 <p><font color='red'><strong>在点击完new dashboard 按钮以后 按ctrl + s 保存一个自己定义的仪表盘</strong></font></p>
-<p><img loading="lazy" src="Typoraimage-20220211222517727.png" alt=""  />
+<p><img loading="lazy" src="Typoraimage-20220211222517727.png" alt="Typoraimage-20220211222517727"  />
 </p>
-<h3 id="27-grafana增加主题">2.7. <code>grafana</code>增加主题<a hidden class="anchor" aria-hidden="true" href="#27-grafana增加主题">#</a></h3>
+<h3 id="grafana增加主题"><code>grafana</code>增加主题<a hidden class="anchor" aria-hidden="true" href="#grafana增加主题">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">安装插件：grafana</span><span style="color:#f92672">-</span><span style="color:#a6e22e">cli</span> <span style="color:#a6e22e">plugins</span> <span style="color:#a6e22e">install</span> <span style="color:#a6e22e">yesoreyeram</span><span style="color:#f92672">-</span><span style="color:#a6e22e">boomtheme</span><span style="color:#f92672">-</span><span style="color:#a6e22e">panel</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">grafana主题地址：https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">github</span><span style="color:#f92672">.</span><span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">charles1503</span><span style="color:#f92672">/</span><span style="color:#a6e22e">grafana</span><span style="color:#f92672">-</span><span style="color:#a6e22e">theme</span><span style="color:#f92672">/</span><span style="color:#a6e22e">tree</span><span style="color:#f92672">/</span><span style="color:#a6e22e">master</span><span style="color:#f92672">/</span><span style="color:#a6e22e">CSS</span><span style="color:#f92672">/</span><span style="color:#a6e22e">themes</span><span style="color:#f92672">/</span><span style="color:#a6e22e">grafanas</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">grafana更改主题教程：https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">www</span><span style="color:#f92672">.</span><span style="color:#a6e22e">bilibili</span><span style="color:#f92672">.</span><span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">read</span><span style="color:#f92672">/</span><span style="color:#a6e22e">cv7004400</span>
@@ -737,30 +729,30 @@ sudo find / -name &quot;zabbix*&quot; | sudo xargs rm -rf
 </span></span></code></pre></div></li>
 <li>
 <p>在<code>Dashboard</code>中添加<code>Boom Theme</code></p>
-<p><img loading="lazy" src="e863c9e3bcd7a4801f8aa1e9ad37d8697353b603.png@942w_278h_progressive.webp" alt=""  />
+<p><img loading="lazy" src="e863c9e3bcd7a4801f8aa1e9ad37d8697353b603.png@942w_278h_progressive.webp" alt="image.png"  />
 </p>
-<p><img loading="lazy" src="image-20220601212433764.png" alt=""  />
+<p><img loading="lazy" src="image-20220601212433764.png" alt="image-20220601212433764"  />
 </p>
 </li>
 </ol>
-<h3 id="28-grafana-主题修改地址">2.8. grafana 主题修改地址<a hidden class="anchor" aria-hidden="true" href="#28-grafana-主题修改地址">#</a></h3>
+<h3 id="grafana-主题修改地址">grafana 主题修改地址<a hidden class="anchor" aria-hidden="true" href="#grafana-主题修改地址">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cd /usr/share/grafana/public/themes
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220217192410413.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220217192410413.png" alt="Typoraimage-20220217192410413"  />
 </p>
-<h3 id="29-grafana-加时钟">2.9. grafana 加时钟<a hidden class="anchor" aria-hidden="true" href="#29-grafana-加时钟">#</a></h3>
+<h3 id="grafana-加时钟">grafana 加时钟<a hidden class="anchor" aria-hidden="true" href="#grafana-加时钟">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>grafana-cli plugins install grafana-clock-panel
 </span></span><span style="display:flex;"><span>systemctl restart grafana-server
-</span></span></code></pre></div><h3 id="210-grafana-flowcharting安装">2.10. grafana flowcharting安装<a hidden class="anchor" aria-hidden="true" href="#210-grafana-flowcharting安装">#</a></h3>
+</span></span></code></pre></div><h3 id="grafana-flowcharting安装">grafana flowcharting安装<a hidden class="anchor" aria-hidden="true" href="#grafana-flowcharting安装">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo grafana-cli plugins install agenty-flowcharting-panel
 </span></span><span style="display:flex;"><span>sudo systemctl restart grafana-server
-</span></span></code></pre></div><h3 id="211-grafana-修改模板地址">2.11 grafana 修改模板地址<a hidden class="anchor" aria-hidden="true" href="#211-grafana-修改模板地址">#</a></h3>
+</span></span></code></pre></div><h3 id="grafana-修改模板地址">grafana 修改模板地址<a hidden class="anchor" aria-hidden="true" href="#grafana-修改模板地址">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">grafana</span><span style="color:#f92672">.</span><span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">grafana</span><span style="color:#f92672">/</span><span style="color:#a6e22e">dashboards</span>
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220211232919468.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220211232919468.png" alt="Typoraimage-20220211232919468"  />
 </p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">zabbix</span> <span style="color:#a6e22e">修改配置地址：http</span><span style="color:#f92672">://</span><span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">70.130</span><span style="color:#f92672">/</span><span style="color:#a6e22e">zabbix</span><span style="color:#f92672">/</span><span style="color:#a6e22e">setup</span><span style="color:#f92672">.</span><span style="color:#a6e22e">php</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">zabbix</span> <span style="color:#a6e22e">展示地址：http</span><span style="color:#f92672">://</span><span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">70.130</span><span style="color:#f92672">/</span><span style="color:#a6e22e">zabbix</span><span style="color:#f92672">/</span><span style="color:#a6e22e">zabbix</span><span style="color:#f92672">.</span><span style="color:#a6e22e">php</span><span style="color:#f92672">?</span><span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#a6e22e">dashboard</span><span style="color:#f92672">.</span><span style="color:#a6e22e">view</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">grafana</span> <span style="color:#a6e22e">展示地址</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">http</span><span style="color:#f92672">://</span><span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">70.130</span><span style="color:#f92672">:</span><span style="color:#ae81ff">3000</span><span style="color:#f92672">/</span><span style="color:#a6e22e">d</span><span style="color:#f92672">/</span><span style="color:#a6e22e">tYxzFya7z</span><span style="color:#f92672">/</span><span style="color:#a6e22e">test_zabbix</span><span style="color:#f92672">?</span><span style="color:#a6e22e">orgId</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
-</span></span></code></pre></div><h3 id="212-grafana-匿名访问免登录">2.12. <code>Grafana</code> 匿名访问（免登录）<a hidden class="anchor" aria-hidden="true" href="#212-grafana-匿名访问免登录">#</a></h3>
+</span></span></code></pre></div><h3 id="grafana-匿名访问免登录"><code>Grafana</code> 匿名访问（免登录）<a hidden class="anchor" aria-hidden="true" href="#grafana-匿名访问免登录">#</a></h3>
 <ol>
 <li>
 <p>修改<code>Grafana</code>配置文件</p>
@@ -788,23 +780,18 @@ sudo find / -name &quot;zabbix*&quot; | sudo xargs rm -rf
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo systemctl restart grafana-server
 </span></span></code></pre></div></li>
 </ol>
-<h3 id="213-卸载-grafana">2.13. 卸载 <code>grafana</code><a hidden class="anchor" aria-hidden="true" href="#213-卸载-grafana">#</a></h3>
+<h3 id="卸载-grafana">卸载 <code>grafana</code><a hidden class="anchor" aria-hidden="true" href="#卸载-grafana">#</a></h3>
 <ol>
 <li>
 <p>查找到安装软件名</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo dpkg -l | grep grafana
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220216154734448.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220216154734448.png" alt="Typoraimage-20220216154734448"  />
 </p>
 </li>
 <li>
 <p>删除软件</p>
-</li>
-</ol>
-<pre><code>```sh
-sudo dpkg -r grafana-enterprise
-```
-</code></pre>
-<ol start="3">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo dpkg -r grafana-enterprise
+</span></span></code></pre></div></li>
 <li>
 <p>查询出冗余文件并删除</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>find / -name grafana
@@ -818,8 +805,8 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>rm -rf /var/lib/grafana
 </span></span></code></pre></div></li>
 </ol>
-<h2 id="3-apache2">3. apache2<a hidden class="anchor" aria-hidden="true" href="#3-apache2">#</a></h2>
-<h3 id="31-apache2启动报错">3.1. apache2启动报错<a hidden class="anchor" aria-hidden="true" href="#31-apache2启动报错">#</a></h3>
+<h2 id="apache2">apache2<a hidden class="anchor" aria-hidden="true" href="#apache2">#</a></h2>
+<h3 id="apache2启动报错">apache2启动报错<a hidden class="anchor" aria-hidden="true" href="#apache2启动报错">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220213113645141.png" alt="Typoraimage-20220213113645141"  />
 </p>
 <p>大致意思没有导入<code>apache</code> 环境变量 解决办法:</p>
@@ -834,7 +821,7 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>unix  <span style="color:#ae81ff">2</span>      <span style="color:#f92672">[</span> ACC <span style="color:#f92672">]</span>     STREAM     LISTENING     <span style="color:#ae81ff">41930</span>    1228/zabbix-plugin_  /tmp/plugin835680808
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>root@hls:/root#  kill -9 <span style="color:#ae81ff">950</span>
 </span></span><span style="display:flex;"><span>root@hls:/root# systemctl restart zabbix-server zabbix-agent apache2
-</span></span></code></pre></div><h3 id="32-卸载apache2">3.2. 卸载apache2<a hidden class="anchor" aria-hidden="true" href="#32-卸载apache2">#</a></h3>
+</span></span></code></pre></div><h3 id="卸载apache2">卸载apache2<a hidden class="anchor" aria-hidden="true" href="#卸载apache2">#</a></h3>
 <ol>
 <li>
 <p>删除软件</p>
@@ -862,10 +849,10 @@ sudo dpkg -r grafana-enterprise
 </p>
 </li>
 </ol>
-<h2 id="4-nginx">4. Nginx<a hidden class="anchor" aria-hidden="true" href="#4-nginx">#</a></h2>
-<h3 id="41-官网下载地址">4.1. 官网下载地址<a hidden class="anchor" aria-hidden="true" href="#41-官网下载地址">#</a></h3>
+<h2 id="nginx">Nginx<a hidden class="anchor" aria-hidden="true" href="#nginx">#</a></h2>
+<h3 id="官网下载地址">官网下载地址<a hidden class="anchor" aria-hidden="true" href="#官网下载地址">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>http://nginx.org/en/download.html
-</span></span></code></pre></div><h3 id="42-一些环境准备">4.2. 一些环境准备<a hidden class="anchor" aria-hidden="true" href="#42-一些环境准备">#</a></h3>
+</span></span></code></pre></div><h3 id="一些环境准备">一些环境准备<a hidden class="anchor" aria-hidden="true" href="#一些环境准备">#</a></h3>
 <ol>
 <li>
 <p>安装编译工具</p>
@@ -882,35 +869,36 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install zlib1g-dev
 </span></span></code></pre></div></li>
 </ol>
-<h3 id="43-下载安装nginx">4.3. 下载安装Nginx<a hidden class="anchor" aria-hidden="true" href="#43-下载安装nginx">#</a></h3>
+<h3 id="下载安装nginx">下载安装Nginx<a hidden class="anchor" aria-hidden="true" href="#下载安装nginx">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo wget http://nginx.org/download/nginx-1.21.6.tar.gz
 </span></span><span style="display:flex;"><span>sudo tar -xzvf nginx-1.21.6.tar.gz
 </span></span><span style="display:flex;"><span>cd nginx-1.21.6
 </span></span><span style="display:flex;"><span>sudo ./configure --prefix<span style="color:#f92672">=</span>/usr/local/nginx --with-http_ssl_module --with-stream --with-mail<span style="color:#f92672">=</span>dynamic <span style="color:#75715e">#最好用 --prefix指定路径，便于后面删除[只需要删除prefix指定的文件夹就行了]，不指定的话后面删除比较麻烦</span>
 </span></span><span style="display:flex;"><span>sudo make 
 </span></span><span style="display:flex;"><span>sudo make install
-</span></span></code></pre></div><h3 id="44-制作软连接">4.4. 制作软连接<a hidden class="anchor" aria-hidden="true" href="#44-制作软连接">#</a></h3>
+</span></span></code></pre></div><h3 id="制作软连接">制作软连接<a hidden class="anchor" aria-hidden="true" href="#制作软连接">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ln -s /usr/local/nginx/sbin/nginx /usr/local/sbin/
-</span></span></code></pre></div><h3 id="45-配置环境变量-编辑etcprofile并且追加nginx的环境变量">4.5. 配置环境变量 编辑<code>/etc/profile</code>并且追加Nginx的环境变量<a hidden class="anchor" aria-hidden="true" href="#45-配置环境变量-编辑etcprofile并且追加nginx的环境变量">#</a></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>export NGINX_HOME<span style="color:#f92672">=</span>/usr/local/nginx
+</span></span></code></pre></div><h3 id="配置环境变量-编辑etcprofile并且追加nginx的环境变量">配置环境变量 编辑<code>/etc/profile</code>并且追加Nginx的环境变量<a hidden class="anchor" aria-hidden="true" href="#配置环境变量-编辑etcprofile并且追加nginx的环境变量">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#75715e"># nginx</span>
+</span></span><span style="display:flex;"><span>export NGINX_HOME<span style="color:#f92672">=</span>/usr/local/nginx
 </span></span><span style="display:flex;"><span>export PATH<span style="color:#f92672">=</span>$PATH:$NGINX_HOME/sbin
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218152713494.png" alt="Typoraimage-20220218152713494"  />
 </p>
-<h4 id="451-生效环境变量">4.5.1. 生效环境变量<a hidden class="anchor" aria-hidden="true" href="#451-生效环境变量">#</a></h4>
+<h4 id="生效环境变量">生效环境变量<a hidden class="anchor" aria-hidden="true" href="#生效环境变量">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>source /etc/profile
-</span></span></code></pre></div><h3 id="46-测试是否安装成功">4.6. 测试是否安装成功<a hidden class="anchor" aria-hidden="true" href="#46-测试是否安装成功">#</a></h3>
+</span></span></code></pre></div><h3 id="测试是否安装成功">测试是否安装成功<a hidden class="anchor" aria-hidden="true" href="#测试是否安装成功">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>nginx -v
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218152739564.png" alt="Typoraimage-20220218152739564"  />
 </p>
-<h3 id="47-启动nginx">4.7. 启动Nginx<a hidden class="anchor" aria-hidden="true" href="#47-启动nginx">#</a></h3>
+<h3 id="启动nginx">启动Nginx<a hidden class="anchor" aria-hidden="true" href="#启动nginx">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo nginx
-</span></span></code></pre></div><h3 id="48-强制停止nginx">4.8. 强制停止Nginx<a hidden class="anchor" aria-hidden="true" href="#48-强制停止nginx">#</a></h3>
+</span></span></code></pre></div><h3 id="强制停止nginx">强制停止Nginx<a hidden class="anchor" aria-hidden="true" href="#强制停止nginx">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo pkill -9 nginx
-</span></span></code></pre></div><h3 id="49-查看nginx进程">4.9. 查看Nginx进程<a hidden class="anchor" aria-hidden="true" href="#49-查看nginx进程">#</a></h3>
+</span></span></code></pre></div><h3 id="查看nginx进程">查看Nginx进程<a hidden class="anchor" aria-hidden="true" href="#查看nginx进程">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ps aux|grep nginx
-</span></span></code></pre></div><h3 id="410-配置防火墙">4.10. 配置防火墙<a hidden class="anchor" aria-hidden="true" href="#410-配置防火墙">#</a></h3>
+</span></span></code></pre></div><h3 id="配置防火墙">配置防火墙<a hidden class="anchor" aria-hidden="true" href="#配置防火墙">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo ufw allow <span style="color:#e6db74">&#39;Nginx Full&#39;</span>
-</span></span></code></pre></div><h3 id="411-验证防火墙是否允许-出现下面两种情况都认为可以">4.11. 验证防火墙是否允许 出现下面两种情况都认为可以<a hidden class="anchor" aria-hidden="true" href="#411-验证防火墙是否允许-出现下面两种情况都认为可以">#</a></h3>
+</span></span></code></pre></div><h3 id="验证防火墙是否允许-出现下面两种情况都认为可以">验证防火墙是否允许 出现下面两种情况都认为可以<a hidden class="anchor" aria-hidden="true" href="#验证防火墙是否允许-出现下面两种情况都认为可以">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>Status: active
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>To                         Action      From
@@ -921,11 +909,11 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>Nginx Full <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>            ALLOW       Anywhere <span style="color:#f92672">(</span>v6<span style="color:#f92672">)</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo ufw status
 </span></span><span style="display:flex;"><span>状态：不活动
-</span></span></code></pre></div><h3 id="412-测试访问">4.12. 测试访问<a hidden class="anchor" aria-hidden="true" href="#412-测试访问">#</a></h3>
+</span></span></code></pre></div><h3 id="测试访问">测试访问<a hidden class="anchor" aria-hidden="true" href="#测试访问">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">http</span><span style="color:#f92672">://</span><span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">70.132</span><span style="color:#f92672">:</span><span style="color:#ae81ff">7000</span>
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218131129493.png" alt="Typoraimage-20220218131129493"  />
 </p>
-<h3 id="413-nginx-相关文件位置">4.13. Nginx 相关文件位置<a hidden class="anchor" aria-hidden="true" href="#413-nginx-相关文件位置">#</a></h3>
+<h3 id="nginx-相关文件位置">Nginx 相关文件位置<a hidden class="anchor" aria-hidden="true" href="#nginx-相关文件位置">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>nginx path prefix: <span style="color:#e6db74">&#34;/usr/local/nginx&#34;</span>
 </span></span><span style="display:flex;"><span>nginx binary file: <span style="color:#e6db74">&#34;/usr/local/nginx/sbin/nginx&#34;</span>
 </span></span><span style="display:flex;"><span>nginx modules path: <span style="color:#e6db74">&#34;/usr/local/nginx/modules&#34;</span>
@@ -939,17 +927,17 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>nginx http fastcgi temporary files: <span style="color:#e6db74">&#34;fastcgi_temp&#34;</span>
 </span></span><span style="display:flex;"><span>nginx http uwsgi temporary files: <span style="color:#e6db74">&#34;uwsgi_temp&#34;</span>
 </span></span><span style="display:flex;"><span>nginx http scgi temporary files: <span style="color:#e6db74">&#34;scgi_temp&#34;</span>
-</span></span></code></pre></div><h3 id="414-卸载-nginx">4.14 卸载 Nginx<a hidden class="anchor" aria-hidden="true" href="#414-卸载-nginx">#</a></h3>
+</span></span></code></pre></div><h3 id="卸载-nginx">卸载 Nginx<a hidden class="anchor" aria-hidden="true" href="#卸载-nginx">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo rm -rf /usr/local/nginx
 </span></span><span style="display:flex;"><span>sudo rm -rf /usr/local/nginx/sbin/nginx <span style="color:#75715e">#软连接也记得删除</span>
 </span></span><span style="display:flex;"><span>如果想完全干净，/etc/profile 配置文件中指定的环境变量也可以删除
-</span></span></code></pre></div><h2 id="5-mysql">5. mysql<a hidden class="anchor" aria-hidden="true" href="#5-mysql">#</a></h2>
-<h3 id="51-安装mysql">5.1. 安装mysql<a hidden class="anchor" aria-hidden="true" href="#51-安装mysql">#</a></h3>
+</span></span></code></pre></div><h2 id="mysql">mysql<a hidden class="anchor" aria-hidden="true" href="#mysql">#</a></h2>
+<h3 id="安装mysql">安装mysql<a hidden class="anchor" aria-hidden="true" href="#安装mysql">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo apt update
 </span></span><span style="display:flex;"><span>sudo apt install mysql-server
 </span></span></code></pre></div><p>安装完成后，MySQL服务将自动启动。要验证MySQL服务器正在运行，请输入：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo systemctl status mysql
-</span></span></code></pre></div><h3 id="52-彻底卸载mysql方法">5.2. 彻底卸载mysql方法<a hidden class="anchor" aria-hidden="true" href="#52-彻底卸载mysql方法">#</a></h3>
+</span></span></code></pre></div><h3 id="彻底卸载mysql方法">彻底卸载mysql方法<a hidden class="anchor" aria-hidden="true" href="#彻底卸载mysql方法">#</a></h3>
 <ol>
 <li>
 <p>查看依赖包</p>
@@ -980,15 +968,15 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">blog</span><span style="color:#f92672">.</span><span style="color:#a6e22e">csdn</span><span style="color:#f92672">.</span><span style="color:#a6e22e">net</span><span style="color:#f92672">/</span><span style="color:#a6e22e">PY0312</span><span style="color:#f92672">/</span><span style="color:#a6e22e">article</span><span style="color:#f92672">/</span><span style="color:#a6e22e">details</span><span style="color:#f92672">/</span><span style="color:#ae81ff">89481421</span>
 </span></span></code></pre></div></li>
 </ol>
-<h3 id="53-mysql在ubuntu上启动出错could-not-open-abstractionsmysql">5.3. MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘<a hidden class="anchor" aria-hidden="true" href="#53-mysql在ubuntu上启动出错could-not-open-abstractionsmysql">#</a></h3>
+<h3 id="mysql在ubuntu上启动出错could-not-open-abstractionsmysql">MySQL在Ubuntu上启动出错Could not open ‘abstractions/mysql‘<a hidden class="anchor" aria-hidden="true" href="#mysql在ubuntu上启动出错could-not-open-abstractionsmysql">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>rm -rf /etc/apparmor.d/abstractions/mysql 
 </span></span><span style="display:flex;"><span>rm -rf /etc/apparmor.d/cache/usr.sbin.mysqld 
 </span></span><span style="display:flex;"><span>find / -name &#39;mysql*&#39; -exec rm -rf {} \;
-</span></span></code></pre></div><h3 id="52-连接mysql报错cant-connect-to-local-mysql-server-through-socket-varrunmysqldmysqldsock">5.2. 连接MySql报错“can&rsquo;t connect to local mysql server through socket &lsquo;/var/run/mysqld/mysqld.sock&rsquo;<a hidden class="anchor" aria-hidden="true" href="#52-连接mysql报错cant-connect-to-local-mysql-server-through-socket-varrunmysqldmysqldsock">#</a></h3>
+</span></span></code></pre></div><h3 id="连接mysql报错cant-connect-to-local-mysql-server-through-socket-varrunmysqldmysqldsock">连接MySql报错“can&rsquo;t connect to local mysql server through socket &lsquo;/var/run/mysqld/mysqld.sock&rsquo;<a hidden class="anchor" aria-hidden="true" href="#连接mysql报错cant-connect-to-local-mysql-server-through-socket-varrunmysqldmysqldsock">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cd /etc/init.d
 </span></span><span style="display:flex;"><span>sudo service mysql stop
 </span></span><span style="display:flex;"><span>sudo service mysql start 
-</span></span></code></pre></div><h3 id="55-mysql-ubuntu-2004---access-denied-for-user-rootlocalhost">5.5. mysql Ubuntu 20.04   Access denied for user &lsquo;root&rsquo;@&rsquo;localhost<a hidden class="anchor" aria-hidden="true" href="#55-mysql-ubuntu-2004---access-denied-for-user-rootlocalhost">#</a></h3>
+</span></span></code></pre></div><h3 id="mysql-ubuntu-2004---access-denied-for-user-rootlocalhost">mysql Ubuntu 20.04   Access denied for user &lsquo;root&rsquo;@&rsquo;localhost<a hidden class="anchor" aria-hidden="true" href="#mysql-ubuntu-2004---access-denied-for-user-rootlocalhost">#</a></h3>
 <ol>
 <li>
 <p>首先输入以下指令 获取密码：</p>
@@ -1022,8 +1010,7 @@ sudo dpkg -r grafana-enterprise
 <li>
 <p>输入</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>mysql -uroot -p123456;
-</span></span></code></pre></div><pre><code>查看效果
-</code></pre>
+</span></span></code></pre></div><p>查看效果</p>
 <p><img loading="lazy" src="Typoraimage-20220214172442812.png" alt="Typoraimage-20220214172442812"  />
 </p>
 </li>
@@ -1055,11 +1042,11 @@ sudo dpkg -r grafana-enterprise
 </p>
 </li>
 </ol>
-<h2 id="6-elk">6. ELK<a hidden class="anchor" aria-hidden="true" href="#6-elk">#</a></h2>
-<h3 id="61-一些准备">6.1. 一些准备<a hidden class="anchor" aria-hidden="true" href="#61-一些准备">#</a></h3>
-<h4 id="611-官网地址">6.1.1. 官网地址<a hidden class="anchor" aria-hidden="true" href="#611-官网地址">#</a></h4>
+<h2 id="elk">ELK<a hidden class="anchor" aria-hidden="true" href="#elk">#</a></h2>
+<h3 id="一些准备">一些准备<a hidden class="anchor" aria-hidden="true" href="#一些准备">#</a></h3>
+<h4 id="官网地址">官网地址<a hidden class="anchor" aria-hidden="true" href="#官网地址">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span> <span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">www</span><span style="color:#f92672">.</span><span style="color:#a6e22e">elastic</span><span style="color:#f92672">.</span><span style="color:#a6e22e">co</span><span style="color:#f92672">/</span><span style="color:#a6e22e">guide</span><span style="color:#f92672">/</span><span style="color:#a6e22e">en</span><span style="color:#f92672">/</span><span style="color:#a6e22e">elasticsearch</span><span style="color:#f92672">/</span><span style="color:#a6e22e">reference</span><span style="color:#f92672">/</span><span style="color:#ae81ff">8.0</span><span style="color:#f92672">/</span><span style="color:#a6e22e">deb</span><span style="color:#f92672">.</span><span style="color:#a6e22e">html</span><span style="color:#75715e">#deb-repo
-</span></span></span></code></pre></div><h4 id="612-虚拟机">6.1.2. 虚拟机<a hidden class="anchor" aria-hidden="true" href="#612-虚拟机">#</a></h4>
+</span></span></span></code></pre></div><h4 id="虚拟机">虚拟机<a hidden class="anchor" aria-hidden="true" href="#虚拟机">#</a></h4>
 <ol>
 <li>
 <p>想要多开最好是克隆一份出来 比如2就是克隆的1的镜像</p>
@@ -1093,12 +1080,12 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>3、注意每一层前边的缩进，至少比上一层多两个空格
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="613-安装java环境">6.1.3. 安装java环境<a hidden class="anchor" aria-hidden="true" href="#613-安装java环境">#</a></h4>
+<h4 id="安装java环境">安装java环境<a hidden class="anchor" aria-hidden="true" href="#安装java环境">#</a></h4>
 <ol>
-<li>安装java</li>
-</ol>
+<li>
+<p>安装java</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt install openjdk-8-jdk
-</span></span></code></pre></div><ol start="2">
+</span></span></code></pre></div></li>
 <li>
 <p>查看java 版本</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo java -version
@@ -1148,7 +1135,7 @@ sudo dpkg -r grafana-enterprise
 </ol>
 </li>
 </ol>
-<h4 id="614-python3">6.1.4. python3<a hidden class="anchor" aria-hidden="true" href="#614-python3">#</a></h4>
+<h4 id="python3">python3<a hidden class="anchor" aria-hidden="true" href="#python3">#</a></h4>
 <p><strong><font color='red'>[不是必须装主要是想使用 json.tool 格式化输出]</font></strong></p>
 <ol>
 <li>
@@ -1157,10 +1144,8 @@ sudo dpkg -r grafana-enterprise
 </span></span></code></pre></div></li>
 <li>
 <p>建立软连接</p>
-</li>
-</ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo ln -s /usr/bin/python3.8 /usr/bin/python
-</span></span></code></pre></div><ol start="3">
+</span></span></code></pre></div></li>
 <li>
 <p>如果想要删除软连接</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo rm -rf /usr/bin/python
@@ -1170,9 +1155,9 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">XGET</span> <span style="color:#a6e22e">http</span><span style="color:#f92672">://</span><span style="color:#ae81ff">192.168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">70.131</span><span style="color:#f92672">:</span><span style="color:#ae81ff">9200</span><span style="color:#f92672">/</span><span style="color:#a6e22e">_mapping</span> <span style="color:#f92672">|</span> <span style="color:#a6e22e">python</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">m</span> <span style="color:#a6e22e">json</span><span style="color:#f92672">.</span><span style="color:#a6e22e">tool</span>
 </span></span></code></pre></div></li>
 </ol>
-<h3 id="62-elasticsearch">6.2. Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#62-elasticsearch">#</a></h3>
-<h4 id="621-基础知识">6.2.1. 基础知识<a hidden class="anchor" aria-hidden="true" href="#621-基础知识">#</a></h4>
-<h5 id="6211-和关系型数据库的比较">6.2.1.1. 和关系型数据库的比较<a hidden class="anchor" aria-hidden="true" href="#6211-和关系型数据库的比较">#</a></h5>
+<h3 id="elasticsearch">Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#elasticsearch">#</a></h3>
+<h4 id="基础知识">基础知识<a hidden class="anchor" aria-hidden="true" href="#基础知识">#</a></h4>
+<h5 id="和关系型数据库的比较">和关系型数据库的比较<a hidden class="anchor" aria-hidden="true" href="#和关系型数据库的比较">#</a></h5>
 <table>
 <thead>
 <tr>
@@ -1207,7 +1192,7 @@ sudo dpkg -r grafana-enterprise
 </tr>
 </tbody>
 </table>
-<h4 id="622-安装elasticsearch">6.2.2 安装Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#622-安装elasticsearch">#</a></h4>
+<h4 id="安装elasticsearch">安装Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#安装elasticsearch">#</a></h4>
 <ol>
 <li>
 <p>deb包安装方式</p>
@@ -1257,11 +1242,11 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># 输入生成证书的密码（密码不要忘记，这个密码在配置 ES keystore 的时候需要）</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># --ca 后面的文件是上面步骤生成的 elastic-stack-ca.p12 文件，如果修改了的话，这里也需要修改</span>
 </span></span><span style="display:flex;"><span>sudo /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220216111441217.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220216111441217.png" alt="Typoraimage-20220216111441217"  />
 </p>
 <p><img loading="lazy" src="Typoraimage-20220216111555291.png" alt="Typoraimage-20220216111555291"  />
 </p>
-<p><img loading="lazy" src="image-20220602100009735.png" alt=""  />
+<p><img loading="lazy" src="image-20220602100009735.png" alt="image-20220602100009735"  />
 </p>
 </li>
 </ol>
@@ -1272,7 +1257,7 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>sudo mkdir -p ~/.config/certs <span style="color:#f92672">&amp;&amp;</span> sudo mv /usr/share/elasticsearch/elastic-stack-ca.p12 /usr/share/elasticsearch/elastic-certificates.p12 ~/.config/certs
 </span></span></code></pre></div></li>
 </ul>
-<h4 id="623-启动-elasticsearch">6.2.3. 启动 Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#623-启动-elasticsearch">#</a></h4>
+<h4 id="启动-elasticsearch">启动 Elasticsearch<a hidden class="anchor" aria-hidden="true" href="#启动-elasticsearch">#</a></h4>
 <p>​	<strong><font color='red'>[为了安全考虑Elasticsearch不允许使用root用户来启动]</font></strong></p>
 <ol>
 <li>
@@ -1283,12 +1268,12 @@ sudo dpkg -r grafana-enterprise
 <p>修改 <strong><font color='red'>netWork.host</font></strong>, <strong><font color='red'>http.port</font></strong> 字段</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">network.host</span>: <span style="color:#ae81ff">10.40.38.66</span> <span style="color:#75715e">#注意 network.host:和10.40.38.66 之间需要空格要不启动会有问题，因为配置文件类型为key-vale格式</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">http.port</span>: <span style="color:#ae81ff">9200</span> <span style="color:#75715e">#注意 http.port:和9200 之间需要空格要不启动会有问题，因为配置文件类型为key-vale格式</span>
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215182019551.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215182019551.png" alt="Typoraimage-20220215182019551"  />
 </p>
 </li>
 <li>
 <p>因为是内网测试暂时关闭 xpack 安全验证方面选项,以后需要再去开启</p>
-<p><img loading="lazy" src="image-20220602101815651.png" alt=""  />
+<p><img loading="lazy" src="image-20220602101815651.png" alt="image-20220602101815651"  />
 </p>
 </li>
 <li>
@@ -1300,10 +1285,10 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo systemctl enable elasticsearch.service
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="624-连接grafana">6.2.4. 连接grafana<a hidden class="anchor" aria-hidden="true" href="#624-连接grafana">#</a></h4>
-<p><img loading="lazy" src="Typoraimage-20220217213204621.png" alt=""  />
+<h4 id="连接grafana">连接grafana<a hidden class="anchor" aria-hidden="true" href="#连接grafana">#</a></h4>
+<p><img loading="lazy" src="Typoraimage-20220217213204621.png" alt="Typoraimage-20220217213204621"  />
 </p>
-<h4 id="525-elasticsearch-操作命令">5.2.5. Elasticsearch 操作命令<a hidden class="anchor" aria-hidden="true" href="#525-elasticsearch-操作命令">#</a></h4>
+<h4 id="elasticsearch-操作命令">Elasticsearch 操作命令<a hidden class="anchor" aria-hidden="true" href="#elasticsearch-操作命令">#</a></h4>
 <ol>
 <li>
 <p>用jps命令关闭Elasticsearch</p>
@@ -1314,7 +1299,7 @@ sudo dpkg -r grafana-enterprise
 <li>
 <p>查看 Elasticsearch 端口</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo netstat -tnlp |grep java
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215213238459.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215213238459.png" alt="Typoraimage-20220215213238459"  />
 </p>
 </li>
 <li>
@@ -1324,19 +1309,19 @@ sudo dpkg -r grafana-enterprise
 <li>
 <p>用journal 查看系统日志</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo journalctl -f
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215131826206.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215131826206.png" alt="Typoraimage-20220215131826206"  />
 </p>
 </li>
 <li>
 <p>用 journal 查看elasticsearch 服务日志</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo journalctl --unit elasticsearch
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215132103390.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215132103390.png" alt="Typoraimage-20220215132103390"  />
 </p>
 </li>
 <li>
 <p>用journal 查看elasticsearch 指定时间范围的日志</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo journalctl --unit elasticsearch --since  <span style="color:#e6db74">&#34;2022-02-01 18:17:16&#34;</span>
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215132318818.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220215132318818.png" alt="Typoraimage-20220215132318818"  />
 </p>
 </li>
 <li>
@@ -1344,7 +1329,7 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vim /var/log/elasticsearch/elasticsearch.log
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="626-elasticsearch-卸载">6.2.6. Elasticsearch 卸载<a hidden class="anchor" aria-hidden="true" href="#626-elasticsearch-卸载">#</a></h4>
+<h4 id="elasticsearch-卸载">Elasticsearch 卸载<a hidden class="anchor" aria-hidden="true" href="#elasticsearch-卸载">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> <span style="color:#75715e"># 查看安装的软件</span>
 </span></span><span style="display:flex;"><span> sudo dpkg -l | grep elasticsearch 
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#查看安装关联</span>
@@ -1362,8 +1347,8 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span> sudo rm -rf /usr/share/elasticsearch
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#在此查看是否有关联的目录和文件</span>
 </span></span><span style="display:flex;"><span>sudo find / -name elasticsearch
-</span></span></code></pre></div><h3 id="63-logstash">6.3. Logstash<a hidden class="anchor" aria-hidden="true" href="#63-logstash">#</a></h3>
-<h4 id="631-安装-logstash">6.3.1. 安装 Logstash<a hidden class="anchor" aria-hidden="true" href="#631-安装-logstash">#</a></h4>
+</span></span></code></pre></div><h3 id="logstash">Logstash<a hidden class="anchor" aria-hidden="true" href="#logstash">#</a></h3>
+<h4 id="安装-logstash">安装 Logstash<a hidden class="anchor" aria-hidden="true" href="#安装-logstash">#</a></h4>
 <ol>
 <li>
 <p>下载安装公共签名</p>
@@ -1382,22 +1367,22 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt-get update <span style="color:#f92672">&amp;&amp;</span> sudo apt-get install logstash
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="632-插件地址">6.3.2. 插件地址<a hidden class="anchor" aria-hidden="true" href="#632-插件地址">#</a></h4>
+<h4 id="插件地址">插件地址<a hidden class="anchor" aria-hidden="true" href="#插件地址">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">www</span><span style="color:#f92672">.</span><span style="color:#a6e22e">elastic</span><span style="color:#f92672">.</span><span style="color:#a6e22e">co</span><span style="color:#f92672">/</span><span style="color:#a6e22e">guide</span><span style="color:#f92672">/</span><span style="color:#a6e22e">en</span><span style="color:#f92672">/</span><span style="color:#a6e22e">logstash</span><span style="color:#f92672">-</span><span style="color:#a6e22e">versioned</span><span style="color:#f92672">-</span><span style="color:#a6e22e">plugins</span><span style="color:#f92672">/</span><span style="color:#a6e22e">current</span><span style="color:#f92672">/</span><span style="color:#a6e22e">index</span><span style="color:#f92672">.</span><span style="color:#a6e22e">html</span>
-</span></span></code></pre></div><h4 id="633-配置表字段解释">6.3.3. 配置表字段解释<a hidden class="anchor" aria-hidden="true" href="#633-配置表字段解释">#</a></h4>
+</span></span></code></pre></div><h4 id="配置表字段解释">配置表字段解释<a hidden class="anchor" aria-hidden="true" href="#配置表字段解释">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">blog</span><span style="color:#f92672">.</span><span style="color:#a6e22e">csdn</span><span style="color:#f92672">.</span><span style="color:#a6e22e">net</span><span style="color:#f92672">/</span><span style="color:#a6e22e">weixin_42073629</span><span style="color:#f92672">/</span><span style="color:#a6e22e">article</span><span style="color:#f92672">/</span><span style="color:#a6e22e">details</span><span style="color:#f92672">/</span><span style="color:#ae81ff">110154037</span><span style="color:#f92672">?</span><span style="color:#a6e22e">utm_medium</span><span style="color:#f92672">=</span><span style="color:#a6e22e">distribute</span><span style="color:#f92672">.</span><span style="color:#a6e22e">pc_aggpage_search_result</span><span style="color:#f92672">.</span><span style="color:#a6e22e">none</span><span style="color:#f92672">-</span><span style="color:#a6e22e">task</span><span style="color:#f92672">-</span><span style="color:#a6e22e">blog</span><span style="color:#f92672">-</span><span style="color:#ae81ff">2</span><span style="color:#f92672">~</span><span style="color:#a6e22e">aggregatepage</span><span style="color:#f92672">~</span><span style="color:#a6e22e">first_rank_ecpm_v1</span><span style="color:#f92672">~</span><span style="color:#a6e22e">rank_v31_ecpm</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span><span style="color:#ae81ff">110154037.</span><span style="color:#a6e22e">pc_agg_new_rank</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">utm_term</span><span style="color:#f92672">=</span><span style="color:#a6e22e">logstash</span><span style="color:#f92672">%</span><span style="color:#a6e22e">E5</span><span style="color:#f92672">%</span><span style="color:#ae81ff">8</span><span style="color:#a6e22e">F</span><span style="color:#f92672">%</span><span style="color:#ae81ff">82</span><span style="color:#f92672">%</span><span style="color:#a6e22e">E6</span><span style="color:#f92672">%</span><span style="color:#ae81ff">95</span><span style="color:#f92672">%</span><span style="color:#a6e22e">B0convert</span><span style="color:#f92672">&amp;</span><span style="color:#a6e22e">spm</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1000.2123</span><span style="color:#f92672">.</span><span style="color:#ae81ff">3001.4430</span>
-</span></span></code></pre></div><h4 id="634-查看安装的插件">6.3.4. 查看安装的插件<a hidden class="anchor" aria-hidden="true" href="#634-查看安装的插件">#</a></h4>
+</span></span></code></pre></div><h4 id="查看安装的插件">查看安装的插件<a hidden class="anchor" aria-hidden="true" href="#查看安装的插件">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo /usr/share/logstash/bin/logstash-plugin list
-</span></span></code></pre></div><h4 id="635-启动lostash">6.3.5. 启动Lostash<a hidden class="anchor" aria-hidden="true" href="#635-启动lostash">#</a></h4>
+</span></span></code></pre></div><h4 id="启动lostash">启动Lostash<a hidden class="anchor" aria-hidden="true" href="#启动lostash">#</a></h4>
 <ol>
 <li>
 <p>修改 logstash.yml 配置</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vim /etc/logstash/logstash.yml
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218001656526.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218001656526.png" alt="Typoraimage-20220218001656526"  />
 </p>
 </li>
 </ol>
-<h4 id="636-导入数据利用logstash-直接分析moviescsv-传送给elasticsearch方式">6.3.6. 导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式]<a hidden class="anchor" aria-hidden="true" href="#636-导入数据利用logstash-直接分析moviescsv-传送给elasticsearch方式">#</a></h4>
+<h4 id="导入数据利用logstash-直接分析moviescsv-传送给elasticsearch方式">导入数据[利用logstash 直接分析movies.csv 传送给elasticsearch方式]<a hidden class="anchor" aria-hidden="true" href="#导入数据利用logstash-直接分析moviescsv-传送给elasticsearch方式">#</a></h4>
 <p>​		  收集流程: <strong><font color='red'>movies.csv-&gt;logstash-&gt;elasticdearch-&gt;grafana</font></strong></p>
 <ol>
 <li>
@@ -1484,35 +1469,35 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>sudo rm -rf .lock
 </span></span></code></pre></div><p>或者直接一句话</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo rm -rf /var/lib/logstash/.lock
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220217124057908.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220217124057908.png" alt="Typoraimage-20220217124057908"  />
 </p>
-<p><img loading="lazy" src="Typoraimage-20220217124136069.png" alt=""  />
+<p><img loading="lazy" src="Typoraimage-20220217124136069.png" alt="Typoraimage-20220217124136069"  />
 </p>
 </li>
 </ol>
 </li>
 </ol>
-<h4 id="637-强制查看输出--font-colorredlogstashconffont-修改成你自己的文件">6.3.7. 强制查看输出  <strong><font color='red'>logstash.conf</font></strong> 修改成你自己的文件<a hidden class="anchor" aria-hidden="true" href="#637-强制查看输出--font-colorredlogstashconffont-修改成你自己的文件">#</a></h4>
+<h4 id="强制查看输出--font-colorredlogstashconffont-修改成你自己的文件">强制查看输出  <strong><font color='red'>logstash.conf</font></strong> 修改成你自己的文件<a hidden class="anchor" aria-hidden="true" href="#强制查看输出--font-colorredlogstashconffont-修改成你自己的文件">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo /usr/share/logstash/bin/logstash  /etc/logstash/logstash.conf --verbose --debug
-</span></span></code></pre></div><h4 id="638-查看数据">6.3.8. 查看数据<a hidden class="anchor" aria-hidden="true" href="#638-查看数据">#</a></h4>
+</span></span></code></pre></div><h4 id="查看数据">查看数据<a hidden class="anchor" aria-hidden="true" href="#查看数据">#</a></h4>
 <ol>
 <li>
 <p>用Kibana的命令行工具执行 <strong><font color='red'>GET _cat/indices</font></strong> 命令，就能看见导入到Elasticsearch的索引</p>
-<p><img loading="lazy" src="Typoraimage-20220217112819405.png" alt=""  />
+<p><img loading="lazy" src="Typoraimage-20220217112819405.png" alt="Typoraimage-20220217112819405"  />
 </p>
 </li>
 <li>
 <p>用kibana的命令行工具执行**<font color='red'>GET /lua_cpu_monitor-2022.06.03/_search</font>**命令,就能看见导入到Elasticsearch的数据</p>
-<p><img loading="lazy" src="image-20220603204457448.png" alt=""  />
+<p><img loading="lazy" src="image-20220603204457448.png" alt="image-20220603204457448"  />
 </p>
 </li>
 </ol>
-<h4 id="639-自动重新加载配置命令">6.3.9. 自动重新加载配置命令<a hidden class="anchor" aria-hidden="true" href="#639-自动重新加载配置命令">#</a></h4>
+<h4 id="自动重新加载配置命令">自动重新加载配置命令<a hidden class="anchor" aria-hidden="true" href="#自动重新加载配置命令">#</a></h4>
 <p><strong><font color='red'>logstash.conf</font></strong> 修改成你自己的文件</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo /usr/share/logstash/bin/logstash  /etc/logstash/logstash.conf --config.reload.automatic
 </span></span></code></pre></div><p>默认检测时间是**<font color='red'>3</font>**秒 可以通过下列命令修改 把&lt;&gt;号里面的2换成你想要的时间</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo /usr/share/logstash/bin/logstash  /etc/logstash/logstash.conf --config.reload.interval &lt;2&gt;
-</span></span></code></pre></div><h4 id="539-卸载logstash">5.3.9. 卸载Logstash<a hidden class="anchor" aria-hidden="true" href="#539-卸载logstash">#</a></h4>
+</span></span></code></pre></div><h4 id="卸载logstash">卸载Logstash<a hidden class="anchor" aria-hidden="true" href="#卸载logstash">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> <span style="color:#75715e"># 查看安装的软件</span>
 </span></span><span style="display:flex;"><span> sudo dpkg -l | grep logstash
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#查看安装关联</span>
@@ -1531,8 +1516,8 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span> sudo rm -rf /usr/share/logstash
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#在此查看是否有关联的目录和文件</span>
 </span></span><span style="display:flex;"><span>sudo find / -name logstash
-</span></span></code></pre></div><h3 id="64-kibana">6.4. Kibana<a hidden class="anchor" aria-hidden="true" href="#64-kibana">#</a></h3>
-<h4 id="641-安装kibana">6.4.1. 安装Kibana<a hidden class="anchor" aria-hidden="true" href="#641-安装kibana">#</a></h4>
+</span></span></code></pre></div><h3 id="kibana">Kibana<a hidden class="anchor" aria-hidden="true" href="#kibana">#</a></h3>
+<h4 id="安装kibana">安装Kibana<a hidden class="anchor" aria-hidden="true" href="#安装kibana">#</a></h4>
 <ol>
 <li>
 <p>下载安装公共签名</p>
@@ -1551,13 +1536,13 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo apt-get update <span style="color:#f92672">&amp;&amp;</span> sudo apt-get install kibana
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="642-启动kibana">6.4.2. 启动Kibana<a hidden class="anchor" aria-hidden="true" href="#642-启动kibana">#</a></h4>
+<h4 id="启动kibana">启动Kibana<a hidden class="anchor" aria-hidden="true" href="#启动kibana">#</a></h4>
 <ol>
 <li>
 <p>打开kibana.yml 文档</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vim /etc/kibana/kibana.yml
 </span></span></code></pre></div><p>修改 <strong><font color='red'>server.port,server.host</font></strong> 字段</p>
-<p><img loading="lazy" src="Typoraimage-20220216215646322.png" alt=""  />
+<p><img loading="lazy" src="Typoraimage-20220216215646322.png" alt="Typoraimage-20220216215646322"  />
 </p>
 </li>
 <li>
@@ -1577,7 +1562,7 @@ sudo dpkg -r grafana-enterprise
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">http</span><span style="color:#f92672">://</span><span style="color:#ae81ff">10.40</span><span style="color:#f92672">.</span><span style="color:#ae81ff">38.66</span><span style="color:#f92672">:</span><span style="color:#ae81ff">5601</span>
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="5643-卸载kibana">56.4.3. 卸载Kibana<a hidden class="anchor" aria-hidden="true" href="#5643-卸载kibana">#</a></h4>
+<h4 id="卸载kibana">卸载Kibana<a hidden class="anchor" aria-hidden="true" href="#卸载kibana">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> <span style="color:#75715e"># 查看安装的软件</span>
 </span></span><span style="display:flex;"><span> sudo dpkg -l | grep kibana
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#查看安装关联</span>
@@ -1592,16 +1577,16 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span> sudo rm -rf /etc/kibana
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#在此查看是否有关联的目录和文件</span>
 </span></span><span style="display:flex;"><span>sudo find / -name kibana
-</span></span></code></pre></div><h3 id="65-filebeat">6.5. Filebeat<a hidden class="anchor" aria-hidden="true" href="#65-filebeat">#</a></h3>
+</span></span></code></pre></div><h3 id="filebeat">Filebeat<a hidden class="anchor" aria-hidden="true" href="#filebeat">#</a></h3>
 <p><strong>搭配filebeat主要使用收集nginx数据, <code>和上面的利用logstash解析movies.csv，然后收集数据给elasticsearch</code>的方式不一样</strong></p>
 <p>收集流程: <strong><font color='red'>nginx-&gt;filebeat-&gt;logstash-&gt;elasticdearch-&gt;grafana</font></strong></p>
-<h4 id="651-安装filebeat">6.5.1. 安装Filebeat<a hidden class="anchor" aria-hidden="true" href="#651-安装filebeat">#</a></h4>
+<h4 id="安装filebeat">安装Filebeat<a hidden class="anchor" aria-hidden="true" href="#安装filebeat">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.2.2-amd64.deb
 </span></span><span style="display:flex;"><span>sudo dpkg -i filebeat-8.2.2-amd64.deb
-</span></span></code></pre></div><h4 id="652-修改-filebatyml-配置文件">6.5.2. 修改 filebat.yml 配置文件<a hidden class="anchor" aria-hidden="true" href="#652-修改-filebatyml-配置文件">#</a></h4>
+</span></span></code></pre></div><h4 id="修改-filebatyml-配置文件">修改 filebat.yml 配置文件<a hidden class="anchor" aria-hidden="true" href="#修改-filebatyml-配置文件">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vim /etc/filebeat/filebeat.yml
 </span></span></code></pre></div><p>修改下列几项</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e">#  ============================== Filebeat inputs ===============================</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e"># ============================== Filebeat inputs ===============================</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">filebeat.inputs</span>:
 </span></span><span style="display:flex;"><span>- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">filestream</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">id</span>: <span style="color:#ae81ff">my-filestream-id </span>
@@ -1617,7 +1602,7 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">/home/hls/work/blueprint-server-runtime/log/lua_mem_monitor.log </span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">tags</span>: [<span style="color:#e6db74">&#34;lua_mem_monitor_log&#34;</span>]
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#  ============================== Filebeat modules ==============================</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ============================== Filebeat modules ==============================</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">filebeat.config.modules</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">path</span>: <span style="color:#ae81ff">${path.config}/modules.d/*.yml</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">reload.enabled</span>: <span style="color:#66d9ef">false</span>
@@ -1625,31 +1610,31 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span><span style="color:#f92672">setup.template.settings</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">index.number_of_shards</span>: <span style="color:#ae81ff">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#  ------------------------------ Logstash Output -------------------------------</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ------------------------------ Logstash Output -------------------------------</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">output.logstash</span>:
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e"># The Logstash hosts</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">hosts</span>: [<span style="color:#e6db74">&#34;10.40.38.66:5555&#34;</span>]
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#  ================================= Processors =================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ================================= Processors =================================</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">processors</span>:
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">add_host_metadata</span>:
 </span></span><span style="display:flex;"><span>      <span style="color:#f92672">when.not.contains.tags</span>: <span style="color:#ae81ff">forwarded</span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">add_cloud_metadata</span>: <span style="color:#ae81ff">~</span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">add_docker_metadata</span>: <span style="color:#ae81ff">~</span>
 </span></span><span style="display:flex;"><span>  - <span style="color:#f92672">add_kubernetes_metadata</span>: <span style="color:#ae81ff">~</span>
-</span></span></code></pre></div><h4 id="653-测试filebeat启动后查看相关输出信息">6.5.3. 测试filebeat启动后，查看相关输出信息<a hidden class="anchor" aria-hidden="true" href="#653-测试filebeat启动后查看相关输出信息">#</a></h4>
+</span></span></code></pre></div><h4 id="测试filebeat启动后查看相关输出信息">测试filebeat启动后，查看相关输出信息<a hidden class="anchor" aria-hidden="true" href="#测试filebeat启动后查看相关输出信息">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo filebeat -e -c /etc/filebeat/filebeat.yml -d <span style="color:#e6db74">&#34;publish&#34;</span>
-</span></span></code></pre></div><h4 id="654-后台方式启动filebeat">6.5.4. 后台方式启动filebeat<a hidden class="anchor" aria-hidden="true" href="#654-后台方式启动filebeat">#</a></h4>
+</span></span></code></pre></div><h4 id="后台方式启动filebeat">后台方式启动filebeat<a hidden class="anchor" aria-hidden="true" href="#后台方式启动filebeat">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>nohup filebeat -e -c /etc/filebeat/filebeat.yml &gt;/dev/null 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp; <span style="color:#75715e">#将所有标准输出及标准错误输出到/dev/null空设备，即没有任何输出</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>nohup filebeat -e -c /etc/filebeat/filebeat.yml &gt; filebeat.log &amp;
-</span></span></code></pre></div><h4 id="655-停止filebeat">6.5.5. 停止filebeat<a hidden class="anchor" aria-hidden="true" href="#655-停止filebeat">#</a></h4>
+</span></span></code></pre></div><h4 id="停止filebeat">停止filebeat<a hidden class="anchor" aria-hidden="true" href="#停止filebeat">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>ps -ef | grep filebeat
 </span></span><span style="display:flex;"><span>kill -9 进程号
-</span></span></code></pre></div><h4 id="656-启动出现的问题">6.5.6. 启动出现的问题<a hidden class="anchor" aria-hidden="true" href="#656-启动出现的问题">#</a></h4>
+</span></span></code></pre></div><h4 id="启动出现的问题">启动出现的问题<a hidden class="anchor" aria-hidden="true" href="#启动出现的问题">#</a></h4>
 <p>执行命令<code>systemctl start filebeat.service</code>就能够启动了。而后执行<code>ps -ef|grep filebeat</code>查看一下</p>
 <p>能够看到已经启动胜利了，如果你发现没有启动成功，那么就执行<code> cd /usr/bin</code>，在这个目录下执行<code>./filebeat -c /etc/filebeat/filebeat.yml -e</code>，这样会提醒具体的错误信息。而用<code>systemctl start filebeat.service</code>启动的时候没有任何提醒，连在 /var/log/filebeat/ 和 /var/lib/filebeat/registry/filebeat/ 都没找到错误信息，这里属实有点坑。</p>
 <p>重新启动命令<code>systemctl restart filebeat.service</code></p>
-<h4 id="657-去安装logstash的机器启动logstash">6.5.7 去安装logstash的机器启动logstash<a hidden class="anchor" aria-hidden="true" href="#657-去安装logstash的机器启动logstash">#</a></h4>
+<h4 id="去安装logstash的机器启动logstash">去安装logstash的机器启动logstash<a hidden class="anchor" aria-hidden="true" href="#去安装logstash的机器启动logstash">#</a></h4>
 <ol>
 <li>
 <p>增加 logstash_filebeat.conf 文档</p>
@@ -1684,7 +1669,7 @@ sudo dpkg -r grafana-enterprise
 </span></span><span style="display:flex;"><span>sudo /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/logstash_filebeat.conf --verbose --debug
 </span></span></code></pre></div></li>
 </ol>
-<h4 id="658-用filebeat-监控-nginx">6.5.8. 用filebeat 监控 nginx<a hidden class="anchor" aria-hidden="true" href="#658-用filebeat-监控-nginx">#</a></h4>
+<h4 id="用filebeat-监控-nginx">用filebeat 监控 nginx<a hidden class="anchor" aria-hidden="true" href="#用filebeat-监控-nginx">#</a></h4>
 <ol>
 <li>
 <p>修改 nginx conf 配置表</p>
@@ -1714,7 +1699,7 @@ sudo dpkg -r grafana-enterprise
 </span></span></code></pre></div></li>
 <li>
 <p>对比修改下图对应的3个红框地方</p>
-<p><img loading="lazy" src="Typoraimage-20220218160818419.png" alt=""  />
+<p><img loading="lazy" src="Typoraimage-20220218160818419.png" alt="Typoraimage-20220218160818419"  />
 </p>
 </li>
 <li>
@@ -1725,11 +1710,11 @@ sudo dpkg -r grafana-enterprise
 <p>用 <strong><font color='red'>http:192.168.70.132:7000</font></strong> 登录nginx 网站生成登录日志，然后打开 <strong><font color='red'>access.log</font></strong> 日志</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>sudo vim /usr/local/nginx/logs/access.log
 </span></span><span style="display:flex;"><span>sudo tail -f /usr/local/nginx/logs/access.log
-</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218161633527.png" alt=""  />
+</span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220218161633527.png" alt="Typoraimage-20220218161633527"  />
 </p>
 </li>
 </ol>
-<h4 id="659-卸载filebeat">6.5.9. 卸载Filebeat<a hidden class="anchor" aria-hidden="true" href="#659-卸载filebeat">#</a></h4>
+<h4 id="卸载filebeat">卸载Filebeat<a hidden class="anchor" aria-hidden="true" href="#卸载filebeat">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span> <span style="color:#75715e"># 查看安装的软件</span>
 </span></span><span style="display:flex;"><span> sudo dpkg -l | grep filebeat
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">#查看安装关联</span>
@@ -1779,15 +1764,15 @@ sudo dpkg -r grafana-enterprise
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/blog/skynet/">
+  <a class="prev" href="https://frog-game.github.io/posts/blog/vscode-lua-chajian/">
     <span class="title">« 上一页</span>
     <br>
-    <span>skynet赏析</span>
+    <span>微服务lua调试器</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/vscode-lua-chajian/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/wufengdashijie/">
     <span class="title">下一页 »</span>
     <br>
-    <span>微服务lua调试器</span>
+    <span>无缝大世界</span>
   </a>
 </nav>
 

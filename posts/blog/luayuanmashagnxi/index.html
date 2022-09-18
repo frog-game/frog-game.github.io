@@ -5,13 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>lua源码赏析笔记 | frog&#39;s Blog</title>
+<title>lua源码赏析 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被">
+<meta name="description" content="基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/luayuanmashagnxi/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d8a1c95b1eb964516f02dd7068e2fd42017af5baba0751df317cf8a081744b14.css" integrity="sha256-2KHJWx65ZFFvAt1waOL9QgF69bq6B1HfMXz4oIF0SxQ=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.905fe131597072fcbc87e1225756e27ba28555e0f5e049157c9a9ae308ef3b2b.css" integrity="sha256-kF/hMVlwcvy8h&#43;EiV1bie6KFVeD14EkVfJqa4wjvOys=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -67,16 +67,16 @@ var _hmt = _hmt || [];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>
-<meta property="og:title" content="lua源码赏析笔记" />
-<meta property="og:description" content="1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被" />
+<meta property="og:title" content="lua源码赏析" />
+<meta property="og:description" content="基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/luayuanmashagnxi/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2022-09-13T01:30:29&#43;08:00" />
+<meta property="article:published_time" content="2022-09-17T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-09-17T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="lua源码赏析笔记"/>
-<meta name="twitter:description" content="1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被"/>
+<meta name="twitter:title" content="lua源码赏析"/>
+<meta name="twitter:description" content="基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋"/>
 
 
 <script type="application/ld+json">
@@ -99,7 +99,7 @@ var _hmt = _hmt || [];
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "lua源码赏析笔记",
+      "name": "lua源码赏析",
       "item": "https://frog-game.github.io/posts/blog/luayuanmashagnxi/"
     }
   ]
@@ -109,17 +109,17 @@ var _hmt = _hmt || [];
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "lua源码赏析笔记",
-  "name": "lua源码赏析笔记",
-  "description": "1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被",
+  "headline": "lua源码赏析",
+  "name": "lua源码赏析",
+  "description": "基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋",
   "keywords": [
     ""
   ],
-  "articleBody": "1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋值成nil类型，nil类型就nil一个值，表示变量是否被赋值，变量赋值成nil也表示删除变量 LUA_TBOOLEAN false和nil为假 其他都为真(包括0) LUA_TLIGHTUSERDATA 见1.1 表 LUA_TNUMBER 所有数字，int float double 类型都为number类型 number类型可以和全是数字的字符串进行计算，字符串会进行类型转换 LUA_TSTRING 一但被赋值就不能被修改，可以通过方法string.gsub()来修改；分为长字符串和短字符串（小于等于40字符） LUA_TTABLE 数组容器 LUA_TFUNCTION 函数 LUA_TUSERDAT 见1.1 表 LUA_TTHREAD 协程，只是拷贝了一个栈空间 LUA_NUMTAGS tag 总数 1.1. LUA_TTHREAD 代表协程类型\n除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾\n每次调用lua_newstate的时候都会创建一个新的luastate,不同的luastate完全独立，之间不共享任何数据\n协程提供了新的api接口和lua_resetthread,coroutine.close 会使协程进入死亡状态,并且关闭所有的close变量\n1.2. full userdata和light userdata区别 区别 full userdata light userdata 作用 通常用来表示C中的结构体一小段固定的内存区域 通常用来表示C中的指针(void *) 内存管理 由Lua的垃圾回收器管理 使用者需要关心其内存 元表 有独立的元表 没有独立的元表 创建 void *lua_newuserdata(lua_State *L, size_t size) lua_pushlightuserdata(lua_State *L, void *p); 1.2.1. full userdata //c文件 //#include extern \"C\" { #include \"lua.h\" #include \"lauxlib.h\" #include \"lualib.h\" } #include using namespace std; static struct StudentTag { char *strName; // 学生姓名 char *strNum; // 学号 int iSex; // 学生性别 int iAge; // 学生年龄 }T; static int Student(lua_State *L) { size_t iBytes = sizeof(struct StudentTag); struct StudentTag *pStudent; pStudent = (struct StudentTag *)lua_newuserdata(L, iBytes); //设置元表 luaL_getmetatable(L, \"Student\"); lua_setmetatable(L, -2); //lua_pushnumber(L, 123); return 1; // 新的userdata已经在栈上了 } static int GetName(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushstring(L, pStudent-\u003estrName); return 1; } static int SetName(lua_State *L) { // 第一个参数是userdata struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); // 第二个参数是一个字符串 const char *pName = luaL_checkstring(L, 2); luaL_argcheck(L, pName != NULL \u0026\u0026 pName != \"\", 2, \"Wrong Parameter\"); pStudent-\u003estrName =(char*) pName; return 0; } static int GetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushinteger(L, pStudent-\u003eiAge); return 1; } static int SetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); int iAge = luaL_checkinteger(L, 2); luaL_argcheck(L, iAge \u003e= 6 \u0026\u0026 iAge \u003c= 100, 2, \"Wrong Parameter\"); pStudent-\u003eiAge = iAge; return 0; } static int GetSex(lua_State *L) { // 这里由你来补充 return 1; } static int SetSex(lua_State *L) { // 这里由你来补充 return 0; } static int GetNum(lua_State *L) { // 这里由你来补充 return 1; } static int SetNum(lua_State *L) { // 这里由你来补充 return 0; } static luaL_Reg arrayFunc_meta[] = { { \"getName\", GetName }, { \"setName\", SetName }, { \"getAge\", GetAge }, { \"setAge\", SetAge }, { \"getSex\", GetSex }, { \"setSex\", SetSex }, { \"getNum\", GetNum }, { \"setNum\", SetNum }, { NULL, NULL } }; static luaL_Reg arrayFunc[] = { { \"new\", Student}, { NULL, NULL } }; extern \"C\" _declspec(dllexport) int luaopen_mytestlib(lua_State *L) { // 创建一个新的元表 luaL_newmetatable(L, \"Student\"); // 元表.__index = 元表 lua_pushvalue(L, -1); lua_setfield(L, -2, \"__index\"); luaL_setfuncs(L, arrayFunc_meta, 0); luaL_newlib(L, arrayFunc); lua_pushvalue(L, -1); lua_setglobal(L, \"Sdudent\"); /* the module name */ return 1; } -- lua 文件 require \"mytestlib\" local objStudent = Sdudent.new() objStudent:setName(\"果冻\") local strName = objStudent:getName() print(strName ) for k,v in pairs(getmetatable(objStudent)) do print(tostring(k),tostring(v)) end 1.2.2. light userdata //C文件 #include #include #include using namespace std; extern \"C\" { #include \"lua.h\" #include \"lualib.h\" #include \"lauxlib.h\" } typedef struct { int x; int y; int z; }TData; static int getAttribute(lua_State* L) { TData *data = (TData*)lua_touserdata(L, 1); std::string attribute = luaL_checkstring(L, 2); int result = 0; if (attribute == \"x\") { result = data-\u003ex; } else if (attribute == \"y\") { result = data-\u003ey; } else { result = data-\u003ez; } lua_pushnumber(L, result); return 1; } static luaL_Reg dataLib[] = { { \"__index\", getAttribute }, { NULL, NULL } }; void getMetaTable(lua_State* L, luaL_Reg* methods) { lua_pushlightuserdata(L, methods); lua_gettable(L, LUA_REGISTRYINDEX); if (lua_isnil(L, -1)) { /* not found */ lua_pop(L, 1); lua_newtable(L); luaL_setfuncs(L, methods, 0); lua_pushlightuserdata(L, methods); lua_pushvalue(L, -2); lua_settable(L, LUA_REGISTRYINDEX); } } int main() { const char* filename = \"test.lua\"; lua_State *lua = luaL_newstate(); if (lua == NULL) { fprintf(stderr, \"open lua failed\"); return -1; } luaL_openlibs(lua); TData input = { 123, 231, 321 }; lua_pushlightuserdata(lua, \u0026input); getMetaTable(lua, dataLib); lua_setmetatable(lua, -2); lua_setglobal(lua, \"input\"); if (luaL_dofile(lua, filename)) { //luaL_error(lua, \"load file %s failed\", filename); } lua_getglobal(lua, \"data\"); int output = lua_tointeger(lua, -1); std::cout \u003c\u003c output \u003c\u003c std::endl; return 0; } --lua文件 data = input.x; print(data) 1.2.3. 需要注意地方 序号 注意项 1 Lua中变量没有预定义类型，每个变量可以包含任意类型的值，要用就直接赋值一种数据类型的值 2 nil类型就nil一个值，表示变量是否被赋值，变量赋值成nil也表示删除变量 3 使用Type(xxx变量) 可以获取该变量的数据类型 4 number 所有数字，int float double 类型等都为number类型了 5 字符串一旦赋值不能被修改，可以通过方法string.gsub()来修改，可以写成’xxas’单引号，但是建议用双引号”” 6 number类型可以和全是数字的字符串进行计算，字符串会进行类型转换 7 .. 连接符号 ，可以连接字符串类型，也可以连接整形的变量，但是如果直接使用真实的数字要在后面加个空格，因为系统会把 数字.. 看出2个浮点 如 1..2 （错误写法） 1 ..2 (正确写法) 8 类型不同，比较判断也不会相等,如number类型的123不等于string类型的123 9 计算运算符中取余可以和浮点数计算，可以精确到小数级别 10 关系运算符中~= 表示不等于，类似其他语言如c的 != 11 逻辑运算符 and ，or ，not 对应 \u0026\u0026 ，|| , ！ 12 表达式：a and b a为假则返回a 否则返回b， a or b a为真返回a否则返回b ,简单理解and就是先判断a a正确就继续判断b，如果b也正确返回btrue，则if(a and b) 为true ，这实际上也是\u0026\u0026的使用原理一样 ，如果a为假就是false直接返回a if(a and b) 就是false了 。 or 同理 13 赋值方式一：多个变量同时赋值，多的变量(变量个数多于值个数)默认为nil，少的变量(变量个数少于值个数)不做处理，可以类型混搭 14 局部变量 用local修饰声明 ，内存在栈上，在一个函数，代码块{ }内 函数，代码块结束，内存自动释放 15 全局变量在堆上，可以随时创建，程序结束，内存自动释放 16 控制语句上，有if for where 没有switch结构 17 控制语句上，不需要写 () {} {指代 ：then } 指代 ： end 18 循环结构 while do end ,里面不能写() 以及 ++ – += 类似的运算符 19 循环结构 for 也不需要写() 也不在赋值除了对第一个赋值，其他都可以省略写默认写为 \u003c= +xx 或 \u003e= -xx 20 函数的返回值和其他语言一样可以返回个值，变量。但是不同的是可以同时返回多个变量，进行多个赋值 21 table可以有数组的形式，字典的形式，数组字典同时混合的形式 22 print()打印会默认换行 23 #号数组是计算数组容器table的下标个数，lua的数组容器下标从1开始计算递增，字典不包括key元素 24 ipairs 仅仅遍历值，按照索引升序遍历，索引中断停止遍历。不能返回 nil,如果遇到 nil 则退出。它只能遍历到集合中出现的第一个不是整数的 key。 pairs 能遍历集合的所有元素。即 pairs 可以遍历集合中所有的 key，并且除了迭代器本身以及遍历表本身还可以返回 nil。 25 lua 布尔类型只有两个取值false和true. 但要注意lua中所有的值都可以作为条件. 在控制结构的条件中除了false和nil为假, 其他值都为真。lua认为 0 和 空字符串都是真！！ 1.2.3.1. pairs和ipairs 例子比较 test = {[\"xxx\"] = nil , tt = \"tabao\"} for k , v in pairs(test) do print(k,v) end 输出： tt tabao test = {nil = xxxx , tt = \"tabao\"} for k , v in pairs(test) do print(k,v) end 输出：stdin:1: bad argument #1 to 'for iterator' (table expected, got nil) stack traceback: [C]: in function 'next' stdin:1: in main chunk [C]: in ? local tab = { [1] = \"a\", [3] = \"b\", [4] = \"c\" } for k, v in ipairs(tab) do print(k, v) end 输出：1 a ,在key等于2处断开 local tab= { [2] = \"a\", [3] = \"b\", [4] = \"c\" } for k, v in ipairs(tab) do print(k, v) end 输出：什么都没输出，为什么？因为控制变量初始值是按升序来遍历的，当key为1时，value为nil，此时便停止了遍历， 所有什么结果都没输出。 for k, v in pairs(tab) do print(k, v) end 输出：2 a, 3 b, 4 c local tab = {\"a\", \"b\", [3] = \"c\", [\"two\"] = \"d\"} for i,v in ipairs(tab) do print( tab [i] ) end 输出：a，b，c for i,v in pairs(tab) do print( tab [i] ) 输出：a，b，c，d。 2. lua 模块 import 和 require 差异 载入一个模块 import() 与 require() 功能相同，但具有一定程度的自动化特性。\nimport支持相对路径的写法，一个点表示当前目录，两个点表示上一级目录，以此类推。\nrequire 最好写成绝对路径的形式如：require \"src.ui.common.FightPointAdd\" or require \"src/common/FightPointAdd\"\nimport还有一个优势是假设：A/B/下有两个文件c.lua,d.lua，如果在c中用到了d话,require( \"A/B/d\"),import(\".d\") ，如果后面目录结构改了 ,c,d都到了A目录下,那对应的要修改require(\"A/d) 而import可以不用修改。\n3. lua 正则表达式 测试工具地址:https://wiki.luatos.com/pages/emulator.html\n下面的表列出了Lua支持的所有字符类:\n. 任意字符 %a 字母 %c 控制字符 %d 数字 %l 小写字母 %p 标点字符 %s 空白符 %u 大写字母 %w 字母和数字 %x 十六进制数字 %z 代表0的字符 上面字符类的大写形式表示小写所代表的集合的补集。例如, %A非字母的字符:\nprint(string.gsub(\"hello, up-down!\", \"%A\", \".\")) --\u003e hello..up.down. 4 数字4不是字符串结果的一部分，他是gsub返回的第二个结果，代表发生替换的次数.\nlua特殊字符\n( ) . % + - * ? [ ^ $ %用作特殊字符的转义字符，因此 %. 匹配点; %%匹配字符 % .转义字符%不仅可以用来转义特殊字符，还可以用于所有的非字母的字符。当对一个字符有疑问的时候，为安全起见请使用转义字符转义他。\n\\ 是lua的转义字符\n[%w_]将匹配字母数字和下划线\n[01]匹配二进制数字，[%[%]]匹配一对方括号\n第一个字符和最后一个字符之间用连字符-连接表示这两个字符之间范围内的字符集合\n%d表示 [0-9]\n%x表示[0-9a-fA-F]\n查找八进制数:[0-7]\n匹配任何非换行符户的字符: [^\\n]\n模式修饰符\n+ 匹配前一字符1次或多次 * 匹配前一字符0次或多次 - 匹配前一字符0次或多次 ? 匹配前一字符0次或1次 +匹配一个或多个字符，她总是进行最长的匹配. 比如，模式串 %a+匹配一个或多个字母或者一个单词 :\nprint(string.gsub(\"one, and two; and three\", \"%a+\", \"word\")) --\u003e word, word word; word word %d+匹配一个或多个数字 (整数):\ni, j = string.find(\"the number 1298 is even\", \"%d+\") print(i,j) --\u003e 12 15 * 与 +类似, 但是他匹配一个字符0次或多次出现.一个典型的应用是匹配空白。比如，为了匹配一对圆括号()或者( )之间的空白，可以使用%(%s*%) ( '%s*用来匹配0个或多个空白,由于圆括号在模式中有特殊的含义，所以我们必须使用%转义他.) 再看一个例子，[_%a][_%w]*匹配Lua程序中的标示符：字母或者下划线开头的字母下划线数字序列。\n-与*一样，都匹配一个字符的0次或多次出现，但是他进行的是最短匹配。某些时候这两个用起来没有区别，但有些时候结果将截然不同。比如，如果你使用模式[_%a][_%w]-来查找标示符，你将只能找到第一个字母，因为[_%w]-永远匹配空。另一方面，假定你想查找C程序中的注释，很多人可能使用 /%*.*%*/ (也就是说 \"/*\" 后面跟着任意多个字符，然后跟着 \"*/\") 然而，由于 .*进行的是最长匹配，这个模式将匹配程序中第一个\"/*\" 和最后一个\"*/\"之间所有部分:\ntest = \"int x; /* x */ int y; /* y */\" print(string.gsub(test, \"/%*.*%*/\", \"\")) --\u003e int x; 然而模式 .-进行的是最短匹配，她会匹配\"/*\"开始到第一个\"*/\"之前的部分:\ntest = \"int x; /* x */ int y; /* y */\" print(string.gsub(test, \"/%*.-%*/\", \"\")) --\u003e int x; int y; ?匹配一个字符0次或1次.举个例子，假定我们想在一段文本内查找一个整数，整数可能带有正负号。 模式 [+-]?%d+符合我们的要求，她可以匹配 像 \"-12\", \"23\" 和 \"+1009\"等数字. [+-] 是一个匹配+或者 -的字符类；接下来的 ?意思是匹配前面的字符类0次或者1次.\n与其他系统的模式不同的是，Lua中的修饰符不能用字符类；不能将模式分组然后使用修饰符作用这个分组。比如，没有一个模式可以匹配一个可选的单词(除非这个单词只有一个字母)。下面我将看到，通常你可以使用一些高级技术绕开这个限制。\n以^开头的模式只匹配目标串的开始部分，相似的，以$结尾的模式只匹配目标串的结尾部分。这不仅可以用来限制你要查找的模式，还可以定位(anchor)模式。比如：\nif string.find(s, \"^%d\") then ... 符串s是否以数字开头，而 if string.find(s, \"^[+-]?%d+$\") then ... 检查字符串s是否是一个整数。\n%b用来匹配对称的字符.常写为 %bxy,x和y是任意两个不同的字符；x作为匹配的开始,y作为匹配的结束。比如， %b()匹配以(开始， 以 )结束的字符串:\nprint(string.gsub(\"a (enclosed (in) parentheses) line\", \"%b()\", \"\")) --\u003e a line 常用的这种模式有： %b(), %b[], %b%{%},和 %b\u003c\u003e。你也可以使用任何字符作为分隔符。\n4. lua字符串管理 typedef struct TString { CommonHeader; // 字符串的子类型有两种：长字符串和短字符串 // 短字符串：extra表示Lua保留字的索引，如果为0就不是保留字 // 长字符串：extra标记是否已经计算哈希值，0表示还未计算 lu_byte extra; lu_byte shrlen; // 短字符串长度 unsigned int hash; // 字符串的哈希值 // 下面联合分两种情况： // 如果是长字符串则是长度lnglen // 如果是短字符串则是hnext，指向下一个短字符串对象，短字符串会用哈希表缓存， union { size_t lnglen; struct TString *hnext; } u; char contents[1];//真正的字符串存储在这里 } TString; 4.1. 字符串创建方式 4.1.1. 全局字符串表 typedef struct stringtable { TString **hash;//hash散列桶 int nuse; /* number of elements *///实际的使用元素 int size;//当前桶的大小 } stringtable; 4.1.2. 链表方式 相同hash字符串存储在 stringtable strt 链表结构上 一般短字符串会使用这种方式存储\n4.1.3. hashMap缓存方式 下图中N是数组行，M是数组列\ni的下标值通过unsigned int i = point2uint(str) % STRCACHE_Nhash求得\nj的最大值固定就是下面的宏函数 STRCACHE_M 2\n下面两个函数luaS_new luaS_newlstr是创建字符串的核心函数\n/* ** Create or reuse a zero-terminated string, first checking in the ** cache (using the string address as a key). The cache can contain ** only zero-terminated strings, so it is safe to use 'strcmp' to ** check hits. 创建或重用一个以'0'结尾的字符串，首先查找 global_state 的 strcache 缓存是否已存在该字符串， 若存在则直接返回，否则创建一个新的，并加入到缓存中 */ TString *luaS_new (lua_State *L, const char *str) { //point2uint 指针转无符号整数 unsigned int i = point2uint(str) % STRCACHE_N; /* hash */ //求出strcache下标 STRCACHE_N等于53 int j; //在全局G中查找strcache里面查找是否有这个string TString **p = G(L)-\u003estrcache[i]; for (j = 0; j \u003c STRCACHE_M; j++) { if (strcmp(str, getstr(p[j])) == 0) /* hit? */ return p[j]; /* that is it */ } //如果没有找到创建新的Tstring,并放到第一个位置 //同时也意味着最后一个元素会被移除strcache /* normal route */ for (j = STRCACHE_M - 1; j \u003e 0; j--) p[j] = p[j - 1]; /* move out last element */ /* new element is first in the list */ p[0] = luaS_newlstr(L, str, strlen(str));//创建新的Tstring return p[0]; } /* ** new string (with explicit length) 创建一个给定长度的字符串 */ TString *luaS_newlstr (lua_State *L, const char *str, size_t l) { if (l \u003c= LUAI_MAXSHORTLEN) /* short string? */ //判断是不是短字符串 return internshrstr(L, str, l);//短字符串创建 else {//长字符串创建 TString *ts; if (l_unlikely(l \u003e= (MAX_SIZE - sizeof(TString))/sizeof(char)))//如果字符串太长 创建失败 luaM_toobig(L); ts = luaS_createlngstrobj(L, l);//直接创建长字符串 memcpy(getstr(ts), str, l * sizeof(char));//拷贝字符串内容 return ts; } } /* ** Checks whether short string exists and reuses it or creates a new one. ** 检查短字符串是否已经存在，如果存在则复用，否则创建一个新的 */ static TString *internshrstr (lua_State *L, const char *str, size_t l) { TString *ts; global_State *g = G(L);//全局表 stringtable *tb = \u0026g-\u003estrt;//全局字符串表，lua所有的短字符串都存在这个里面 unsigned int h = luaS_hash(str, l, g-\u003eseed);//求的hash值 TString **list = \u0026tb-\u003ehash[lmod(h, tb-\u003esize)];//求得全局字符串表中对应hash位置的链表 lua_assert(str != NULL); /* otherwise 'memcmp'/'memcpy' are undefined */ for (ts = *list; ts != NULL; ts = ts-\u003eu.hnext) {//遍历链表查找是否有相同的字符串 if (l == ts-\u003eshrlen \u0026\u0026 (memcmp(str, getstr(ts), l * sizeof(char)) == 0)) { /* found! */ if (isdead(g, ts)) /* dead (but not collected yet)? *///如果找到，并且当前gc判断要被回收 changewhite(ts); /* resurrect it *///这个时候修改它为白色状态，表示不需要回收 return ts;//直接返回查找到的字符串 } } /* else must create a new string *///否则必须创建一个字符串 if (tb-\u003enuse \u003e= tb-\u003esize) { /* need to grow string table? *///容量不够需要扩容 growstrtab(L, tb);//扩容容量 list = \u0026tb-\u003ehash[lmod(h, tb-\u003esize)]; /* rehash with new size *///重新计算全局字符串表中对应的hash位置的链表 } ts = createstrobj(L, l, LUA_VSHRSTR, h);//创建一个字符串对象 memcpy(getstr(ts), str, l * sizeof(char));//拷贝进去 ts-\u003eshrlen = cast_byte(l);//赋值字符串大小，按无符号char大小求长度 ts-\u003eu.hnext = *list;//添加到全局的字符串表中,此处是头插法插入数据 *list = ts; tb-\u003enuse++; return ts; } //创建一个长串 TString *luaS_createlngstrobj (lua_State *L, size_t l) { TString *ts = createstrobj(L, l, LUA_VLNGSTR, G(L)-\u003eseed); ts-\u003eu.lnglen = l; return ts; } /*创建一个长字符串或者短字符串 ** creates a new string object */ static TString *createstrobj (lua_State *L, size_t l, int tag, unsigned int h) { TString *ts; GCObject *o; size_t totalsize; /* total size of TString object */ totalsize = sizelstring(l);//得到真正字符串的大小 o = luaC_newobj(L, tag, totalsize);//创建一个GC对象 ts = gco2ts(o);//强制转换为Tsing结构 ts-\u003ehash = h;//赋seed值也就是随机种子 ts-\u003eextra = 0;//0表示还未计算真正的hash值 getstr(ts)[l] = '\\0'; /* ending 0 */ return ts; } 4.1.4. 函数调用过程 4.2. 字符串大小 字符串内容会在有效数据的结尾强制加上\\0，所以字符串对象的总大小为:\n头的大小加上字符串的空间+加上最后的\\0\n/* ** Size of a TString: Size of the header plus space for the string ** itself (including final '\\0'). */ #define sizelstring(l) (offsetof(TString, contents) + ((l) + 1) * sizeof(char)) //offsetof(TString, contents) contents成员相对于TString开头位置的偏移量，等价于头的大小 //((l) + 1) l是外部传进来长短字符串的大小 +1是最后'\\0'大小 4.3. 长短字符串 /* ** Maximum length for short strings, that is, strings that are ** internalized. (Cannot be smaller than reserved words or tags for ** metamethods, as these strings must be internalized; ** #(\"function\") = 8, #(\"__newindex\") = 10.) */ #if !defined(LUAI_MAXSHORTLEN) #define LUAI_MAXSHORTLEN\t40 #endif 4.3.1. 短字符串 定义:小于等于40个字节的字符串\n4.3.1.1. 比较大小 因为是重复利用的，所以直接比较指针地址就可以了\n/* ** equality for short strings, which are always internalized */ #define eqshrstr(a,b)\tcheck_exp((a)-\u003ett == LUA_VSHRSTR, (a) == (b)) 4.3.2. 长字符串 4.3.2.1. 计算hash值 长字符串不会马上计算哈希值，一般在调用luaS_hashlongstr 时候才会去计算\nunsigned int luaS_hashlongstr (TString *ts) { lua_assert(ts-\u003ett == LUA_VLNGSTR); if (ts-\u003eextra == 0) { /* no hash? *///extra为0的时候才去计算hash值 size_t len = ts-\u003eu.lnglen; ts-\u003ehash = luaS_hash(getstr(ts), len, ts-\u003ehash);//通过luaS_hash创建hash值 ts-\u003eextra = 1; /* now it has its hash */ } return ts-\u003ehash; } unsigned int luaS_hash (const char *str, size_t l, unsigned int seed) { unsigned int h = seed ^ cast_uint(l); for (; l \u003e 0; l--) h ^= ((h\u003c\u003c5) + (h\u003e\u003e2) + cast_byte(str[l - 1])); return h; } 4.3.2.2. 比较大小 /* ** equality for long strings 长字符串的比较：先比较地址，再比较长度，最后比较内容 */ int luaS_eqlngstr (TString *a, TString *b) { size_t len = a-\u003eu.lnglen; lua_assert(a-\u003ett == LUA_VLNGSTR \u0026\u0026 b-\u003ett == LUA_VLNGSTR); return (a == b) || /* same instance or... */ ((len == b-\u003eu.lnglen) \u0026\u0026 /* equal length and ... */ (memcmp(getstr(a), getstr(b), len) == 0)); /* equal contents */ } 5. lua table 5.1. 值对象结构 /* ** Union of all Lua values 还有几种数据类型是不需要进行垃圾回收的, //Lua 中将GCObject 和它们一起放在了联合体Value 中: */ typedef union Value { struct GCObject *gc; /* collectable objects */ void *p; /* light userdata */ lua_CFunction f; /* light C functions */ lua_Integer i; /* integer numbers */ lua_Number n; /* float numbers */ } Value; 变量 说明 GCObject gc 用于垃圾回收 主要是为了连接垃圾回收对象的互相引用关系 void *p 为c中传入的指针，由c 分配和释放 light userdata lua_CFunction f 表示C导出给lua的函数指针，typedef int (*lua_CFunction) (lua_State *L) lua_Integer i 表示整数类型，typedef long long lua_Integer lua_Number n 表示双精度浮点类型，typedef double lua_Number 5.2. 非GC对象 从上面可以看到非GC的对象有4中\nlight userdata C函数 整型 浮点型 int b(lua 5.4 数字分为整数和浮点，而i正好也可以用作bool,所以把这个给**删除**,和 lua_Integer i 结合到一起了) 5.3. GC对象 union GCUnion { GCObject gc; /* common header */ struct TString ts; struct Udata u; union Closure cl; struct Table h; struct Proto p;// Proto主要存放二进制指令集Opcode Lua在解析函数的过程中，会将一条条语句逐个‘编译’成指令集 struct lua_State th; /* thread */ struct UpVal upv; }; 从上面的union结构体可以看到GC对象有6中\n字符串 userdata closure 闭包 table lua 函数原型(Proto主要存放二进制指令集Opcode) lua 线程 (其实就是协程) lua上值 5.4. CommonHeader类型 #define CommonHeader\tstruct GCObject *next; lu_byte tt; lu_byte marked next 指针 指向下一个GC对象 tt GC对象的实际类型(比如上面6中GC对象) marked 标识GC的状态(白1 白2 黑 final) 5.5. TValuefields 类型 #define TValuefields Value value_; int tt_ Value：存储具体数据的值 tt_：表示这个值的类型，即所有的基础数据类型 5.6. table 结构 typedef struct Table { CommonHeader; lu_byte flags; /* 1\u003c",
-  "wordCount" : "9330",
+  "articleBody": "基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋值成nil类型，nil类型就nil一个值，表示变量是否被赋值，变量赋值成nil也表示删除变量 LUA_TBOOLEAN false和nil为假 其他都为真(包括0) LUA_TLIGHTUSERDATA 见1.1 表 LUA_TNUMBER 所有数字，int float double 类型都为number类型 number类型可以和全是数字的字符串进行计算，字符串会进行类型转换 LUA_TSTRING 一但被赋值就不能被修改，可以通过方法string.gsub()来修改；分为长字符串和短字符串（小于等于40字符） LUA_TTABLE 数组容器 LUA_TFUNCTION 函数 LUA_TUSERDAT 见1.1 表 LUA_TTHREAD 协程，只是拷贝了一个栈空间 LUA_NUMTAGS tag 总数 LUA_TTHREAD 代表协程类型 除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾 每次调用lua_newstate的时候都会创建一个新的luastate,不同的luastate完全独立，之间不共享任何数据 协程提供了新的api接口和lua_resetthread,coroutine.close 会使协程进入死亡状态,并且关闭所有的close变量 full userdata和light userdata区别 区别 full userdata light userdata 作用 通常用来表示C中的结构体一小段固定的内存区域 通常用来表示C中的指针(void *) 内存管理 由Lua的垃圾回收器管理 使用者需要关心其内存 元表 有独立的元表 没有独立的元表 创建 void *lua_newuserdata(lua_State *L, size_t size) lua_pushlightuserdata(lua_State *L, void *p); full userdata //c文件 //#include extern \"C\" { #include \"lua.h\" #include \"lauxlib.h\" #include \"lualib.h\" } #include using namespace std; static struct StudentTag { char *strName; // 学生姓名 char *strNum; // 学号 int iSex; // 学生性别 int iAge; // 学生年龄 }T; static int Student(lua_State *L) { size_t iBytes = sizeof(struct StudentTag); struct StudentTag *pStudent; pStudent = (struct StudentTag *)lua_newuserdata(L, iBytes); //设置元表 luaL_getmetatable(L, \"Student\"); lua_setmetatable(L, -2); //lua_pushnumber(L, 123); return 1; // 新的userdata已经在栈上了 } static int GetName(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushstring(L, pStudent-\u003estrName); return 1; } static int SetName(lua_State *L) { // 第一个参数是userdata struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); // 第二个参数是一个字符串 const char *pName = luaL_checkstring(L, 2); luaL_argcheck(L, pName != NULL \u0026\u0026 pName != \"\", 2, \"Wrong Parameter\"); pStudent-\u003estrName =(char*) pName; return 0; } static int GetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushinteger(L, pStudent-\u003eiAge); return 1; } static int SetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); int iAge = luaL_checkinteger(L, 2); luaL_argcheck(L, iAge \u003e= 6 \u0026\u0026 iAge \u003c= 100, 2, \"Wrong Parameter\"); pStudent-\u003eiAge = iAge; return 0; } static int GetSex(lua_State *L) { // 这里由你来补充 return 1; } static int SetSex(lua_State *L) { // 这里由你来补充 return 0; } static int GetNum(lua_State *L) { // 这里由你来补充 return 1; } static int SetNum(lua_State *L) { // 这里由你来补充 return 0; } static luaL_Reg arrayFunc_meta[] = { { \"getName\", GetName }, { \"setName\", SetName }, { \"getAge\", GetAge }, { \"setAge\", SetAge }, { \"getSex\", GetSex }, { \"setSex\", SetSex }, { \"getNum\", GetNum }, { \"setNum\", SetNum }, { NULL, NULL } }; static luaL_Reg arrayFunc[] = { { \"new\", Student}, { NULL, NULL } }; extern \"C\" _declspec(dllexport) int luaopen_mytestlib(lua_State *L) { // 创建一个新的元表 luaL_newmetatable(L, \"Student\"); // 元表.__index = 元表 lua_pushvalue(L, -1); lua_setfield(L, -2, \"__index\"); luaL_setfuncs(L, arrayFunc_meta, 0); luaL_newlib(L, arrayFunc); lua_pushvalue(L, -1); lua_setglobal(L, \"Sdudent\"); /* the module name */ return 1; } -- lua 文件 require \"mytestlib\" local objStudent = Sdudent.new() objStudent:setName(\"果冻\") local strName = objStudent:getName() print(strName ) for k,v in pairs(getmetatable(objStudent)) do print(tostring(k),tostring(v)) end light userdata //C文件 #include #include #include using namespace std; extern \"C\" { #include \"lua.h\" #include \"lualib.h\" #include \"lauxlib.h\" } typedef struct { int x; int y; int z; }TData; static int getAttribute(lua_State* L) { TData *data = (TData*)lua_touserdata(L, 1); std::string attribute = luaL_checkstring(L, 2); int result = 0; if (attribute == \"x\") { result = data-\u003ex; } else if (attribute == \"y\") { result = data-\u003ey; } else { result = data-\u003ez; } lua_pushnumber(L, result); return 1; } static luaL_Reg dataLib[] = { { \"__index\", getAttribute }, { NULL, NULL } }; void getMetaTable(lua_State* L, luaL_Reg* methods) { lua_pushlightuserdata(L, methods); lua_gettable(L, LUA_REGISTRYINDEX); if (lua_isnil(L, -1)) { /* not found */ lua_pop(L, 1); lua_newtable(L); luaL_setfuncs(L, methods, 0); lua_pushlightuserdata(L, methods); lua_pushvalue(L, -2); lua_settable(L, LUA_REGISTRYINDEX); } } int main() { const char* filename = \"test.lua\"; lua_State *lua = luaL_newstate(); if (lua == NULL) { fprintf(stderr, \"open lua failed\"); return -1; } luaL_openlibs(lua); TData input = { 123, 231, 321 }; lua_pushlightuserdata(lua, \u0026input); getMetaTable(lua, dataLib); lua_setmetatable(lua, -2); lua_setglobal(lua, \"input\"); if (luaL_dofile(lua, filename)) { //luaL_error(lua, \"load file %s failed\", filename); } lua_getglobal(lua, \"data\"); int output = lua_tointeger(lua, -1); std::cout \u003c\u003c output \u003c\u003c std::endl; return 0; } --lua文件 data = input.x; print(data) 需要注意地方 序号 注意项 1 Lua中变量没有预定义类型，每个变量可以包含任意类型的值，要用就直接赋值一种数据类型的值 2 nil类型就nil一个值，表示变量是否被赋值，变量赋值成nil也表示删除变量 3 使用Type(xxx变量) 可以获取该变量的数据类型 4 number 所有数字，int float double 类型等都为number类型了 5 字符串一旦赋值不能被修改，可以通过方法string.gsub()来修改，可以写成’xxas’单引号，但是建议用双引号”” 6 number类型可以和全是数字的字符串进行计算，字符串会进行类型转换 7 .. 连接符号 ，可以连接字符串类型，也可以连接整形的变量，但是如果直接使用真实的数字要在后面加个空格，因为系统会把 数字.. 看出2个浮点 如 1..2 （错误写法） 1 ..2 (正确写法) 8 类型不同，比较判断也不会相等,如number类型的123不等于string类型的123 9 计算运算符中取余可以和浮点数计算，可以精确到小数级别 10 关系运算符中~= 表示不等于，类似其他语言如c的 != 11 逻辑运算符 and ，or ，not 对应 \u0026\u0026 ，|| , ！ 12 表达式：a and b a为假则返回a 否则返回b， a or b a为真返回a否则返回b ,简单理解and就是先判断a a正确就继续判断b，如果b也正确返回btrue，则if(a and b) 为true ，这实际上也是\u0026\u0026的使用原理一样 ，如果a为假就是false直接返回a if(a and b) 就是false了 。 or 同理 13 赋值方式一：多个变量同时赋值，多的变量(变量个数多于值个数)默认为nil，少的变量(变量个数少于值个数)不做处理，可以类型混搭 14 局部变量 用local修饰声明 ，内存在栈上，在一个函数，代码块{ }内 函数，代码块结束，内存自动释放 15 全局变量在堆上，可以随时创建，程序结束，内存自动释放 16 控制语句上，有if for where 没有switch结构 17 控制语句上，不需要写 () {} {指代 ：then } 指代 ： end 18 循环结构 while do end ,里面不能写() 以及 ++ – += 类似的运算符 19 循环结构 for 也不需要写() 也不在赋值除了对第一个赋值，其他都可以省略写默认写为 \u003c= +xx 或 \u003e= -xx 20 函数的返回值和其他语言一样可以返回个值，变量。但是不同的是可以同时返回多个变量，进行多个赋值 21 table可以有数组的形式，字典的形式，数组字典同时混合的形式 22 print()打印会默认换行 23 #号数组是计算数组容器table的下标个数，lua的数组容器下标从1开始计算递增，字典不包括key元素 24 ipairs 仅仅遍历值，按照索引升序遍历，索引中断停止遍历。不能返回 nil,如果遇到 nil 则退出。它只能遍历到集合中出现的第一个不是整数的 key。 pairs 能遍历集合的所有元素。即 pairs 可以遍历集合中所有的 key，并且除了迭代器本身以及遍历表本身还可以返回 nil。 25 lua布尔类型只有两个取值false和true. 但要注意lua中所有的值都可以作为条件. 在控制结构的条件中除了false和nil为假, 其他值都为真。lua认为 0 和 空字符串都是真！！ pairs和ipairs 例子比较 test = {[\"xxx\"] = nil , tt = \"tabao\"} for k , v in pairs(test) do print(k,v) end 输出： tt tabao test = {nil = xxxx , tt = \"tabao\"} for k , v in pairs(test) do print(k,v) end 输出：stdin:1: bad argument #1 to 'for iterator' (table expected, got nil) stack traceback: [C]: in function 'next' stdin:1: in main chunk [C]: in ? local tab = { [1] = \"a\", [3] = \"b\", [4] = \"c\" } for k, v in ipairs(tab) do print(k, v) end 输出：1 a ,在key等于2处断开 local tab= { [2] = \"a\", [3] = \"b\", [4] = \"c\" } for k, v in ipairs(tab) do print(k, v) end 输出：什么都没输出，为什么？因为控制变量初始值是按升序来遍历的，当key为1时，value为nil，此时便停止了遍历， 所有什么结果都没输出。 for k, v in pairs(tab) do print(k, v) end 输出：2 a, 3 b, 4 c local tab = {\"a\", \"b\", [3] = \"c\", [\"two\"] = \"d\"} for i,v in ipairs(tab) do print( tab [i] ) end 输出：a，b，c for i,v in pairs(tab) do print( tab [i] ) 输出：a，b，c，d。 lua 模块 import 和 require 差异 载入一个模块 import() 与 require() 功能相同，但具有一定程度的自动化特性。\nimport支持相对路径的写法，一个点表示当前目录，两个点表示上一级目录，以此类推。\nrequire 最好写成绝对路径的形式如：require \"src.ui.common.FightPointAdd\" or require \"src/common/FightPointAdd\"\nimport还有一个优势是假设：A/B/下有两个文件 c.lua,d.lua，如果在 c中用到了 d话,require( \"A/B/d\"),import(\".d\") ，如果后面目录结构改了 ,c,d都到了 A目录下,那对应的要修改 require(\"A/d) 而 import可以不用修改。\nlua 正则表达式 测试工具地址:https://wiki.luatos.com/pages/emulator.html\n下面的表列出了 Lua支持的所有字符类:\n. 任意字符 %a 字母 %c 控制字符 %d 数字 %l 小写字母 %p 标点字符 %s 空白符 %u 大写字母 %w 字母和数字 %x 十六进制数字 %z 代表0的字符 上面字符类的大写形式表示小写所代表的集合的补集。例如, %A非字母的字符:\nprint(string.gsub(\"hello, up-down!\", \"%A\", \".\")) --\u003e hello..up.down. 4 数字 4不是字符串结果的一部分，他是 gsub返回的第二个结果，代表发生替换的次数.\nlua特殊字符\n( ) . % + - * ? [ ^ $ %用作特殊字符的转义字符，因此 %. 匹配点; %%匹配字符 % .转义字符 %不仅可以用来转义特殊字符，还可以用于所有的非字母的字符。当对一个字符有疑问的时候，为安全起见请使用转义字符转义他。\n\\ 是lua的转义字符\n[%w_]将匹配字母数字和下划线\n[01]匹配二进制数字，[%[%]]匹配一对方括号\n第一个字符和最后一个字符之间用连字符 -连接表示这两个字符之间范围内的字符集合\n%d表示 [0-9]\n%x表示 [0-9a-fA-F]\n查找八进制数:[0-7]\n匹配任何非换行符户的字符: [^\\n]\n模式修饰符\n+ 匹配前一字符1次或多次 * 匹配前一字符0次或多次 - 匹配前一字符0次或多次 ? 匹配前一字符0次或1次 +匹配一个或多个字符，她总是进行最长的匹配. 比如，模式串 %a+匹配一个或多个字母或者一个单词 :\nprint(string.gsub(\"one, and two; and three\", \"%a+\", \"word\")) --\u003e word, word word; word word %d+匹配一个或多个数字 (整数):\ni, j = string.find(\"the number 1298 is even\", \"%d+\") print(i,j) --\u003e 12 15 * 与 +类似, 但是他匹配一个字符 0次或多次出现.一个典型的应用是匹配空白。比如，为了匹配一对圆括号 ()或者 ( )之间的空白，可以使用 %(%s*%) ( '%s*用来匹配 0个或多个空白,由于圆括号在模式中有特殊的含义，所以我们必须使用 %转义他 .) 再看一个例子，[_%a][_%w]*匹配 Lua程序中的标示符：字母或者下划线开头的字母下划线数字序列。\n-与 *一样，都匹配一个字符的0次或多次出现，但是他进行的是最短匹配。某些时候这两个用起来没有区别，但有些时候结果将截然不同。比如，如果你使用模式 [_%a][_%w]-来查找标示符，你将只能找到第一个字母，因为 [_%w]-永远匹配空。另一方面，假定你想查找C程序中的注释，很多人可能使用 /%*.*%*/ (也就是说 \"/*\" 后面跟着任意多个字符，然后跟着 \"*/\") 然而，由于 .*进行的是最长匹配，这个模式将匹配程序中第一个 \"/*\" 和最后一个 \"*/\"之间所有部分:\ntest = \"int x; /* x */ int y; /* y */\" print(string.gsub(test, \"/%*.*%*/\", \"\")) --\u003e int x; 然而模式 .-进行的是最短匹配，她会匹配 \"/*\"开始到第一个 \"*/\"之前的部分:\ntest = \"int x; /* x */ int y; /* y */\" print(string.gsub(test, \"/%*.-%*/\", \"\")) --\u003e int x; int y; ?匹配一个字符 0次或 1次.举个例子，假定我们想在一段文本内查找一个整数，整数可能带有正负号。 模式 [+-]?%d+符合我们的要求，她可以匹配 像 \"-12\", \"23\" 和 \"+1009\"等数字. [+-] 是一个匹配 +或者 -的字符类；接下来的 ?意思是匹配前面的字符类 0次或者 1次.\n与其他系统的模式不同的是，Lua中的修饰符不能用字符类；不能将模式分组然后使用修饰符作用这个分组。比如，没有一个模式可以匹配一个可选的单词(除非这个单词只有一个字母)。下面我将看到，通常你可以使用一些高级技术绕开这个限制。\n以 ^开头的模式只匹配目标串的开始部分，相似的，以 $结尾的模式只匹配目标串的结尾部分。这不仅可以用来限制你要查找的模式，还可以定位(anchor)模式。比如：\nif string.find(s, \"^%d\") then ... 符串s是否以数字开头，而 if string.find(s, \"^[+-]?%d+$\") then ... 检查字符串 s是否是一个整数。\n%b用来匹配对称的字符.常写为 %bxy,x和 y是任意两个不同的字符；x作为匹配的开始,y作为匹配的结束。比如， %b()匹配以 (开始， 以 )结束的字符串:\nprint(string.gsub(\"a (enclosed (in) parentheses) line\", \"%b()\", \"\")) --\u003e a line 常用的这种模式有： %b(), %b[], %b%{%},和 %b\u003c\u003e。你也可以使用任何字符作为分隔符。\nlua字符串管理 typedef struct TString { CommonHeader; // 字符串的子类型有两种：长字符串和短字符串 // 短字符串：extra表示Lua保留字的索引，如果为0就不是保留字 // 长字符串：extra标记是否已经计算哈希值，0表示还未计算 lu_byte extra; lu_byte shrlen; // 短字符串长度 unsigned int hash; // 字符串的哈希值 // 下面联合分两种情况： // 如果是长字符串则是长度lnglen // 如果是短字符串则是hnext，指向下一个短字符串对象，短字符串会用哈希表缓存， union { size_t lnglen; struct TString *hnext; } u; char contents[1];//真正的字符串存储在这里 } TString; 字符串创建方式 全局字符串表 typedef struct stringtable { TString **hash;//hash散列桶 int nuse; /* number of elements *///实际的使用元素 int size;//当前桶的大小 } stringtable; 链表方式 相同 hash字符串存储在 stringtable strt 链表结构上 一般 短字符串会使用这种方式存储\nhashMap缓存方式 下图中N是数组行，M是数组列\ni的下标值通过 unsigned int i = point2uint(str) % STRCACHE_Nhash求得\nj的最大值固定就是下面的宏函数 STRCACHE_M 2\n下面两个函数 luaS_new luaS_newlstr是创建字符串的核心函数\n/* ** Create or reuse a zero-terminated string, first checking in the ** cache (using the string address as a key). The cache can contain ** only zero-terminated strings, so it is safe to use 'strcmp' to ** check hits. 创建或重用一个以'0'结尾的字符串，首先查找 global_state 的 strcache 缓存是否已存在该字符串， 若存在则直接返回，否则创建一个新的，并加入到缓存中 */ TString *luaS_new (lua_State *L, const char *str) { //point2uint 指针转无符号整数 unsigned int i = point2uint(str) % STRCACHE_N; /* hash */ //求出strcache下标 STRCACHE_N等于53 int j; //在全局G中查找strcache里面查找是否有这个string TString **p = G(L)-\u003estrcache[i]; for (j = 0; j \u003c STRCACHE_M; j++) { if (strcmp(str, getstr(p[j])) == 0) /* hit? */ return p[j]; /* that is it */ } //如果没有找到创建新的Tstring,并放到第一个位置 //同时也意味着最后一个元素会被移除strcache /* normal route */ for (j = STRCACHE_M - 1; j \u003e 0; j--) p[j] = p[j - 1]; /* move out last element */ /* new element is first in the list */ p[0] = luaS_newlstr(L, str, strlen(str));//创建新的Tstring return p[0]; } /* ** new string (with explicit length) 创建一个给定长度的字符串 */ TString *luaS_newlstr (lua_State *L, const char *str, size_t l) { if (l \u003c= LUAI_MAXSHORTLEN) /* short string? */ //判断是不是短字符串 return internshrstr(L, str, l);//短字符串创建 else {//长字符串创建 TString *ts; if (l_unlikely(l \u003e= (MAX_SIZE - sizeof(TString))/sizeof(char)))//如果字符串太长 创建失败 luaM_toobig(L); ts = luaS_createlngstrobj(L, l);//直接创建长字符串 memcpy(getstr(ts), str, l * sizeof(char));//拷贝字符串内容 return ts; } } /* ** Checks whether short string exists and reuses it or creates a new one. ** 检查短字符串是否已经存在，如果存在则复用，否则创建一个新的 */ static TString *internshrstr (lua_State *L, const char *str, size_t l) { TString *ts; global_State *g = G(L);//全局表 stringtable *tb = \u0026g-\u003estrt;//全局字符串表，lua所有的短字符串都存在这个里面 unsigned int h = luaS_hash(str, l, g-\u003eseed);//求的hash值 TString **list = \u0026tb-\u003ehash[lmod(h, tb-\u003esize)];//求得全局字符串表中对应hash位置的链表 lua_assert(str != NULL); /* otherwise 'memcmp'/'memcpy' are undefined */ for (ts = *list; ts != NULL; ts = ts-\u003eu.hnext) {//遍历链表查找是否有相同的字符串 if (l == ts-\u003eshrlen \u0026\u0026 (memcmp(str, getstr(ts), l * sizeof(char)) == 0)) { /* found! */ if (isdead(g, ts)) /* dead (but not collected yet)? *///如果找到，并且当前gc判断要被回收 changewhite(ts); /* resurrect it *///这个时候修改它为白色状态，表示不需要回收 return ts;//直接返回查找到的字符串 } } /* else must create a new string *///否则必须创建一个字符串 if (tb-\u003enuse \u003e= tb-\u003esize) { /* need to grow string table? *///容量不够需要扩容 growstrtab(L, tb);//扩容容量 list = \u0026tb-\u003ehash[lmod(h, tb-\u003esize)]; /* rehash with new size *///重新计算全局字符串表中对应的hash位置的链表 } ts = createstrobj(L, l, LUA_VSHRSTR, h);//创建一个字符串对象 memcpy(getstr(ts), str, l * sizeof(char));//拷贝进去 ts-\u003eshrlen = cast_byte(l);//赋值字符串大小，按无符号char大小求长度 ts-\u003eu.hnext = *list;//添加到全局的字符串表中,此处是头插法插入数据 *list = ts; tb-\u003enuse++; return ts; } //创建一个长串 TString *luaS_createlngstrobj (lua_State *L, size_t l) { TString *ts = createstrobj(L, l, LUA_VLNGSTR, G(L)-\u003eseed); ts-\u003eu.lnglen = l; return ts; } /*创建一个长字符串或者短字符串 ** creates a new string object */ static TString *createstrobj (lua_State *L, size_t l, int tag, unsigned int h) { TString *ts; GCObject *o; size_t totalsize; /* total size of TString object */ totalsize = sizelstring(l);//得到真正字符串的大小 o = luaC_newobj(L, tag, totalsize);//创建一个GC对象 ts = gco2ts(o);//强制转换为Tsing结构 ts-\u003ehash = h;//赋seed值也就是随机种子 ts-\u003eextra = 0;//0表示还未计算真正的hash值 getstr(ts)[l] = '\\0'; /* ending 0 */ return ts; } 函数调用过程 字符串大小 字符串内容会在有效数据的结尾强制加上 \\0，所以字符串对象的总大小为:\n头的大小加上字符串的空间+加上最后的 \\0\n/* ** Size of a TString: Size of the header plus space for the string ** itself (including final '\\0'). */ #define sizelstring(l) (offsetof(TString, contents) + ((l) + 1) * sizeof(char)) //offsetof(TString, contents) contents成员相对于TString开头位置的偏移量，等价于头的大小 //((l) + 1) l是外部传进来长短字符串的大小 +1是最后'\\0'大小 长短字符串 /* ** Maximum length for short strings, that is, strings that are ** internalized. (Cannot be smaller than reserved words or tags for ** metamethods, as these strings must be internalized; ** #(\"function\") = 8, #(\"__newindex\") = 10.) */ #if !defined(LUAI_MAXSHORTLEN) #define LUAI_MAXSHORTLEN\t40 #endif 短字符串 定义:小于等于 40个字节的字符串\n比较大小 因为是重复利用的，所以直接比较指针地址就可以了\n/* ** equality for short strings, which are always internalized */ #define eqshrstr(a,b)\tcheck_exp((a)-\u003ett == LUA_VSHRSTR, (a) == (b)) 长字符串 计算hash值 长字符串不会马上计算哈希值，一般在调用 luaS_hashlongstr 时候才会去计算\nunsigned int luaS_hashlongstr (TString *ts) { lua_assert(ts-\u003ett == LUA_VLNGSTR); if (ts-\u003eextra == 0) { /* no hash? *///extra为0的时候才去计算hash值 size_t len = ts-\u003eu.lnglen; ts-\u003ehash = luaS_hash(getstr(ts), len, ts-\u003ehash);//通过luaS_hash创建hash值 ts-\u003eextra = 1; /* now it has its hash */ } return ts-\u003ehash; } unsigned int luaS_hash (const char *str, size_t l, unsigned int seed) { unsigned int h = seed ^ cast_uint(l); for (; l \u003e 0; l--) h ^= ((h\u003c\u003c5) + (h\u003e\u003e2) + cast_byte(str[l - 1])); return h; } 比较大小 /* ** equality for long strings 长字符串的比较：先比较地址，再比较长度，最后比较内容 */ int luaS_eqlngstr (TString *a, TString *b) { size_t len = a-\u003eu.lnglen; lua_assert(a-\u003ett == LUA_VLNGSTR \u0026\u0026 b-\u003ett == LUA_VLNGSTR); return (a == b) || /* same instance or... */ ((len == b-\u003eu.lnglen) \u0026\u0026 /* equal length and ... */ (memcmp(getstr(a), getstr(b), len) == 0)); /* equal contents */ } lua table 值对象结构 /* ** Union of all Lua values 还有几种数据类型是不需要进行垃圾回收的, //Lua 中将GCObject 和它们一起放在了联合体Value 中: */ typedef union Value { struct GCObject *gc; /* collectable objects */ void *p; /* light userdata */ lua_CFunction f; /* light C functions */ lua_Integer i; /* integer numbers */ lua_Number n; /* float numbers */ } Value; 变量 说明 GCObject gc 用于垃圾回收 主要是为了连接垃圾回收对象的互相引用关系 void *p 为c中传入的指针，由c 分配和释放 light userdata lua_CFunction f 表示C导出给lua的函数指针，typedef int (*lua_CFunction) (lua_State *L) lua_Integer i 表示整数类型，typedef long long lua_Integer lua_Number n 表示双精度浮点类型，typedef double lua_Number 非GC对象 从上面可以看到 非GC的对象有 4中\nlight userdata C函数 整型 浮点型 int b(lua 5.4 数字分为整数和浮点，而i正好也可以用作bool,所以把这个给删除,和 lua_Integer i 结合到一起了) GC对象 union GCUnion { GCObject gc; /* common header */ struct TString ts; struct Udata u; union Closure cl; struct Table h; struct Proto p;// Proto主要存放二进制指令集Opcode Lua在解析函数的过程中，会将一条条语句逐个‘编译’成指令集 struct lua_State th; /* thread */ struct UpVal upv; }; 从上面的 union结构体可以看到 GC对象有 6中\n字符串 userdata closure 闭包 table lua 函数原型(Proto主要存放二进制指令集Opcode) lua 线程 (其实就是协程) lua上值 CommonHeader类型 #define CommonHeader\tstruct GCObject *next; lu_byte tt; lu_byte marked next 指针 指向下一个GC对象 tt GC对象的实际类型(比如上面6中GC对象) marked 标识GC的状态(白1 白2 黑 final) TValuefields 类型 #define TValuefields Value value_; int tt_ Value：存储具体数据的值 tt_：表示这个值的类型，即所有的基础数据类型 table 结构 typedef struct Table { CommonHeader; lu_byte flags; /* 1\u003c",
+  "wordCount" : "9217",
   "inLanguage": "en",
-  "datePublished": "2022-09-13T01:30:29+08:00",
-  "dateModified": "2022-09-13T01:30:29+08:00",
+  "datePublished": "2022-09-17T01:30:29+08:00",
+  "dateModified": "2022-09-17T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -226,9 +226,9 @@ var _hmt = _hmt || [];
         <header class="post-header">
             <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/blog/">🧱 搬砖</a></div>
             <h1 class="post-title">
-                lua源码赏析笔记
+                lua源码赏析
             </h1>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;9330字&nbsp;|&nbsp;时长:&nbsp;19分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-17 01:30:29 +0800 CST'>2022-09-17</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-17&nbsp;|&nbsp;字数:&nbsp;9217字&nbsp;|&nbsp;时长:&nbsp;19分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -253,92 +253,92 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-%e5%9f%ba%e7%a1%80%e7%b1%bb%e5%9e%8b" aria-label="1. 基础类型">1. 基础类型</a><ul>
+                    <a href="#%e5%9f%ba%e7%a1%80%e7%b1%bb%e5%9e%8b" aria-label="基础类型">基础类型</a><ul>
                         
                 <li>
-                    <a href="#11-lua_tthread" aria-label="1.1. LUA_TTHREAD">1.1. LUA_TTHREAD</a></li>
+                    <a href="#lua_tthread" aria-label="LUA_TTHREAD">LUA_TTHREAD</a></li>
                 <li>
-                    <a href="#12-font-colorredfull-userdata%e5%92%8clight-userdata%e5%8c%ba%e5%88%abfont" aria-label="1.2. full userdata和light userdata区别">1.2. <font color='red'>full userdata和light userdata区别</font></a><ul>
+                    <a href="#full-userdata%e5%92%8clight-userdata%e5%8c%ba%e5%88%ab" aria-label="full userdata和light userdata区别">full userdata和light userdata区别</a><ul>
                         
                 <li>
-                    <a href="#121-font-colorredfull-userdatafont" aria-label="1.2.1. full userdata">1.2.1. <font color='red'>full userdata</font></a></li>
+                    <a href="#full-userdata" aria-label="full userdata">full userdata</a></li>
                 <li>
-                    <a href="#122-font-colorredlight-userdatafont" aria-label="1.2.2. light userdata">1.2.2. <font color='red'>light userdata</font></a></li>
+                    <a href="#light-userdata" aria-label="light userdata">light userdata</a></li>
                 <li>
-                    <a href="#123-font-colorred%e9%9c%80%e8%a6%81%e6%b3%a8%e6%84%8f%e5%9c%b0%e6%96%b9font" aria-label="1.2.3. 需要注意地方">1.2.3. <strong><font color='red'>需要注意地方</font></strong></a><ul>
+                    <a href="#%e9%9c%80%e8%a6%81%e6%b3%a8%e6%84%8f%e5%9c%b0%e6%96%b9" aria-label="需要注意地方"><strong>需要注意地方</strong></a><ul>
                         
                 <li>
-                    <a href="#1231-font-colorredpairs%e5%92%8cipairs-%e4%be%8b%e5%ad%90%e6%af%94%e8%be%83font" aria-label="1.2.3.1. pairs和ipairs 例子比较">1.2.3.1. <font color='red'>pairs和ipairs 例子比较</font></a></li></ul>
+                    <a href="#pairs%e5%92%8cipairs-%e4%be%8b%e5%ad%90%e6%af%94%e8%be%83" aria-label="pairs和ipairs 例子比较">pairs和ipairs 例子比较</a></li></ul>
                 </li></ul>
                 </li></ul>
                 </li>
                 <li>
-                    <a href="#2-lua-%e6%a8%a1%e5%9d%97-import-%e5%92%8c-require-%e5%b7%ae%e5%bc%82" aria-label="2. lua 模块 import 和 require 差异">2. lua 模块 import 和 require 差异</a></li>
+                    <a href="#lua-%e6%a8%a1%e5%9d%97-import-%e5%92%8c-require-%e5%b7%ae%e5%bc%82" aria-label="lua 模块 import 和 require 差异">lua 模块 import 和 require 差异</a></li>
                 <li>
-                    <a href="#3-lua-%e6%ad%a3%e5%88%99%e8%a1%a8%e8%be%be%e5%bc%8f" aria-label="3. lua 正则表达式">3. lua 正则表达式</a></li>
+                    <a href="#lua-%e6%ad%a3%e5%88%99%e8%a1%a8%e8%be%be%e5%bc%8f" aria-label="lua 正则表达式">lua 正则表达式</a></li>
                 <li>
-                    <a href="#4-lua%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%ae%a1%e7%90%86" aria-label="4. lua字符串管理">4. lua字符串管理</a><ul>
+                    <a href="#lua%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%ae%a1%e7%90%86" aria-label="lua字符串管理">lua字符串管理</a><ul>
                         
                 <li>
-                    <a href="#41-%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%88%9b%e5%bb%ba%e6%96%b9%e5%bc%8f" aria-label="4.1. 字符串创建方式">4.1. 字符串创建方式</a><ul>
+                    <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%88%9b%e5%bb%ba%e6%96%b9%e5%bc%8f" aria-label="字符串创建方式">字符串创建方式</a><ul>
                         
                 <li>
-                    <a href="#411-%e5%85%a8%e5%b1%80%e5%ad%97%e7%ac%a6%e4%b8%b2%e8%a1%a8" aria-label="4.1.1. 全局字符串表">4.1.1. 全局字符串表</a></li>
+                    <a href="#%e5%85%a8%e5%b1%80%e5%ad%97%e7%ac%a6%e4%b8%b2%e8%a1%a8" aria-label="全局字符串表">全局字符串表</a></li>
                 <li>
-                    <a href="#412-%e9%93%be%e8%a1%a8%e6%96%b9%e5%bc%8f" aria-label="4.1.2. 链表方式">4.1.2. 链表方式</a></li>
+                    <a href="#%e9%93%be%e8%a1%a8%e6%96%b9%e5%bc%8f" aria-label="链表方式">链表方式</a></li>
                 <li>
-                    <a href="#413-hashmap%e7%bc%93%e5%ad%98%e6%96%b9%e5%bc%8f" aria-label="4.1.3. hashMap缓存方式">4.1.3. hashMap缓存方式</a></li>
+                    <a href="#hashmap%e7%bc%93%e5%ad%98%e6%96%b9%e5%bc%8f" aria-label="hashMap缓存方式">hashMap缓存方式</a></li>
                 <li>
-                    <a href="#414-%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e8%bf%87%e7%a8%8b" aria-label="4.1.4. 函数调用过程">4.1.4. 函数调用过程</a></li></ul>
+                    <a href="#%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e8%bf%87%e7%a8%8b" aria-label="函数调用过程">函数调用过程</a></li></ul>
                 </li>
                 <li>
-                    <a href="#42-%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%a4%a7%e5%b0%8f" aria-label="4.2. 字符串大小">4.2. 字符串大小</a></li>
+                    <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%a4%a7%e5%b0%8f" aria-label="字符串大小">字符串大小</a></li>
                 <li>
-                    <a href="#43-%e9%95%bf%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="4.3. 长短字符串">4.3. 长短字符串</a><ul>
+                    <a href="#%e9%95%bf%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="长短字符串">长短字符串</a><ul>
                         
                 <li>
-                    <a href="#431-%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="4.3.1. 短字符串">4.3.1. 短字符串</a><ul>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="短字符串">短字符串</a><ul>
                         
                 <li>
-                    <a href="#4311-%e6%af%94%e8%be%83%e5%a4%a7%e5%b0%8f" aria-label="4.3.1.1. 比较大小">4.3.1.1. 比较大小</a></li></ul>
+                    <a href="#%e6%af%94%e8%be%83%e5%a4%a7%e5%b0%8f" aria-label="比较大小">比较大小</a></li></ul>
                 </li>
                 <li>
-                    <a href="#432-%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="4.3.2. 长字符串">4.3.2. 长字符串</a><ul>
+                    <a href="#%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="长字符串">长字符串</a><ul>
                         
                 <li>
-                    <a href="#4321-%e8%ae%a1%e7%ae%97hash%e5%80%bc" aria-label="4.3.2.1. 计算hash值">4.3.2.1. 计算hash值</a></li>
+                    <a href="#%e8%ae%a1%e7%ae%97hash%e5%80%bc" aria-label="计算hash值">计算hash值</a></li>
                 <li>
-                    <a href="#4322-%e6%af%94%e8%be%83%e5%a4%a7%e5%b0%8f" aria-label="4.3.2.2. 比较大小">4.3.2.2. 比较大小</a></li></ul>
+                    <a href="#%e6%af%94%e8%be%83%e5%a4%a7%e5%b0%8f-1" aria-label="比较大小">比较大小</a></li></ul>
                 </li></ul>
                 </li></ul>
                 </li>
                 <li>
-                    <a href="#5-lua-table" aria-label="5. lua table">5. lua table</a><ul>
+                    <a href="#lua-table" aria-label="lua table">lua table</a><ul>
                         
                 <li>
-                    <a href="#51-%e5%80%bc%e5%af%b9%e8%b1%a1%e7%bb%93%e6%9e%84" aria-label="5.1. 值对象结构">5.1. 值对象结构</a></li>
+                    <a href="#%e5%80%bc%e5%af%b9%e8%b1%a1%e7%bb%93%e6%9e%84" aria-label="值对象结构">值对象结构</a></li>
                 <li>
-                    <a href="#52-%e9%9d%9egc%e5%af%b9%e8%b1%a1" aria-label="5.2. 非GC对象">5.2. 非GC对象</a></li>
+                    <a href="#%e9%9d%9egc%e5%af%b9%e8%b1%a1" aria-label="非GC对象">非GC对象</a></li>
                 <li>
-                    <a href="#53-gc%e5%af%b9%e8%b1%a1" aria-label="5.3. GC对象">5.3. GC对象</a></li>
+                    <a href="#gc%e5%af%b9%e8%b1%a1" aria-label="GC对象">GC对象</a></li>
                 <li>
-                    <a href="#54-commonheader%e7%b1%bb%e5%9e%8b" aria-label="5.4. CommonHeader类型">5.4. CommonHeader类型</a></li>
+                    <a href="#commonheader%e7%b1%bb%e5%9e%8b" aria-label="CommonHeader类型">CommonHeader类型</a></li>
                 <li>
-                    <a href="#55-tvaluefields-%e7%b1%bb%e5%9e%8b" aria-label="5.5. TValuefields 类型">5.5. TValuefields 类型</a></li>
+                    <a href="#tvaluefields-%e7%b1%bb%e5%9e%8b" aria-label="TValuefields 类型">TValuefields 类型</a></li>
                 <li>
-                    <a href="#56-table-%e7%bb%93%e6%9e%84" aria-label="5.6. table 结构">5.6. table 结构</a></li>
+                    <a href="#table-%e7%bb%93%e6%9e%84" aria-label="table 结构">table 结构</a></li>
                 <li>
-                    <a href="#57-hash%e8%a7%a3%e5%86%b3%e5%86%b2%e7%aa%81%e6%97%b6%e5%80%99%e7%9a%84%e4%b8%a4%e7%a7%8d%e6%96%b9%e6%b3%95" aria-label="5.7. hash解决冲突时候的两种方法">5.7. hash解决冲突时候的两种方法</a><ul>
+                    <a href="#hash%e8%a7%a3%e5%86%b3%e5%86%b2%e7%aa%81%e6%97%b6%e5%80%99%e7%9a%84%e4%b8%a4%e7%a7%8d%e6%96%b9%e6%b3%95" aria-label="hash解决冲突时候的两种方法">hash解决冲突时候的两种方法</a><ul>
                         
                 <li>
-                    <a href="#571-%e9%97%ad%e6%95%a3%e5%88%97" aria-label="5.7.1. 闭散列">5.7.1. 闭散列</a></li>
+                    <a href="#%e9%97%ad%e6%95%a3%e5%88%97" aria-label="闭散列">闭散列</a></li>
                 <li>
-                    <a href="#572-%e5%bc%80%e6%95%a3%e5%88%97" aria-label="5.7.2. 开散列">5.7.2. 开散列</a></li></ul>
+                    <a href="#%e5%bc%80%e6%95%a3%e5%88%97" aria-label="开散列">开散列</a></li></ul>
                 </li>
                 <li>
-                    <a href="#58-%e6%96%b0%e5%bb%ba%e4%b8%80%e4%b8%aatable" aria-label="5.8. 新建一个table">5.8. 新建一个table</a></li>
+                    <a href="#%e6%96%b0%e5%bb%ba%e4%b8%80%e4%b8%aatable" aria-label="新建一个table">新建一个table</a></li>
                 <li>
-                    <a href="#59-%e5%a2%9e%e5%8a%a0%e4%b8%80%e4%b8%aa%e5%85%83%e7%b4%a0" aria-label="5.9. 增加一个元素">5.9. 增加一个元素</a>
+                    <a href="#%e5%a2%9e%e5%8a%a0%e4%b8%80%e4%b8%aa%e5%85%83%e7%b4%a0" aria-label="增加一个元素">增加一个元素</a>
                 </li>
             </ul>
             </li>
@@ -407,7 +407,7 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="1-基础类型">1. 基础类型<a hidden class="anchor" aria-hidden="true" href="#1-基础类型">#</a></h2>
+        <div class="post-content"><h2 id="基础类型">基础类型<a hidden class="anchor" aria-hidden="true" href="#基础类型">#</a></h2>
 <table>
 <thead>
 <tr>
@@ -429,7 +429,7 @@ var _hmt = _hmt || [];
 <td>false和nil为假 其他都为真(包括0)</td>
 </tr>
 <tr>
-<td><span style="display:inline-block;width: 165px">LUA_TLIGHTUSERDATA  </span></td>
+<td>LUA_TLIGHTUSERDATA</td>
 <td>见1.1 表</td>
 </tr>
 <tr>
@@ -462,22 +462,14 @@ var _hmt = _hmt || [];
 </tr>
 </tbody>
 </table>
-<h3 id="11-lua_tthread">1.1. LUA_TTHREAD<a hidden class="anchor" aria-hidden="true" href="#11-lua_tthread">#</a></h3>
+<h3 id="lua_tthread">LUA_TTHREAD<a hidden class="anchor" aria-hidden="true" href="#lua_tthread">#</a></h3>
 <ol>
-<li>
-<p>代表协程类型</p>
-</li>
-<li>
-<p>除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾</p>
-</li>
-<li>
-<p>每次调用lua_newstate的时候都会创建一个新的luastate,不同的luastate完全独立，之间不共享任何数据</p>
-</li>
-<li>
-<p>协程提供了新的api接口和<em>lua_resetthread</em>,<em>coroutine.close</em> 会使协程进入死亡状态,并且关闭所有的close变量</p>
-</li>
+<li>代表协程类型</li>
+<li>除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾</li>
+<li>每次调用lua_newstate的时候都会创建一个新的luastate,不同的luastate完全独立，之间不共享任何数据</li>
+<li>协程提供了新的api接口和<em>lua_resetthread</em>,<em>coroutine.close</em> 会使协程进入死亡状态,并且关闭所有的close变量</li>
 </ol>
-<h3 id="12-font-colorredfull-userdata和light-userdata区别font">1.2. <font color='red'>full userdata和light userdata区别</font><a hidden class="anchor" aria-hidden="true" href="#12-font-colorredfull-userdata和light-userdata区别font">#</a></h3>
+<h3 id="full-userdata和light-userdata区别">full userdata和light userdata区别<a hidden class="anchor" aria-hidden="true" href="#full-userdata和light-userdata区别">#</a></h3>
 <table>
 <thead>
 <tr>
@@ -509,7 +501,7 @@ var _hmt = _hmt || [];
 </tr>
 </tbody>
 </table>
-<h4 id="121-font-colorredfull-userdatafont">1.2.1. <font color='red'>full userdata</font><a hidden class="anchor" aria-hidden="true" href="#121-font-colorredfull-userdatafont">#</a></h4>
+<h4 id="full-userdata">full userdata<a hidden class="anchor" aria-hidden="true" href="#full-userdata">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//c文件
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//#include &lt;string.h&gt;  
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
@@ -650,7 +642,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> k,v <span style="color:#66d9ef">in</span> pairs(getmetatable(objStudent)) <span style="color:#66d9ef">do</span>
 </span></span><span style="display:flex;"><span>	print(tostring(k),tostring(v))
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
-</span></span></code></pre></div><h4 id="122-font-colorredlight-userdatafont">1.2.2. <font color='red'>light userdata</font><a hidden class="anchor" aria-hidden="true" href="#122-font-colorredlight-userdatafont">#</a></h4>
+</span></span></code></pre></div><h4 id="light-userdata">light userdata<a hidden class="anchor" aria-hidden="true" href="#light-userdata">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//C文件
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;  </span><span style="color:#75715e">
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string&gt;</span><span style="color:#75715e">
@@ -740,11 +732,11 @@ var _hmt = _hmt || [];
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">--lua文件</span>
 </span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> input.x;
 </span></span><span style="display:flex;"><span>print(data)
-</span></span></code></pre></div><h4 id="123-font-colorred需要注意地方font">1.2.3. <strong><font color='red'>需要注意地方</font></strong><a hidden class="anchor" aria-hidden="true" href="#123-font-colorred需要注意地方font">#</a></h4>
+</span></span></code></pre></div><h4 id="需要注意地方"><strong>需要注意地方</strong><a hidden class="anchor" aria-hidden="true" href="#需要注意地方">#</a></h4>
 <table>
 <thead>
 <tr>
-<th style="text-align:left"><span style="display:inline-block;width: 40px">序号</span></th>
+<th style="text-align:left">序号</th>
 <th>注意项</th>
 </tr>
 </thead>
@@ -815,7 +807,7 @@ var _hmt = _hmt || [];
 </tr>
 <tr>
 <td style="text-align:left">17</td>
-<td><strong>控制语句上，不需要写 () {} <font color='red'>{</font>指代 ：then <font color='red'>}</font> 指代 ： end</strong></td>
+<td><strong>控制语句上，不需要写 () {} {指代 ：then } 指代 ： end</strong></td>
 </tr>
 <tr>
 <td style="text-align:left">18</td>
@@ -847,11 +839,11 @@ var _hmt = _hmt || [];
 </tr>
 <tr>
 <td style="text-align:left">25</td>
-<td>lua <a href="https://so.csdn.net/so/search?q=%E5%B8%83%E5%B0%94%E7%B1%BB%E5%9E%8B&amp;spm=1001.2101.3001.7020">布尔类型</a>只有两个取值false和true. 但要注意lua中所有的值都可以作为条件. 在控制结构的条件中除了false和nil为假, 其他值都为真。<strong>lua认为 0 和 空字符串都是真！！</strong></td>
+<td>lua<a href="https://so.csdn.net/so/search?q=%E5%B8%83%E5%B0%94%E7%B1%BB%E5%9E%8B&amp;spm=1001.2101.3001.7020">布尔类型</a>只有两个取值false和true. 但要注意lua中所有的值都可以作为条件. 在控制结构的条件中除了false和nil为假, 其他值都为真。<strong>lua认为 0 和 空字符串都是真！！</strong></td>
 </tr>
 </tbody>
 </table>
-<h5 id="1231-font-colorredpairs和ipairs-例子比较font">1.2.3.1. <font color='red'>pairs和ipairs 例子比较</font><a hidden class="anchor" aria-hidden="true" href="#1231-font-colorredpairs和ipairs-例子比较font">#</a></h5>
+<h5 id="pairs和ipairs-例子比较">pairs和ipairs 例子比较<a hidden class="anchor" aria-hidden="true" href="#pairs和ipairs-例子比较">#</a></h5>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>test <span style="color:#f92672">=</span> {[<span style="color:#e6db74">&#34;xxx&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#66d9ef">nil</span> , tt <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;tabao&#34;</span>}
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> k , v <span style="color:#66d9ef">in</span> pairs(test) <span style="color:#66d9ef">do</span>
 </span></span><span style="display:flex;"><span> print(k,v)
@@ -874,7 +866,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>        [<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;c&#34;</span>
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> k, v <span style="color:#66d9ef">in</span> ipairs(tab) <span style="color:#66d9ef">do</span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> k, v <span style="color:#66d9ef">in</span> ipairs(tab) <span style="color:#66d9ef">do</span>  
 </span></span><span style="display:flex;"><span>    print(k, v)
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
 </span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">输出：</span><span style="color:#ae81ff">1</span> a ,<span style="color:#960050;background-color:#1e0010">在</span>key等于2处断开
@@ -906,15 +898,15 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>    print( tab [i] )   
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">输出：</span>a<span style="color:#960050;background-color:#1e0010">，</span>b<span style="color:#960050;background-color:#1e0010">，</span>c<span style="color:#960050;background-color:#1e0010">，</span>d<span style="color:#960050;background-color:#1e0010">。</span>
-</span></span></code></pre></div><h2 id="2-lua-模块-import-和-require-差异">2. lua 模块 import 和 require 差异<a hidden class="anchor" aria-hidden="true" href="#2-lua-模块-import-和-require-差异">#</a></h2>
+</span></span></code></pre></div><h2 id="lua-模块-import-和-require-差异">lua 模块 import 和 require 差异<a hidden class="anchor" aria-hidden="true" href="#lua-模块-import-和-require-差异">#</a></h2>
 <p>载入一个模块
 <code>import()</code> 与 <code>require()</code> 功能相同，但具有一定程度的自动化特性。</p>
 <p><code>import</code>支持相对路径的写法，一个点表示当前目录，两个点表示上一级目录，以此类推。</p>
 <p><code>require</code> 最好写成绝对路径的形式如：<code>require &quot;src.ui.common.FightPointAdd&quot;</code> or  <code>require &quot;src/common/FightPointAdd&quot;</code></p>
-<p><code>import</code>还有一个优势是假设：<code>A/B/</code>下有两个文件<code>c.lua</code>,<code>d.lua</code>，如果在<code>c</code>中用到了<code>d</code>话,<code>require( &quot;A/B/d&quot;)</code>,<code>import(&quot;.d&quot;)</code> ，如果后面目录结构改了 ,<code>c</code>,<code>d</code>都到了<code>A</code>目录下,那对应的要修改<code>require(&quot;A/d)</code> 而<code>import</code>可以不用修改。</p>
-<h2 id="3-lua-正则表达式">3. lua 正则表达式<a hidden class="anchor" aria-hidden="true" href="#3-lua-正则表达式">#</a></h2>
+<p><code>import</code>还有一个优势是假设：<code>A/B/</code>下有两个文件 <code>c.lua</code>,<code>d.lua</code>，如果在 <code>c</code>中用到了 <code>d</code>话,<code>require( &quot;A/B/d&quot;)</code>,<code>import(&quot;.d&quot;)</code> ，如果后面目录结构改了 ,<code>c</code>,<code>d</code>都到了 <code>A</code>目录下,那对应的要修改 <code>require(&quot;A/d)</code> 而 <code>import</code>可以不用修改。</p>
+<h2 id="lua-正则表达式">lua 正则表达式<a hidden class="anchor" aria-hidden="true" href="#lua-正则表达式">#</a></h2>
 <p>测试工具地址:https://wiki.luatos.com/pages/emulator.html</p>
-<p>下面的表列出了<code>Lua</code>支持的所有字符类:</p>
+<p>下面的表列出了 <code>Lua</code>支持的所有字符类:</p>
 <ol>
 <li><code>. </code>   任意字符</li>
 <li><code>%a</code>    字母</li>
@@ -931,16 +923,16 @@ var _hmt = _hmt || [];
 <p>上面字符类的大写形式表示小写所代表的集合的补集。例如, <code>%A</code>非字母的字符:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(string.gsub(<span style="color:#e6db74">&#34;hello, up-down!&#34;</span>, <span style="color:#e6db74">&#34;%A&#34;</span>, <span style="color:#e6db74">&#34;.&#34;</span>))  
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">--&gt; hello..up.down. 4 </span>
-</span></span></code></pre></div><p>数字<code>4</code>不是字符串结果的一部分，他是<code>gsub</code>返回的第二个结果，代表发生替换的次数.</p>
+</span></span></code></pre></div><p>数字 <code>4</code>不是字符串结果的一部分，他是 <code>gsub</code>返回的第二个结果，代表发生替换的次数.</p>
 <p>lua特殊字符</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>( ) . <span style="color:#f92672">%</span> <span style="color:#f92672">+</span> <span style="color:#f92672">-</span> <span style="color:#f92672">*</span> <span style="color:#960050;background-color:#1e0010">?</span> [ <span style="color:#f92672">^</span> <span style="color:#960050;background-color:#1e0010">$</span> 
-</span></span></code></pre></div><p><code>%</code>用作特殊字符的转义字符，因此 <code>%.</code> 匹配点; <code>%%</code>匹配字符 <code>%</code> .转义字符<code>%</code>不仅可以用来转义特殊字符，还可以用于所有的非字母的字符。当对一个字符有疑问的时候，为安全起见请使用转义字符转义他。</p>
+</span></span></code></pre></div><p><code>%</code>用作特殊字符的转义字符，因此 <code>%.</code> 匹配点; <code>%%</code>匹配字符 <code>%</code> .转义字符 <code>%</code>不仅可以用来转义特殊字符，还可以用于所有的非字母的字符。当对一个字符有疑问的时候，为安全起见请使用转义字符转义他。</p>
 <p><code>\</code> 是lua的转义字符</p>
 <p><code>[%w_]</code>将匹配字母数字和下划线</p>
 <p><code>[01]</code>匹配二进制数字，<code>[%[%]]</code>匹配一对方括号</p>
-<p>第一个字符和最后一个字符之间用连字符<code>-</code>连接表示这两个字符之间范围内的字符集合</p>
+<p>第一个字符和最后一个字符之间用连字符 <code>-</code>连接表示这两个字符之间范围内的字符集合</p>
 <p><code>%d</code>表示 <code>[0-9]</code></p>
-<p><code>%x</code>表示<code>[0-9a-fA-F]</code></p>
+<p><code>%x</code>表示 <code>[0-9a-fA-F]</code></p>
 <p>查找八进制数:<code>[0-7]</code></p>
 <p>匹配任何非换行符户的字符: <code>[^\n]</code></p>
 <p>模式修饰符</p>
@@ -956,25 +948,25 @@ var _hmt = _hmt || [];
 </span></span></code></pre></div><p><code>%d+</code>匹配一个或多个数字 (整数):</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>i, j <span style="color:#f92672">=</span> string.find(<span style="color:#e6db74">&#34;the number 1298 is even&#34;</span>, <span style="color:#e6db74">&#34;%d+&#34;</span>)  
 </span></span><span style="display:flex;"><span>print(i,j)   <span style="color:#75715e">--&gt; 12  15 </span>
-</span></span></code></pre></div><p><code>*</code> 与 <code>+</code>类似, 但是他匹配一个字符<code>0</code>次或多次出现.一个典型的应用是匹配空白。比如，为了匹配一对圆括号<code>()</code>或者<code>( )</code>之间的空白，可以使用<code>%(%s*%)</code> <code>( '%s*</code>用来匹配<code>0</code>个或多个空白,由于圆括号在模式中有特殊的含义，所以我们必须使用<code>%</code>转义他<code>.)</code> 再看一个例子，<code>[_%a][_%w]*</code>匹配<code>Lua</code>程序中的标示符：字母或者下划线开头的字母下划线数字序列。</p>
-<p><code>-</code>与<code>*</code>一样，都匹配一个字符的0次或多次出现，但是他进行的是最短匹配。某些时候这两个用起来没有区别，但有些时候结果将截然不同。比如，如果你使用模式<code>[_%a][_%w]-</code>来查找标示符，你将只能找到第一个字母，因为<code>[_%w]-</code>永远匹配空。另一方面，假定你想查找C程序中的注释，很多人可能使用 <code>/%*.*%*/</code> (也就是说 <code>&quot;/*&quot;</code> 后面跟着任意多个字符，然后跟着<code> &quot;*/&quot;)</code> 然而，由于 <code>.*</code>进行的是最长匹配，这个模式将匹配程序中第一个<code>&quot;/*&quot;</code> 和最后一个<code>&quot;*/&quot;</code>之间所有部分:</p>
+</span></span></code></pre></div><p><code>*</code> 与 <code>+</code>类似, 但是他匹配一个字符 <code>0</code>次或多次出现.一个典型的应用是匹配空白。比如，为了匹配一对圆括号 <code>()</code>或者 <code>( )</code>之间的空白，可以使用 <code>%(%s*%)</code> <code>( '%s*</code>用来匹配 <code>0</code>个或多个空白,由于圆括号在模式中有特殊的含义，所以我们必须使用 <code>%</code>转义他 <code>.)</code> 再看一个例子，<code>[_%a][_%w]*</code>匹配 <code>Lua</code>程序中的标示符：字母或者下划线开头的字母下划线数字序列。</p>
+<p><code>-</code>与 <code>*</code>一样，都匹配一个字符的0次或多次出现，但是他进行的是最短匹配。某些时候这两个用起来没有区别，但有些时候结果将截然不同。比如，如果你使用模式 <code>[_%a][_%w]-</code>来查找标示符，你将只能找到第一个字母，因为 <code>[_%w]-</code>永远匹配空。另一方面，假定你想查找C程序中的注释，很多人可能使用 <code>/%*.*%*/</code> (也就是说 <code>&quot;/*&quot;</code> 后面跟着任意多个字符，然后跟着 <code> &quot;*/&quot;)</code> 然而，由于 <code>.*</code>进行的是最长匹配，这个模式将匹配程序中第一个 <code>&quot;/*&quot;</code> 和最后一个 <code>&quot;*/&quot;</code>之间所有部分:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>test <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;int x; /* x */  int y; /* y */&#34;</span> 
 </span></span><span style="display:flex;"><span>print(string.gsub(test, <span style="color:#e6db74">&#34;/%*.*%*/&#34;</span>, <span style="color:#e6db74">&#34;&lt;COMMENT&gt;&#34;</span>)) 
 </span></span><span style="display:flex;"><span><span style="color:#75715e">--&gt; int x; &lt;COMMENT&gt; </span>
-</span></span></code></pre></div><p>然而模式 <code>.-</code>进行的是最短匹配，她会匹配<code>&quot;/*&quot;</code>开始到第一个<code>&quot;*/&quot;</code>之前的部分:</p>
+</span></span></code></pre></div><p>然而模式 <code>.-</code>进行的是最短匹配，她会匹配 <code>&quot;/*&quot;</code>开始到第一个 <code>&quot;*/&quot;</code>之前的部分:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>test <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;int x; /* x */  int y; /* y */&#34;</span> 
 </span></span><span style="display:flex;"><span>print(string.gsub(test, <span style="color:#e6db74">&#34;/%*.-%*/&#34;</span>, <span style="color:#e6db74">&#34;&lt;COMMENT&gt;&#34;</span>))   
 </span></span><span style="display:flex;"><span><span style="color:#75715e">--&gt; int x; &lt;COMMENT&gt;  int y; &lt;COMMENT&gt; </span>
-</span></span></code></pre></div><p><code>?</code>匹配一个字符<code>0</code>次或<code>1</code>次.举个例子，假定我们想在一段文本内查找一个整数，整数可能带有正负号。 模式 <code>[+-]?%d+</code>符合我们的要求，她可以匹配 像<code> &quot;-12&quot;</code>, <code>&quot;23&quot;</code> 和 <code>&quot;+1009&quot;</code>等数字. <code>[+-]</code> 是一个匹配<code>+</code>或者 <code>-</code>的字符类；接下来的 <code>?</code>意思是匹配前面的字符类<code>0</code>次或者<code>1</code>次.</p>
+</span></span></code></pre></div><p><code>?</code>匹配一个字符 <code>0</code>次或 <code>1</code>次.举个例子，假定我们想在一段文本内查找一个整数，整数可能带有正负号。 模式 <code>[+-]?%d+</code>符合我们的要求，她可以匹配 像 <code> &quot;-12&quot;</code>, <code>&quot;23&quot;</code> 和 <code>&quot;+1009&quot;</code>等数字. <code>[+-]</code> 是一个匹配 <code>+</code>或者 <code>-</code>的字符类；接下来的 <code>?</code>意思是匹配前面的字符类 <code>0</code>次或者 <code>1</code>次.</p>
 <p>与其他系统的模式不同的是，<code>Lua</code>中的修饰符不能用字符类；不能将模式分组然后使用修饰符作用这个分组。比如，没有一个模式可以匹配一个可选的单词(除非这个单词只有一个字母)。下面我将看到，通常你可以使用一些高级技术绕开这个限制。</p>
-<p>以<code>^</code>开头的模式只匹配目标串的开始部分，相似的，以<code>$</code>结尾的模式只匹配目标串的结尾部分。这不仅可以用来限制你要查找的模式，还可以定位(anchor)模式。比如：</p>
+<p>以 <code>^</code>开头的模式只匹配目标串的开始部分，相似的，以 <code>$</code>结尾的模式只匹配目标串的结尾部分。这不仅可以用来限制你要查找的模式，还可以定位(anchor)模式。比如：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span> <span style="color:#66d9ef">if</span> string.find(s, <span style="color:#e6db74">&#34;^%d&#34;</span>) <span style="color:#66d9ef">then</span> ...  <span style="color:#960050;background-color:#1e0010">符串</span>s是否以数字开头<span style="color:#960050;background-color:#1e0010">，而</span>   <span style="color:#66d9ef">if</span> string.find(s, <span style="color:#e6db74">&#34;^[+-]?%d+$&#34;</span>) <span style="color:#66d9ef">then</span> ... 
-</span></span></code></pre></div><p>检查字符串<code>s</code>是否是一个整数。</p>
-<p><code>%b</code>用来匹配对称的字符.常写为 <code>%bxy</code>,<code>x</code>和<code>y</code>是任意两个不同的字符；<code>x</code>作为匹配的开始,<code>y</code>作为匹配的结束。比如， <code>%b()</code>匹配以<code>(</code>开始， 以 <code>)</code>结束的字符串:</p>
+</span></span></code></pre></div><p>检查字符串 <code>s</code>是否是一个整数。</p>
+<p><code>%b</code>用来匹配对称的字符.常写为 <code>%bxy</code>,<code>x</code>和 <code>y</code>是任意两个不同的字符；<code>x</code>作为匹配的开始,<code>y</code>作为匹配的结束。比如， <code>%b()</code>匹配以 <code>(</code>开始， 以 <code>)</code>结束的字符串:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span> print(string.gsub(<span style="color:#e6db74">&#34;a (enclosed (in) parentheses) line&#34;</span>,                    <span style="color:#e6db74">&#34;%b()&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>))   
 </span></span><span style="display:flex;"><span><span style="color:#75715e">--&gt; a  line </span>
 </span></span></code></pre></div><p>常用的这种模式有： <code>%b()</code>, <code>%b[]</code>, <code>%b%{%}</code>,和 <code>%b&lt;&gt;</code>。你也可以使用任何字符作为分隔符。</p>
-<h2 id="4-lua字符串管理">4. lua字符串管理<a hidden class="anchor" aria-hidden="true" href="#4-lua字符串管理">#</a></h2>
+<h2 id="lua字符串管理">lua字符串管理<a hidden class="anchor" aria-hidden="true" href="#lua字符串管理">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> TString {
 </span></span><span style="display:flex;"><span>  CommonHeader;
 </span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 字符串的子类型有两种：长字符串和短字符串
@@ -993,8 +985,8 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>  
 </span></span><span style="display:flex;"><span> <span style="color:#66d9ef">char</span> contents[<span style="color:#ae81ff">1</span>];<span style="color:#75715e">//真正的字符串存储在这里
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} TString;
-</span></span></code></pre></div><h3 id="41-字符串创建方式">4.1. 字符串创建方式<a hidden class="anchor" aria-hidden="true" href="#41-字符串创建方式">#</a></h3>
-<h4 id="411-全局字符串表">4.1.1. 全局字符串表<a hidden class="anchor" aria-hidden="true" href="#411-全局字符串表">#</a></h4>
+</span></span></code></pre></div><h3 id="字符串创建方式">字符串创建方式<a hidden class="anchor" aria-hidden="true" href="#字符串创建方式">#</a></h3>
+<h4 id="全局字符串表">全局字符串表<a hidden class="anchor" aria-hidden="true" href="#全局字符串表">#</a></h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> stringtable {
 </span></span><span style="display:flex;"><span>  TString <span style="color:#f92672">**</span>hash;<span style="color:#75715e">//hash散列桶
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> nuse;  <span style="color:#75715e">/* number of elements */</span><span style="color:#75715e">//实际的使用元素
@@ -1002,17 +994,17 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} stringtable;
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220405151905211.png" alt="Typoraimage-20220405151905211"  />
 </p>
-<h4 id="412-链表方式">4.1.2. 链表方式<a hidden class="anchor" aria-hidden="true" href="#412-链表方式">#</a></h4>
-<p>相同<code>hash</code>字符串存储在 <code>stringtable strt</code> 链表结构上 一般<code>短字符串</code>会使用这种方式存储</p>
+<h4 id="链表方式">链表方式<a hidden class="anchor" aria-hidden="true" href="#链表方式">#</a></h4>
+<p>相同 <code>hash</code>字符串存储在 <code>stringtable strt</code> 链表结构上 一般 <code>短字符串</code>会使用这种方式存储</p>
 <p><img loading="lazy" src="Typoraimage-20220405131015805.png" alt="Typoraimage-20220405131015805"  />
 </p>
-<h4 id="413-hashmap缓存方式">4.1.3. hashMap缓存方式<a hidden class="anchor" aria-hidden="true" href="#413-hashmap缓存方式">#</a></h4>
+<h4 id="hashmap缓存方式">hashMap缓存方式<a hidden class="anchor" aria-hidden="true" href="#hashmap缓存方式">#</a></h4>
 <p>下图中N是数组行，M是数组列</p>
-<p>i的下标值通过<code>unsigned int i = point2uint(str) % STRCACHE_N</code>hash求得</p>
+<p>i的下标值通过 <code>unsigned int i = point2uint(str) % STRCACHE_N</code>hash求得</p>
 <p>j的最大值固定就是下面的宏函数 <code>STRCACHE_M 2</code></p>
 <p><img loading="lazy" src="Typoraimage-20220405133449863.png" alt="Typoraimage-20220405133449863"  />
 </p>
-<p>下面两个函数<code>luaS_new</code> <code>luaS_newlstr</code>是创建字符串的核心函数</p>
+<p>下面两个函数 <code>luaS_new</code> <code>luaS_newlstr</code>是创建字符串的核心函数</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** Create or reuse a zero-terminated string, first checking in the
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** cache (using the string address as a key). The cache can contain
@@ -1031,7 +1023,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (strcmp(str, getstr(p[j])) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)  <span style="color:#75715e">/* hit? */</span>
 </span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> p[j];  <span style="color:#75715e">/* that is it */</span>
 </span></span><span style="display:flex;"><span>  }
-</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">//如果没有找到创建新的Tstring,并放到第一个位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//同时也意味着最后一个元素会被移除strcache
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">/* normal route */</span>
@@ -1110,12 +1102,12 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  getstr(ts)[l] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;  <span style="color:#75715e">/* ending 0 */</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> ts;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h4 id="414-函数调用过程">4.1.4. 函数调用过程<a hidden class="anchor" aria-hidden="true" href="#414-函数调用过程">#</a></h4>
+</span></span></code></pre></div><h4 id="函数调用过程">函数调用过程<a hidden class="anchor" aria-hidden="true" href="#函数调用过程">#</a></h4>
 <p><img loading="lazy" src="Typoraimage-20220405152935968.png" alt="Typoraimage-20220405152935968"  />
 </p>
-<h3 id="42-字符串大小">4.2. 字符串大小<a hidden class="anchor" aria-hidden="true" href="#42-字符串大小">#</a></h3>
-<p>字符串内容会在有效数据的结尾强制加上<code>\0</code>，所以字符串对象的总大小为:</p>
-<p>头的大小加上字符串的空间+加上最后的<code>\0</code></p>
+<h3 id="字符串大小">字符串大小<a hidden class="anchor" aria-hidden="true" href="#字符串大小">#</a></h3>
+<p>字符串内容会在有效数据的结尾强制加上 <code>\0</code>，所以字符串对象的总大小为:</p>
+<p>头的大小加上字符串的空间+加上最后的 <code>\0</code></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** Size of a TString: Size of the header plus space for the string
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** itself (including final &#39;\0&#39;).
@@ -1125,7 +1117,7 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//((l) + 1) l是外部传进来长短字符串的大小 +1是最后&#39;\0&#39;大小
 </span></span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220405153553699.png" alt="Typoraimage-20220405153553699"  />
 </p>
-<h3 id="43-长短字符串">4.3. 长短字符串<a hidden class="anchor" aria-hidden="true" href="#43-长短字符串">#</a></h3>
+<h3 id="长短字符串">长短字符串<a hidden class="anchor" aria-hidden="true" href="#长短字符串">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** Maximum length for short strings, that is, strings that are
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** internalized. (Cannot be smaller than reserved words or tags for
@@ -1135,17 +1127,17 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span><span style="color:#75715e">#if !defined(LUAI_MAXSHORTLEN)
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define LUAI_MAXSHORTLEN	40
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
-</span></span></span></code></pre></div><h4 id="431-短字符串">4.3.1. 短字符串<a hidden class="anchor" aria-hidden="true" href="#431-短字符串">#</a></h4>
-<p>定义:小于等于<code>40</code>个字节的字符串</p>
-<h5 id="4311-比较大小">4.3.1.1. 比较大小<a hidden class="anchor" aria-hidden="true" href="#4311-比较大小">#</a></h5>
+</span></span></span></code></pre></div><h4 id="短字符串">短字符串<a hidden class="anchor" aria-hidden="true" href="#短字符串">#</a></h4>
+<p>定义:小于等于 <code>40</code>个字节的字符串</p>
+<h5 id="比较大小">比较大小<a hidden class="anchor" aria-hidden="true" href="#比较大小">#</a></h5>
 <p>因为是重复利用的，所以直接比较指针地址就可以了</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** equality for short strings, which are always internalized
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">*/</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">#define eqshrstr(a,b)	check_exp((a)-&gt;tt == LUA_VSHRSTR, (a) == (b))
-</span></span></span></code></pre></div><h4 id="432-长字符串">4.3.2. 长字符串<a hidden class="anchor" aria-hidden="true" href="#432-长字符串">#</a></h4>
-<h5 id="4321-计算hash值">4.3.2.1. 计算hash值<a hidden class="anchor" aria-hidden="true" href="#4321-计算hash值">#</a></h5>
-<p>长字符串不会马上计算哈希值，一般在调用<code>luaS_hashlongstr </code>时候才会去计算</p>
+</span></span></span></code></pre></div><h4 id="长字符串">长字符串<a hidden class="anchor" aria-hidden="true" href="#长字符串">#</a></h4>
+<h5 id="计算hash值">计算hash值<a hidden class="anchor" aria-hidden="true" href="#计算hash值">#</a></h5>
+<p>长字符串不会马上计算哈希值，一般在调用 <code>luaS_hashlongstr </code>时候才会去计算</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">luaS_hashlongstr</span> (TString <span style="color:#f92672">*</span>ts) {
 </span></span><span style="display:flex;"><span>  lua_assert(ts<span style="color:#f92672">-&gt;</span>tt <span style="color:#f92672">==</span> LUA_VLNGSTR);
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (ts<span style="color:#f92672">-&gt;</span>extra <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {  <span style="color:#75715e">/* no hash? */</span><span style="color:#75715e">//extra为0的时候才去计算hash值
@@ -1161,7 +1153,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>    h <span style="color:#f92672">^=</span> ((h<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">5</span>) <span style="color:#f92672">+</span> (h<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">+</span> cast_byte(str[l <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>]));
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> h;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h5 id="4322-比较大小">4.3.2.2. 比较大小<a hidden class="anchor" aria-hidden="true" href="#4322-比较大小">#</a></h5>
+</span></span></code></pre></div><h5 id="比较大小-1">比较大小<a hidden class="anchor" aria-hidden="true" href="#比较大小-1">#</a></h5>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** equality for long strings
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">长字符串的比较：先比较地址，再比较长度，最后比较内容
@@ -1173,8 +1165,8 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>    ((len <span style="color:#f92672">==</span> b<span style="color:#f92672">-&gt;</span>u.lnglen) <span style="color:#f92672">&amp;&amp;</span>  <span style="color:#75715e">/* equal length and ... */</span>
 </span></span><span style="display:flex;"><span>     (memcmp(getstr(a), getstr(b), len) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>));  <span style="color:#75715e">/* equal contents */</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="5-lua-table">5. lua table<a hidden class="anchor" aria-hidden="true" href="#5-lua-table">#</a></h2>
-<h3 id="51-值对象结构">5.1. 值对象结构<a hidden class="anchor" aria-hidden="true" href="#51-值对象结构">#</a></h3>
+</span></span></code></pre></div><h2 id="lua-table">lua table<a hidden class="anchor" aria-hidden="true" href="#lua-table">#</a></h2>
+<h3 id="值对象结构">值对象结构<a hidden class="anchor" aria-hidden="true" href="#值对象结构">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/*
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">** Union of all Lua values
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">还有几种数据类型是不需要进行垃圾回收的, 
@@ -1217,16 +1209,16 @@ var _hmt = _hmt || [];
 </tr>
 </tbody>
 </table>
-<h3 id="52-非gc对象">5.2. 非GC对象<a hidden class="anchor" aria-hidden="true" href="#52-非gc对象">#</a></h3>
-<p>从上面可以看到<code>非GC的对象</code>有<code>4</code>中</p>
+<h3 id="非gc对象">非GC对象<a hidden class="anchor" aria-hidden="true" href="#非gc对象">#</a></h3>
+<p>从上面可以看到 <code>非GC的对象</code>有 <code>4</code>中</p>
 <ul>
 <li>light userdata</li>
 <li>C函数</li>
 <li>整型</li>
 <li>浮点型</li>
-<li><del><strong><font color='red'>int b</font></strong></del>(lua 5.4 数字分为整数和浮点，而i正好也可以用作bool,所以把这个给**<font color='red'>删除</font>**,和<code> lua_Integer i</code> 结合到一起了)</li>
+<li><del><strong>int b</strong></del>(lua 5.4 数字分为整数和浮点，而i正好也可以用作bool,所以把这个给<strong>删除</strong>,和 <code> lua_Integer i</code> 结合到一起了)</li>
 </ul>
-<h3 id="53-gc对象">5.3. GC对象<a hidden class="anchor" aria-hidden="true" href="#53-gc对象">#</a></h3>
+<h3 id="gc对象">GC对象<a hidden class="anchor" aria-hidden="true" href="#gc对象">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">union</span> GCUnion {
 </span></span><span style="display:flex;"><span>  GCObject gc;  <span style="color:#75715e">/* common header */</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> TString ts;
@@ -1237,7 +1229,7 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> lua_State th;  <span style="color:#75715e">/* thread */</span>
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> UpVal upv;
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>从上面的<code>union</code>结构体可以看到<code>GC对象</code>有<code>6</code>中</p>
+</span></span></code></pre></div><p>从上面的 <code>union</code>结构体可以看到 <code>GC对象</code>有 <code>6</code>中</p>
 <ul>
 <li>字符串</li>
 <li>userdata</li>
@@ -1247,20 +1239,20 @@ var _hmt = _hmt || [];
 <li>lua 线程 (其实就是协程)</li>
 <li>lua上值</li>
 </ul>
-<h3 id="54-commonheader类型">5.4. CommonHeader类型<a hidden class="anchor" aria-hidden="true" href="#54-commonheader类型">#</a></h3>
+<h3 id="commonheader类型">CommonHeader类型<a hidden class="anchor" aria-hidden="true" href="#commonheader类型">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define CommonHeader	struct GCObject *next; lu_byte tt; lu_byte marked
 </span></span></span></code></pre></div><ul>
 <li><code>next</code> 指针 指向下一个GC对象</li>
 <li><code>tt</code> GC对象的实际类型(比如上面6中GC对象)</li>
 <li><code>marked</code> 标识GC的状态(白1 白2 黑 final)</li>
 </ul>
-<h3 id="55-tvaluefields-类型">5.5. TValuefields 类型<a hidden class="anchor" aria-hidden="true" href="#55-tvaluefields-类型">#</a></h3>
+<h3 id="tvaluefields-类型">TValuefields 类型<a hidden class="anchor" aria-hidden="true" href="#tvaluefields-类型">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define TValuefields    Value value_; int tt_
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Value<span style="color:#960050;background-color:#1e0010">：存储具体数据的值</span>
 </span></span><span style="display:flex;"><span>tt_<span style="color:#960050;background-color:#1e0010">：表示这个值的类型，即所有的基础数据类型</span>
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220405220227940.png" alt="Typoraimage-20220405220227940"  />
 </p>
-<h3 id="56-table-结构">5.6. table 结构<a hidden class="anchor" aria-hidden="true" href="#56-table-结构">#</a></h3>
+<h3 id="table-结构">table 结构<a hidden class="anchor" aria-hidden="true" href="#table-结构">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> Table {
 </span></span><span style="display:flex;"><span>  CommonHeader;
 </span></span><span style="display:flex;"><span>  lu_byte flags;  <span style="color:#75715e">/* 1&lt;&lt;p means tagmethod(p) is not present */</span><span style="color:#75715e">//用于表示cache在该表中实现了哪些元方法
@@ -1281,20 +1273,20 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  } u;
 </span></span><span style="display:flex;"><span>  TValue i_val;  <span style="color:#75715e">/* direct access to node&#39;s value as a proper &#39;TValue&#39; */</span>
 </span></span><span style="display:flex;"><span>} Node;
-</span></span></code></pre></div><h3 id="57-hash解决冲突时候的两种方法">5.7. hash解决冲突时候的两种方法<a hidden class="anchor" aria-hidden="true" href="#57-hash解决冲突时候的两种方法">#</a></h3>
-<h4 id="571-闭散列">5.7.1. 闭散列<a hidden class="anchor" aria-hidden="true" href="#571-闭散列">#</a></h4>
+</span></span></code></pre></div><h3 id="hash解决冲突时候的两种方法">hash解决冲突时候的两种方法<a hidden class="anchor" aria-hidden="true" href="#hash解决冲突时候的两种方法">#</a></h3>
+<h4 id="闭散列">闭散列<a hidden class="anchor" aria-hidden="true" href="#闭散列">#</a></h4>
 <p><img loading="lazy" src="Typoraimage-20220405163802074.png" alt="Typoraimage-20220405163802074"  />
 </p>
 <p><strong>（即开放地址法）：当发生哈希冲突时，如果该哈希表还没有被填满，那么就把该元素放到哈希表的下一个空闲的位置</strong></p>
 <p><code>优点</code>：简单 易懂,当hash表已经没有空格的时候，lua就会resize这个hash表。这样做的好处主要是不用动态申请内存空间，hash表初始化的时候有多少内存空间就用多少，不够就resize这个hash表。</p>
 <p><code>缺点</code>：一旦发生了哈希冲突，所有的冲突连接在一起，很容易产生数据”堆积”。即不同的数据占用可以利用的位置，就使得寻找其余数据的位置需要进行多次比较，就会导致查找的效率降低。</p>
-<h4 id="572-开散列">5.7.2. 开散列<a hidden class="anchor" aria-hidden="true" href="#572-开散列">#</a></h4>
+<h4 id="开散列">开散列<a hidden class="anchor" aria-hidden="true" href="#开散列">#</a></h4>
 <p><img loading="lazy" src="Typoraimage-20220405164221247-165310038422713.png" alt="Typoraimage-20220405164221247"  />
 </p>
 <p><strong>开散列法（哈希桶）：又名链地址法，先用哈希函数计算每个数据的散列地址，把具有相同地址的元素归于同一个集合之中，把该集合处理为一个链表，链表的头节点存储于哈希表之中。</strong></p>
 <p><code>优点</code>:解决了数据溢出的问题</p>
 <p><code>缺点</code>:需要增加链接的指针，增加存储开销</p>
-<h3 id="58-新建一个table">5.8. 新建一个table<a hidden class="anchor" aria-hidden="true" href="#58-新建一个table">#</a></h3>
+<h3 id="新建一个table">新建一个table<a hidden class="anchor" aria-hidden="true" href="#新建一个table">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>Table <span style="color:#f92672">*</span><span style="color:#a6e22e">luaH_new</span> (lua_State <span style="color:#f92672">*</span>L) {
 </span></span><span style="display:flex;"><span>  GCObject <span style="color:#f92672">*</span>o <span style="color:#f92672">=</span> luaC_newobj(L, LUA_VTABLE, <span style="color:#66d9ef">sizeof</span>(Table));
 </span></span><span style="display:flex;"><span>  Table <span style="color:#f92672">*</span>t <span style="color:#f92672">=</span> gco2t(o);
@@ -1334,7 +1326,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>    t<span style="color:#f92672">-&gt;</span>lastfree <span style="color:#f92672">=</span> gnode(t, size);  <span style="color:#75715e">/* all positions are free */</span>
 </span></span><span style="display:flex;"><span>  }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="59-增加一个元素">5.9. 增加一个元素<a hidden class="anchor" aria-hidden="true" href="#59-增加一个元素">#</a></h3>
+</span></span></code></pre></div><h3 id="增加一个元素">增加一个元素<a hidden class="anchor" aria-hidden="true" href="#增加一个元素">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* 这个函数的主要功能将一个key插入哈希表，并返回key关联的value指针。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">1. 首先通过key计算出主位置，如果主位置为空结点那最简单，将key设进该结点，然后返回结点的值指针。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">2. 如果不是空结点就要分情况，看3和4两种情况
@@ -1395,8 +1387,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>  lua_assert(isempty(gval(mp)));
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> gval(mp);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h1 id="heading"><a hidden class="anchor" aria-hidden="true" href="#heading">#</a></h1>
-
+</span></span></code></pre></div>
 
         </div>
         <div class="post-reward">
@@ -1435,10 +1426,10 @@ var _hmt = _hmt || [];
     <br>
     <span>gitlab服务器钩子</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/skynet/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/ringbuff/">
     <span class="title">下一页 »</span>
     <br>
-    <span>skynet赏析</span>
+    <span>环形buff</span>
   </a>
 </nav>
 

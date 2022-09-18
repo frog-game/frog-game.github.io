@@ -7,11 +7,11 @@
 <meta name="robots" content="index, follow">
 <title>环形buff | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="1. 图解释 2. 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteInde">
+<meta name="description" content="图解释 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteIndex;">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/ringbuff/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d8a1c95b1eb964516f02dd7068e2fd42017af5baba0751df317cf8a081744b14.css" integrity="sha256-2KHJWx65ZFFvAt1waOL9QgF69bq6B1HfMXz4oIF0SxQ=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.905fe131597072fcbc87e1225756e27ba28555e0f5e049157c9a9ae308ef3b2b.css" integrity="sha256-kF/hMVlwcvy8h&#43;EiV1bie6KFVeD14EkVfJqa4wjvOys=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -68,15 +68,15 @@ var _hmt = _hmt || [];
 })();
 </script>
 <meta property="og:title" content="环形buff" />
-<meta property="og:description" content="1. 图解释 2. 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteInde" />
+<meta property="og:description" content="图解释 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteIndex;" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/ringbuff/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2022-09-13T01:30:29&#43;08:00" />
+<meta property="article:published_time" content="2022-09-16T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-09-18T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="环形buff"/>
-<meta name="twitter:description" content="1. 图解释 2. 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteInde"/>
+<meta name="twitter:description" content="图解释 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteIndex;"/>
 
 
 <script type="application/ld+json">
@@ -111,15 +111,15 @@ var _hmt = _hmt || [];
   "@type": "BlogPosting",
   "headline": "环形buff",
   "name": "环形buff",
-  "description": "1. 图解释 2. 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteInde",
+  "description": "图解释 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteIndex;",
   "keywords": [
     ""
   ],
-  "articleBody": "1. 图解释 2. 结构体 typedef struct byteQueue_s { char*\tpBuffer;//数据 size_t\tnCapacity;//容量 size_t\tnReadIndex;//读指针索引 size_t\tnWriteIndex;//写指针索引 } byteQueue_tt; 3. 初始 结构体 假设要申请的空间 环形buff结构体大小为8\nnWriteIndex 写指针索引 nReadIndex 读指针索引 环形buff初始化\nvoid byteQueue_init(byteQueue_tt* pByteQueue,size_t nCapacity = /* = 8*/) { pByteQueue-\u003enReadIndex = nCapacity;//读指针索引位置设置为8,放到末尾 pByteQueue-\u003enWriteIndex = 0;//写指针索引位置设置成0，放到开头 pByteQueue-\u003enCapacity = nCapacity;//容量 if( nCapacity != 0 ) { pByteQueue-\u003epBuffer = mem_malloc(nCapacity);//申请空间 } else { pByteQueue-\u003epBuffer = NULL;//置空 } } 4. 清空结构体 void byteQueue_clear(byteQueue_tt* pByteQueue) { pByteQueue-\u003enReadIndex = 0;//读指针索引位置设置为0,放到开头 pByteQueue-\u003enWriteIndex = 0;//写指针索引位置设置为0,放到开头 pByteQueue-\u003enCapacity = 0;//容量设置为0 if(pByteQueue-\u003epBuffer) { mem_free(pByteQueue-\u003epBuffer);//如果有数据进行释放 pByteQueue-\u003epBuffer = NULL;//并且置空 } } 5. 获取剩余全部可写空间 static inline size_t byteQueue_getBytesWritable(byteQueue_tt* pByteQueue) { if (pByteQueue-\u003enReadIndex \u003e= pByteQueue-\u003enWriteIndex )//写指针和读指针重合，或者在读指针前面 { return pByteQueue-\u003enReadIndex - pByteQueue-\u003enWriteIndex;//直接读指针 - 写指针 就是 写入了多少内容 } else//写指针在读指针后面 { return pByteQueue-\u003enReadIndex + (pByteQueue-\u003enCapacity - pByteQueue-\u003enWriteIndex); //读指针位置 + (容量 - 写指针位置) } } 5.1. 写指针在读指针前面[求得是蓝色块数据] 5.2. 写指针在读指针后面[求得是蓝色块数据] 6. 获取剩余全部可读空间 static inline size_t byteQueue_getBytesReadable(byteQueue_tt* pByteQueue) { if(pByteQueue-\u003enWriteIndex \u003e pByteQueue-\u003enReadIndex) //读指针在写指针前面 { return pByteQueue-\u003enWriteIndex - pByteQueue-\u003enReadIndex;//直接写指针 - 读指针 就是可以读多少数据 } else //读指针和写指针重合,或者读指针在写指针后面 { return pByteQueue-\u003enWriteIndex + (pByteQueue-\u003enCapacity - pByteQueue-\u003enReadIndex); //写指针 + (容量 - 读指针位置) } } 6.1. 写指针在读指针后面[求的是红色块的数据] 6.2. 写指针在读指针前面[求的是红色块的数据] 7. 查看连续的可写空间 //查看连续的可写空间 //size_t* pWriteBytes 能连续写入的大小 static inline char* byteQueue_peekContiguousBytesWrite(byteQueue_tt* pByteQueue, size_t* pWriteBytes) { if (pByteQueue-\u003enReadIndex \u003e= pByteQueue-\u003enWriteIndex)//读指针在写指针后面 { *pWriteBytes = pByteQueue-\u003enReadIndex - pByteQueue-\u003enWriteIndex;//能连续写入的大小 } else//读指针在写指针前面 { *pWriteBytes = pByteQueue-\u003enCapacity - pByteQueue-\u003enWriteIndex;//能连续写入的大小 } return pByteQueue-\u003epBuffer + pByteQueue-\u003enWriteIndex;//开始连续写入指针的起始位置 } 7.1. 写指针在读指针前面[求得连续可写的空间] 7.2. 写指针在读指针后面[求得连续可写的空间] 8. 查看连续可读空间 //查看连续的可读空间 //size_t* pWriteBytes 能连续读取的大小 static inline char* byteQueue_peekContiguousBytesRead(byteQueue_tt* pByteQueue, size_t* pReadBytes) { if(pByteQueue-\u003enWriteIndex \u003e pByteQueue-\u003enReadIndex)//写指针在读指针后面 { *pReadBytes = pByteQueue-\u003enWriteIndex - pByteQueue-\u003enReadIndex;//能连续读取的大小 } else { *pReadBytes = pByteQueue-\u003enCapacity - pByteQueue-\u003enReadIndex;//能连续读取的大小 } return pByteQueue-\u003epBuffer + pByteQueue-\u003enReadIndex;//开始连续读入指针的起始位置 } 8.1. 写指针在读指针后面[求得连续可读的空间] 8.2. 写指针在读指针前面[求得连续可读的空间] 9. 写入一个字符[空间不足按256的倍数自动扩展] void byteQueue_writeChar(byteQueue_tt* pByteQueue, const char c) { if(pByteQueue-\u003enCapacity == 0) { //初始化容量,buffer大小，可读索引 pByteQueue-\u003enCapacity = 256;//初始化容量大小[256] pByteQueue-\u003epBuffer = mem_malloc(pByteQueue-\u003enCapacity);//申请空间 pByteQueue-\u003enReadIndex = pByteQueue-\u003enCapacity;//初始化读索引位置 } else { size_t nBytesWritable = byteQueue_getBytesWritable(pByteQueue);//获取获取剩余全部可写空间 if (1 \u003e nBytesWritable) { //align_size 将size按align大小整数倍提升,用于内存对齐 size_t nNewCapacity = align_size( (pByteQueue-\u003enCapacity \u003c\u003c 1) + 1,256); char* pBuffer = mem_malloc(nNewCapacity); if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity)//说明还有数据没有读走 { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//获取剩余全部可读的空间 size_t nReadBytes = 0;//连续可读的空间的大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//开始读取数据的起始位置 memcpy(pBuffer,pRead,nReadBytes);//直接拷贝 if( nReadBytes != nWritten )//如果连续可读的空间的大小!=剩余全部可读的空间 { memcpy(pBuffer+ nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//把剩下的可读的空间写入新buffer空间 } pByteQueue-\u003enReadIndex = 0;//到了新空间需要重新移动读指针 pByteQueue-\u003enWriteIndex = nWritten;//到了新空间需要重新移动写指针 } else //没有数据需要读取直接初始化指针位置 { pByteQueue-\u003enReadIndex = nNewCapacity; pByteQueue-\u003enWriteIndex = 0; } pByteQueue-\u003enCapacity = nNewCapacity; mem_free(pByteQueue-\u003epBuffer); pByteQueue-\u003epBuffer = pBuffer; } } pByteQueue-\u003epBuffer[pByteQueue-\u003enWriteIndex] = c;//赋值 pByteQueue-\u003enWriteIndex = (pByteQueue-\u003enWriteIndex + 1) % pByteQueue-\u003enCapacity;//索引位移一位 if (pByteQueue-\u003enReadIndex == pByteQueue-\u003enCapacity)//如果读索引在尾部 { pByteQueue-\u003enReadIndex = 0;//把读索引放到头部 } } 10. 写入指定大小空间的数据[空间不足按256的倍数自动扩展] void byteQueue_write(byteQueue_tt* pByteQueue, const void* pInBytes, size_t nLength) { assert(nLength != 0); if(pByteQueue-\u003enCapacity == 0)//容量大小为0 { pByteQueue-\u003enCapacity = align_size(nLength,256);//初始化容量大小[256的倍数] pByteQueue-\u003epBuffer = mem_malloc(pByteQueue-\u003enCapacity);//申请空间 pByteQueue-\u003enReadIndex = pByteQueue-\u003enCapacity;//初始化读索引位置 } else { size_t nBytesWritable = byteQueue_getBytesWritable(pByteQueue);//获取剩余可写空间 if (nLength \u003e nBytesWritable)//如果写入的大小大于剩余可写空间 { //数据进行扩展 size_t nNewCapacity = align_size( (pByteQueue-\u003enCapacity \u003c\u003c 1) + (nLength-nBytesWritable),256); char* pBuffer = mem_malloc(nNewCapacity);//申请空间大小 if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity )//还有数据可读 { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//剩余全部可读空间 size_t nReadBytes = 0;//连续可读的空间大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//开始连续读入指针的起始位置 memcpy(pBuffer,pRead,nReadBytes);//把连续可读的空间写入新buffer空间 if( nReadBytes != nWritten )//如果连续可读的空间!=剩余全部可读空间 { memcpy(pBuffer + nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//把剩下的可读的空间写入新buffer空间 } pByteQueue-\u003enReadIndex = 0;//重置读索引 pByteQueue-\u003enWriteIndex = nWritten;//重置写索引 } else { pByteQueue-\u003enReadIndex = nNewCapacity;//重置读索引 pByteQueue-\u003enWriteIndex = 0;//重置写索引 } pByteQueue-\u003enCapacity = nNewCapacity;////重置容量大小 mem_free(pByteQueue-\u003epBuffer);//释放旧buff空间 pByteQueue-\u003epBuffer = pBuffer;//重置指针到新buff空间 } } size_t nWriteBytes = 0;//连续可写的空间大小 char* pWrite = byteQueue_peekContiguousBytesWrite(pByteQueue,\u0026nWriteBytes);//开始写入的指针位置 if (nWriteBytes \u003e= nLength)//如果连续写入的空间能够满足需要写入的空间大小 { memcpy(pWrite, pInBytes, nLength);//直接拷贝 } else { memcpy(pWrite, pInBytes, nWriteBytes);//先拷贝连续可写入的空间大小 memcpy(pByteQueue-\u003epBuffer, (const char*)pInBytes + nWriteBytes, nLength - nWriteBytes);//再把剩余要写入的大小空间写入 } pByteQueue-\u003enWriteIndex = (pByteQueue-\u003enWriteIndex + nLength) % pByteQueue-\u003enCapacity;//重置读索引 if (pByteQueue-\u003enReadIndex == pByteQueue-\u003enCapacity) { pByteQueue-\u003enReadIndex = 0;//重置写索引 } } 10. 写入指定大小空间的数据[空间不足按剩余需要空间大小申请] void byteQueue_writeBytes(byteQueue_tt* pByteQueue, const void* pInBytes, size_t nLength) { assert(nLength != 0); if(pByteQueue-\u003enCapacity == 0)//容量大小为0 { pByteQueue-\u003enCapacity = nLength;//初始化容量大小[需要空间大小] pByteQueue-\u003epBuffer = mem_malloc(pByteQueue-\u003enCapacity);//申请空间 pByteQueue-\u003enReadIndex = pByteQueue-\u003enCapacity;//初始化读索引位置 } else { size_t nBytesWritable = byteQueue_getBytesWritable(pByteQueue);//剩余可写的全部空间大小 if (nLength \u003e nBytesWritable)//如果写入的大小大于剩余可写入的空间大小 { size_t nNewCapacity = pByteQueue-\u003enCapacity + (nLength - nBytesWritable);//开辟正好大小的空间 char* pBuffer = mem_malloc(nNewCapacity);//申请空间 if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity)//还有空间可读需要把这段空间赋值到新空间 { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//剩余可读的全部空间 size_t nReadBytes = 0;//连续可读的空间 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//开始读取空间的起始位置 memcpy(pBuffer,pRead,nReadBytes);//拷贝到新空间 if( nReadBytes != nWritten )//连续可读的空间!=剩余可读的全部空间 { memcpy(pBuffer+ nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//拷贝剩余数据到新空间 } pByteQueue-\u003enReadIndex = 0;//重置读索引 pByteQueue-\u003enWriteIndex = nWritten;//重置写索引 } else { pByteQueue-\u003enReadIndex = nNewCapacity;//重置读索引 pByteQueue-\u003enWriteIndex = 0;//重置写索引 } pByteQueue-\u003enCapacity = nNewCapacity;//重置容量 mem_free(pByteQueue-\u003epBuffer);//释放旧空间 pByteQueue-\u003epBuffer = pBuffer;//新空间指针指向旧空间指针 } } size_t nWriteBytes = 0;//连续可写入空间大小 char* pWrite = byteQueue_peekContiguousBytesWrite(pByteQueue,\u0026nWriteBytes);//可写入开始指针 if (nWriteBytes \u003e= nLength)//容量足够 { memcpy(pWrite, pInBytes, nLength);//直接拷贝 } else { memcpy(pWrite, pInBytes, nWriteBytes);//先拷贝连续可写入空间大小 memcpy(pByteQueue-\u003epBuffer, (const char*)pInBytes + nWriteBytes, nLength - nWriteBytes);//剩余的在直接拷贝 } pByteQueue-\u003enWriteIndex = (pByteQueue-\u003enWriteIndex + nLength) % pByteQueue-\u003enCapacity;//重置写索引 if (pByteQueue-\u003enReadIndex == pByteQueue-\u003enCapacity) { pByteQueue-\u003enReadIndex = 0;//重置读索引 } } 10. 读取数据 bool byteQueue_readBytes(byteQueue_tt* pByteQueue, void* pOutBytes, size_t nMaxLengthToRead, bool bPeek /*= false*/ ) { size_t nBytesWritten = byteQueue_getBytesReadable(pByteQueue);//可读的空间大小 size_t nBytesToRead = nBytesWritten \u003c nMaxLengthToRead ? nBytesWritten : nMaxLengthToRead;//得到可读取的大小 if (nBytesToRead == 0) { return false; } size_t nReadBytes = 0;//连续可读的大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//连续可读空间大小的起始索引 if( nReadBytes \u003e= nBytesToRead )//满足可读大小需求 { memcpy(pOutBytes,pRead,nBytesToRead);//直接读取 } else { memcpy(pOutBytes,pRead,nReadBytes);//直接连续可读的空间大小 memcpy((char*)pOutBytes+nReadBytes,pByteQueue-\u003epBuffer,nBytesToRead-nReadBytes);//读取剩余需要读取的大小 } if (!bPeek)//不是探测 byteQueue_readOffset(pByteQueue,nBytesToRead);//直接移动指针 return true; } 10. 重置容量 void byteQueue_reserve(byteQueue_tt* pByteQueue, size_t nCapacity) { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//剩余全部可读大小 if(nWritten \u003e nCapacity)//如果全部可读的大小大于要重置的容量大小 { return; } if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity)//有剩余需要读取的空间数据 { char* pBuffer = mem_malloc(nCapacity);//申请新的重置空间大小 size_t nReadBytes = 0;//连续可读的空间大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//连续可读空间大小的起始位置 memcpy(pBuffer,pRead,nReadBytes);//直接拷贝 if( nReadBytes != nWritten )//还有剩余要拷贝的空间 { memcpy(pBuffer + nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//拷贝剩余要拷贝的数据 } pByteQueue-\u003enReadIndex = 0;//重置读索引 pByteQueue-\u003enWriteIndex = nWritten;//重置写索引 mem_free(pByteQueue-\u003epBuffer);//释放旧空间 pByteQueue-\u003epBuffer = pBuffer;//新空间的指针指向旧空间指针 } else { pByteQueue-\u003epBuffer = mem_realloc(pByteQueue-\u003epBuffer,nCapacity);//直接指向申请空间的大小 pByteQueue-\u003enReadIndex = nCapacity;//重置读索引 pByteQueue-\u003enWriteIndex = 0;//重置写索引 } pByteQueue-\u003enCapacity = nCapacity;//重置容量 } ",
-  "wordCount" : "4887",
+  "articleBody": "图解释 结构体 typedef struct byteQueue_s { char*\tpBuffer;//数据 size_t\tnCapacity;//容量 size_t\tnReadIndex;//读指针索引 size_t\tnWriteIndex;//写指针索引 } byteQueue_tt; 初始 结构体 假设要申请的空间 环形buff结构体大小为8\nnWriteIndex 写指针索引 nReadIndex 读指针索引 环形buff初始化\nvoid byteQueue_init(byteQueue_tt* pByteQueue,size_t nCapacity = /* = 8*/) { pByteQueue-\u003enReadIndex = nCapacity;//读指针索引位置设置为8,放到末尾 pByteQueue-\u003enWriteIndex = 0;//写指针索引位置设置成0，放到开头 pByteQueue-\u003enCapacity = nCapacity;//容量 if( nCapacity != 0 ) { pByteQueue-\u003epBuffer = mem_malloc(nCapacity);//申请空间 } else { pByteQueue-\u003epBuffer = NULL;//置空 } } 清空结构体 void byteQueue_clear(byteQueue_tt* pByteQueue) { pByteQueue-\u003enReadIndex = 0;//读指针索引位置设置为0,放到开头 pByteQueue-\u003enWriteIndex = 0;//写指针索引位置设置为0,放到开头 pByteQueue-\u003enCapacity = 0;//容量设置为0 if(pByteQueue-\u003epBuffer) { mem_free(pByteQueue-\u003epBuffer);//如果有数据进行释放 pByteQueue-\u003epBuffer = NULL;//并且置空 } } 获取剩余全部可写空间 static inline size_t byteQueue_getBytesWritable(byteQueue_tt* pByteQueue) { if (pByteQueue-\u003enReadIndex \u003e= pByteQueue-\u003enWriteIndex )//写指针和读指针重合，或者在读指针前面 { return pByteQueue-\u003enReadIndex - pByteQueue-\u003enWriteIndex;//直接读指针 - 写指针 就是 写入了多少内容 } else//写指针在读指针后面 { return pByteQueue-\u003enReadIndex + (pByteQueue-\u003enCapacity - pByteQueue-\u003enWriteIndex); //读指针位置 + (容量 - 写指针位置) } } 写指针在读指针前面[求得是蓝色块数据] 写指针在读指针后面[求得是蓝色块数据] 获取剩余全部可读空间 static inline size_t byteQueue_getBytesReadable(byteQueue_tt* pByteQueue) { if(pByteQueue-\u003enWriteIndex \u003e pByteQueue-\u003enReadIndex) //读指针在写指针前面 { return pByteQueue-\u003enWriteIndex - pByteQueue-\u003enReadIndex;//直接写指针 - 读指针 就是可以读多少数据 } else //读指针和写指针重合,或者读指针在写指针后面 { return pByteQueue-\u003enWriteIndex + (pByteQueue-\u003enCapacity - pByteQueue-\u003enReadIndex); //写指针 + (容量 - 读指针位置) } } 写指针在读指针后面[求的是红色块的数据] 写指针在读指针前面[求的是红色块的数据] 查看连续的可写空间 //查看连续的可写空间 //size_t* pWriteBytes 能连续写入的大小 static inline char* byteQueue_peekContiguousBytesWrite(byteQueue_tt* pByteQueue, size_t* pWriteBytes) { if (pByteQueue-\u003enReadIndex \u003e= pByteQueue-\u003enWriteIndex)//读指针在写指针后面 { *pWriteBytes = pByteQueue-\u003enReadIndex - pByteQueue-\u003enWriteIndex;//能连续写入的大小 } else//读指针在写指针前面 { *pWriteBytes = pByteQueue-\u003enCapacity - pByteQueue-\u003enWriteIndex;//能连续写入的大小 } return pByteQueue-\u003epBuffer + pByteQueue-\u003enWriteIndex;//开始连续写入指针的起始位置 } 写指针在读指针前面[求得连续可写的空间] 写指针在读指针后面[求得连续可写的空间] 查看连续可读空间 //查看连续的可读空间 //size_t* pWriteBytes 能连续读取的大小 static inline char* byteQueue_peekContiguousBytesRead(byteQueue_tt* pByteQueue, size_t* pReadBytes) { if(pByteQueue-\u003enWriteIndex \u003e pByteQueue-\u003enReadIndex)//写指针在读指针后面 { *pReadBytes = pByteQueue-\u003enWriteIndex - pByteQueue-\u003enReadIndex;//能连续读取的大小 } else { *pReadBytes = pByteQueue-\u003enCapacity - pByteQueue-\u003enReadIndex;//能连续读取的大小 } return pByteQueue-\u003epBuffer + pByteQueue-\u003enReadIndex;//开始连续读入指针的起始位置 } 写指针在读指针后面[求得连续可读的空间] 写指针在读指针前面[求得连续可读的空间] 写入一个字符[空间不足按256的倍数自动扩展] void byteQueue_writeChar(byteQueue_tt* pByteQueue, const char c) { if(pByteQueue-\u003enCapacity == 0) { //初始化容量,buffer大小，可读索引 pByteQueue-\u003enCapacity = 256;//初始化容量大小[256] pByteQueue-\u003epBuffer = mem_malloc(pByteQueue-\u003enCapacity);//申请空间 pByteQueue-\u003enReadIndex = pByteQueue-\u003enCapacity;//初始化读索引位置 } else { size_t nBytesWritable = byteQueue_getBytesWritable(pByteQueue);//获取获取剩余全部可写空间 if (1 \u003e nBytesWritable) { //align_size 将size按align大小整数倍提升,用于内存对齐 size_t nNewCapacity = align_size( (pByteQueue-\u003enCapacity \u003c\u003c 1) + 1,256); char* pBuffer = mem_malloc(nNewCapacity); if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity)//说明还有数据没有读走 { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//获取剩余全部可读的空间 size_t nReadBytes = 0;//连续可读的空间的大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//开始读取数据的起始位置 memcpy(pBuffer,pRead,nReadBytes);//直接拷贝 if( nReadBytes != nWritten )//如果连续可读的空间的大小!=剩余全部可读的空间 { memcpy(pBuffer+ nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//把剩下的可读的空间写入新buffer空间 } pByteQueue-\u003enReadIndex = 0;//到了新空间需要重新移动读指针 pByteQueue-\u003enWriteIndex = nWritten;//到了新空间需要重新移动写指针 } else //没有数据需要读取直接初始化指针位置 { pByteQueue-\u003enReadIndex = nNewCapacity; pByteQueue-\u003enWriteIndex = 0; } pByteQueue-\u003enCapacity = nNewCapacity; mem_free(pByteQueue-\u003epBuffer); pByteQueue-\u003epBuffer = pBuffer; } } pByteQueue-\u003epBuffer[pByteQueue-\u003enWriteIndex] = c;//赋值 pByteQueue-\u003enWriteIndex = (pByteQueue-\u003enWriteIndex + 1) % pByteQueue-\u003enCapacity;//索引位移一位 if (pByteQueue-\u003enReadIndex == pByteQueue-\u003enCapacity)//如果读索引在尾部 { pByteQueue-\u003enReadIndex = 0;//把读索引放到头部 } } 写入指定大小空间的数据[空间不足按256的倍数自动扩展] void byteQueue_write(byteQueue_tt* pByteQueue, const void* pInBytes, size_t nLength) { assert(nLength != 0); if(pByteQueue-\u003enCapacity == 0)//容量大小为0 { pByteQueue-\u003enCapacity = align_size(nLength,256);//初始化容量大小[256的倍数] pByteQueue-\u003epBuffer = mem_malloc(pByteQueue-\u003enCapacity);//申请空间 pByteQueue-\u003enReadIndex = pByteQueue-\u003enCapacity;//初始化读索引位置 } else { size_t nBytesWritable = byteQueue_getBytesWritable(pByteQueue);//获取剩余可写空间 if (nLength \u003e nBytesWritable)//如果写入的大小大于剩余可写空间 { //数据进行扩展 size_t nNewCapacity = align_size( (pByteQueue-\u003enCapacity \u003c\u003c 1) + (nLength-nBytesWritable),256); char* pBuffer = mem_malloc(nNewCapacity);//申请空间大小 if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity )//还有数据可读 { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//剩余全部可读空间 size_t nReadBytes = 0;//连续可读的空间大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//开始连续读入指针的起始位置 memcpy(pBuffer,pRead,nReadBytes);//把连续可读的空间写入新buffer空间 if( nReadBytes != nWritten )//如果连续可读的空间!=剩余全部可读空间 { memcpy(pBuffer + nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//把剩下的可读的空间写入新buffer空间 } pByteQueue-\u003enReadIndex = 0;//重置读索引 pByteQueue-\u003enWriteIndex = nWritten;//重置写索引 } else { pByteQueue-\u003enReadIndex = nNewCapacity;//重置读索引 pByteQueue-\u003enWriteIndex = 0;//重置写索引 } pByteQueue-\u003enCapacity = nNewCapacity;////重置容量大小 mem_free(pByteQueue-\u003epBuffer);//释放旧buff空间 pByteQueue-\u003epBuffer = pBuffer;//重置指针到新buff空间 } } size_t nWriteBytes = 0;//连续可写的空间大小 char* pWrite = byteQueue_peekContiguousBytesWrite(pByteQueue,\u0026nWriteBytes);//开始写入的指针位置 if (nWriteBytes \u003e= nLength)//如果连续写入的空间能够满足需要写入的空间大小 { memcpy(pWrite, pInBytes, nLength);//直接拷贝 } else { memcpy(pWrite, pInBytes, nWriteBytes);//先拷贝连续可写入的空间大小 memcpy(pByteQueue-\u003epBuffer, (const char*)pInBytes + nWriteBytes, nLength - nWriteBytes);//再把剩余要写入的大小空间写入 } pByteQueue-\u003enWriteIndex = (pByteQueue-\u003enWriteIndex + nLength) % pByteQueue-\u003enCapacity;//重置读索引 if (pByteQueue-\u003enReadIndex == pByteQueue-\u003enCapacity) { pByteQueue-\u003enReadIndex = 0;//重置写索引 } } 写入指定大小空间的数据[空间不足按剩余需要空间大小申请] void byteQueue_writeBytes(byteQueue_tt* pByteQueue, const void* pInBytes, size_t nLength) { assert(nLength != 0); if(pByteQueue-\u003enCapacity == 0)//容量大小为0 { pByteQueue-\u003enCapacity = nLength;//初始化容量大小[需要空间大小] pByteQueue-\u003epBuffer = mem_malloc(pByteQueue-\u003enCapacity);//申请空间 pByteQueue-\u003enReadIndex = pByteQueue-\u003enCapacity;//初始化读索引位置 } else { size_t nBytesWritable = byteQueue_getBytesWritable(pByteQueue);//剩余可写的全部空间大小 if (nLength \u003e nBytesWritable)//如果写入的大小大于剩余可写入的空间大小 { size_t nNewCapacity = pByteQueue-\u003enCapacity + (nLength - nBytesWritable);//开辟正好大小的空间 char* pBuffer = mem_malloc(nNewCapacity);//申请空间 if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity)//还有空间可读需要把这段空间赋值到新空间 { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//剩余可读的全部空间 size_t nReadBytes = 0;//连续可读的空间 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//开始读取空间的起始位置 memcpy(pBuffer,pRead,nReadBytes);//拷贝到新空间 if( nReadBytes != nWritten )//连续可读的空间!=剩余可读的全部空间 { memcpy(pBuffer+ nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//拷贝剩余数据到新空间 } pByteQueue-\u003enReadIndex = 0;//重置读索引 pByteQueue-\u003enWriteIndex = nWritten;//重置写索引 } else { pByteQueue-\u003enReadIndex = nNewCapacity;//重置读索引 pByteQueue-\u003enWriteIndex = 0;//重置写索引 } pByteQueue-\u003enCapacity = nNewCapacity;//重置容量 mem_free(pByteQueue-\u003epBuffer);//释放旧空间 pByteQueue-\u003epBuffer = pBuffer;//新空间指针指向旧空间指针 } } size_t nWriteBytes = 0;//连续可写入空间大小 char* pWrite = byteQueue_peekContiguousBytesWrite(pByteQueue,\u0026nWriteBytes);//可写入开始指针 if (nWriteBytes \u003e= nLength)//容量足够 { memcpy(pWrite, pInBytes, nLength);//直接拷贝 } else { memcpy(pWrite, pInBytes, nWriteBytes);//先拷贝连续可写入空间大小 memcpy(pByteQueue-\u003epBuffer, (const char*)pInBytes + nWriteBytes, nLength - nWriteBytes);//剩余的在直接拷贝 } pByteQueue-\u003enWriteIndex = (pByteQueue-\u003enWriteIndex + nLength) % pByteQueue-\u003enCapacity;//重置写索引 if (pByteQueue-\u003enReadIndex == pByteQueue-\u003enCapacity) { pByteQueue-\u003enReadIndex = 0;//重置读索引 } } 读取数据 bool byteQueue_readBytes(byteQueue_tt* pByteQueue, void* pOutBytes, size_t nMaxLengthToRead, bool bPeek /*= false*/ ) { size_t nBytesWritten = byteQueue_getBytesReadable(pByteQueue);//可读的空间大小 size_t nBytesToRead = nBytesWritten \u003c nMaxLengthToRead ? nBytesWritten : nMaxLengthToRead;//得到可读取的大小 if (nBytesToRead == 0) { return false; } size_t nReadBytes = 0;//连续可读的大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//连续可读空间大小的起始索引 if( nReadBytes \u003e= nBytesToRead )//满足可读大小需求 { memcpy(pOutBytes,pRead,nBytesToRead);//直接读取 } else { memcpy(pOutBytes,pRead,nReadBytes);//直接连续可读的空间大小 memcpy((char*)pOutBytes+nReadBytes,pByteQueue-\u003epBuffer,nBytesToRead-nReadBytes);//读取剩余需要读取的大小 } if (!bPeek)//不是探测 byteQueue_readOffset(pByteQueue,nBytesToRead);//直接移动指针 return true; } 重置容量 void byteQueue_reserve(byteQueue_tt* pByteQueue, size_t nCapacity) { size_t nWritten = byteQueue_getBytesReadable(pByteQueue);//剩余全部可读大小 if(nWritten \u003e nCapacity)//如果全部可读的大小大于要重置的容量大小 { return; } if(pByteQueue-\u003enReadIndex != pByteQueue-\u003enCapacity)//有剩余需要读取的空间数据 { char* pBuffer = mem_malloc(nCapacity);//申请新的重置空间大小 size_t nReadBytes = 0;//连续可读的空间大小 char* pRead = byteQueue_peekContiguousBytesRead(pByteQueue, \u0026nReadBytes);//连续可读空间大小的起始位置 memcpy(pBuffer,pRead,nReadBytes);//直接拷贝 if( nReadBytes != nWritten )//还有剩余要拷贝的空间 { memcpy(pBuffer + nReadBytes,pByteQueue-\u003epBuffer,nWritten - nReadBytes);//拷贝剩余要拷贝的数据 } pByteQueue-\u003enReadIndex = 0;//重置读索引 pByteQueue-\u003enWriteIndex = nWritten;//重置写索引 mem_free(pByteQueue-\u003epBuffer);//释放旧空间 pByteQueue-\u003epBuffer = pBuffer;//新空间的指针指向旧空间指针 } else { pByteQueue-\u003epBuffer = mem_realloc(pByteQueue-\u003epBuffer,nCapacity);//直接指向申请空间的大小 pByteQueue-\u003enReadIndex = nCapacity;//重置读索引 pByteQueue-\u003enWriteIndex = 0;//重置写索引 } pByteQueue-\u003enCapacity = nCapacity;//重置容量 } ",
+  "wordCount" : "4866",
   "inLanguage": "en",
-  "datePublished": "2022-09-13T01:30:29+08:00",
-  "dateModified": "2022-09-13T01:30:29+08:00",
+  "datePublished": "2022-09-16T01:30:29+08:00",
+  "dateModified": "2022-09-18T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -228,7 +228,7 @@ var _hmt = _hmt || [];
             <h1 class="post-title">
                 环形buff
             </h1>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;4887字&nbsp;|&nbsp;时长:&nbsp;10分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-16 01:30:29 +0800 CST'>2022-09-16</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-18&nbsp;|&nbsp;字数:&nbsp;4866字&nbsp;|&nbsp;时长:&nbsp;10分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -253,55 +253,55 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-%e5%9b%be%e8%a7%a3%e9%87%8a" aria-label="1. 图解释">1. 图解释</a></li>
+                    <a href="#%e5%9b%be%e8%a7%a3%e9%87%8a" aria-label="图解释">图解释</a></li>
                 <li>
-                    <a href="#2-%e7%bb%93%e6%9e%84%e4%bd%93" aria-label="2. 结构体">2. 结构体</a></li>
+                    <a href="#%e7%bb%93%e6%9e%84%e4%bd%93" aria-label="结构体">结构体</a></li>
                 <li>
-                    <a href="#3-%e5%88%9d%e5%a7%8b-%e7%bb%93%e6%9e%84%e4%bd%93" aria-label="3. 初始 结构体">3. 初始 结构体</a></li>
+                    <a href="#%e5%88%9d%e5%a7%8b-%e7%bb%93%e6%9e%84%e4%bd%93" aria-label="初始 结构体">初始 结构体</a></li>
                 <li>
-                    <a href="#4-%e6%b8%85%e7%a9%ba%e7%bb%93%e6%9e%84%e4%bd%93" aria-label="4. 清空结构体">4. 清空结构体</a></li>
+                    <a href="#%e6%b8%85%e7%a9%ba%e7%bb%93%e6%9e%84%e4%bd%93" aria-label="清空结构体">清空结构体</a></li>
                 <li>
-                    <a href="#5-%e8%8e%b7%e5%8f%96%e5%89%a9%e4%bd%99%e5%85%a8%e9%83%a8%e5%8f%af%e5%86%99%e7%a9%ba%e9%97%b4" aria-label="5. 获取剩余全部可写空间">5. 获取剩余全部可写空间</a><ul>
+                    <a href="#%e8%8e%b7%e5%8f%96%e5%89%a9%e4%bd%99%e5%85%a8%e9%83%a8%e5%8f%af%e5%86%99%e7%a9%ba%e9%97%b4" aria-label="获取剩余全部可写空间">获取剩余全部可写空间</a><ul>
                         
                 <li>
-                    <a href="#51-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e5%be%97%e6%98%af%e8%93%9d%e8%89%b2%e5%9d%97%e6%95%b0%e6%8d%ae" aria-label="5.1. 写指针在读指针前面[求得是蓝色块数据]">5.1. 写指针在读指针前面[求得是蓝色块数据]</a></li>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e5%be%97%e6%98%af%e8%93%9d%e8%89%b2%e5%9d%97%e6%95%b0%e6%8d%ae" aria-label="写指针在读指针前面[求得是蓝色块数据]">写指针在读指针前面[求得是蓝色块数据]</a></li>
                 <li>
-                    <a href="#52-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e5%be%97%e6%98%af%e8%93%9d%e8%89%b2%e5%9d%97%e6%95%b0%e6%8d%ae" aria-label="5.2. 写指针在读指针后面[求得是蓝色块数据]">5.2. 写指针在读指针后面[求得是蓝色块数据]</a></li></ul>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e5%be%97%e6%98%af%e8%93%9d%e8%89%b2%e5%9d%97%e6%95%b0%e6%8d%ae" aria-label="写指针在读指针后面[求得是蓝色块数据]">写指针在读指针后面[求得是蓝色块数据]</a></li></ul>
                 </li>
                 <li>
-                    <a href="#6-%e8%8e%b7%e5%8f%96%e5%89%a9%e4%bd%99%e5%85%a8%e9%83%a8%e5%8f%af%e8%af%bb%e7%a9%ba%e9%97%b4" aria-label="6. 获取剩余全部可读空间">6. 获取剩余全部可读空间</a><ul>
+                    <a href="#%e8%8e%b7%e5%8f%96%e5%89%a9%e4%bd%99%e5%85%a8%e9%83%a8%e5%8f%af%e8%af%bb%e7%a9%ba%e9%97%b4" aria-label="获取剩余全部可读空间">获取剩余全部可读空间</a><ul>
                         
                 <li>
-                    <a href="#61-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e7%9a%84%e6%98%af%e7%ba%a2%e8%89%b2%e5%9d%97%e7%9a%84%e6%95%b0%e6%8d%ae" aria-label="6.1. 写指针在读指针后面[求的是红色块的数据]">6.1. 写指针在读指针后面[求的是红色块的数据]</a></li>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e7%9a%84%e6%98%af%e7%ba%a2%e8%89%b2%e5%9d%97%e7%9a%84%e6%95%b0%e6%8d%ae" aria-label="写指针在读指针后面[求的是红色块的数据]">写指针在读指针后面[求的是红色块的数据]</a></li>
                 <li>
-                    <a href="#62-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e7%9a%84%e6%98%af%e7%ba%a2%e8%89%b2%e5%9d%97%e7%9a%84%e6%95%b0%e6%8d%ae" aria-label="6.2. 写指针在读指针前面[求的是红色块的数据]">6.2. 写指针在读指针前面[求的是红色块的数据]</a></li></ul>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e7%9a%84%e6%98%af%e7%ba%a2%e8%89%b2%e5%9d%97%e7%9a%84%e6%95%b0%e6%8d%ae" aria-label="写指针在读指针前面[求的是红色块的数据]">写指针在读指针前面[求的是红色块的数据]</a></li></ul>
                 </li>
                 <li>
-                    <a href="#7-%e6%9f%a5%e7%9c%8b%e8%bf%9e%e7%bb%ad%e7%9a%84%e5%8f%af%e5%86%99%e7%a9%ba%e9%97%b4" aria-label="7. 查看连续的可写空间">7. 查看连续的可写空间</a><ul>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e8%bf%9e%e7%bb%ad%e7%9a%84%e5%8f%af%e5%86%99%e7%a9%ba%e9%97%b4" aria-label="查看连续的可写空间">查看连续的可写空间</a><ul>
                         
                 <li>
-                    <a href="#71-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e5%86%99%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="7.1. 写指针在读指针前面[求得连续可写的空间]">7.1. 写指针在读指针前面[求得连续可写的空间]</a></li>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e5%86%99%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="写指针在读指针前面[求得连续可写的空间]">写指针在读指针前面[求得连续可写的空间]</a></li>
                 <li>
-                    <a href="#72-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e5%86%99%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="7.2. 写指针在读指针后面[求得连续可写的空间]">7.2. 写指针在读指针后面[求得连续可写的空间]</a></li></ul>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e5%86%99%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="写指针在读指针后面[求得连续可写的空间]">写指针在读指针后面[求得连续可写的空间]</a></li></ul>
                 </li>
                 <li>
-                    <a href="#8-%e6%9f%a5%e7%9c%8b%e8%bf%9e%e7%bb%ad%e5%8f%af%e8%af%bb%e7%a9%ba%e9%97%b4" aria-label="8. 查看连续可读空间">8. 查看连续可读空间</a><ul>
+                    <a href="#%e6%9f%a5%e7%9c%8b%e8%bf%9e%e7%bb%ad%e5%8f%af%e8%af%bb%e7%a9%ba%e9%97%b4" aria-label="查看连续可读空间">查看连续可读空间</a><ul>
                         
                 <li>
-                    <a href="#81-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e8%af%bb%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="8.1. 写指针在读指针后面[求得连续可读的空间]">8.1. 写指针在读指针后面[求得连续可读的空间]</a></li>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%90%8e%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e8%af%bb%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="写指针在读指针后面[求得连续可读的空间]">写指针在读指针后面[求得连续可读的空间]</a></li>
                 <li>
-                    <a href="#82-%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e8%af%bb%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="8.2. 写指针在读指针前面[求得连续可读的空间]">8.2. 写指针在读指针前面[求得连续可读的空间]</a></li></ul>
+                    <a href="#%e5%86%99%e6%8c%87%e9%92%88%e5%9c%a8%e8%af%bb%e6%8c%87%e9%92%88%e5%89%8d%e9%9d%a2%e6%b1%82%e5%be%97%e8%bf%9e%e7%bb%ad%e5%8f%af%e8%af%bb%e7%9a%84%e7%a9%ba%e9%97%b4" aria-label="写指针在读指针前面[求得连续可读的空间]">写指针在读指针前面[求得连续可读的空间]</a></li></ul>
                 </li>
                 <li>
-                    <a href="#9-%e5%86%99%e5%85%a5%e4%b8%80%e4%b8%aa%e5%ad%97%e7%ac%a6%e7%a9%ba%e9%97%b4%e4%b8%8d%e8%b6%b3%e6%8c%89256%e7%9a%84%e5%80%8d%e6%95%b0%e8%87%aa%e5%8a%a8%e6%89%a9%e5%b1%95" aria-label="9. 写入一个字符[空间不足按256的倍数自动扩展]">9. 写入一个字符[空间不足按256的倍数自动扩展]</a></li>
+                    <a href="#%e5%86%99%e5%85%a5%e4%b8%80%e4%b8%aa%e5%ad%97%e7%ac%a6%e7%a9%ba%e9%97%b4%e4%b8%8d%e8%b6%b3%e6%8c%89256%e7%9a%84%e5%80%8d%e6%95%b0%e8%87%aa%e5%8a%a8%e6%89%a9%e5%b1%95" aria-label="写入一个字符[空间不足按256的倍数自动扩展]">写入一个字符[空间不足按256的倍数自动扩展]</a></li>
                 <li>
-                    <a href="#10-%e5%86%99%e5%85%a5%e6%8c%87%e5%ae%9a%e5%a4%a7%e5%b0%8f%e7%a9%ba%e9%97%b4%e7%9a%84%e6%95%b0%e6%8d%ae%e7%a9%ba%e9%97%b4%e4%b8%8d%e8%b6%b3%e6%8c%89256%e7%9a%84%e5%80%8d%e6%95%b0%e8%87%aa%e5%8a%a8%e6%89%a9%e5%b1%95" aria-label="10. 写入指定大小空间的数据[空间不足按256的倍数自动扩展]">10. 写入指定大小空间的数据[空间不足按256的倍数自动扩展]</a></li>
+                    <a href="#%e5%86%99%e5%85%a5%e6%8c%87%e5%ae%9a%e5%a4%a7%e5%b0%8f%e7%a9%ba%e9%97%b4%e7%9a%84%e6%95%b0%e6%8d%ae%e7%a9%ba%e9%97%b4%e4%b8%8d%e8%b6%b3%e6%8c%89256%e7%9a%84%e5%80%8d%e6%95%b0%e8%87%aa%e5%8a%a8%e6%89%a9%e5%b1%95" aria-label="写入指定大小空间的数据[空间不足按256的倍数自动扩展]">写入指定大小空间的数据[空间不足按256的倍数自动扩展]</a></li>
                 <li>
-                    <a href="#10-%e5%86%99%e5%85%a5%e6%8c%87%e5%ae%9a%e5%a4%a7%e5%b0%8f%e7%a9%ba%e9%97%b4%e7%9a%84%e6%95%b0%e6%8d%ae%e7%a9%ba%e9%97%b4%e4%b8%8d%e8%b6%b3%e6%8c%89%e5%89%a9%e4%bd%99%e9%9c%80%e8%a6%81%e7%a9%ba%e9%97%b4%e5%a4%a7%e5%b0%8f%e7%94%b3%e8%af%b7" aria-label="10. 写入指定大小空间的数据[空间不足按剩余需要空间大小申请]">10. 写入指定大小空间的数据[空间不足按剩余需要空间大小申请]</a></li>
+                    <a href="#%e5%86%99%e5%85%a5%e6%8c%87%e5%ae%9a%e5%a4%a7%e5%b0%8f%e7%a9%ba%e9%97%b4%e7%9a%84%e6%95%b0%e6%8d%ae%e7%a9%ba%e9%97%b4%e4%b8%8d%e8%b6%b3%e6%8c%89%e5%89%a9%e4%bd%99%e9%9c%80%e8%a6%81%e7%a9%ba%e9%97%b4%e5%a4%a7%e5%b0%8f%e7%94%b3%e8%af%b7" aria-label="写入指定大小空间的数据[空间不足按剩余需要空间大小申请]">写入指定大小空间的数据[空间不足按剩余需要空间大小申请]</a></li>
                 <li>
-                    <a href="#10-%e8%af%bb%e5%8f%96%e6%95%b0%e6%8d%ae" aria-label="10. 读取数据">10. 读取数据</a></li>
+                    <a href="#%e8%af%bb%e5%8f%96%e6%95%b0%e6%8d%ae" aria-label="读取数据">读取数据</a></li>
                 <li>
-                    <a href="#10-%e9%87%8d%e7%bd%ae%e5%ae%b9%e9%87%8f" aria-label="10. 重置容量">10. 重置容量</a>
+                    <a href="#%e9%87%8d%e7%bd%ae%e5%ae%b9%e9%87%8f" aria-label="重置容量">重置容量</a>
                 </li>
             </ul>
         </div>
@@ -368,10 +368,10 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="1-图解释">1. 图解释<a hidden class="anchor" aria-hidden="true" href="#1-图解释">#</a></h2>
+        <div class="post-content"><h2 id="图解释">图解释<a hidden class="anchor" aria-hidden="true" href="#图解释">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220307221751488.png" alt="Typoraimage-20220307221751488"  />
 </p>
-<h2 id="2-结构体">2. 结构体<a hidden class="anchor" aria-hidden="true" href="#2-结构体">#</a></h2>
+<h2 id="结构体">结构体<a hidden class="anchor" aria-hidden="true" href="#结构体">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> byteQueue_s
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>	pBuffer;<span style="color:#75715e">//数据
@@ -379,7 +379,7 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	size_t	nReadIndex;<span style="color:#75715e">//读指针索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	size_t	nWriteIndex;<span style="color:#75715e">//写指针索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} byteQueue_tt;
-</span></span></code></pre></div><h2 id="3-初始-结构体">3. 初始 结构体<a hidden class="anchor" aria-hidden="true" href="#3-初始-结构体">#</a></h2>
+</span></span></code></pre></div><h2 id="初始-结构体">初始 结构体<a hidden class="anchor" aria-hidden="true" href="#初始-结构体">#</a></h2>
 <p>假设要申请的空间 <code>环形buff</code>结构体大小为<code>8</code></p>
 <ul>
 <li><code>nWriteIndex</code> 写指针索引</li>
@@ -402,7 +402,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220307215459870.png" alt="Typoraimage-20220307215459870"  />
 </p>
-<h2 id="4-清空结构体">4. 清空结构体<a hidden class="anchor" aria-hidden="true" href="#4-清空结构体">#</a></h2>
+<h2 id="清空结构体">清空结构体<a hidden class="anchor" aria-hidden="true" href="#清空结构体">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_clear</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//读指针索引位置设置为0,放到开头
@@ -416,7 +416,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220307215525672.png" alt="image-20220307215525672"  />
 </p>
-<h2 id="5-获取剩余全部可写空间">5. 获取剩余全部可写空间<a hidden class="anchor" aria-hidden="true" href="#5-获取剩余全部可写空间">#</a></h2>
+<h2 id="获取剩余全部可写空间">获取剩余全部可写空间<a hidden class="anchor" aria-hidden="true" href="#获取剩余全部可写空间">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> size_t <span style="color:#a6e22e">byteQueue_getBytesWritable</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">&gt;=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex )<span style="color:#75715e">//写指针和读指针重合，或者在读指针前面
@@ -428,13 +428,13 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">+</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">-</span> pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex); <span style="color:#75715e">//读指针位置 + (容量 - 写指针位置)
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="51-写指针在读指针前面求得是蓝色块数据">5.1. 写指针在读指针前面[求得是蓝色块数据]<a hidden class="anchor" aria-hidden="true" href="#51-写指针在读指针前面求得是蓝色块数据">#</a></h3>
+</span></span></code></pre></div><h3 id="写指针在读指针前面求得是蓝色块数据">写指针在读指针前面[求得是蓝色块数据]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针前面求得是蓝色块数据">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220401171227142-16530986344221.png" alt="Typoraimage-20220401171227142"  />
 </p>
-<h3 id="52-写指针在读指针后面求得是蓝色块数据">5.2. 写指针在读指针后面[求得是蓝色块数据]<a hidden class="anchor" aria-hidden="true" href="#52-写指针在读指针后面求得是蓝色块数据">#</a></h3>
+<h3 id="写指针在读指针后面求得是蓝色块数据">写指针在读指针后面[求得是蓝色块数据]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针后面求得是蓝色块数据">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220401170218636.png" alt="Typoraimage-20220401170218636"  />
 </p>
-<h2 id="6-获取剩余全部可读空间">6. 获取剩余全部可读空间<a hidden class="anchor" aria-hidden="true" href="#6-获取剩余全部可读空间">#</a></h2>
+<h2 id="获取剩余全部可读空间">获取剩余全部可读空间<a hidden class="anchor" aria-hidden="true" href="#获取剩余全部可读空间">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> size_t <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">&gt;</span> pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex) <span style="color:#75715e">//读指针在写指针前面
@@ -446,13 +446,13 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">+</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">-</span> pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex); <span style="color:#75715e">//写指针 + (容量 - 读指针位置)
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="61-写指针在读指针后面求的是红色块的数据">6.1. 写指针在读指针后面[求的是红色块的数据]<a hidden class="anchor" aria-hidden="true" href="#61-写指针在读指针后面求的是红色块的数据">#</a></h3>
+</span></span></code></pre></div><h3 id="写指针在读指针后面求的是红色块的数据">写指针在读指针后面[求的是红色块的数据]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针后面求的是红色块的数据">#</a></h3>
 <p><img loading="lazy" src="TyporaTyporaimage-20220401170253907.png" alt="TyporaTyporaimage-20220401170253907"  />
 </p>
-<h3 id="62-写指针在读指针前面求的是红色块的数据">6.2. 写指针在读指针前面[求的是红色块的数据]<a hidden class="anchor" aria-hidden="true" href="#62-写指针在读指针前面求的是红色块的数据">#</a></h3>
+<h3 id="写指针在读指针前面求的是红色块的数据">写指针在读指针前面[求的是红色块的数据]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针前面求的是红色块的数据">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220401171227142-16530986713592.png" alt="Typoraimage-20220401171227142"  />
 </p>
-<h2 id="7-查看连续的可写空间">7. 查看连续的可写空间<a hidden class="anchor" aria-hidden="true" href="#7-查看连续的可写空间">#</a></h2>
+<h2 id="查看连续的可写空间">查看连续的可写空间<a hidden class="anchor" aria-hidden="true" href="#查看连续的可写空间">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//查看连续的可写空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//size_t* pWriteBytes 能连续写入的大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesWrite</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, size_t<span style="color:#f92672">*</span> pWriteBytes)
@@ -468,13 +468,13 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">+</span> pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex;<span style="color:#75715e">//开始连续写入指针的起始位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
-</span></span></code></pre></div><h3 id="71-写指针在读指针前面求得连续可写的空间">7.1. 写指针在读指针前面[求得连续可写的空间]<a hidden class="anchor" aria-hidden="true" href="#71-写指针在读指针前面求得连续可写的空间">#</a></h3>
+</span></span></code></pre></div><h3 id="写指针在读指针前面求得连续可写的空间">写指针在读指针前面[求得连续可写的空间]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针前面求得连续可写的空间">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220401193238810.png" alt="Typoraimage-20220401193238810"  />
 </p>
-<h3 id="72-写指针在读指针后面求得连续可写的空间">7.2. 写指针在读指针后面[求得连续可写的空间]<a hidden class="anchor" aria-hidden="true" href="#72-写指针在读指针后面求得连续可写的空间">#</a></h3>
+<h3 id="写指针在读指针后面求得连续可写的空间">写指针在读指针后面[求得连续可写的空间]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针后面求得连续可写的空间">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220401200102901.png" alt="Typoraimage-20220401200102901"  />
 </p>
-<h2 id="8-查看连续可读空间">8. 查看连续可读空间<a hidden class="anchor" aria-hidden="true" href="#8-查看连续可读空间">#</a></h2>
+<h2 id="查看连续可读空间">查看连续可读空间<a hidden class="anchor" aria-hidden="true" href="#查看连续可读空间">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//查看连续的可读空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//size_t* pWriteBytes 能连续读取的大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, size_t<span style="color:#f92672">*</span> pReadBytes)
@@ -489,13 +489,13 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">+</span> pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex;<span style="color:#75715e">//开始连续读入指针的起始位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
-</span></span></code></pre></div><h3 id="81-写指针在读指针后面求得连续可读的空间">8.1. 写指针在读指针后面[求得连续可读的空间]<a hidden class="anchor" aria-hidden="true" href="#81-写指针在读指针后面求得连续可读的空间">#</a></h3>
+</span></span></code></pre></div><h3 id="写指针在读指针后面求得连续可读的空间">写指针在读指针后面[求得连续可读的空间]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针后面求得连续可读的空间">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220404154851362.png" alt="Typoraimage-20220404154851362"  />
 </p>
-<h3 id="82-写指针在读指针前面求得连续可读的空间">8.2. 写指针在读指针前面[求得连续可读的空间]<a hidden class="anchor" aria-hidden="true" href="#82-写指针在读指针前面求得连续可读的空间">#</a></h3>
+<h3 id="写指针在读指针前面求得连续可读的空间">写指针在读指针前面[求得连续可读的空间]<a hidden class="anchor" aria-hidden="true" href="#写指针在读指针前面求得连续可读的空间">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220404154931783.png" alt="Typoraimage-20220404154931783"  />
 </p>
-<h2 id="9-写入一个字符空间不足按256的倍数自动扩展">9. 写入一个字符[空间不足按256的倍数自动扩展]<a hidden class="anchor" aria-hidden="true" href="#9-写入一个字符空间不足按256的倍数自动扩展">#</a></h2>
+<h2 id="写入一个字符空间不足按256的倍数自动扩展">写入一个字符[空间不足按256的倍数自动扩展]<a hidden class="anchor" aria-hidden="true" href="#写入一个字符空间不足按256的倍数自动扩展">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_writeChar</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> c)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
@@ -546,7 +546,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//把读索引放到头部
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="10-写入指定大小空间的数据空间不足按256的倍数自动扩展">10. 写入指定大小空间的数据[空间不足按256的倍数自动扩展]<a hidden class="anchor" aria-hidden="true" href="#10-写入指定大小空间的数据空间不足按256的倍数自动扩展">#</a></h2>
+</span></span></code></pre></div><h2 id="写入指定大小空间的数据空间不足按256的倍数自动扩展">写入指定大小空间的数据[空间不足按256的倍数自动扩展]<a hidden class="anchor" aria-hidden="true" href="#写入指定大小空间的数据空间不足按256的倍数自动扩展">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_write</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pInBytes, size_t nLength)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	assert(nLength <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>);
@@ -607,7 +607,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置写索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="10-写入指定大小空间的数据空间不足按剩余需要空间大小申请">10. 写入指定大小空间的数据[空间不足按剩余需要空间大小申请]<a hidden class="anchor" aria-hidden="true" href="#10-写入指定大小空间的数据空间不足按剩余需要空间大小申请">#</a></h2>
+</span></span></code></pre></div><h2 id="写入指定大小空间的数据空间不足按剩余需要空间大小申请">写入指定大小空间的数据[空间不足按剩余需要空间大小申请]<a hidden class="anchor" aria-hidden="true" href="#写入指定大小空间的数据空间不足按剩余需要空间大小申请">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_writeBytes</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pInBytes, size_t nLength)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	assert(nLength <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>);
@@ -665,7 +665,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="10-读取数据">10. 读取数据<a hidden class="anchor" aria-hidden="true" href="#10-读取数据">#</a></h2>
+</span></span></code></pre></div><h2 id="读取数据">读取数据<a hidden class="anchor" aria-hidden="true" href="#读取数据">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">byteQueue_readBytes</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pOutBytes, size_t nMaxLengthToRead, <span style="color:#66d9ef">bool</span> bPeek <span style="color:#75715e">/*= false*/</span> )
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	size_t nBytesWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//可读的空间大小
@@ -692,7 +692,7 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> true;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="10-重置容量">10. 重置容量<a hidden class="anchor" aria-hidden="true" href="#10-重置容量">#</a></h2>
+</span></span></code></pre></div><h2 id="重置容量">重置容量<a hidden class="anchor" aria-hidden="true" href="#重置容量">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_reserve</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, size_t nCapacity)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	size_t nWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//剩余全部可读大小
@@ -758,15 +758,15 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/blog/wufengdashijie/">
+  <a class="prev" href="https://frog-game.github.io/posts/blog/luayuanmashagnxi/">
     <span class="title">« 上一页</span>
     <br>
-    <span>无缝大世界</span>
+    <span>lua源码赏析</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/skynet/">
     <span class="title">下一页 »</span>
     <br>
-    <span>网络IO模型总结</span>
+    <span>skynet赏析</span>
   </a>
 </nav>
 

@@ -7,11 +7,11 @@
 <meta name="robots" content="index, follow">
 <title>skynet赏析 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="1. linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 2. 网络流程图 2.1 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Soc">
+<meta name="description" content="linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/skynet/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d8a1c95b1eb964516f02dd7068e2fd42017af5baba0751df317cf8a081744b14.css" integrity="sha256-2KHJWx65ZFFvAt1waOL9QgF69bq6B1HfMXz4oIF0SxQ=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.905fe131597072fcbc87e1225756e27ba28555e0f5e049157c9a9ae308ef3b2b.css" integrity="sha256-kF/hMVlwcvy8h&#43;EiV1bie6KFVeD14EkVfJqa4wjvOys=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -68,15 +68,15 @@ var _hmt = _hmt || [];
 })();
 </script>
 <meta property="og:title" content="skynet赏析" />
-<meta property="og:description" content="1. linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 2. 网络流程图 2.1 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Soc" />
+<meta property="og:description" content="linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/skynet/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2022-09-13T01:30:29&#43;08:00" />
+<meta property="article:published_time" content="2022-09-15T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-09-15T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="skynet赏析"/>
-<meta name="twitter:description" content="1. linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 2. 网络流程图 2.1 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Soc"/>
+<meta name="twitter:description" content="linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket"/>
 
 
 <script type="application/ld+json">
@@ -111,15 +111,15 @@ var _hmt = _hmt || [];
   "@type": "BlogPosting",
   "headline": "skynet赏析",
   "name": "skynet赏析",
-  "description": "1. linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 2. 网络流程图 2.1 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Soc",
+  "description": "linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket",
   "keywords": [
     ""
   ],
-  "articleBody": "1. linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 2. 网络流程图 2.1 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket在Skynet内部对应一个Lua虚拟机和一个客户特定的消息队列per client mq。当客户特定消息队列中有消息时，该队列会挂载到全局队列global message queue上供工作线程worker Threads进行调度处理。\n一个Socket线程socket thread会轮询所有的Socket，当收到客户端请求后将请求打包成一个消息，发送到该Socket对应的客户特定消息队列per client mq中，然后将该消息队列挂到全局队列队尾。\n多个Worker工作线程worker threads从全局队列头部获取客户特定消息队列，从客户特定消息队列中取出一个消息进行处理，处理完毕后再将消息队列重新挂到全局队列队尾。\nskynet中不同服务是利用系统的多线程完全并行的，当你从服务A向服务B和服务C分别各自发送一条消息时，并不能保证先发的消息先被处理。而当你从服务A向服务B依次发送两条消息时，先发的消息一定会被服务B先处理。\n使用Lua实现的服务只是一个内嵌了Lua虚拟机的服务，也遵守上面的规则。如果服务B是一个Lua服务，当服务A向服务B发送两条消息x和y时，Skynet一定保证x先被服务B中的Lua虚拟机接收到，并为消息x生成要给协程X，并运行这个协程。然后才会接收到消息y，并重新生成一个新的协程Y并运行。\n2.2 同步问题 同步也是skynet存在的问题，当一个服务call其他服务时，当前协程会挂起，但是这个服务还可以接受并处理其他消息。如果多个协程改到同一个数据，你不做同步处理就无法确定这个数据会是多少。\n这样的例子特别常见，比如，服务正当处理玩家login请求，刚好遇到call挂起，这时候又有新的请求到来，比如logout，服务就会转去处理logout消息。那玩家究竟是login，还是logout？\n当然，同步问题也容易解决，加多一个state的标识和一个协程列表，操作执行时，将state置doing，其他协程判断state=doing时就将自己加到协程列表，然后 skynet.wait。在操作执行完后，重置state，然后遍历协程列表依次 skynet.wakeup(co) ，最后将协程列表置空。\n2.3 解释此队列 红黑树上的节点是所有监听的socket 黄色底的是interesting 队列 蓝色底是黄色底的子队列 也就是就绪队列 epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket 当有读写事件时候，就会往蓝色底队列放入socket也就是塞入就绪队列 通过epoll_wait()把就绪队列的东西返回出来\n2.4 线程类型 socket thread : 线程进程消息收发\nmonitor thread : 线程监控服务是不是陷入死循环，消息是否堵住\ntime thread : 线程主要用于实现skynet的定时器\nwork thread 线程 对消息队列进行调度\n2.5 消息流转 先从全局队列 pop一个次级队列，然后从次级队列 pop一个消息调用回调函数进行逻辑处理 用完以后如果次级队列不为空或者堵塞，继续把次级队列放入全局队列 3. 启动流程 加载配置文件 配置文件存入lua的全局变量env 创建和启动c服务 logger 启动引导模块并启动第一个lua服务(bootstrap) 然后在通过 bootstrap配置去启动其他的微服务 4. cluster 两条tcp通道总结 前提 两端是严格分为请求方和回应方。比如 A---\u003e B ，那么只能是A向B提出请求，B 回应它；如果 B-----\u003e\u003eA 需要由 B 向 A 再建立一条通道。\nTCP特性使得每个TCP连接可以得到均等的带宽。在多用户环境下，一个用户拥有越多TCP连接，获得的带宽越大\n1条连接 优点：链接少，对于没有接触过skynet，传统服务器人很容易这种方式连接方式，因为大部分很多都是cs结构程序员过来的 **缺点：**如果断了，数据就无法传输，得重新建立新的连接，上层业务逻辑写起来也麻烦，需要清楚那边是发送方，那边是接受方\n2条连接 **优点：**在前面前提的基础上，有两条连接，上层业务逻辑程序员不需要关心我这个时候是client，还是server，只需要通过 cluster.call，cluster.send，接口直接往里面塞数据就行了，多条连接也便于抢带宽 **缺点:**多了一条连接，对cs结构过来的程序员不太容易理解为什么这么弄有好处，或者是不知道有前面那个前提 为什么不在开辟更多的连接，因为开辟更多的链接意义不大，如果这台机器上弄了不少进程，连接数和机器的配置也是有关系的，多了，如果用不上也是一种浪费，同时对于业务程序员来说也逻辑混乱， 因为假如是4条，那么接受方还得区分是那条发过来的数据\n5. master / slave 组网过程 slave3发送 sync给 master，并启动自己的 listen master收到信息给已经连接上的 slave1，slave2发送 slave3请求连接的情况 master给 slave3发送当前已经连接上的 slave数量，并把 slave3加入节点组 slave1，slave3接收到 master发送的信息后，调用 connect去连接 slave3 6. master /slave 断网过程 master检测到 slave3失去连接，把 slave3连接 fd置成 0 master把失去连接的 slave3 id 广播给 slave1，slave2 slave1，slave2得到 slave3 id之后和 slave3断开连接 7. harbor 服务 每个节点都有一个 harborid，在发送消息的时候会把这个 harborid放到消息 id的\n高8位，所以通过高8位的对比就知道这个消息是远程消息，还是本地消息，如果是远程消息\n通过 harbor和远程的 harbor建立 tcp连接发送数据过去，如果是本地直接放入本地节点处理逻辑\n8. 消息处理方式 skeynet.send 非堵塞不需要应答 skynet.call 堵塞需要应答 skynet.ret 回应消息 skynet.response 请求和相应在不用协程处理 skynet.queue 串行化消息执行 9. 锁 互斥锁 适用于得到锁以后处理时间\u003e线程切换时间场景 得到锁的线程会被唤醒处理逻辑，没有抢占到锁的线程会进入休眠状态\n互斥锁加锁失败以后，会从用户态变成内核态，线程就会释放 CPU 给其他线程,会有两次线程上下文的切换成本\n线程加锁失败时，内核会把线程的状态从 「运行」状态设置为 「睡眠」状态，然后把 CPU 切换给其他线程运行 接着，当锁被释放时，之前 「睡眠」状态的线程会变为「就绪」状态，然后内核会在合适的时间，把 CPU 切换给该线程运行。 上下文切换的时间，大概在几十纳秒到几微妙之间，所以如果你能确认你被锁住的代码时间很短，那么就不应该用互斥锁，而应该用自旋锁\n9.2 自旋锁 没有获取到权限的的线程不会进入休眠状态一直自旋检测是否能获取资源，适用于得到锁以后处理时间\u003c 线程切换时间的场景，得到锁处理逻辑最好别有IO操作或者文件流操作\n自旋锁是通过 cpu的 CAS函数，在用户态就完成了加锁和解锁操作，所以不会有上下文的切换，相比互斥锁来说，会快一点\n一般加锁的过程有两步\n查看锁的状态，如果锁是空闲的，那么执行第二步 将锁设置为当前线程持有 自旋锁加锁失败以后线程会 忙等待，直到它能 拿到锁\n9.3 读写锁 实现在 rwlock.h中\n读锁是 共享锁概念，其他锁去读的时候读取的是共享的资源，\n写锁是 独占概念，其他锁只能等待抢占到的锁释放资源，适用于读多写少场景\n所以更具场景可以分为 读优先锁和 写优先锁\n9.3.1 读优先锁 读优先锁对于读线程并发性更好，但是也不是没有问题，我们试想一下，如果一直有 读线程获取锁，那么 写线程就会被饿死\n9.3.2 写优先锁 写优先锁可以保证 写线程不被饿死，但是如果一直有 写线程获取，那么 读线程也会被饿死\n所以不管是优先读锁还是写锁，对方都可能被饿死，所以我们不偏袒任何一方，搞个 公平读写锁\n9.3.3 公平读写锁 用队列把获取锁的线程排队，不管是写线程还是读线程都按照先进先出的规则加锁，这样读线程一样能并发，也不会出现饥饿现象\n9.4 乐观锁和悲观锁区别 悲观锁做事比较悲观，他认为多线程同时修改共享资源的概率比较高，所以在访问资源之前都会先上一把锁。\n乐观锁正好相反，他认为多线程同时修改共享资源的概率比较低，所以会让先修改完资源，然后在判断是不是有冲突，有没有其他的线程在修改资源，如果有的话就直接放弃本次操作，\n互斥锁、自旋锁、读写锁，都是属于 悲观锁\n9.5 重入锁 就是能一条线程上能重复获取的锁，而不导致死锁\n10. cluster 模式 在每个 skynet 节点（单个进程）内，启动一个叫 clusterd 的服务。所有需要跨进程的消息投递都先把消息投递到这个服务上，再由它来转发到网络。\n首选通过 clustername.lua配置表配置好全部的 cluster节点 在所有要发现的节点上执行 require\"skynet.cluster\" 用 cluster.open建立自己的监听好让别的节点和自己建立 tcp通道连接 通过 cluster.register注册 create的 service 远程节点利用 cluster.query()来得到注册过的节点 通过 cluster.call skynet.call cluster.send skynet.send来调用远程 function1 function2函数 11 简易的mmo 架构 12 网关服务 main.lua 建立 watchdog watchdog 通过 skynet.start() 创建 gateService gateService并通过 rpc调用 watchdogService socket.open 函数 watchdogService 通过 socket.open 创建 agenService agenService 把 fd forward给 gateService client 发送请求给 gateService gateService 把请求重定向给 agentService agentService 把处理结果返回给 client 13 协程 coroutine 实现 详细代码见 lcorolib.c\n13.1 派发消息 function skynet.dispatch_message(...) -- 当前消息处理 local succ, err = pcall(raw_dispatch_message,...) while true do -- 顺序执行skynet.fork 创建的协程 if fork_queue.h \u003e fork_queue.t then -- queue is empty fork_queue.h = 1 fork_queue.t = 0 break end -- pop queue local h = fork_queue.h local co = fork_queue[h] fork_queue[h] = nil fork_queue.h = h + 1 local fork_succ, fork_err = pcall(suspend,co,coroutine_resume(co)) if not fork_succ then if succ then succ = false err = tostring(fork_err) else err = tostring(err) .. \"\\n\" .. tostring(fork_err) end end end assert(succ, tostring(err)) end 13.2 处理当前消息 local function raw_dispatch_message(prototype, msg, sz, session, source) -- skynet.PTYPE_RESPONSE = 1, read skynet.h if prototype == 1 then -- 对回应类型的包处理 local co = session_id_coroutine[session] if co == \"BREAK\" then session_id_coroutine[session] = nil elseif co == nil then unknown_response(session, source, msg, sz) else local tag = session_coroutine_tracetag[co] if tag then c.trace(tag, \"resume\") end session_id_coroutine[session] = nil suspend(co, coroutine_resume(co, true, msg, sz, session)) end else local p = proto[prototype] -- 找到对应的解析协议 if p == nil then if prototype == skynet.PTYPE_TRACE then -- trace next request trace_source[source] = c.tostring(msg,sz) elseif session ~= 0 then c.send(source, skynet.PTYPE_ERROR, session, \"\") else unknown_request(session, source, msg, sz, prototype) end return end local f = p.dispatch -- 获取处理的函数 if f then local co = co_create(f) -- 获取协程 session_coroutine_id[co] = session session_coroutine_address[co] = source local traceflag = p.trace if traceflag == false then -- force off trace_source[source] = nil session_coroutine_tracetag[co] = false else local tag = trace_source[source] if tag then trace_source[source] = nil c.trace(tag, \"request\") session_coroutine_tracetag[co] = tag elseif traceflag then -- set running_thread for trace running_thread = co skynet.trace() end end suspend(co, coroutine_resume(co, session,source, p.unpack(msg,sz))) else trace_source[source] = nil if session ~= 0 then c.send(source, skynet.PTYPE_ERROR, session, \"\") else unknown_request(session, source, msg, sz, proto[prototype].name) end end end end 13.3 创建协程 local function co_create(f) local co = tremove(coroutine_pool) -- 从协程池中获取协程 if co == nil then --如果没有了 co = coroutine_create(function(...) -- 创建新的 f(...) --执行回调函数，不会立马执行只会调用coroutine.resume时候才会执行 while true do -- 为了能够复用刚创建的协成，下面需要对协程进行初始化和回收 local session = session_coroutine_id[co] if session and session ~= 0 then local source = debug.getinfo(f,\"S\") skynet.error(string.format(\"Maybe forgot response session %s from %s : %s:%d\", session, skynet.address(session_coroutine_address[co]), source.source, source.linedefined)) end -- coroutine exit local tag = session_coroutine_tracetag[co] if tag ~= nil then if tag then c.trace(tag, \"end\") end session_coroutine_tracetag[co] = nil end local address = session_coroutine_address[co] if address then session_coroutine_id[co] = nil session_coroutine_address[co] = nil end -- recycle co into pool f = nil coroutine_pool[#coroutine_pool+1] = co -- recv new main function f f = coroutine_yield \"SUSPEND\" f(coroutine_yield()) end end) else -- pass the main function f to coroutine, and restore running thread local running = running_thread coroutine_resume(co, f) running_thread = running end return co end 13.4 协程挂起 -- suspend is local function function suspend(co, result, command) if not result then -- 执行co失败以后的处理 local session = session_coroutine_id[co] if session then -- coroutine may fork by others (session is nil) local addr = session_coroutine_address[co] if session ~= 0 then -- only call response error local tag = session_coroutine_tracetag[co] if tag then c.trace(tag, \"error\") end c.send(addr, skynet.PTYPE_ERROR, session, \"\") end session_coroutine_id[co] = nil end session_coroutine_address[co] = nil session_coroutine_tracetag[co] = nil skynet.fork(function() end) -- trigger command \"SUSPEND\" local tb = traceback(co,tostring(command)) coroutine.close(co) error(tb) end if command == \"SUSPEND\" then -- 挂起操作 return dispatch_wakeup() -- 如果有能够被唤醒的协程，就wakeup elseif command == \"QUIT\" then coroutine.close(co) -- service exit return elseif command == \"USER\" then -- See skynet.coutine for detail error(\"Call skynet.coroutine.yield out of skynet.coroutine.resume\\n\" .. traceback(co)) elseif command == nil then -- debug trace return else error(\"Unknown command : \" .. command .. \"\\n\" .. traceback(co)) end end\t13.5 协程销毁 主要是因为这种基础类型 LUA_TTHREAD来决定怎么销毁\nLUA_TTHREAD 介绍:\n除了主线程以外，其它线程和其它 Lua对象一样都是垃圾回收的对象。等待GC回收，当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾\n每次调用 lua_newstate的时候都会创建一个新的 luastate,不同的 luastate完全独立，之间不共享任何数据\n创建一个线程就拥有一个独立的执行栈了，但是它与其线程共用虚拟机的全局状态\n协程提供了新的 api接口和 lua_resetthread, coroutine.close 会使协程进入死亡状态,并且关闭所有的 close变量\n14 send.call 流程 15 API 相关 15.1 cluster cluster.call(node, address, ...) --远程调用node中的addr cluster.send(node, address, ...) --send调用远程node的addr cluster.open(port) --本地打开(监听)一个cluster结点，使其能在cluster中的其他结点发现 cluster.reload(config) --重载远程结点配置表，表中的cluster结点都open过，则可以通讯 cluster.proxy(node, name) --设置远程结点的代理，使得可以像调用本地RPC一样调用远程结点 cluster.snax(node, name, address) --生成一个远程的snax服务对象 cluster.register(name, addr) --注册一个cluster结点 cluster.query(node, name) --查找远程结点中注册过的结点是否存在 15.2 harbor harbor.link(id) --用来监控一个 slave 是否断开。如果 harbor id 对应的 slave 正常，这个 api 将阻塞。当 slave 断开时，会立刻返回。 harbor.linkmaster() --用来在 slave 上监控和 master 的连接是否正常。这个 api 多用于异常时的安全退出（因为当 slave 和 master 断开后，没有手段可以恢复）。 harbor.connect(id) --和 harbor.link 相反。如果 harbor id 对应的 slave 没有连接，这个 api 将阻塞，一直到它连上来才返回。 harbor.queryname(name) --可以用来查询全局名字或本地名字对应的服务地址。它是一个阻塞调用。 harbor.globalname(name, handle) --注册一个全局名字。如果 handle 为空，则注册自己。skynet.name 和 skynet.register 是用其实现的。 15.3 构建服务的一些基础接口 skynet.getenv(varName) --conf配置信息已经写入到注册表中，通过该函数获取注册表的变量值 skynet.setenv(varName, varValue) --设置注册表信息，varValue一般是number或string，但是不能设置已经存在的varname skynet.error(...) --打印函数 skynet.start(func) --用 func 函数初始化服务，并将消息处理函数注册到 C 层，让该服务可以工作。 skynet.init(func) --若服务尚未初始化完成，则注册一个函数等服务初始化阶段再执行；若服务已经初始化完成，则立刻运行该函数。 skynet.exit() --结束当前服务 skynet.self() --获取当前服务的句柄handler skynet.address(handler) --将handle转换成字符串 skynet.abort() --退出skynet进程 skynet.kill(address) ----强制杀死其他服务。可以用来强制关闭别的服务。但强烈不推荐这样做。因为对象会在任意一条消息处理完毕后，毫无征兆的退出。所以推荐的做法是，发送一条消息，让对方自己善后以及调用 skynet.exit 。注：skynet.kill(skynet.self()) 不完全等价于 skynet.exit() ，后者更安全。\t15.4 普通服务 skynet.newservice(luaServerName, ...) 15.5 全局唯一服务 skynet.uniqueservice(servicename, ...) --当前的skynet节点全局唯一 skynet.uniqueservice(true, servicename, ...) --所有的节点全局唯一 skynet.queryservice(servicename, ...) --当前的skynet节点中查找 skynet.queryservice(true, servicename, ...) --所有的节点中查找 15.6 别名 别名分两种：\n本地别名 代表只能在当前 skynet节点使用，本地别名用 .开头 全局别名 可以在所有的 skynet中使用 全局别名不能以 . 开头 skynet.register(aliasname) --给当前服务定一个别名，可以是全局别名，也可以是本地别名 skynet.name(aliasname, servicehandler) --给指定servicehandler的服务定一个别名，可以是全局别名，也可以是本地别名 --[[ 查询别名为aliasname的服务,可以是全局别名也可以是本地别名， 1、当查询本地别名时，返回servicehandler，不存在就返回nil 2、当查询全局别名时，返回servicehandler，不存在就阻塞等待到该服务初始化完成 ]]-- skynet.harbor.queryname(aliasname) skynet.localname(aliasname) --查询本地别名为aliasname的服务，返回servicehandler，不存在就返回nil skynet.kill(handle) --杀死带别名服务 15.7 服务调度 skynet.sleep(time) --让当前的任务等待 time * 0.01s 。 skynet.fork(func, ...) --启动一个新的任务去执行函数 func , 其实就是开了一个协程，函数调用完成将返回线程句柄 虽然你也可以使用原生的coroutine.create来创建协程，但是会打乱skynet的工作流程 skynet.yield() --让出当前的任务执行流程，使本服务内其它任务有机会执行，随后会继续运行。 skynet.wait() --让出当前的任务执行流程，直到用 wakeup 唤醒它。 skynet.wakeup(co) --唤醒用 wait 或 sleep 处于等待状态的任务。 skynet.timeout(time, func) --设定一个定时触发函数 func ，在 time * 0.01s 后触发。 skynet.starttime() --返回当前进程的启动 UTC 时间（秒）。 skynet.now() --返回当前进程启动后经过的时间 (0.01 秒) 。 skynet.time() --通过 starttime 和 now 计算出当前 UTC 时间（秒）。 15.8 消息类型 #define PTYPE_TEXT 0 --文本 #define PTYPE_RESPONSE 1 --表示一个回应包 #define PTYPE_MULTICAST 2 --广播消息 #define PTYPE_CLIENT 3 --用来处理网络客户端的请求消息 #define PTYPE_SYSTEM 4 --系统消息 #define PTYPE_HARBOR 5 --集群内其他的 skynet 节点发来的消息 #define PTYPE_SOCKET 6 --套接字消息 #define PTYPE_ERROR 7 --错误消息，一般服务退出的时候会发送error消息给关联的服务 #define PTYPE_QUEUE 8 --队列方式 #define PTYPE_DEBUG 9 --调试 #define PTYPE_LUA 10 --lua类型的消息，最常用 #define PTYPE_SNAX 11 --snax服务消息 #define PTYPE_TAG_DONTCOPY 0x10000 --禁止拷贝 #define PTYPE_TAG_ALLOCSESSION 0x20000 --分配新的 session 15.9 打包解包 skynet.pack(...) --打包 skynet.unpack(msg, sz) --解包 15.10 发送消息 -- 发送无需响应的消息 skynet.send(addr, type, ...) --用 type 类型向 addr 发送未打包的消息。该函数会自动把...参数列表进行打包，默认情况下lua消息使用skynet.pack打包。addr可以是服务句柄也可以是别名。自动打包与解包。） skynet.rawsend(addr, type, msg, sz) --用 type 类型向 addr 发送一个打包好的消息。addr可以是服务句柄也可以是别名。（需要自己打包与解包） -- 发送必须响应的消息 skynet.call(addr, type, ...) --用默认函数打包消息，向addr发送type类型的消息并等待返回响应，并对回应信息进行解包。（自动打包与解包。） skynet.rawcall(addr, type, msg, sz) --直接向addr发送type类型的msg,sz并等待返回响应，不对回应信息解包。（需要自己打包与解包） 15.11 响应消息 -- 同一个协成处理 skynet.ret() --目标服务消息处理后需要通过该函数将结果返回 skynet.retpack(...) --将消息用skynet.pack 打包，并调用 ret 回应。 --不在一个协成处理 local response = skynet.response(pack)--参数pack指定应答打包函数，不填默认使用skynet.pack, 必须根据接收到消息的打包函数一致 返回值是一个闭包函数 response(ok, ...) --参数ok的值可以是 \"test\"、true、false，为\"test\"时表示检查接收响应的服务是否存在，为true时表示发送应答PTYPE_RESPONSE，为false时表示发送PTYPE_ERROR错误消息。 15.12 消息冲入时序问题 skynet.queue() --帮助你回避这些服务重入或者伪并发引起的复杂性,但是明显降低了服务的并发处理能力，所以使用执行队列的时候尽量缩小临界区的颗粒度大小 15.13 协议转换 skynet.forward_type() --需要提供一张消息转换映射表forward_map, 其他的方法与skynet.start一样 15.14 伪造消息 skynet.redirect(dest,source,typename, session, msg, sz) --使用source服务地址，发送typename类型的消息给dest服务，不需要接收响应，（source，dest只能是服务ID）msg sz一般使用skynet.pack打包生成 15.15 组播 skynet.multicast -- 当组播的数据量较大时候可以节省内部的带宽 15.16 socket --建立一个 TCP 连接。返回一个数字 id 。 socket.open(address, port) --关闭一个连接，这个 API 有可能阻塞住执行流。因为如果有其它 coroutine --正在阻塞读这个 id 对应的连接，会先驱使读操作结束，close 操作才返回。 socket.close(id) --在极其罕见的情况下，需要粗暴的直接关闭某个连接，而避免 socket.close 的阻塞等待流程，可以使用它。 socket.close_fd(id) --强行关闭一个连接。和 close 不同的是，它不会等待可能存在的其它 coroutine 的读操作。 --一般不建议使用这个 API ，但如果你需要在 __gc 元方法中关闭连接的话， --shutdown 是一个比 close 更好的选择（因为在 gc 过程中无法切换 coroutine）。与close_fd类似 socket.shutdown(id) --[[ 从一个 socket 上读 sz 指定的字节数。 如果读到了指定长度的字符串，它把这个字符串返回。 如果连接断开导致字节数不够，将返回一个 false 加上读到的字符串。 如果 sz 为 nil ，则返回尽可能多的字节数，但至少读一个字节（若无新数据，会阻塞）。 --]] socket.read(id, sz) --从一个 socket 上读所有的数据，直到 socket 主动断开，或在其它 coroutine 用 socket.close 关闭它。 socket.readall(id) --从一个 socket 上读一行数据。sep 指行分割符。默认的 sep 为 \"\\n\"。读到的字符串是不包含这个分割符的。 --如果另外一端就关闭了，那么这个时候会返回一个nil，如果buffer中有未读数据则作为第二个返回值返回。 socket.readline(id, sep) --等待一个 socket 可读。 socket.block(id) --把一个字符串置入正常的写队列，skynet 框架会在 socket 可写时发送它。 socket.write(id, str) --把字符串写入低优先级队列。如果正常的写队列还有写操作未完成时，低优先级队列上的数据永远不会被发出。 --只有在正常写队列为空时，才会处理低优先级队列。但是，每次写的字符串都可以看成原子操作。 --不会只发送一半，然后转去发送正常写队列的数据。 socket.lwrite(id, str) --监听一个端口，返回一个 id ，供 start 使用。 socket.listen(address, port) --[[ accept 是一个函数。每当一个监听的 id 对应的 socket 上有连接接入的时候，都会调用 accept 函数。 这个函数会得到接入连接的 id 以及 ip 地址。你可以做后续操作。 每当 accept 函数获得一个新的 socket id 后，并不会立即收到这个 socket 上的数据。 这是因为，我们有时会希望把这个 socket 的操作权转让给别的服务去处理。accept(id, addr) ]]-- socket.start(id , accept) --[[ 任何一个服务只有在调用 socket.start(id) 之后，才可以读到这个 socket 上的数据。 向一个 socket id 写数据也需要先调用 start 。 socket 的 id 对于整个 skynet 节点都是公开的。也就是说，你可以把 id 这个数字 通过消息发送给其它服务，其他服务也可以去操作它。skynet 框架是根据调用 start 这个 api 的位置来决定把对应 socket 上的数据转发到哪里去的。 --]] socket.start(id) --清除 socket id 在本服务内的数据结构，但并不关闭这个 socket 。 --这可以用于你把 id 发送给其它服务，以转交 socket 的控制权。 socket.abandon(id) --[[ 当 id 对应的 socket 上待发的数据超过 1M 字节后，系统将回调 callback 以示警告。 function callback(id, size) 回调函数接收两个参数 id 和 size ，size 的单位是 K 。 如果你不设回调，那么将每增加 64K 利用 skynet.error 写一行错误信息。 --]] socket.warning(id, callback) 15.17 socketChannel 用来支持双向传输，异步非堵塞处理数据 15.18 dns skynet.dns --调用了系统 api getaddrinfo ，有可能阻塞住整个 socket 线程 所以skynet封装了这个接口来解决dns查询时候造成的线程堵塞问题 16 skynet 的通信调试pack 客户端按大小端打包成二进制\nlocal result = string.pack(\"\u003es2\",\"string2pack\") pack \u003e 表示按大端顺序。s2 表示按照2个字节打包。 我们知道string由char组成。1个char 是 0-255 之间的数，2^8 ,1char=8byte 需要注意的是，他除了被打包的部分之外，还会在前面加2个字节，表示长度。 如果要打包一个数字则需要转换。由2种办法 string.pack(\"I2\",number)，会在前面二进制加2位表示长度的东西。 socket发送\nsocket.send 服务端接收\ngateserver已经有接收的代码了。 注意的是，socket会自动按pack的数据分段接收。也就是会根据pack的前面2位得到size。根据size去接收后面的数据。然后向上传递一份message。 接收到的message已经是去掉了前面2位的数据。 客户端接收\n户端接收到的数据目前我是用skynet提供的“client.socket”.没有netpack可用。 接收到的数据需要自行去除前面的2个字节的数据（string.pack产生的）。 ",
-  "wordCount" : "8809",
+  "articleBody": "linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket在Skynet内部对应一个Lua虚拟机和一个客户特定的消息队列per client mq。当客户特定消息队列中有消息时，该队列会挂载到全局队列global message queue上供工作线程worker Threads进行调度处理。\n一个Socket线程socket thread会轮询所有的Socket，当收到客户端请求后将请求打包成一个消息，发送到该Socket对应的客户特定消息队列per client mq中，然后将该消息队列挂到全局队列队尾。\n多个Worker工作线程worker threads从全局队列头部获取客户特定消息队列，从客户特定消息队列中取出一个消息进行处理，处理完毕后再将消息队列重新挂到全局队列队尾。\nskynet中不同服务是利用系统的多线程完全并行的，当你从服务A向服务B和服务C分别各自发送一条消息时，并不能保证先发的消息先被处理。而当你从服务A向服务B依次发送两条消息时，先发的消息一定会被服务B先处理。\n使用Lua实现的服务只是一个内嵌了Lua虚拟机的服务，也遵守上面的规则。如果服务B是一个Lua服务，当服务A向服务B发送两条消息x和y时，Skynet一定保证x先被服务B中的Lua虚拟机接收到，并为消息x生成要给协程X，并运行这个协程。然后才会接收到消息y，并重新生成一个新的协程Y并运行。\n同步问题 同步也是skynet存在的问题，当一个服务call其他服务时，当前协程会挂起，但是这个服务还可以接受并处理其他消息。如果多个协程改到同一个数据，你不做同步处理就无法确定这个数据会是多少。\n这样的例子特别常见，比如，服务正当处理玩家login请求，刚好遇到call挂起，这时候又有新的请求到来，比如logout，服务就会转去处理logout消息。那玩家究竟是login，还是logout？\n当然，同步问题也容易解决，加多一个state的标识和一个协程列表，操作执行时，将state置doing，其他协程判断state=doing时就将自己加到协程列表，然后 skynet.wait。在操作执行完后，重置state，然后遍历协程列表依次 skynet.wakeup(co) ，最后将协程列表置空。\n解释此队列 红黑树上的节点是所有监听的socket 黄色底的是interesting 队列 蓝色底是黄色底的子队列 也就是就绪队列 epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket 当有读写事件时候，就会往蓝色底队列放入socket也就是塞入就绪队列 通过epoll_wait()把就绪队列的东西返回出来\n线程类型 socket thread : 线程进程消息收发\nmonitor thread : 线程监控服务是不是陷入死循环，消息是否堵住\ntime thread : 线程主要用于实现skynet的定时器\nwork thread 线程 对消息队列进行调度\n消息流转 先从全局队列pop一个次级队列，然后从次级队列pop一个消息调用回调函数进行逻辑处理 用完以后如果次级队列不为空或者堵塞，继续把次级队列放入全局队列 启动流程 加载配置文件\n配置文件存入lua的全局变量env\n创建和启动c服务logger\n启动引导模块并启动第一个lua服务(bootstrap)\n然后在通过bootstrap配置去启动其他的微服务\ncluster 两条tcp通道总结 前提 两端是严格分为请求方和回应方。比如 A---\u003e B ，那么只能是A向B提出请求，B 回应它；如果 B-----\u003e\u003eA 需要由 B 向 A 再建立一条通道。\nTCP特性使得每个TCP连接可以得到均等的带宽。在多用户环境下，一个用户拥有越多TCP连接，获得的带宽越大\n1条连接 优点：链接少，对于没有接触过skynet，传统服务器人很容易这种方式连接方式，因为大部分很多都是cs结构程序员过来的 **缺点：**如果断了，数据就无法传输，得重新建立新的连接，上层业务逻辑写起来也麻烦，需要清楚那边是发送方，那边是接受方\n2条连接 **优点：**在前面前提的基础上，有两条连接，上层业务逻辑程序员不需要关心我这个时候是client，还是server，只需要通过cluster.call，cluster.send，接口直接往里面塞数据就行了，多条连接也便于抢带宽 **缺点:**多了一条连接，对cs结构过来的程序员不太容易理解为什么这么弄有好处，或者是不知道有前面那个前提 为什么不在开辟更多的连接，因为开辟更多的链接意义不大，如果这台机器上弄了不少进程，连接数和机器的配置也是有关系的，多了，如果用不上也是一种浪费，同时对于业务程序员来说也逻辑混乱， 因为假如是4条，那么接受方还得区分是那条发过来的数据\nmaster / slave 组网过程 slave3发送sync给master，并启动自己的listen master收到信息给已经连接上的slave1，slave2发送slave3请求连接的情况 master给slave3发送当前已经连接上的slave数量，并把slave3加入节点组 slave1，slave3接收到master发送的信息后，调用connect去连接slave3 master /slave 断网过程 master检测到slave3失去连接，把slave3连接fd置成0 master把失去连接的slave3 id 广播给slave1，slave2 slave1，slave2得到slave3 id之后和slave3断开连接 harbor 服务 每个节点都有一个harborid，在发送消息的时候会把这个harborid放到消息id的\n高8位，所以通过高8位的对比就知道这个消息是远程消息，还是本地消息，如果是远程消息\n通过harbor和远程的harbor建立tcp连接发送数据过去，如果是本地直接放入本地节点处理逻辑\n消息处理方式 skeynet.send 非堵塞不需要应答 skynet.call 堵塞需要应答 skynet.ret 回应消息 skynet.response 请求和相应在不用协程处理 skynet.queue 串行化消息执行 锁 互斥锁 适用于得到锁以后处理时间\u003e线程切换时间场景 得到锁的线程会被唤醒处理逻辑，没有抢占到锁的线程会进入休眠状态\n互斥锁加锁失败以后，会从用户态变成内核态，线程就会释放CPU 给其他线程,会有两次线程上下文的切换成本\n线程加锁失败时，内核会把线程的状态从「运行」状态设置为「睡眠」状态，然后把 CPU 切换给其他线程运行 接着，当锁被释放时，之前「睡眠」状态的线程会变为「就绪」状态，然后内核会在合适的时间，把 CPU 切换给该线程运行。 上下文切换的时间，大概在几十纳秒到几微妙之间，所以如果你能确认你被锁住的代码时间很短，那么就不应该用互斥锁，而应该用自旋锁\n自旋锁 没有获取到权限的的线程不会进入休眠状态一直自旋检测是否能获取资源，适用于得到锁以后处理时间\u003c 线程切换时间的场景，得到锁处理逻辑最好别有IO操作或者文件流操作\n自旋锁是通过cpu的CAS函数，在用户态就完成了加锁和解锁操作，所以不会有上下文的切换，相比互斥锁来说，会快一点\n一般加锁的过程有两步\n查看锁的状态，如果锁是空闲的，那么执行第二步 将锁设置为当前线程持有 自旋锁加锁失败以后线程会忙等待，直到它能拿到锁\n读写锁 实现在rwlock.h中\n读锁是共享锁概念，其他锁去读的时候读取的是共享的资源，\n写锁是独占概念，其他锁只能等待抢占到的锁释放资源，适用于读多写少场景\n所以更具场景可以分为读优先锁和写优先锁\n读优先锁 读优先锁对于读线程并发性更好，但是也不是没有问题，我们试想一下，如果一直有读线程获取锁，那么写线程就会被饿死\n写优先锁 写优先锁可以保证写线程不被饿死，但是如果一直有写线程获取，那么读线程也会被饿死\n所以不管是优先读锁还是写锁，对方都可能被饿死，所以我们不偏袒任何一方，搞个公平读写锁\n公平读写锁 用队列把获取锁的线程排队，不管是写线程还是读线程都按照先进先出的规则加锁，这样读线程一样能并发，也不会出现饥饿现象\n乐观锁和悲观锁区别 悲观锁做事比较悲观，他认为多线程同时修改共享资源的概率比较高，所以在访问资源之前都会先上一把锁。\n乐观锁正好相反，他认为多线程同时修改共享资源的概率比较低，所以会让先修改完资源，然后在判断是不是有冲突，有没有其他的线程在修改资源，如果有的话就直接放弃本次操作，\n互斥锁、自旋锁、读写锁，都是属于悲观锁\n重入锁 就是能一条线程上能重复获取的锁，而不导致死锁\ncluster 模式 在每个 skynet 节点（单个进程）内，启动一个叫 clusterd 的服务。所有需要跨进程的消息投递都先把消息投递到这个服务上，再由它来转发到网络。\n首选通过clustername.lua配置表配置好全部的cluster节点 在所有要发现的节点上执行require\"skynet.cluster\" 用cluster.open建立自己的监听好让别的节点和自己建立tcp通道连接 通过cluster.register注册create的service 远程节点利用cluster.query()来得到注册过的节点 通过cluster.call skynet.call cluster.send skynet.send来调用远程function1 function2函数 简易的mmo 架构 网关服务 main.lua 建立 watchdog watchdog 通过skynet.start() 创建gateService gateService并通过rpc调用 watchdogService socket.open 函数 watchdogService 通过 socket.open 创建 agenService agenService 把fd forward给gateService client 发送请求给gateService gateService 把请求重定向给agentService agentService 把处理结果返回给client 协程 coroutine 实现 详细代码见lcorolib.c\n派发消息 function skynet.dispatch_message(...) -- 当前消息处理 local succ, err = pcall(raw_dispatch_message,...) while true do -- 顺序执行skynet.fork 创建的协程 if fork_queue.h \u003e fork_queue.t then -- queue is empty fork_queue.h = 1 fork_queue.t = 0 break end -- pop queue local h = fork_queue.h local co = fork_queue[h] fork_queue[h] = nil fork_queue.h = h + 1 local fork_succ, fork_err = pcall(suspend,co,coroutine_resume(co)) if not fork_succ then if succ then succ = false err = tostring(fork_err) else err = tostring(err) .. \"\\n\" .. tostring(fork_err) end end end assert(succ, tostring(err)) end 处理当前消息 local function raw_dispatch_message(prototype, msg, sz, session, source) -- skynet.PTYPE_RESPONSE = 1, read skynet.h if prototype == 1 then -- 对回应类型的包处理 local co = session_id_coroutine[session] if co == \"BREAK\" then session_id_coroutine[session] = nil elseif co == nil then unknown_response(session, source, msg, sz) else local tag = session_coroutine_tracetag[co] if tag then c.trace(tag, \"resume\") end session_id_coroutine[session] = nil suspend(co, coroutine_resume(co, true, msg, sz, session)) end else local p = proto[prototype] -- 找到对应的解析协议 if p == nil then if prototype == skynet.PTYPE_TRACE then -- trace next request trace_source[source] = c.tostring(msg,sz) elseif session ~= 0 then c.send(source, skynet.PTYPE_ERROR, session, \"\") else unknown_request(session, source, msg, sz, prototype) end return end local f = p.dispatch -- 获取处理的函数 if f then local co = co_create(f) -- 获取协程 session_coroutine_id[co] = session session_coroutine_address[co] = source local traceflag = p.trace if traceflag == false then -- force off trace_source[source] = nil session_coroutine_tracetag[co] = false else local tag = trace_source[source] if tag then trace_source[source] = nil c.trace(tag, \"request\") session_coroutine_tracetag[co] = tag elseif traceflag then -- set running_thread for trace running_thread = co skynet.trace() end end suspend(co, coroutine_resume(co, session,source, p.unpack(msg,sz))) else trace_source[source] = nil if session ~= 0 then c.send(source, skynet.PTYPE_ERROR, session, \"\") else unknown_request(session, source, msg, sz, proto[prototype].name) end end end end 创建协程 local function co_create(f) local co = tremove(coroutine_pool) -- 从协程池中获取协程 if co == nil then --如果没有了 co = coroutine_create(function(...) -- 创建新的 f(...) --执行回调函数，不会立马执行只会调用coroutine.resume时候才会执行 while true do -- 为了能够复用刚创建的协成，下面需要对协程进行初始化和回收 local session = session_coroutine_id[co] if session and session ~= 0 then local source = debug.getinfo(f,\"S\") skynet.error(string.format(\"Maybe forgot response session %s from %s : %s:%d\", session, skynet.address(session_coroutine_address[co]), source.source, source.linedefined)) end -- coroutine exit local tag = session_coroutine_tracetag[co] if tag ~= nil then if tag then c.trace(tag, \"end\") end session_coroutine_tracetag[co] = nil end local address = session_coroutine_address[co] if address then session_coroutine_id[co] = nil session_coroutine_address[co] = nil end -- recycle co into pool f = nil coroutine_pool[#coroutine_pool+1] = co -- recv new main function f f = coroutine_yield \"SUSPEND\" f(coroutine_yield()) end end) else -- pass the main function f to coroutine, and restore running thread local running = running_thread coroutine_resume(co, f) running_thread = running end return co end 协程挂起 -- suspend is local function function suspend(co, result, command) if not result then -- 执行co失败以后的处理 local session = session_coroutine_id[co] if session then -- coroutine may fork by others (session is nil) local addr = session_coroutine_address[co] if session ~= 0 then -- only call response error local tag = session_coroutine_tracetag[co] if tag then c.trace(tag, \"error\") end c.send(addr, skynet.PTYPE_ERROR, session, \"\") end session_coroutine_id[co] = nil end session_coroutine_address[co] = nil session_coroutine_tracetag[co] = nil skynet.fork(function() end) -- trigger command \"SUSPEND\" local tb = traceback(co,tostring(command)) coroutine.close(co) error(tb) end if command == \"SUSPEND\" then -- 挂起操作 return dispatch_wakeup() -- 如果有能够被唤醒的协程，就wakeup elseif command == \"QUIT\" then coroutine.close(co) -- service exit return elseif command == \"USER\" then -- See skynet.coutine for detail error(\"Call skynet.coroutine.yield out of skynet.coroutine.resume\\n\" .. traceback(co)) elseif command == nil then -- debug trace return else error(\"Unknown command : \" .. command .. \"\\n\" .. traceback(co)) end end\t协程销毁 主要是因为这种基础类型LUA_TTHREAD来决定怎么销毁\nLUA_TTHREAD 介绍:\n除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。等待GC回收，当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾\n每次调用lua_newstate的时候都会创建一个新的luastate,不同的luastate完全独立，之间不共享任何数据\n创建一个线程就拥有一个独立的执行栈了，但是它与其线程共用虚拟机的全局状态\n协程提供了新的api接口和 lua_resetthread, coroutine.close 会使协程进入死亡状态,并且关闭所有的close变量\nsend.call 流程 API 相关 cluster cluster.call(node, address, ...) --远程调用node中的addr cluster.send(node, address, ...) --send调用远程node的addr cluster.open(port) --本地打开(监听)一个cluster结点，使其能在cluster中的其他结点发现 cluster.reload(config) --重载远程结点配置表，表中的cluster结点都open过，则可以通讯 cluster.proxy(node, name) --设置远程结点的代理，使得可以像调用本地RPC一样调用远程结点 cluster.snax(node, name, address) --生成一个远程的snax服务对象 cluster.register(name, addr) --注册一个cluster结点 cluster.query(node, name) --查找远程结点中注册过的结点是否存在 harbor harbor.link(id) --用来监控一个 slave 是否断开。如果 harbor id 对应的 slave 正常，这个 api 将阻塞。当 slave 断开时，会立刻返回。 harbor.linkmaster() --用来在 slave 上监控和 master 的连接是否正常。这个 api 多用于异常时的安全退出（因为当 slave 和 master 断开后，没有手段可以恢复）。 harbor.connect(id) --和 harbor.link 相反。如果 harbor id 对应的 slave 没有连接，这个 api 将阻塞，一直到它连上来才返回。 harbor.queryname(name) --可以用来查询全局名字或本地名字对应的服务地址。它是一个阻塞调用。 harbor.globalname(name, handle) --注册一个全局名字。如果 handle 为空，则注册自己。skynet.name 和 skynet.register 是用其实现的。 构建服务的一些基础接口 skynet.getenv(varName) --conf配置信息已经写入到注册表中，通过该函数获取注册表的变量值 skynet.setenv(varName, varValue) --设置注册表信息，varValue一般是number或string，但是不能设置已经存在的varname skynet.error(...) --打印函数 skynet.start(func) --用 func 函数初始化服务，并将消息处理函数注册到 C 层，让该服务可以工作。 skynet.init(func) --若服务尚未初始化完成，则注册一个函数等服务初始化阶段再执行；若服务已经初始化完成，则立刻运行该函数。 skynet.exit() --结束当前服务 skynet.self() --获取当前服务的句柄handler skynet.address(handler) --将handle转换成字符串 skynet.abort() --退出skynet进程 skynet.kill(address) ----强制杀死其他服务。可以用来强制关闭别的服务。但强烈不推荐这样做。因为对象会在任意一条消息处理完毕后，毫无征兆的退出。所以推荐的做法是，发送一条消息，让对方自己善后以及调用 skynet.exit 。注：skynet.kill(skynet.self()) 不完全等价于 skynet.exit() ，后者更安全。\t普通服务 skynet.newservice(luaServerName, ...)\t全局唯一服务 skynet.uniqueservice(servicename, ...) --当前的skynet节点全局唯一 skynet.uniqueservice(true, servicename, ...) --所有的节点全局唯一 skynet.queryservice(servicename, ...) --当前的skynet节点中查找 skynet.queryservice(true, servicename, ...) --所有的节点中查找 别名 别名分两种：\n本地别名 代表只能在当前skynet节点使用，本地别名用 .开头\n全局别名 可以在所有的skynet中使用 全局别名不能以. 开头\nskynet.register(aliasname) --给当前服务定一个别名，可以是全局别名，也可以是本地别名 skynet.name(aliasname, servicehandler) --给指定servicehandler的服务定一个别名，可以是全局别名，也可以是本地别名 --[[ 查询别名为aliasname的服务,可以是全局别名也可以是本地别名， 1、当查询本地别名时，返回servicehandler，不存在就返回nil 2、当查询全局别名时，返回servicehandler，不存在就阻塞等待到该服务初始化完成 ]]-- skynet.harbor.queryname(aliasname) skynet.localname(aliasname) --查询本地别名为aliasname的服务，返回servicehandler，不存在就返回nil skynet.kill(handle) --杀死带别名服务 服务调度 skynet.sleep(time) --让当前的任务等待 time * 0.01s 。 skynet.fork(func, ...) --启动一个新的任务去执行函数 func , 其实就是开了一个协程，函数调用完成将返回线程句柄 虽然你也可以使用原生的coroutine.create来创建协程，但是会打乱skynet的工作流程 skynet.yield() --让出当前的任务执行流程，使本服务内其它任务有机会执行，随后会继续运行。 skynet.wait() --让出当前的任务执行流程，直到用 wakeup 唤醒它。 skynet.wakeup(co) --唤醒用 wait 或 sleep 处于等待状态的任务。 skynet.timeout(time, func) --设定一个定时触发函数 func ，在 time * 0.01s 后触发。 skynet.starttime() --返回当前进程的启动 UTC 时间（秒）。 skynet.now() --返回当前进程启动后经过的时间 (0.01 秒) 。 skynet.time() --通过 starttime 和 now 计算出当前 UTC 时间（秒）。\t消息类型 #define PTYPE_TEXT 0 --文本 #define PTYPE_RESPONSE 1 --表示一个回应包 #define PTYPE_MULTICAST 2 --广播消息 #define PTYPE_CLIENT 3 --用来处理网络客户端的请求消息 #define PTYPE_SYSTEM 4 --系统消息 #define PTYPE_HARBOR 5 --集群内其他的 skynet 节点发来的消息 #define PTYPE_SOCKET 6 --套接字消息 #define PTYPE_ERROR 7 --错误消息，一般服务退出的时候会发送error消息给关联的服务 #define PTYPE_QUEUE 8 --队列方式 #define PTYPE_DEBUG 9 --调试 #define PTYPE_LUA 10 --lua类型的消息，最常用 #define PTYPE_SNAX 11 --snax服务消息 #define PTYPE_TAG_DONTCOPY 0x10000 --禁止拷贝 #define PTYPE_TAG_ALLOCSESSION 0x20000 --分配新的 session 打包解包 skynet.pack(...) --打包 skynet.unpack(msg, sz) --解包\t发送消息 -- 发送无需响应的消息 skynet.send(addr, type, ...) --用 type 类型向 addr 发送未打包的消息。该函数会自动把...参数列表进行打包，默认情况下lua消息使用skynet.pack打包。addr可以是服务句柄也可以是别名。自动打包与解包。） skynet.rawsend(addr, type, msg, sz) --用 type 类型向 addr 发送一个打包好的消息。addr可以是服务句柄也可以是别名。（需要自己打包与解包） -- 发送必须响应的消息 skynet.call(addr, type, ...) --用默认函数打包消息，向addr发送type类型的消息并等待返回响应，并对回应信息进行解包。（自动打包与解包。） skynet.rawcall(addr, type, msg, sz) --直接向addr发送type类型的msg,sz并等待返回响应，不对回应信息解包。（需要自己打包与解包） 响应消息 -- 同一个协成处理 skynet.ret() --目标服务消息处理后需要通过该函数将结果返回 skynet.retpack(...) --将消息用skynet.pack 打包，并调用 ret 回应。 --不在一个协成处理 local response = skynet.response(pack)--参数pack指定应答打包函数，不填默认使用skynet.pack, 必须根据接收到消息的打包函数一致 返回值是一个闭包函数 response(ok, ...) --参数ok的值可以是 \"test\"、true、false，为\"test\"时表示检查接收响应的服务是否存在，为true时表示发送应答PTYPE_RESPONSE，为false时表示发送PTYPE_ERROR错误消息。 消息冲入时序问题 skynet.queue() --帮助你回避这些服务重入或者伪并发引起的复杂性,但是明显降低了服务的并发处理能力，所以使用执行队列的时候尽量缩小临界区的颗粒度大小 协议转换 skynet.forward_type() --需要提供一张消息转换映射表forward_map, 其他的方法与skynet.start一样 伪造消息 skynet.redirect(dest,source,typename, session, msg, sz) --使用source服务地址，发送typename类型的消息给dest服务，不需要接收响应，（source，dest只能是服务ID）msg sz一般使用skynet.pack打包生成 组播 skynet.multicast -- 当组播的数据量较大时候可以节省内部的带宽 socket --建立一个 TCP 连接。返回一个数字 id 。 socket.open(address, port) --关闭一个连接，这个 API 有可能阻塞住执行流。因为如果有其它 coroutine --正在阻塞读这个 id 对应的连接，会先驱使读操作结束，close 操作才返回。 socket.close(id) --在极其罕见的情况下，需要粗暴的直接关闭某个连接，而避免 socket.close 的阻塞等待流程，可以使用它。 socket.close_fd(id) --强行关闭一个连接。和 close 不同的是，它不会等待可能存在的其它 coroutine 的读操作。 --一般不建议使用这个 API ，但如果你需要在 __gc 元方法中关闭连接的话， --shutdown 是一个比 close 更好的选择（因为在 gc 过程中无法切换 coroutine）。与close_fd类似 socket.shutdown(id) --[[ 从一个 socket 上读 sz 指定的字节数。 如果读到了指定长度的字符串，它把这个字符串返回。 如果连接断开导致字节数不够，将返回一个 false 加上读到的字符串。 如果 sz 为 nil ，则返回尽可能多的字节数，但至少读一个字节（若无新数据，会阻塞）。 --]] socket.read(id, sz) --从一个 socket 上读所有的数据，直到 socket 主动断开，或在其它 coroutine 用 socket.close 关闭它。 socket.readall(id) --从一个 socket 上读一行数据。sep 指行分割符。默认的 sep 为 \"\\n\"。读到的字符串是不包含这个分割符的。 --如果另外一端就关闭了，那么这个时候会返回一个nil，如果buffer中有未读数据则作为第二个返回值返回。 socket.readline(id, sep) --等待一个 socket 可读。 socket.block(id) --把一个字符串置入正常的写队列，skynet 框架会在 socket 可写时发送它。 socket.write(id, str) --把字符串写入低优先级队列。如果正常的写队列还有写操作未完成时，低优先级队列上的数据永远不会被发出。 --只有在正常写队列为空时，才会处理低优先级队列。但是，每次写的字符串都可以看成原子操作。 --不会只发送一半，然后转去发送正常写队列的数据。 socket.lwrite(id, str) --监听一个端口，返回一个 id ，供 start 使用。 socket.listen(address, port) --[[ accept 是一个函数。每当一个监听的 id 对应的 socket 上有连接接入的时候，都会调用 accept 函数。 这个函数会得到接入连接的 id 以及 ip 地址。你可以做后续操作。 每当 accept 函数获得一个新的 socket id 后，并不会立即收到这个 socket 上的数据。 这是因为，我们有时会希望把这个 socket 的操作权转让给别的服务去处理。accept(id, addr) ]]-- socket.start(id , accept) --[[ 任何一个服务只有在调用 socket.start(id) 之后，才可以读到这个 socket 上的数据。 向一个 socket id 写数据也需要先调用 start 。 socket 的 id 对于整个 skynet 节点都是公开的。也就是说，你可以把 id 这个数字 通过消息发送给其它服务，其他服务也可以去操作它。skynet 框架是根据调用 start 这个 api 的位置来决定把对应 socket 上的数据转发到哪里去的。 --]] socket.start(id) --清除 socket id 在本服务内的数据结构，但并不关闭这个 socket 。 --这可以用于你把 id 发送给其它服务，以转交 socket 的控制权。 socket.abandon(id) --[[ 当 id 对应的 socket 上待发的数据超过 1M 字节后，系统将回调 callback 以示警告。 function callback(id, size) 回调函数接收两个参数 id 和 size ，size 的单位是 K 。 如果你不设回调，那么将每增加 64K 利用 skynet.error 写一行错误信息。 --]] socket.warning(id, callback) socketChannel 用来支持双向传输，异步非堵塞处理数据 dns skynet.dns --调用了系统 api getaddrinfo ，有可能阻塞住整个 socket 线程 所以skynet封装了这个接口来解决dns查询时候造成的线程堵塞问题 skynet 的通信调试pack 客户端按大小端打包成二进制\nlocal result = string.pack(\"\u003es2\",\"string2pack\") pack \u003e 表示按大端顺序。s2 表示按照2个字节打包。 我们知道string由char组成。1个char 是 0-255 之间的数，2^8 ,1char=8byte 需要注意的是，他除了被打包的部分之外，还会在前面加2个字节，表示长度。 如果要打包一个数字则需要转换。由2种办法 string.pack(\"I2\",number)，会在前面二进制加2位表示长度的东西。 socket发送\nsocket.send 服务端接收\ngateserver已经有接收的代码了。 注意的是，socket会自动按pack的数据分段接收。也就是会根据pack的前面2位得到size。根据size去接收后面的数据。然后向上传递一份message。 接收到的message已经是去掉了前面2位的数据。 客户端接收\n户端接收到的数据目前我是用skynet提供的“client.socket”.没有netpack可用。 接收到的数据需要自行去除前面的2个字节的数据（string.pack产生的）。 skynet clientsocket 导致 io.read 无法正确工作的问题 https://blog.csdn.net/gneveek/article/details/78940693 ",
+  "wordCount" : "8909",
   "inLanguage": "en",
-  "datePublished": "2022-09-13T01:30:29+08:00",
-  "dateModified": "2022-09-13T01:30:29+08:00",
+  "datePublished": "2022-09-15T01:30:29+08:00",
+  "dateModified": "2022-09-15T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -228,7 +228,7 @@ var _hmt = _hmt || [];
             <h1 class="post-title">
                 skynet赏析
             </h1>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;8809字&nbsp;|&nbsp;时长:&nbsp;18分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-15 01:30:29 +0800 CST'>2022-09-15</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-15&nbsp;|&nbsp;字数:&nbsp;8909字&nbsp;|&nbsp;时长:&nbsp;18分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -253,117 +253,119 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-linux%e7%bc%96%e8%af%91" aria-label="1. linux编译">1. linux编译</a></li>
+                    <a href="#linux%e7%bc%96%e8%af%91" aria-label="linux编译">linux编译</a></li>
                 <li>
-                    <a href="#2-%e7%bd%91%e7%bb%9c%e6%b5%81%e7%a8%8b%e5%9b%be" aria-label="2. 网络流程图">2. 网络流程图</a><ul>
+                    <a href="#%e7%bd%91%e7%bb%9c%e6%b5%81%e7%a8%8b%e5%9b%be" aria-label="网络流程图">网络流程图</a><ul>
                         
                 <li>
-                    <a href="#21-work%e7%ba%bf%e7%a8%8b%e5%92%8c%e6%ac%a1%e7%ba%a7%e9%98%9f%e5%88%97" aria-label="2.1 work线程和次级队列">2.1 work线程和次级队列</a></li>
+                    <a href="#work%e7%ba%bf%e7%a8%8b%e5%92%8c%e6%ac%a1%e7%ba%a7%e9%98%9f%e5%88%97" aria-label="work线程和次级队列">work线程和次级队列</a></li>
                 <li>
-                    <a href="#22-%e5%90%8c%e6%ad%a5%e9%97%ae%e9%a2%98" aria-label="2.2 同步问题">2.2 同步问题</a></li>
+                    <a href="#%e5%90%8c%e6%ad%a5%e9%97%ae%e9%a2%98" aria-label="同步问题">同步问题</a></li>
                 <li>
-                    <a href="#24-%e7%ba%bf%e7%a8%8b%e7%b1%bb%e5%9e%8b" aria-label="2.4 线程类型">2.4 线程类型</a></li>
+                    <a href="#%e7%ba%bf%e7%a8%8b%e7%b1%bb%e5%9e%8b" aria-label="线程类型">线程类型</a></li>
                 <li>
-                    <a href="#25-%e6%b6%88%e6%81%af%e6%b5%81%e8%bd%ac" aria-label="2.5 消息流转">2.5 消息流转</a></li></ul>
+                    <a href="#%e6%b6%88%e6%81%af%e6%b5%81%e8%bd%ac" aria-label="消息流转">消息流转</a></li></ul>
                 </li>
                 <li>
-                    <a href="#3-%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b" aria-label="3. 启动流程">3. 启动流程</a></li>
+                    <a href="#%e5%90%af%e5%8a%a8%e6%b5%81%e7%a8%8b" aria-label="启动流程">启动流程</a></li>
                 <li>
-                    <a href="#4-cluster-%e4%b8%a4%e6%9d%a1tcp%e9%80%9a%e9%81%93%e6%80%bb%e7%bb%93" aria-label="4. cluster 两条tcp通道总结">4. cluster 两条tcp通道总结</a></li>
+                    <a href="#cluster-%e4%b8%a4%e6%9d%a1tcp%e9%80%9a%e9%81%93%e6%80%bb%e7%bb%93" aria-label="cluster 两条tcp通道总结">cluster 两条tcp通道总结</a></li>
                 <li>
-                    <a href="#5-master--slave-%e7%bb%84%e7%bd%91%e8%bf%87%e7%a8%8b" aria-label="5. master / slave 组网过程">5. master / slave 组网过程</a></li>
+                    <a href="#master--slave-%e7%bb%84%e7%bd%91%e8%bf%87%e7%a8%8b" aria-label="master / slave 组网过程">master / slave 组网过程</a></li>
                 <li>
-                    <a href="#6-master-slave-%e6%96%ad%e7%bd%91%e8%bf%87%e7%a8%8b" aria-label="6. master /slave 断网过程">6. master /slave 断网过程</a></li>
+                    <a href="#master-slave-%e6%96%ad%e7%bd%91%e8%bf%87%e7%a8%8b" aria-label="master /slave 断网过程">master /slave 断网过程</a></li>
                 <li>
-                    <a href="#7-harbor-%e6%9c%8d%e5%8a%a1" aria-label="7. harbor 服务">7. harbor 服务</a></li>
+                    <a href="#harbor-%e6%9c%8d%e5%8a%a1" aria-label="harbor 服务">harbor 服务</a></li>
                 <li>
-                    <a href="#8-%e6%b6%88%e6%81%af%e5%a4%84%e7%90%86%e6%96%b9%e5%bc%8f" aria-label="8. 消息处理方式">8. 消息处理方式</a></li>
+                    <a href="#%e6%b6%88%e6%81%af%e5%a4%84%e7%90%86%e6%96%b9%e5%bc%8f" aria-label="消息处理方式">消息处理方式</a></li>
                 <li>
-                    <a href="#9-%e9%94%81" aria-label="9. 锁">9. 锁</a><ul>
+                    <a href="#%e9%94%81" aria-label="锁">锁</a><ul>
                         
                 <li>
                     <a href="#%e4%ba%92%e6%96%a5%e9%94%81" aria-label="互斥锁"><code>互斥锁</code></a></li>
                 <li>
-                    <a href="#92-%e8%87%aa%e6%97%8b%e9%94%81" aria-label="9.2 自旋锁">9.2 <code>自旋锁</code></a></li>
+                    <a href="#%e8%87%aa%e6%97%8b%e9%94%81" aria-label="自旋锁"><code>自旋锁</code></a></li>
                 <li>
-                    <a href="#93-%e8%af%bb%e5%86%99%e9%94%81" aria-label="9.3 读写锁">9.3 <code>读写锁</code></a><ul>
+                    <a href="#%e8%af%bb%e5%86%99%e9%94%81" aria-label="读写锁"><code>读写锁</code></a><ul>
                         
                 <li>
-                    <a href="#931-%e8%af%bb%e4%bc%98%e5%85%88%e9%94%81" aria-label="9.3.1 读优先锁">9.3.1 <code>读优先锁</code></a></li>
+                    <a href="#%e8%af%bb%e4%bc%98%e5%85%88%e9%94%81" aria-label="读优先锁"><code>读优先锁</code></a></li>
                 <li>
-                    <a href="#932-%e5%86%99%e4%bc%98%e5%85%88%e9%94%81" aria-label="9.3.2 写优先锁">9.3.2 <code>写优先锁</code></a></li>
+                    <a href="#%e5%86%99%e4%bc%98%e5%85%88%e9%94%81" aria-label="写优先锁"><code>写优先锁</code></a></li>
                 <li>
-                    <a href="#933-%e5%85%ac%e5%b9%b3%e8%af%bb%e5%86%99%e9%94%81" aria-label="9.3.3 公平读写锁">9.3.3 <code>公平读写锁</code></a></li></ul>
+                    <a href="#%e5%85%ac%e5%b9%b3%e8%af%bb%e5%86%99%e9%94%81" aria-label="公平读写锁"><code>公平读写锁</code></a></li></ul>
                 </li>
                 <li>
-                    <a href="#94-%e4%b9%90%e8%a7%82%e9%94%81%e5%92%8c%e6%82%b2%e8%a7%82%e9%94%81%e5%8c%ba%e5%88%ab" aria-label="9.4 乐观锁和悲观锁区别">9.4 <code>乐观锁和悲观锁区别</code></a></li>
+                    <a href="#%e4%b9%90%e8%a7%82%e9%94%81%e5%92%8c%e6%82%b2%e8%a7%82%e9%94%81%e5%8c%ba%e5%88%ab" aria-label="乐观锁和悲观锁区别"><code>乐观锁和悲观锁区别</code></a></li>
                 <li>
-                    <a href="#95-%e9%87%8d%e5%85%a5%e9%94%81" aria-label="9.5 重入锁">9.5 <code>重入锁</code></a></li></ul>
+                    <a href="#%e9%87%8d%e5%85%a5%e9%94%81" aria-label="重入锁"><code>重入锁</code></a></li></ul>
                 </li>
                 <li>
-                    <a href="#10-cluster-%e6%a8%a1%e5%bc%8f" aria-label="10. cluster 模式">10. cluster 模式</a></li>
+                    <a href="#cluster-%e6%a8%a1%e5%bc%8f" aria-label="cluster 模式">cluster 模式</a></li>
                 <li>
-                    <a href="#11--%e7%ae%80%e6%98%93%e7%9a%84mmo-%e6%9e%b6%e6%9e%84" aria-label="11  简易的mmo 架构">11  简易的mmo 架构</a></li>
+                    <a href="#%e7%ae%80%e6%98%93%e7%9a%84mmo-%e6%9e%b6%e6%9e%84" aria-label="简易的mmo 架构">简易的mmo 架构</a></li>
                 <li>
-                    <a href="#12-%e7%bd%91%e5%85%b3%e6%9c%8d%e5%8a%a1" aria-label="12 网关服务">12 网关服务</a></li>
+                    <a href="#%e7%bd%91%e5%85%b3%e6%9c%8d%e5%8a%a1" aria-label="网关服务">网关服务</a></li>
                 <li>
-                    <a href="#13-%e5%8d%8f%e7%a8%8b" aria-label="13 协程">13 协程</a><ul>
+                    <a href="#%e5%8d%8f%e7%a8%8b" aria-label="协程">协程</a><ul>
                         
                 <li>
-                    <a href="#131-%e6%b4%be%e5%8f%91%e6%b6%88%e6%81%af" aria-label="13.1 派发消息">13.1 派发消息</a></li>
+                    <a href="#%e6%b4%be%e5%8f%91%e6%b6%88%e6%81%af" aria-label="派发消息">派发消息</a></li>
                 <li>
-                    <a href="#132-%e5%a4%84%e7%90%86%e5%bd%93%e5%89%8d%e6%b6%88%e6%81%af" aria-label="13.2 处理当前消息">13.2 处理当前消息</a></li>
+                    <a href="#%e5%a4%84%e7%90%86%e5%bd%93%e5%89%8d%e6%b6%88%e6%81%af" aria-label="处理当前消息">处理当前消息</a></li>
                 <li>
-                    <a href="#133-%e5%88%9b%e5%bb%ba%e5%8d%8f%e7%a8%8b" aria-label="13.3 创建协程">13.3 创建协程</a></li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e5%8d%8f%e7%a8%8b" aria-label="创建协程">创建协程</a></li>
                 <li>
-                    <a href="#134-%e5%8d%8f%e7%a8%8b%e6%8c%82%e8%b5%b7" aria-label="13.4 协程挂起">13.4 协程挂起</a></li>
+                    <a href="#%e5%8d%8f%e7%a8%8b%e6%8c%82%e8%b5%b7" aria-label="协程挂起">协程挂起</a></li>
                 <li>
-                    <a href="#135-%e5%8d%8f%e7%a8%8b%e9%94%80%e6%af%81" aria-label="13.5 协程销毁">13.5 协程销毁</a></li></ul>
+                    <a href="#%e5%8d%8f%e7%a8%8b%e9%94%80%e6%af%81" aria-label="协程销毁">协程销毁</a></li></ul>
                 </li>
                 <li>
-                    <a href="#14-sendcall-%e6%b5%81%e7%a8%8b" aria-label="14 send.call 流程">14 send.call 流程</a></li>
+                    <a href="#sendcall-%e6%b5%81%e7%a8%8b" aria-label="send.call 流程">send.call 流程</a></li>
                 <li>
-                    <a href="#15-api-%e7%9b%b8%e5%85%b3" aria-label="15 API 相关">15 API 相关</a><ul>
+                    <a href="#api-%e7%9b%b8%e5%85%b3" aria-label="API 相关">API 相关</a><ul>
                         
                 <li>
-                    <a href="#151-cluster" aria-label="15.1 cluster">15.1 cluster</a></li>
+                    <a href="#cluster" aria-label="cluster">cluster</a></li>
                 <li>
-                    <a href="#152-harbor" aria-label="15.2 harbor">15.2 harbor</a></li>
+                    <a href="#harbor" aria-label="harbor">harbor</a></li>
                 <li>
-                    <a href="#153-%e6%9e%84%e5%bb%ba%e6%9c%8d%e5%8a%a1%e7%9a%84%e4%b8%80%e4%ba%9b%e5%9f%ba%e7%a1%80%e6%8e%a5%e5%8f%a3" aria-label="15.3 构建服务的一些基础接口">15.3 构建服务的一些基础接口</a></li>
+                    <a href="#%e6%9e%84%e5%bb%ba%e6%9c%8d%e5%8a%a1%e7%9a%84%e4%b8%80%e4%ba%9b%e5%9f%ba%e7%a1%80%e6%8e%a5%e5%8f%a3" aria-label="构建服务的一些基础接口">构建服务的一些基础接口</a></li>
                 <li>
-                    <a href="#154-%e6%99%ae%e9%80%9a%e6%9c%8d%e5%8a%a1" aria-label="15.4 普通服务">15.4 普通服务</a></li>
+                    <a href="#%e6%99%ae%e9%80%9a%e6%9c%8d%e5%8a%a1" aria-label="普通服务">普通服务</a></li>
                 <li>
-                    <a href="#155-%e5%85%a8%e5%b1%80%e5%94%af%e4%b8%80%e6%9c%8d%e5%8a%a1" aria-label="15.5 全局唯一服务">15.5 全局唯一服务</a></li>
+                    <a href="#%e5%85%a8%e5%b1%80%e5%94%af%e4%b8%80%e6%9c%8d%e5%8a%a1" aria-label="全局唯一服务">全局唯一服务</a></li>
                 <li>
-                    <a href="#156-%e5%88%ab%e5%90%8d" aria-label="15.6 别名">15.6 别名</a></li>
+                    <a href="#%e5%88%ab%e5%90%8d" aria-label="别名">别名</a></li>
                 <li>
-                    <a href="#157-%e6%9c%8d%e5%8a%a1%e8%b0%83%e5%ba%a6" aria-label="15.7 服务调度">15.7 服务调度</a></li>
+                    <a href="#%e6%9c%8d%e5%8a%a1%e8%b0%83%e5%ba%a6" aria-label="服务调度">服务调度</a></li>
                 <li>
-                    <a href="#158-%e6%b6%88%e6%81%af%e7%b1%bb%e5%9e%8b" aria-label="15.8 消息类型">15.8 消息类型</a></li>
+                    <a href="#%e6%b6%88%e6%81%af%e7%b1%bb%e5%9e%8b" aria-label="消息类型">消息类型</a></li>
                 <li>
-                    <a href="#159-%e6%89%93%e5%8c%85%e8%a7%a3%e5%8c%85" aria-label="15.9 打包解包">15.9 打包解包</a></li>
+                    <a href="#%e6%89%93%e5%8c%85%e8%a7%a3%e5%8c%85" aria-label="打包解包">打包解包</a></li>
                 <li>
-                    <a href="#1510-%e5%8f%91%e9%80%81%e6%b6%88%e6%81%af" aria-label="15.10 发送消息">15.10 发送消息</a></li>
+                    <a href="#%e5%8f%91%e9%80%81%e6%b6%88%e6%81%af" aria-label="发送消息">发送消息</a></li>
                 <li>
-                    <a href="#1511-%e5%93%8d%e5%ba%94%e6%b6%88%e6%81%af" aria-label="15.11 响应消息">15.11 响应消息</a></li>
+                    <a href="#%e5%93%8d%e5%ba%94%e6%b6%88%e6%81%af" aria-label="响应消息">响应消息</a></li>
                 <li>
-                    <a href="#1512-%e6%b6%88%e6%81%af%e5%86%b2%e5%85%a5%e6%97%b6%e5%ba%8f%e9%97%ae%e9%a2%98" aria-label="15.12 消息冲入时序问题">15.12 消息冲入时序问题</a></li>
+                    <a href="#%e6%b6%88%e6%81%af%e5%86%b2%e5%85%a5%e6%97%b6%e5%ba%8f%e9%97%ae%e9%a2%98" aria-label="消息冲入时序问题">消息冲入时序问题</a></li>
                 <li>
-                    <a href="#1513-%e5%8d%8f%e8%ae%ae%e8%bd%ac%e6%8d%a2" aria-label="15.13 协议转换">15.13 协议转换</a></li>
+                    <a href="#%e5%8d%8f%e8%ae%ae%e8%bd%ac%e6%8d%a2" aria-label="协议转换">协议转换</a></li>
                 <li>
-                    <a href="#1514-%e4%bc%aa%e9%80%a0%e6%b6%88%e6%81%af" aria-label="15.14 伪造消息">15.14 伪造消息</a></li>
+                    <a href="#%e4%bc%aa%e9%80%a0%e6%b6%88%e6%81%af" aria-label="伪造消息">伪造消息</a></li>
                 <li>
-                    <a href="#1515-%e7%bb%84%e6%92%ad" aria-label="15.15 组播">15.15 组播</a></li>
+                    <a href="#%e7%bb%84%e6%92%ad" aria-label="组播">组播</a></li>
                 <li>
-                    <a href="#1516-socket" aria-label="15.16 socket">15.16 socket</a></li>
+                    <a href="#socket" aria-label="socket">socket</a></li>
                 <li>
-                    <a href="#1517-socketchannel" aria-label="15.17 socketChannel">15.17 socketChannel</a></li>
+                    <a href="#socketchannel" aria-label="socketChannel">socketChannel</a></li>
                 <li>
-                    <a href="#1518-dns" aria-label="15.18 dns">15.18 dns</a></li></ul>
+                    <a href="#dns" aria-label="dns">dns</a></li></ul>
                 </li>
                 <li>
-                    <a href="#16-skynet-%e7%9a%84%e9%80%9a%e4%bf%a1%e8%b0%83%e8%af%95pack" aria-label="16 skynet 的通信调试pack">16 skynet 的通信调试pack</a>
+                    <a href="#skynet-%e7%9a%84%e9%80%9a%e4%bf%a1%e8%b0%83%e8%af%95pack" aria-label="skynet 的通信调试pack">skynet 的通信调试pack</a></li>
+                <li>
+                    <a href="#skynet-clientsocket-%e5%af%bc%e8%87%b4-ioread-%e6%97%a0%e6%b3%95%e6%ad%a3%e7%a1%ae%e5%b7%a5%e4%bd%9c%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="skynet clientsocket 导致 io.read 无法正确工作的问题">skynet clientsocket 导致 io.read 无法正确工作的问题</a>
                 </li>
             </ul>
         </div>
@@ -430,12 +432,12 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="1-linux编译">1. linux编译<a hidden class="anchor" aria-hidden="true" href="#1-linux编译">#</a></h2>
+        <div class="post-content"><h2 id="linux编译">linux编译<a hidden class="anchor" aria-hidden="true" href="#linux编译">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>make linux MALLOC_STATICLIB<span style="color:#f92672">=</span> SKYNET_DEFINES<span style="color:#f92672">=</span>-DNOUSE_JEMALLOC
-</span></span></code></pre></div><h2 id="2-网络流程图">2. 网络流程图<a hidden class="anchor" aria-hidden="true" href="#2-网络流程图">#</a></h2>
+</span></span></code></pre></div><h2 id="网络流程图">网络流程图<a hidden class="anchor" aria-hidden="true" href="#网络流程图">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228100347880.png" alt="Typoraimage-20220228100347880"  />
 </p>
-<h3 id="21-work线程和次级队列">2.1 work线程和次级队列<a hidden class="anchor" aria-hidden="true" href="#21-work线程和次级队列">#</a></h3>
+<h3 id="work线程和次级队列">work线程和次级队列<a hidden class="anchor" aria-hidden="true" href="#work线程和次级队列">#</a></h3>
 <blockquote>
 <p>每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket在Skynet内部对应一个Lua虚拟机和一个客户特定的消息队列per client mq。当客户特定消息队列中有消息时，该队列会挂载到全局队列global message queue上供工作线程worker Threads进行调度处理。</p>
 <p>一个Socket线程socket thread会轮询所有的Socket，当收到客户端请求后将请求打包成一个消息，发送到该Socket对应的客户特定消息队列per client mq中，然后将该消息队列挂到全局队列队尾。</p>
@@ -443,11 +445,11 @@ var _hmt = _hmt || [];
 <p>skynet中不同服务是利用系统的多线程完全并行的，当你从服务A向服务B和服务C分别各自发送一条消息时，并不能保证先发的消息先被处理。而当你从服务A向服务B依次发送两条消息时，先发的消息一定会被服务B先处理。</p>
 <p>使用Lua实现的服务只是一个内嵌了Lua虚拟机的服务，也遵守上面的规则。如果服务B是一个Lua服务，当服务A向服务B发送两条消息x和y时，Skynet一定保证x先被服务B中的Lua虚拟机接收到，并为消息x生成要给协程X，并运行这个协程。然后才会接收到消息y，并重新生成一个新的协程Y并运行。</p>
 </blockquote>
-<h3 id="22-同步问题">2.2 同步问题<a hidden class="anchor" aria-hidden="true" href="#22-同步问题">#</a></h3>
+<h3 id="同步问题">同步问题<a hidden class="anchor" aria-hidden="true" href="#同步问题">#</a></h3>
 <p>同步也是skynet存在的问题，当一个服务call其他服务时，当前协程会挂起，但是这个服务还可以接受并处理其他消息。如果多个协程改到同一个数据，你不做同步处理就无法确定这个数据会是多少。</p>
 <p>这样的例子特别常见，比如，服务正当处理玩家login请求，刚好遇到call挂起，这时候又有新的请求到来，比如logout，服务就会转去处理logout消息。那玩家究竟是login，还是logout？</p>
 <p>当然，同步问题也容易解决，加多一个state的标识和一个协程列表，操作执行时，将state置doing，其他协程判断state=doing时就将自己加到协程列表，然后 skynet.wait。在操作执行完后，重置state，然后遍历协程列表依次 skynet.wakeup(co) ，最后将协程列表置空。</p>
-<h3 id="23-解释此队列typoraimage-20220228101336039typoraimage-20220228101336039png">2.3 解释此队列<img loading="lazy" src="Typoraimage-20220228101336039.png" alt="Typoraimage-20220228101336039"  />
+<h3 id="解释此队列typoraimage-20220228101336039typoraimage-20220228101336039png">解释此队列<img loading="lazy" src="Typoraimage-20220228101336039.png" alt="Typoraimage-20220228101336039"  />
 </h3>
 <blockquote>
 <p>红黑树上的节点是所有监听的socket
@@ -456,33 +458,43 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 当有读写事件时候，就会往蓝色底队列放入socket也就是塞入就绪队列
 通过epoll_wait()把就绪队列的东西返回出来</p>
 </blockquote>
-<h3 id="24-线程类型">2.4 线程类型<a hidden class="anchor" aria-hidden="true" href="#24-线程类型">#</a></h3>
+<h3 id="线程类型">线程类型<a hidden class="anchor" aria-hidden="true" href="#线程类型">#</a></h3>
 <blockquote>
 <p><code>socket thread </code>: 线程进程消息收发</p>
 <p><code>monitor thread</code> :  线程监控服务是不是陷入死循环，消息是否堵住</p>
 <p><code>time thread </code>: 线程主要用于实现skynet的定时器</p>
 <p><code>work thread</code> 线程 对消息队列进行调度</p>
 </blockquote>
-<h3 id="25-消息流转">2.5 消息流转<a hidden class="anchor" aria-hidden="true" href="#25-消息流转">#</a></h3>
+<h3 id="消息流转">消息流转<a hidden class="anchor" aria-hidden="true" href="#消息流转">#</a></h3>
 <blockquote>
 <ol>
-<li>先从全局队列 <code>pop</code>一个次级队列，然后从次级队列 <code>pop</code>一个消息调用回调函数进行逻辑处理</li>
+<li>先从全局队列<code>pop</code>一个次级队列，然后从次级队列<code>pop</code>一个消息调用回调函数进行逻辑处理</li>
 <li>用完以后如果次级队列不为空或者堵塞，继续把次级队列放入全局队列</li>
 </ol>
 </blockquote>
-<h2 id="3-启动流程">3. 启动流程<a hidden class="anchor" aria-hidden="true" href="#3-启动流程">#</a></h2>
+<h2 id="启动流程">启动流程<a hidden class="anchor" aria-hidden="true" href="#启动流程">#</a></h2>
 <ol>
-<li>加载配置文件</li>
-<li>配置文件存入lua的全局变量env</li>
-<li>创建和启动c服务 <code>logger</code></li>
-<li>启动引导模块并启动第一个lua服务(<code>bootstrap</code>)</li>
-<li>然后在通过 <code>bootstrap</code>配置去启动其他的微服务</li>
+<li>
+<p>加载配置文件</p>
+</li>
+<li>
+<p>配置文件存入lua的全局变量env</p>
+</li>
+<li>
+<p>创建和启动c服务<code>logger</code></p>
+</li>
+<li>
+<p>启动引导模块并启动第一个lua服务(<code>bootstrap</code>)</p>
+</li>
+<li>
+<p>然后在通过<code>bootstrap</code>配置去启动其他的微服务</p>
+</li>
 </ol>
-<h2 id="4-cluster-两条tcp通道总结">4. cluster 两条tcp通道总结<a hidden class="anchor" aria-hidden="true" href="#4-cluster-两条tcp通道总结">#</a></h2>
+<h2 id="cluster-两条tcp通道总结">cluster 两条tcp通道总结<a hidden class="anchor" aria-hidden="true" href="#cluster-两条tcp通道总结">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228113906508.png" alt="Typoraimage-20220228113906508"  />
 </p>
-<p><strong><code>&lt;font color='red'&gt;</code>前提 <code>&lt;/font&gt;</code></strong>
-两端是严格分为请求方和回应方。比如 <code> A---&gt; B</code> ，那么只能是A向B提出请求，B 回应它；如果 <code>B-----&gt;&gt;A</code> 需要由 B 向 A 再建立一条通道。</p>
+<p><strong><font color='red'>前提</font></strong>
+两端是严格分为请求方和回应方。比如<code> A---&gt; B</code> ，那么只能是A向B提出请求，B 回应它；如果 <code>B-----&gt;&gt;A</code> 需要由 B 向 A 再建立一条通道。</p>
 <p>TCP特性使得每个TCP连接可以得到均等的带宽。在多用户环境下，一个用户拥有越多TCP连接，获得的带宽越大</p>
 <blockquote>
 <p>1条连接
@@ -491,35 +503,35 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </blockquote>
 <blockquote>
 <p>2条连接
-**优点：**在前面前提的基础上，有两条连接，上层业务逻辑程序员不需要关心我这个时候是client，还是server，只需要通过 <code>cluster.call</code>，<code>cluster.send</code>，接口直接往里面塞数据就行了，多条连接也便于抢带宽
+**优点：**在前面前提的基础上，有两条连接，上层业务逻辑程序员不需要关心我这个时候是client，还是server，只需要通过<code>cluster.call</code>，<code>cluster.send</code>，接口直接往里面塞数据就行了，多条连接也便于抢带宽
 **缺点:**多了一条连接，对cs结构过来的程序员不太容易理解为什么这么弄有好处，或者是不知道有前面那个前提
 为什么不在开辟更多的连接，因为开辟更多的链接意义不大，如果这台机器上弄了不少进程，连接数和机器的配置也是有关系的，多了，如果用不上也是一种浪费，同时对于业务程序员来说也逻辑混乱，
 因为假如是4条，那么接受方还得区分是那条发过来的数据</p>
 </blockquote>
-<h2 id="5-master--slave-组网过程">5. master / slave 组网过程<a hidden class="anchor" aria-hidden="true" href="#5-master--slave-组网过程">#</a></h2>
+<h2 id="master--slave-组网过程">master / slave 组网过程<a hidden class="anchor" aria-hidden="true" href="#master--slave-组网过程">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228105701937.png" alt="Typoraimage-20220228105701937"  />
 </p>
 <ol>
-<li><code>slave3</code>发送 <code>sync</code>给 <code>master</code>，并启动自己的 <code>listen</code></li>
-<li><code>master</code>收到信息给已经连接上的 <code>slave1</code>，<code>slave2</code>发送 <code>slave3</code>请求连接的情况</li>
-<li><code>master</code>给 <code>slave3</code>发送当前已经连接上的 <code>slave</code>数量，并把 <code>slave3</code>加入节点组</li>
-<li><code>slave1</code>，<code>slave3</code>接收到 <code>master</code>发送的信息后，调用 <code>connect</code>去连接 <code>slave3</code></li>
+<li><code>slave3</code>发送<code>sync</code>给<code>master</code>，并启动自己的<code>listen</code></li>
+<li><code>master</code>收到信息给已经连接上的<code>slave1</code>，<code>slave2</code>发送<code>slave3</code>请求连接的情况</li>
+<li><code>master</code>给<code>slave3</code>发送当前已经连接上的<code>slave</code>数量，并把<code>slave3</code>加入节点组</li>
+<li><code>slave1</code>，<code>slave3</code>接收到<code>master</code>发送的信息后，调用<code>connect</code>去连接<code>slave3</code></li>
 </ol>
-<h2 id="6-master-slave-断网过程">6. master /slave 断网过程<a hidden class="anchor" aria-hidden="true" href="#6-master-slave-断网过程">#</a></h2>
+<h2 id="master-slave-断网过程">master /slave 断网过程<a hidden class="anchor" aria-hidden="true" href="#master-slave-断网过程">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228110016236.png" alt="Typoraimage-20220228110016236"  />
 </p>
 <ol>
-<li><code>master</code>检测到 <code>slave3</code>失去连接，把 <code>slave3</code>连接 <code>fd</code>置成 <code>0</code></li>
-<li><code>master</code>把失去连接的 <code>slave3 id </code>广播给 <code>slave1</code>，<code>slave2</code></li>
-<li><code>slave1</code>，<code>slave2</code>得到 <code>slave3 id</code>之后和 <code>slave3</code>断开连接</li>
+<li><code>master</code>检测到<code>slave3</code>失去连接，把<code>slave3</code>连接<code>fd</code>置成<code>0</code></li>
+<li><code>master</code>把失去连接的<code>slave3 id </code>广播给<code>slave1</code>，<code>slave2</code></li>
+<li><code>slave1</code>，<code>slave2</code>得到<code>slave3 id</code>之后和<code>slave3</code>断开连接</li>
 </ol>
-<h2 id="7-harbor-服务">7. harbor 服务<a hidden class="anchor" aria-hidden="true" href="#7-harbor-服务">#</a></h2>
+<h2 id="harbor-服务">harbor 服务<a hidden class="anchor" aria-hidden="true" href="#harbor-服务">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228110247888.png" alt="Typoraimage-20220228110247888"  />
 </p>
-<p>每个节点都有一个 <code>harborid</code>，在发送消息的时候会把这个 <code>harborid</code>放到消息 <code>id</code>的</p>
+<p>每个节点都有一个<code>harborid</code>，在发送消息的时候会把这个<code>harborid</code>放到消息<code>id</code>的</p>
 <p>高8位，所以通过高8位的对比就知道这个消息是远程消息，还是本地消息，如果是远程消息</p>
-<p>通过 <code>harbor</code>和远程的 <code>harbor</code>建立 <code>tcp</code>连接发送数据过去，如果是本地直接放入本地节点处理逻辑</p>
-<h2 id="8-消息处理方式">8. 消息处理方式<a hidden class="anchor" aria-hidden="true" href="#8-消息处理方式">#</a></h2>
+<p>通过<code>harbor</code>和远程的<code>harbor</code>建立<code>tcp</code>连接发送数据过去，如果是本地直接放入本地节点处理逻辑</p>
+<h2 id="消息处理方式">消息处理方式<a hidden class="anchor" aria-hidden="true" href="#消息处理方式">#</a></h2>
 <ul>
 <li><code>skeynet.send</code> 非堵塞不需要应答</li>
 <li><code>skynet.call</code> 堵塞需要应答</li>
@@ -527,83 +539,83 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 <li><code>skynet.response</code> 请求和相应在不用协程处理</li>
 <li><code>skynet.queue</code> 串行化消息执行</li>
 </ul>
-<h2 id="9-锁">9. 锁<a hidden class="anchor" aria-hidden="true" href="#9-锁">#</a></h2>
+<h2 id="锁">锁<a hidden class="anchor" aria-hidden="true" href="#锁">#</a></h2>
 <h3 id="互斥锁"><code>互斥锁</code><a hidden class="anchor" aria-hidden="true" href="#互斥锁">#</a></h3>
 <p>适用于得到锁以后处理时间&gt;线程切换时间场景 得到锁的线程会被唤醒处理逻辑，没有抢占到锁的线程会进入休眠状态</p>
-<p><code>互斥锁加锁失败</code>以后，会从用户态变成内核态，线程就会释放 <code>CPU</code> 给其他线程,<code>会有两次线程上下文的切换成本</code></p>
+<p><code>互斥锁加锁失败</code>以后，会从用户态变成内核态，线程就会释放<code>CPU</code> 给其他线程,<code>会有两次线程上下文的切换成本</code></p>
 <ol>
-<li>线程加锁失败时，内核会把线程的状态从 <code>「运行」</code>状态设置为 <code>「睡眠」</code>状态，然后把 CPU 切换给其他线程运行</li>
-<li>接着，当锁被释放时，之前 <code>「睡眠」</code>状态的线程会变为「<code>就绪」</code>状态，然后内核会在合适的时间，把 CPU 切换给该线程运行。</li>
+<li>线程加锁失败时，内核会把线程的状态从<code>「运行」</code>状态设置为<code>「睡眠」</code>状态，然后把 CPU 切换给其他线程运行</li>
+<li>接着，当锁被释放时，之前<code>「睡眠」</code>状态的线程会变为「<code>就绪」</code>状态，然后内核会在合适的时间，把 CPU 切换给该线程运行。</li>
 </ol>
 <p>上下文切换的时间，大概在几十纳秒到几微妙之间，所以如果你能确认你被锁住的代码时间很短，那么就不应该用互斥锁，而应该用自旋锁</p>
 <p><img loading="lazy" src="Typoraimage-20220301214016070.png" alt="Typoraimage-20220301214016070"  />
 </p>
-<h3 id="92-自旋锁">9.2 <code>自旋锁</code><a hidden class="anchor" aria-hidden="true" href="#92-自旋锁">#</a></h3>
+<h3 id="自旋锁"><code>自旋锁</code><a hidden class="anchor" aria-hidden="true" href="#自旋锁">#</a></h3>
 <p>没有获取到权限的的线程不会进入休眠状态一直自旋检测是否能获取资源，适用于得到锁以后处理时间&lt; 线程切换时间的场景，得到锁处理逻辑最好别有IO操作或者文件流操作</p>
-<p>自旋锁是通过 <code>cpu</code>的 <code>CAS</code>函数，在用户态就完成了加锁和解锁操作，所以不会有上下文的切换，相比互斥锁来说，会快一点</p>
+<p>自旋锁是通过<code>cpu</code>的<code>CAS</code>函数，在用户态就完成了加锁和解锁操作，所以不会有上下文的切换，相比互斥锁来说，会快一点</p>
 <p>一般加锁的过程有两步</p>
 <ol>
 <li>查看锁的状态，如果锁是空闲的，那么执行第二步</li>
 <li>将锁设置为当前线程持有</li>
 </ol>
-<p><code>自旋锁加锁失败</code>以后线程会 <code>忙等待</code>，直到它能 <code>拿到锁</code></p>
-<h3 id="93-读写锁">9.3 <code>读写锁</code><a hidden class="anchor" aria-hidden="true" href="#93-读写锁">#</a></h3>
-<p>实现在 <code>rwlock.h</code>中</p>
-<p><code>读锁</code>是 <code>共享</code>锁概念，其他锁去读的时候读取的是共享的资源，</p>
-<p><code>写锁</code>是 <code>独占</code>概念，其他锁只能等待抢占到的锁释放资源，适用于读多写少场景</p>
-<p>所以更具场景可以分为 <code>读优先锁</code>和 <code>写优先锁</code></p>
-<h4 id="931-读优先锁">9.3.1 <code>读优先锁</code><a hidden class="anchor" aria-hidden="true" href="#931-读优先锁">#</a></h4>
+<p><code>自旋锁加锁失败</code>以后线程会<code>忙等待</code>，直到它能<code>拿到锁</code></p>
+<h3 id="读写锁"><code>读写锁</code><a hidden class="anchor" aria-hidden="true" href="#读写锁">#</a></h3>
+<p>实现在<code>rwlock.h</code>中</p>
+<p><code>读锁</code>是<code>共享</code>锁概念，其他锁去读的时候读取的是共享的资源，</p>
+<p><code>写锁</code>是<code>独占</code>概念，其他锁只能等待抢占到的锁释放资源，适用于读多写少场景</p>
+<p>所以更具场景可以分为<code>读优先锁</code>和<code>写优先锁</code></p>
+<h4 id="读优先锁"><code>读优先锁</code><a hidden class="anchor" aria-hidden="true" href="#读优先锁">#</a></h4>
 <p><img loading="lazy" src="Typoraimage-20220301220450723.png" alt="Typoraimage-20220301220450723"  />
 </p>
-<p><code>读优先锁</code>对于读线程并发性更好，但是也不是没有问题，我们试想一下，如果一直有 <code>读线程</code>获取锁，那么 <code>写线程</code>就会被饿死</p>
-<h4 id="932-写优先锁">9.3.2 <code>写优先锁</code><a hidden class="anchor" aria-hidden="true" href="#932-写优先锁">#</a></h4>
+<p><code>读优先锁</code>对于读线程并发性更好，但是也不是没有问题，我们试想一下，如果一直有<code>读线程</code>获取锁，那么<code>写线程</code>就会被饿死</p>
+<h4 id="写优先锁"><code>写优先锁</code><a hidden class="anchor" aria-hidden="true" href="#写优先锁">#</a></h4>
 <p><img loading="lazy" src="Typoraimage-20220301220728053.png" alt="Typoraimage-20220301220728053"  />
 </p>
-<p><code>写优先锁</code>可以保证 <code>写线程</code>不被饿死，但是如果一直有 <code>写线程</code>获取，那么 <code>读线程</code>也会被饿死</p>
-<p>所以不管是优先读锁还是写锁，对方都可能被饿死，所以我们不偏袒任何一方，搞个 <code>公平读写锁</code></p>
-<h4 id="933-公平读写锁">9.3.3 <code>公平读写锁</code><a hidden class="anchor" aria-hidden="true" href="#933-公平读写锁">#</a></h4>
+<p><code>写优先锁</code>可以保证<code>写线程</code>不被饿死，但是如果一直有<code>写线程</code>获取，那么<code>读线程</code>也会被饿死</p>
+<p>所以不管是优先读锁还是写锁，对方都可能被饿死，所以我们不偏袒任何一方，搞个<code>公平读写锁</code></p>
+<h4 id="公平读写锁"><code>公平读写锁</code><a hidden class="anchor" aria-hidden="true" href="#公平读写锁">#</a></h4>
 <p>用队列把获取锁的线程排队，不管是写线程还是读线程都按照先进先出的规则加锁，这样读线程一样能并发，也不会出现饥饿现象</p>
-<h3 id="94-乐观锁和悲观锁区别">9.4 <code>乐观锁和悲观锁区别</code><a hidden class="anchor" aria-hidden="true" href="#94-乐观锁和悲观锁区别">#</a></h3>
+<h3 id="乐观锁和悲观锁区别"><code>乐观锁和悲观锁区别</code><a hidden class="anchor" aria-hidden="true" href="#乐观锁和悲观锁区别">#</a></h3>
 <p><code>悲观锁</code>做事比较悲观，他认为多线程同时修改共享资源的概率比较高，所以在访问资源之前都会先上一把锁。</p>
 <p><code>乐观锁</code>正好相反，他认为多线程同时修改共享资源的概率比较低，所以会让先修改完资源，然后在判断是不是有冲突，有没有其他的线程在修改资源，如果有的话就直接放弃本次操作，</p>
-<p>互斥锁、自旋锁、读写锁，都是属于 <code>悲观锁</code></p>
-<h3 id="95-重入锁">9.5 <code>重入锁</code><a hidden class="anchor" aria-hidden="true" href="#95-重入锁">#</a></h3>
+<p>互斥锁、自旋锁、读写锁，都是属于<code>悲观锁</code></p>
+<h3 id="重入锁"><code>重入锁</code><a hidden class="anchor" aria-hidden="true" href="#重入锁">#</a></h3>
 <p><img loading="lazy" src="Typoraimage-20220301223631466.png" alt="Typoraimage-20220301223631466"  />
 </p>
 <p>就是能一条线程上能重复获取的锁，而不导致死锁</p>
-<h2 id="10-cluster-模式">10. cluster 模式<a hidden class="anchor" aria-hidden="true" href="#10-cluster-模式">#</a></h2>
+<h2 id="cluster-模式">cluster 模式<a hidden class="anchor" aria-hidden="true" href="#cluster-模式">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228110904150.png" alt="Typoraimage-20220228110904150"  />
 </p>
 <p><img loading="lazy" src="Typoraimage-20220228111216579.png" alt="Typoraimage-20220228111216579"  />
 </p>
 <p>在每个 <code>skynet</code> 节点（单个进程）内，启动一个叫 <code>clusterd</code> 的服务。所有需要跨进程的消息投递都先把消息投递到这个服务上，再由它来转发到网络。</p>
 <ol>
-<li>首选通过 <code>clustername.lua</code>配置表配置好全部的 <code>cluster</code>节点</li>
-<li>在所有要发现的节点上执行 <code>require&quot;skynet.cluster&quot;</code></li>
-<li>用 <code>cluster.open</code>建立自己的监听好让别的节点和自己建立 <code>tcp</code>通道连接</li>
-<li>通过 <code>cluster.register</code>注册 <code>create</code>的 <code>service</code></li>
-<li>远程节点利用 <code>cluster.query()</code>来得到注册过的节点</li>
-<li>通过 <code>cluster.call</code> <code>skynet.call</code> <code> cluster.send</code> <code>skynet.send</code>来调用远程 <code>function1</code> <code>function2</code>函数</li>
+<li>首选通过<code>clustername.lua</code>配置表配置好全部的<code>cluster</code>节点</li>
+<li>在所有要发现的节点上执行<code>require&quot;skynet.cluster&quot;</code></li>
+<li>用<code>cluster.open</code>建立自己的监听好让别的节点和自己建立<code>tcp</code>通道连接</li>
+<li>通过<code>cluster.register</code>注册<code>create</code>的<code>service</code></li>
+<li>远程节点利用<code>cluster.query()</code>来得到注册过的节点</li>
+<li>通过<code>cluster.call</code> <code>skynet.call</code> <code> cluster.send</code> <code>skynet.send</code>来调用远程<code>function1</code> <code>function2</code>函数</li>
 </ol>
-<h2 id="11--简易的mmo-架构">11  简易的mmo 架构<a hidden class="anchor" aria-hidden="true" href="#11--简易的mmo-架构">#</a></h2>
+<h2 id="简易的mmo-架构">简易的mmo 架构<a hidden class="anchor" aria-hidden="true" href="#简易的mmo-架构">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228111324603.png" alt="Typoraimage-20220228111324603"  />
 </p>
-<h2 id="12-网关服务">12 网关服务<a hidden class="anchor" aria-hidden="true" href="#12-网关服务">#</a></h2>
+<h2 id="网关服务">网关服务<a hidden class="anchor" aria-hidden="true" href="#网关服务">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228111359433.png" alt="Typoraimage-20220228111359433"  />
 </p>
 <ol>
 <li><code>main.lua</code> 建立 <code>watchdog</code></li>
-<li><code>watchdog</code> 通过 <code>skynet.start()</code> 创建 <code>gateService</code></li>
-<li><code>gateService</code>并通过 <code>rpc</code>调用 <code>watchdogService socket.open</code> 函数</li>
+<li><code>watchdog</code> 通过<code>skynet.start()</code> 创建<code>gateService</code></li>
+<li><code>gateService</code>并通过<code>rpc</code>调用 <code>watchdogService socket.open</code> 函数</li>
 <li><code>watchdogService</code> 通过 <code>socket.open</code> 创建 <code>agenService</code></li>
-<li><code>agenService</code> 把 <code>fd forward</code>给 <code>gateService</code></li>
-<li><code>client </code>发送请求给 <code>gateService</code></li>
-<li><code>gateService</code> 把请求重定向给 <code>agentService</code></li>
-<li><code>agentService</code> 把处理结果返回给 <code>client</code></li>
+<li><code>agenService</code> 把<code>fd forward</code>给<code>gateService</code></li>
+<li><code>client </code>发送请求给<code>gateService</code></li>
+<li><code>gateService</code> 把请求重定向给<code>agentService</code></li>
+<li><code>agentService</code> 把处理结果返回给<code>client</code></li>
 </ol>
-<h2 id="13-协程">13 协程<a hidden class="anchor" aria-hidden="true" href="#13-协程">#</a></h2>
-<p>coroutine 实现 详细代码见 <code>lcorolib.c</code></p>
-<h3 id="131-派发消息">13.1 派发消息<a hidden class="anchor" aria-hidden="true" href="#131-派发消息">#</a></h3>
+<h2 id="协程">协程<a hidden class="anchor" aria-hidden="true" href="#协程">#</a></h2>
+<p>coroutine 实现 详细代码见<code>lcorolib.c</code></p>
+<h3 id="派发消息">派发消息<a hidden class="anchor" aria-hidden="true" href="#派发消息">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>function skynet.dispatch_message(...)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>     <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">当前消息处理</span>
@@ -634,7 +646,7 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>    end
 </span></span><span style="display:flex;"><span>    assert(succ, tostring(err))
 </span></span><span style="display:flex;"><span>end
-</span></span></code></pre></div><h3 id="132-处理当前消息">13.2 处理当前消息<a hidden class="anchor" aria-hidden="true" href="#132-处理当前消息">#</a></h3>
+</span></span></code></pre></div><h3 id="处理当前消息">处理当前消息<a hidden class="anchor" aria-hidden="true" href="#处理当前消息">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local function raw_dispatch_message(prototype, msg, sz, session, source)
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">--</span> skynet.PTYPE_RESPONSE <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, read skynet.h
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> prototype <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> then <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">对回应类型的包处理</span>
@@ -696,7 +708,7 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>        end
 </span></span><span style="display:flex;"><span>    end
 </span></span><span style="display:flex;"><span>end
-</span></span></code></pre></div><h3 id="133-创建协程">13.3 创建协程<a hidden class="anchor" aria-hidden="true" href="#133-创建协程">#</a></h3>
+</span></span></code></pre></div><h3 id="创建协程">创建协程<a hidden class="anchor" aria-hidden="true" href="#创建协程">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local function co_create(f)
 </span></span><span style="display:flex;"><span>    local co <span style="color:#f92672">=</span> tremove(coroutine_pool) <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">从协程池中获取协程</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> co <span style="color:#f92672">==</span> nil then <span style="color:#f92672">--</span><span style="color:#960050;background-color:#1e0010">如果没有了</span>
@@ -739,7 +751,7 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>    end
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> co
 </span></span><span style="display:flex;"><span>end
-</span></span></code></pre></div><h3 id="134-协程挂起">13.4 协程挂起<a hidden class="anchor" aria-hidden="true" href="#134-协程挂起">#</a></h3>
+</span></span></code></pre></div><h3 id="协程挂起">协程挂起<a hidden class="anchor" aria-hidden="true" href="#协程挂起">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#f92672">--</span> suspend is local function
 </span></span><span style="display:flex;"><span>function suspend(co, result, command)
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> not result then <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">执行</span>co失败以后的处理
@@ -776,16 +788,16 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>        error(<span style="color:#e6db74">&#34;Unknown command : &#34;</span> .. command .. <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> .. traceback(co))
 </span></span><span style="display:flex;"><span>    end
-</span></span><span style="display:flex;"><span>end		
-</span></span></code></pre></div><h3 id="135-协程销毁">13.5 协程销毁<a hidden class="anchor" aria-hidden="true" href="#135-协程销毁">#</a></h3>
-<p>主要是因为这种基础类型 <code>LUA_TTHREAD</code>来决定怎么销毁</p>
+</span></span><span style="display:flex;"><span>end				
+</span></span></code></pre></div><h3 id="协程销毁">协程销毁<a hidden class="anchor" aria-hidden="true" href="#协程销毁">#</a></h3>
+<p>主要是因为这种基础类型<code>LUA_TTHREAD</code>来决定怎么销毁</p>
 <p><code>LUA_TTHREAD</code> 介绍:</p>
 <ol>
 <li>
-<p>除了主线程以外，其它线程和其它 <code>Lua</code>对象一样都是垃圾回收的对象。等待GC回收，当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾</p>
+<p>除了主线程以外，其它线程和其它<code>Lua</code>对象一样都是垃圾回收的对象。等待GC回收，当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾</p>
 </li>
 <li>
-<p>每次调用 <code>lua_newstate</code>的时候都会创建一个新的 <code>luastate</code>,不同的 <code>luastate</code>完全独立，之间不共享任何数据</p>
+<p>每次调用<code>lua_newstate</code>的时候都会创建一个新的<code>luastate</code>,不同的<code>luastate</code>完全独立，之间不共享任何数据</p>
 </li>
 <li>
 <p>创建一个线程就拥有一个独立的执行栈了，但是它与其线程共用虚拟机的全局状态</p>
@@ -793,14 +805,14 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </p>
 </li>
 <li>
-<p>协程提供了新的 <code>api</code>接口和 <code>lua_resetthread</code>, <code>coroutine.close</code> 会使协程进入死亡状态,并且关闭所有的 <code>close</code>变量</p>
+<p>协程提供了新的<code>api</code>接口和 <code>lua_resetthread</code>, <code>coroutine.close</code> 会使协程进入死亡状态,并且关闭所有的<code>close</code>变量</p>
 </li>
 </ol>
-<h2 id="14-sendcall-流程">14 send.call 流程<a hidden class="anchor" aria-hidden="true" href="#14-sendcall-流程">#</a></h2>
+<h2 id="sendcall-流程">send.call 流程<a hidden class="anchor" aria-hidden="true" href="#sendcall-流程">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220228112317687.png" alt="Typoraimage-20220228112317687"  />
 </p>
-<h2 id="15-api-相关">15 API 相关<a hidden class="anchor" aria-hidden="true" href="#15-api-相关">#</a></h2>
-<h3 id="151-cluster">15.1 cluster<a hidden class="anchor" aria-hidden="true" href="#151-cluster">#</a></h3>
+<h2 id="api-相关">API 相关<a hidden class="anchor" aria-hidden="true" href="#api-相关">#</a></h2>
+<h3 id="cluster">cluster<a hidden class="anchor" aria-hidden="true" href="#cluster">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>cluster.call(node, address, ...) <span style="color:#75715e">--远程调用node中的addr</span>
 </span></span><span style="display:flex;"><span>cluster.send(node, address, ...) <span style="color:#75715e">--send调用远程node的addr</span>
 </span></span><span style="display:flex;"><span>cluster.open(port) <span style="color:#75715e">--本地打开(监听)一个cluster结点，使其能在cluster中的其他结点发现</span>
@@ -809,13 +821,13 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>cluster.snax(node, name, address) <span style="color:#75715e">--生成一个远程的snax服务对象</span>
 </span></span><span style="display:flex;"><span>cluster.register(name, addr) <span style="color:#75715e">--注册一个cluster结点</span>
 </span></span><span style="display:flex;"><span>cluster.query(node, name) <span style="color:#75715e">--查找远程结点中注册过的结点是否存在</span>
-</span></span></code></pre></div><h3 id="152-harbor">15.2 harbor<a hidden class="anchor" aria-hidden="true" href="#152-harbor">#</a></h3>
+</span></span></code></pre></div><h3 id="harbor">harbor<a hidden class="anchor" aria-hidden="true" href="#harbor">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>harbor.link(id) <span style="color:#75715e">--用来监控一个 slave 是否断开。如果 harbor id 对应的 slave 正常，这个 api 将阻塞。当 slave 断开时，会立刻返回。</span>
 </span></span><span style="display:flex;"><span>harbor.linkmaster() <span style="color:#75715e">--用来在 slave 上监控和 master 的连接是否正常。这个 api 多用于异常时的安全退出（因为当 slave 和 master 断开后，没有手段可以恢复）。</span>
 </span></span><span style="display:flex;"><span>harbor.connect(id) <span style="color:#75715e">--和 harbor.link 相反。如果 harbor id 对应的 slave 没有连接，这个 api 将阻塞，一直到它连上来才返回。</span>
 </span></span><span style="display:flex;"><span>harbor.queryname(name) <span style="color:#75715e">--可以用来查询全局名字或本地名字对应的服务地址。它是一个阻塞调用。</span>
 </span></span><span style="display:flex;"><span>harbor.globalname(name, handle) <span style="color:#75715e">--注册一个全局名字。如果 handle 为空，则注册自己。skynet.name 和 skynet.register 是用其实现的。</span>
-</span></span></code></pre></div><h3 id="153-构建服务的一些基础接口">15.3 构建服务的一些基础接口<a hidden class="anchor" aria-hidden="true" href="#153-构建服务的一些基础接口">#</a></h3>
+</span></span></code></pre></div><h3 id="构建服务的一些基础接口">构建服务的一些基础接口<a hidden class="anchor" aria-hidden="true" href="#构建服务的一些基础接口">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.getenv(varName) <span style="color:#75715e">--conf配置信息已经写入到注册表中，通过该函数获取注册表的变量值</span>
 </span></span><span style="display:flex;"><span>skynet.setenv(varName, varValue) <span style="color:#75715e">--设置注册表信息，varValue一般是number或string，但是不能设置已经存在的varname</span>
 </span></span><span style="display:flex;"><span>skynet.error(...) <span style="color:#75715e">--打印函数</span>
@@ -825,20 +837,24 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>skynet.self() <span style="color:#75715e">--获取当前服务的句柄handler</span>
 </span></span><span style="display:flex;"><span>skynet.address(handler) <span style="color:#75715e">--将handle转换成字符串</span>
 </span></span><span style="display:flex;"><span>skynet.abort() <span style="color:#75715e">--退出skynet进程</span>
-</span></span><span style="display:flex;"><span>skynet.kill(address) <span style="color:#75715e">----强制杀死其他服务。可以用来强制关闭别的服务。但强烈不推荐这样做。因为对象会在任意一条消息处理完毕后，毫无征兆的退出。所以推荐的做法是，发送一条消息，让对方自己善后以及调用 skynet.exit 。注：skynet.kill(skynet.self()) 不完全等价于 skynet.exit() ，后者更安全。	</span>
-</span></span></code></pre></div><h3 id="154-普通服务">15.4 普通服务<a hidden class="anchor" aria-hidden="true" href="#154-普通服务">#</a></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.newservice(luaServerName, ...)
-</span></span></code></pre></div><h3 id="155-全局唯一服务">15.5 全局唯一服务<a hidden class="anchor" aria-hidden="true" href="#155-全局唯一服务">#</a></h3>
+</span></span><span style="display:flex;"><span>skynet.kill(address) <span style="color:#75715e">----强制杀死其他服务。可以用来强制关闭别的服务。但强烈不推荐这样做。因为对象会在任意一条消息处理完毕后，毫无征兆的退出。所以推荐的做法是，发送一条消息，让对方自己善后以及调用 skynet.exit 。注：skynet.kill(skynet.self()) 不完全等价于 skynet.exit() ，后者更安全。			</span>
+</span></span></code></pre></div><h3 id="普通服务">普通服务<a hidden class="anchor" aria-hidden="true" href="#普通服务">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.newservice(luaServerName, ...)		
+</span></span></code></pre></div><h3 id="全局唯一服务">全局唯一服务<a hidden class="anchor" aria-hidden="true" href="#全局唯一服务">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.uniqueservice(servicename, ...) <span style="color:#75715e">--当前的skynet节点全局唯一</span>
 </span></span><span style="display:flex;"><span>skynet.uniqueservice(<span style="color:#66d9ef">true</span>, servicename, ...) <span style="color:#75715e">--所有的节点全局唯一</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>skynet.queryservice(servicename, ...) <span style="color:#75715e">--当前的skynet节点中查找</span>
 </span></span><span style="display:flex;"><span>skynet.queryservice(<span style="color:#66d9ef">true</span>, servicename, ...) <span style="color:#75715e">--所有的节点中查找</span>
-</span></span></code></pre></div><h3 id="156-别名">15.6 别名<a hidden class="anchor" aria-hidden="true" href="#156-别名">#</a></h3>
+</span></span></code></pre></div><h3 id="别名">别名<a hidden class="anchor" aria-hidden="true" href="#别名">#</a></h3>
 <p>别名分两种：</p>
 <ol>
-<li>本地别名 代表只能在当前 <code>skynet</code>节点使用，本地别名用 <code>.</code>开头</li>
-<li>全局别名 可以在所有的 <code>skynet</code>中使用 全局别名不能以 <code>.</code> 开头</li>
+<li>
+<p>本地别名 代表只能在当前<code>skynet</code>节点使用，本地别名用 <code>.</code>开头</p>
+</li>
+<li>
+<p>全局别名 可以在所有的<code>skynet</code>中使用 全局别名不能以<code>.</code> 开头</p>
+</li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.register(aliasname) <span style="color:#75715e">--给当前服务定一个别名，可以是全局别名，也可以是本地别名</span>
 </span></span><span style="display:flex;"><span>skynet.name(aliasname, servicehandler) <span style="color:#75715e">--给指定servicehandler的服务定一个别名，可以是全局别名，也可以是本地别名</span>
@@ -851,17 +867,17 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span>skynet.harbor.queryname(aliasname)
 </span></span><span style="display:flex;"><span>skynet.localname(aliasname) <span style="color:#75715e">--查询本地别名为aliasname的服务，返回servicehandler，不存在就返回nil</span>
 </span></span><span style="display:flex;"><span>skynet.kill(handle) <span style="color:#75715e">--杀死带别名服务</span>
-</span></span></code></pre></div><h3 id="157-服务调度">15.7 服务调度<a hidden class="anchor" aria-hidden="true" href="#157-服务调度">#</a></h3>
+</span></span></code></pre></div><h3 id="服务调度">服务调度<a hidden class="anchor" aria-hidden="true" href="#服务调度">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.sleep(time) <span style="color:#75715e">--让当前的任务等待 time * 0.01s 。</span>
 </span></span><span style="display:flex;"><span>skynet.fork(func, ...) <span style="color:#75715e">--启动一个新的任务去执行函数 func , 其实就是开了一个协程，函数调用完成将返回线程句柄 虽然你也可以使用原生的coroutine.create来创建协程，但是会打乱skynet的工作流程</span>
 </span></span><span style="display:flex;"><span>skynet.yield() <span style="color:#75715e">--让出当前的任务执行流程，使本服务内其它任务有机会执行，随后会继续运行。</span>
 </span></span><span style="display:flex;"><span>skynet.wait() <span style="color:#75715e">--让出当前的任务执行流程，直到用 wakeup 唤醒它。</span>
-</span></span><span style="display:flex;"><span>skynet.wakeup(co) <span style="color:#75715e">--唤醒用 wait 或 sleep 处于等待状态的任务。  </span>
+</span></span><span style="display:flex;"><span>skynet.wakeup(co) <span style="color:#75715e">--唤醒用 wait 或 sleep 处于等待状态的任务。    </span>
 </span></span><span style="display:flex;"><span>skynet.timeout(time, func) <span style="color:#75715e">--设定一个定时触发函数 func ，在 time * 0.01s 后触发。</span>
 </span></span><span style="display:flex;"><span>skynet.starttime() <span style="color:#75715e">--返回当前进程的启动 UTC 时间（秒）。</span>
 </span></span><span style="display:flex;"><span>skynet.now() <span style="color:#75715e">--返回当前进程启动后经过的时间 (0.01 秒) 。</span>
-</span></span><span style="display:flex;"><span>skynet.time() <span style="color:#75715e">--通过 starttime 和 now 计算出当前 UTC 时间（秒）。</span>
-</span></span></code></pre></div><h3 id="158-消息类型">15.8 消息类型<a hidden class="anchor" aria-hidden="true" href="#158-消息类型">#</a></h3>
+</span></span><span style="display:flex;"><span>skynet.time() <span style="color:#75715e">--通过 starttime 和 now 计算出当前 UTC 时间（秒）。		</span>
+</span></span></code></pre></div><h3 id="消息类型">消息类型<a hidden class="anchor" aria-hidden="true" href="#消息类型">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_TEXT 0        --文本
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_RESPONSE 1    --表示一个回应包
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_MULTICAST 2   --广播消息
@@ -877,10 +893,10 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_TAG_DONTCOPY 0x10000 --禁止拷贝
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_TAG_ALLOCSESSION 0x20000 --分配新的 session
-</span></span></span></code></pre></div><h3 id="159-打包解包">15.9 打包解包<a hidden class="anchor" aria-hidden="true" href="#159-打包解包">#</a></h3>
+</span></span></span></code></pre></div><h3 id="打包解包">打包解包<a hidden class="anchor" aria-hidden="true" href="#打包解包">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.pack(...) <span style="color:#75715e">--打包</span>
-</span></span><span style="display:flex;"><span>skynet.unpack(msg, sz) <span style="color:#75715e">--解包</span>
-</span></span></code></pre></div><h3 id="1510-发送消息">15.10 发送消息<a hidden class="anchor" aria-hidden="true" href="#1510-发送消息">#</a></h3>
+</span></span><span style="display:flex;"><span>skynet.unpack(msg, sz) <span style="color:#75715e">--解包		</span>
+</span></span></code></pre></div><h3 id="发送消息">发送消息<a hidden class="anchor" aria-hidden="true" href="#发送消息">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span> <span style="color:#75715e">-- 发送无需响应的消息</span>
 </span></span><span style="display:flex;"><span> skynet.send(addr, type, ...)  <span style="color:#75715e">--用 type 类型向 addr 发送未打包的消息。该函数会自动把...参数列表进行打包，默认情况下lua消息使用skynet.pack打包。addr可以是服务句柄也可以是别名。自动打包与解包。）</span>
 </span></span><span style="display:flex;"><span> skynet.rawsend(addr, type, msg, sz)  <span style="color:#75715e">--用 type 类型向 addr 发送一个打包好的消息。addr可以是服务句柄也可以是别名。（需要自己打包与解包）</span>
@@ -889,7 +905,7 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span> <span style="color:#75715e">-- 发送必须响应的消息</span>
 </span></span><span style="display:flex;"><span>skynet.call(addr, type, ...)  <span style="color:#75715e">--用默认函数打包消息，向addr发送type类型的消息并等待返回响应，并对回应信息进行解包。（自动打包与解包。）</span>
 </span></span><span style="display:flex;"><span>skynet.rawcall(addr, type, msg, sz) <span style="color:#75715e">--直接向addr发送type类型的msg,sz并等待返回响应，不对回应信息解包。（需要自己打包与解包）</span>
-</span></span></code></pre></div><h3 id="1511-响应消息">15.11 响应消息<a hidden class="anchor" aria-hidden="true" href="#1511-响应消息">#</a></h3>
+</span></span></code></pre></div><h3 id="响应消息">响应消息<a hidden class="anchor" aria-hidden="true" href="#响应消息">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">-- 同一个协成处理</span>
 </span></span><span style="display:flex;"><span>skynet.ret() <span style="color:#75715e">--目标服务消息处理后需要通过该函数将结果返回</span>
 </span></span><span style="display:flex;"><span>skynet.retpack(...) <span style="color:#75715e">--将消息用skynet.pack 打包，并调用 ret 回应。</span>
@@ -897,17 +913,17 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span><span style="color:#75715e">--不在一个协成处理</span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> response <span style="color:#f92672">=</span> skynet.response(pack)<span style="color:#75715e">--参数pack指定应答打包函数，不填默认使用skynet.pack, 必须根据接收到消息的打包函数一致 返回值是一个闭包函数</span>
 </span></span><span style="display:flex;"><span>response(ok, ...) <span style="color:#75715e">--参数ok的值可以是 &#34;test&#34;、true、false，为&#34;test&#34;时表示检查接收响应的服务是否存在，为true时表示发送应答PTYPE_RESPONSE，为false时表示发送PTYPE_ERROR错误消息。</span>
-</span></span></code></pre></div><h3 id="1512-消息冲入时序问题">15.12 消息冲入时序问题<a hidden class="anchor" aria-hidden="true" href="#1512-消息冲入时序问题">#</a></h3>
+</span></span></code></pre></div><h3 id="消息冲入时序问题">消息冲入时序问题<a hidden class="anchor" aria-hidden="true" href="#消息冲入时序问题">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.queue() <span style="color:#75715e">--帮助你回避这些服务重入或者伪并发引起的复杂性,但是明显降低了服务的并发处理能力，所以使用执行队列的时候尽量缩小临界区的颗粒度大小</span>
-</span></span></code></pre></div><h3 id="1513-协议转换">15.13 协议转换<a hidden class="anchor" aria-hidden="true" href="#1513-协议转换">#</a></h3>
+</span></span></code></pre></div><h3 id="协议转换">协议转换<a hidden class="anchor" aria-hidden="true" href="#协议转换">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.forward_type() <span style="color:#75715e">--需要提供一张消息转换映射表forward_map, 其他的方法与skynet.start一样</span>
-</span></span></code></pre></div><h3 id="1514-伪造消息">15.14 伪造消息<a hidden class="anchor" aria-hidden="true" href="#1514-伪造消息">#</a></h3>
+</span></span></code></pre></div><h3 id="伪造消息">伪造消息<a hidden class="anchor" aria-hidden="true" href="#伪造消息">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.redirect(dest,source,typename, session, msg, sz) <span style="color:#75715e">--使用source服务地址，发送typename类型的消息给dest服务，不需要接收响应，（source，dest只能是服务ID）msg sz一般使用skynet.pack打包生成</span>
-</span></span></code></pre></div><h3 id="1515-组播">15.15 组播<a hidden class="anchor" aria-hidden="true" href="#1515-组播">#</a></h3>
+</span></span></code></pre></div><h3 id="组播">组播<a hidden class="anchor" aria-hidden="true" href="#组播">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.multicast <span style="color:#75715e">-- 当组播的数据量较大时候可以节省内部的带宽</span>
-</span></span></code></pre></div><h3 id="1516-socket">15.16 socket<a hidden class="anchor" aria-hidden="true" href="#1516-socket">#</a></h3>
+</span></span></code></pre></div><h3 id="socket">socket<a hidden class="anchor" aria-hidden="true" href="#socket">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">--建立一个 TCP 连接。返回一个数字 id 。</span>
-</span></span><span style="display:flex;"><span>socket.open(address, port)  
+</span></span><span style="display:flex;"><span>socket.open(address, port)      
 </span></span><span style="display:flex;"><span><span style="color:#75715e">--关闭一个连接，这个 API 有可能阻塞住执行流。因为如果有其它 coroutine</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">--正在阻塞读这个 id 对应的连接，会先驱使读操作结束，close 操作才返回。</span>
 </span></span><span style="display:flex;"><span>socket.close(id)
@@ -963,11 +979,11 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">    如果你不设回调，那么将每增加 64K 利用 skynet.error 写一行错误信息。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">--]]</span>
 </span></span><span style="display:flex;"><span>socket.warning(id, callback)
-</span></span></code></pre></div><h3 id="1517-socketchannel">15.17 socketChannel<a hidden class="anchor" aria-hidden="true" href="#1517-socketchannel">#</a></h3>
+</span></span></code></pre></div><h3 id="socketchannel">socketChannel<a hidden class="anchor" aria-hidden="true" href="#socketchannel">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">用来支持双向传输，异步非堵塞处理数据</span>
-</span></span></code></pre></div><h3 id="1518-dns">15.18 dns<a hidden class="anchor" aria-hidden="true" href="#1518-dns">#</a></h3>
+</span></span></code></pre></div><h3 id="dns">dns<a hidden class="anchor" aria-hidden="true" href="#dns">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.dns <span style="color:#75715e">--调用了系统 api getaddrinfo ，有可能阻塞住整个 socket 线程 所以skynet封装了这个接口来解决dns查询时候造成的线程堵塞问题</span>
-</span></span></code></pre></div><h2 id="16-skynet-的通信调试pack">16 skynet 的通信调试pack<a hidden class="anchor" aria-hidden="true" href="#16-skynet-的通信调试pack">#</a></h2>
+</span></span></code></pre></div><h2 id="skynet-的通信调试pack">skynet 的通信调试pack<a hidden class="anchor" aria-hidden="true" href="#skynet-的通信调试pack">#</a></h2>
 <ol>
 <li>
 <p>客户端按大小端打包成二进制</p>
@@ -994,7 +1010,9 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </span></span><span style="display:flex;"><span> <span style="color:#960050;background-color:#1e0010">接收到的数据需要自行去除前面的</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">个字节的数据（</span>string.pack产生的<span style="color:#960050;background-color:#1e0010">）。</span>
 </span></span></code></pre></div></li>
 </ol>
-
+<h2 id="skynet-clientsocket-导致-ioread-无法正确工作的问题">skynet clientsocket 导致 io.read 无法正确工作的问题<a hidden class="anchor" aria-hidden="true" href="#skynet-clientsocket-导致-ioread-无法正确工作的问题">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">blog</span><span style="color:#f92672">.</span><span style="color:#a6e22e">csdn</span><span style="color:#f92672">.</span><span style="color:#a6e22e">net</span><span style="color:#f92672">/</span><span style="color:#a6e22e">gneveek</span><span style="color:#f92672">/</span><span style="color:#a6e22e">article</span><span style="color:#f92672">/</span><span style="color:#a6e22e">details</span><span style="color:#f92672">/</span><span style="color:#ae81ff">78940693</span>
+</span></span></code></pre></div>
 
         </div>
         <div class="post-reward">
@@ -1028,15 +1046,15 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/blog/luayuanmashagnxi/">
+  <a class="prev" href="https://frog-game.github.io/posts/blog/ringbuff/">
     <span class="title">« 上一页</span>
     <br>
-    <span>lua源码赏析笔记</span>
+    <span>环形buff</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/zabbix-mysql8.0/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/vscode-lua-chajian/">
     <span class="title">下一页 »</span>
     <br>
-    <span>zabbix游戏监控日志系统部署</span>
+    <span>微服务lua调试器</span>
   </a>
 </nav>
 

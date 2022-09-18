@@ -7,11 +7,11 @@
 <meta name="robots" content="index, follow">
 <title>微服务lua调试器 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="1. luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟">
+<meta name="description" content="luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/vscode-lua-chajian/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d8a1c95b1eb964516f02dd7068e2fd42017af5baba0751df317cf8a081744b14.css" integrity="sha256-2KHJWx65ZFFvAt1waOL9QgF69bq6B1HfMXz4oIF0SxQ=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.905fe131597072fcbc87e1225756e27ba28555e0f5e049157c9a9ae308ef3b2b.css" integrity="sha256-kF/hMVlwcvy8h&#43;EiV1bie6KFVeD14EkVfJqa4wjvOys=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -68,15 +68,15 @@ var _hmt = _hmt || [];
 })();
 </script>
 <meta property="og:title" content="微服务lua调试器" />
-<meta property="og:description" content="1. luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟" />
+<meta property="og:description" content="luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/vscode-lua-chajian/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2022-09-13T01:30:29&#43;08:00" />
+<meta property="article:published_time" content="2022-09-14T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-09-14T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="微服务lua调试器"/>
-<meta name="twitter:description" content="1. luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟"/>
+<meta name="twitter:description" content="luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机"/>
 
 
 <script type="application/ld+json">
@@ -111,15 +111,15 @@ var _hmt = _hmt || [];
   "@type": "BlogPosting",
   "headline": "微服务lua调试器",
   "name": "微服务lua调试器",
-  "description": "1. luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟",
+  "description": "luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机",
   "keywords": [
     ""
   ],
-  "articleBody": "1. luadebug 实现多虚拟机原理 先从luahook原理说起\n在lua.h 当中我们有 lua_sethook函数来给们设置钩子\nLUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机的地址\nlua_Hook func:我们设定的钩子回调函数\nmask: 状态掩码可以组合操作\nLUA_MASKCALL : 调用函数时回调 LUA_MASKRET :函数返回时回调 LUA_MASKLINE :执行一行代码时候回调 LUA_MASKCOUNT :每执行count条指令时候回调 count：只有掩码包含LUA_MASKCOUNT 这个状态时候才有效果，代表执行count次才会回调一次钩子函数\nLUA_MASKCALL 会在调用函数时回调 我们在追踪lua源码，可以发现在每次调用函数之前都回**ldo.c 去调用 luaD_precall 函数并检测是否设置了掩码标识，如果设置了 LUA_MASKCALL **掩码状态，就会调用 luaD_hook 这个回调函数\nLUA_MASKRET :会在函数返回时回调 我们在追踪lua源码，可以发现在每次函数返回时候都会去**ldo.c ** 里面调用**luaD_poscall ** 里面的**rethook 函数 如果设置了就会调用 LUA_MASKRET **掩码状态 ， 就会调用 luaD_hook 这个回调函数\nLUA_MASKLINE :执行一行代码时候回调 我们在追踪lua源码，可以发现在每次执行一行指令都会去**ldebug.c ** 去调用 luaG_traceexec 函数 如果设置了**LUA_MASKLINE ** 掩码状态 那么久会调用**luaD_hook **函数\nLUA_MASKCOUNT :执行count条指令时候回调 我们在追踪lua源码，可以发现每次执行一行指令都会去**ldebug.c ** 去调用 luaG_traceexec 函数 这个函数需要和**count 参数配合才能发挥效果，可以看到如果 L-\u003ehookcount 在一次次递减之后等于 0 了就会调用 luaD_hook **函数\n综合上述我们看到最终都会调用到**luaD_hook 函数，仔细看源码观察可以看到在经过一系列判断以后会回调我们设置好的 L-\u003ehook **函数\n回到我们第**2 **个参数\n/* Functions to be called by the debugger in specific events */ typedef void(*lua_Hook) (lua_State *L, lua_Debug *ar); 可以看到返回了一个**lua_Debug **结构体 我们进入这个结构体\n这里为了兼容每个不同的lua版本，弄了个**union 联合体 写在了 lua_api_loder.h **里面\n我们进入 **lua_Debug_54 **结构体里面\n可以发现这里有许多的信息\n结构变量 解释 event Event codes 事件类型标识如下几种 [LUA_HOOKCALL,LUA_HOOKRET,LUA_HOOKLINE,LUA_HOOKCOUNT,LUA_HOOKTAILCALL] name 函数名字 namewhat 作用域的含义，比如是global，local，method，field 或者\"\" ““代表没有找到这个函数 what 函数的类型 一般为\"lua” source 函数定义的位置，如果是loadstring载入的，source是string 如果是在一个文件中source标识带有前缀的@文件名字 srclen source的长度 currentline 当前函数所在的行 linedefined 函数定义的首行地址 lastlinedefined 函数定义的最后一行的行号 nups 上值的个数 nparams 参数数量 isvararg 是不是可变参数 istailcall 是不是最后一个函数是一个函数调用 形如**function f(x) return g(x) end ** ftransfer 与第一个转移值的偏移量 主要用call/return方式 ntransfer 传输的值 主要用call/return方式 short_src source 的简短表示 i_ci 记录一个函数调用涉及到的栈引用，lua在调用函数的时候会把每个callinfo用双向链表串起来 综合上述原理我们可以看到每一个lua_sethook 被调用时候通过hook返回的信息有这么多，而且每一个lua_state 都是沙盒隔离，所以我们可以利用沙盒原理，通过在进程中创建一个debuggerManager的管理器把所有生成的lua_state的指针保存在这个管理器里面，这样在每次lua调用pcall执行脚本的时候都会去触发自己相对应的lua_sethook设置的hook函数，在里面获取当时触发的时候的上表返回的信息，然后给客服端显示\nluadebug 实现修改变量值 首先需要创建一个protobuf的cmd命令\nMessageCMD::SetVariableReq //修改变量\n客服端设置变量逻辑\n服务器接收到请求逻辑核心逻辑如下\n第一步: 将此lua定义check 用luaL_dostring 进行load执行\nconst char* loadstr = \"function dlua_setvarvalue (name, frame, val, level)\\n\" \" local found\\n\" \"\\n\" \" -- try local variables\\n\" \" local i = 1\\n\" \" while true do\\n\" \" local n, v = debug.getlocal(frame + level, i)\\n\" \" if not n then\\n\" \" break\\n\" \" end\\n\" \" if n == name then\\n\" \" debug.setlocal(frame + level, i, val)\\n\" \" found = true\\n\" \" end\\n\" \" i = i + 1\\n\" \" end\\n\" \" if found then\\n\" \" return true\\n\" \" end\\n\" \"\\n\" \" -- try upvalues\\n\" \" local func = debug.getinfo(frame + level).func\\n\" \" i = 1\\n\" \" while true do\\n\" \" local n, v = debug.getupvalue(func, i)\\n\" \" if not n then\\n\" \" break\\n\" \" end\\n\" \" if n == name then\\n\" \" debug.setupvalue(func, i, val)\\n\" \" return true\\n\" \" end\\n\" \" i = i + 1\\n\" \" end\\n\" \"\\n\" \" return false\\n\" \"end\" \"\"; luaL_dostring(L, loadstr); 如果是set a=1类型\nstd::string loadstr = \"if not dlua_setvarvalue(\\\"\" + val + \"\\\",\" + std::to_string(currentFrameId) + \",\" + input + \", 3\" + \") then\\n\"; loadstr += val + \"=\" + input + \"\\n\"; loadstr += \"end\\n\"; int status = luaL_dostring(L, loadstr.c_str()); if (status != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } 如果是set [t1] t1.a=1 类型\nstd::string loadstr = \"function dlua_set_val(\"; for (auto it = inputval.begin(); it != inputval.end();) { loadstr = loadstr + it-\u003efirst; it++; if (it != inputval.end()) { loadstr = loadstr + \",\"; } } loadstr = loadstr + \")\\n\" + val + \"=\" + input + \"\\n\"; loadstr = loadstr + \"return \"; for (auto it = inputval.begin(); it != inputval.end();) { loadstr = loadstr + it-\u003efirst; it++; if (it != inputval.end()) { loadstr = loadstr + \",\"; } } loadstr = loadstr + \"\\n end\\n\"; int status = luaL_dostring(L, loadstr.c_str()); if (status != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } lua_settop(L, oldn); lua_getglobal(L, \"dlua_set_val\"); if (!lua_isfunction(L, -1)) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, \"get dlua_set_val fail\"); return -1; } for (auto it = inputval.begin(); it != inputval.end(); it++) { if (!FindAndPushVal(L, it-\u003efirst, currentFrameId)) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, (std::string(\"can not find val \") + it-\u003efirst).c_str()); return -1; } } int ret = lua_pcall(L, inputval.size(), inputval.size(), 0); if (ret != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } int index = -inputval.size(); for (auto it = inputval.begin(); it != inputval.end(); it++) { std::string name = it-\u003efirst; int curoldn = lua_gettop(L); lua_getglobal(L, \"dlua_setvarvalue\"); if (!lua_isfunction(L, -1)) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, \"get dlua_setvarvalue fail\"); return -1; } lua_pushstring(L, name.c_str()); lua_pushinteger(L,currentFrameId); lua_pushnil(L); lua_pushinteger(L, 2); lua_copy(L, index - 5, -2); ret = lua_pcall(L, 4, 1, 0); if (ret != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } bool suc = lua_toboolean(L, -1); if (!suc) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, (std::string(\"dlua_setvarvalue set \") + name + \" fail\").c_str()); return -1; } lua_settop(L, curoldn); index++; } 图片效果 3. 真机调试 adb forward 原理 要想知道怎么真机调试我们首先应该知道adb调试的原理\n比如我现在调试安卓时候的使用的命令: adb forward tcp:8888 tcp:9966\n通过此端口转发我们就可以做到吧电脑tcp端口的消息转发到真机里面tcp9966端口上\n4. 条件断点 条件断点分为\n1：表达式 2：命中次数\n3：日志断点\n首先需要在此结构中定义3个变量用于处理3中类型，然后通过vscode设置条件端点类型\n部分核心代码\nbool Debugger::ProcessBreakPoint(std::shared_ptr\u003cBreakPoint\u003e bp) { if (!bp-\u003econdition.empty()) { auto ctx = std::make_shared\u003cEvalContext\u003e(); ctx-\u003eexpr = bp-\u003econdition; ctx-\u003edepth = 1; bool suc = DoEval(ctx); return suc \u0026\u0026 ctx-\u003eresult-\u003evalueType == LUA_TBOOLEAN \u0026\u0026 ctx-\u003eresult-\u003evalue == \"true\"; } if (!bp-\u003elogMessage.empty()) { DoLogMessage(bp); return false; } if (!bp-\u003ehitCondition.empty()) { bp-\u003ehitCount++; return DoHitCondition(bp); } return true; } bool Debugger::DoEval(std::shared_ptr\u003cEvalContext\u003e evalContext) { if (!currentL || !evalContext) { return false; } auto L = currentL; //auto* const L = L; // From \"cacheId\" if (evalContext-\u003ecacheId \u003e 0) { lua_getfield(L, LUA_REGISTRYINDEX, CACHE_TABLE_NAME); // 1: cacheTable|nil if (lua_type(L, -1) == LUA_TTABLE) { lua_getfield(L, -1, std::to_string(evalContext-\u003ecacheId).c_str()); // 1: cacheTable, 2: value GetVariable(evalContext-\u003eresult, -1, evalContext-\u003edepth); lua_pop(L, 2); return true; } lua_pop(L, 1); } // LOAD AS \"return expr\" std::string statement = \"return \"; statement.append(evalContext-\u003eexpr); int r = luaL_loadstring(L, statement.c_str()); if (r == LUA_ERRSYNTAX) { evalContext-\u003eerror = \"syntax err: \"; evalContext-\u003eerror.append(evalContext-\u003eexpr); return false; } // call const int fIdx = lua_gettop(L); // create env if (!CreateEnv(evalContext-\u003estackLevel)) return false; // setup env #ifndef EMMY_USE_LUA_SOURCE lua_setfenv(L, fIdx); #elif defined(EMMY_LUA_51) || defined(EMMY_LUA_JIT) lua_setfenv(L, fIdx); #else //52 \u0026 53 lua_setupvalue(L, fIdx, 1); #endif assert(lua_gettop(L) == fIdx); // call function() return expr end r = lua_pcall(L, 0, 1, 0); if (r == LUA_OK) { evalContext-\u003eresult-\u003ename = evalContext-\u003eexpr; GetVariable(evalContext-\u003eresult, -1, evalContext-\u003edepth); lua_pop(L, 1); return true; } if (r == LUA_ERRRUN) { evalContext-\u003eerror = lua_tostring(L, -1); } return false; } void Debugger::DoLogMessage(std::shared_ptr\u003cBreakPoint\u003e bp) { std::string\u0026 logMessage = bp-\u003elogMessage; // 为什么不用regex? // 因为gcc 4.8 regex还是空实现 // 而且后续版本的gcc中正则表达式行为似乎也不太正常 enum class ParseState { Normal, LeftBrace, RightBrace } state = ParseState::Normal; std::vector\u003cLogMessageReplaceExpress\u003e replaceExpresses; std::size_t leftBraceBegin = 0; std::size_t rightBraceBegin = 0; // 如果在表达式中出现左大括号 std::size_t exprLeftCount = 0; for (std::size_t index = 0; index != logMessage.size(); index++) { char ch = logMessage[index]; switch (state) { case ParseState::Normal: { if (ch == '{') { state = ParseState::LeftBrace; leftBraceBegin = index; exprLeftCount = 0; } else if (ch == '}') { state = ParseState::RightBrace; rightBraceBegin = index; } break; } case ParseState::LeftBrace: { if (ch == '{') { // 认为是左双大括号转义为可见的'{' if (index == leftBraceBegin + 1) { replaceExpresses.emplace_back(\"{\", leftBraceBegin, index, false); state = ParseState::Normal; } else { exprLeftCount++; } } else if (ch == '}') { // 认为是表达式内的大括号 if (exprLeftCount \u003e 0) { exprLeftCount--; continue; } replaceExpresses.emplace_back(logMessage.substr(leftBraceBegin + 1, index - leftBraceBegin - 1), leftBraceBegin, index, true); state = ParseState::Normal; } break; } case ParseState::RightBrace: { if (ch == '}' \u0026\u0026 (index == rightBraceBegin + 1)) { replaceExpresses.emplace_back(\"}\", rightBraceBegin, index, false); } else { //认为左右大括号失配，之前的不做处理，退格一位回去重新判断 index--; } state = ParseState::Normal; break; } } } std::stringstream message; if (replaceExpresses.empty()) { message \u003c\u003c logMessage; } else { // 拼接字符串 // 怎么replace 函数都没有啊 std::size_t start = 0; for (std::size_t index = 0; index != replaceExpresses.size(); index++) { auto\u0026 replaceExpress = replaceExpresses[index]; if (start \u003c replaceExpress.StartIndex) { auto fragment = logMessage.substr(start, replaceExpress.StartIndex - start); message \u003c\u003c fragment; start = replaceExpress.StartIndex; } if (replaceExpress.NeedEval) { auto ctx = std::make_shared\u003cEvalContext\u003e(); ctx-\u003eexpr = std::move(replaceExpress.Expr); ctx-\u003edepth = 1; bool succeed = DoEval(ctx); if (succeed) { message \u003c\u003c ctx-\u003eresult-\u003evalue; } else { message \u003c\u003c ctx-\u003eerror; } } else { message \u003c\u003c replaceExpress.Expr; } start = replaceExpress.EndIndex + 1; } if (start \u003c logMessage.size()) { auto fragment = logMessage.substr(start, logMessage.size() - start); message \u003c\u003c fragment; } } std::string baseName = BaseName(bp-\u003efile); EmmyFacade::Get().SendLog(LogType::Info, \"[%s:%d] %s\", baseName.c_str(), bp-\u003eline, message.str().c_str()); } bool Debugger::DoHitCondition(std::shared_ptr\u003cBreakPoint\u003e bp) { auto\u0026 hitCondition = bp-\u003ehitCondition; enum class ParseState { ExpectedOperator, // 大于 Gt, // 小于 Le, // 单等号 Eq, ExpectedHitTimes, ParseDigit, ParseFinish } state = ParseState::ExpectedOperator; enum class Operator { // 大于 Gt, // 小于 Le, // 小于等于 LeEq, // 大于等于 GtEq, // 双等号 EqEq, } evalOperator = Operator::EqEq; unsigned long long hitTimes = 0; for (std::size_t index = 0; index != hitCondition.size(); index++) { char ch = hitCondition[index]; switch (state) { case ParseState::ExpectedOperator: { if (ch == ' ') { continue; } if (ch == '=') { state = ParseState::Eq; } else if (ch == '\u003c') { state = ParseState::Le; } else if (ch == '\u003e') { state = ParseState::Gt; } else { return false; } break; } case ParseState::Eq: { if (ch == '=') { evalOperator = Operator::EqEq; state = ParseState::ExpectedHitTimes; } else { return false; } break; } case ParseState::Gt: { if (ch == '=') { evalOperator = Operator::GtEq; state = ParseState::ExpectedHitTimes; } else if (isdigit(ch)) { evalOperator = Operator::Gt; hitTimes = ch - '0'; state = ParseState::ParseDigit; } else if (ch == ' ') { evalOperator = Operator::Gt; state = ParseState::ExpectedHitTimes; } else { return false; } break; } case ParseState::Le: { if (ch == '=') { evalOperator = Operator::LeEq; state = ParseState::ExpectedHitTimes; } else if (isdigit(ch)) { evalOperator = Operator::Le; hitTimes = ch - '0'; state = ParseState::ParseDigit; } else if (ch == ' ') { evalOperator = Operator::Gt; state = ParseState::ExpectedHitTimes; } else { return false; } break; } case ParseState::ExpectedHitTimes: { if (ch == ' ') { continue; } else if (isdigit(ch)) { hitTimes = ch - '0'; state = ParseState::ParseDigit; } else { return false; } break; } case ParseState::ParseDigit: { if (isdigit(ch)) { hitTimes = hitTimes * 10 + (ch - '0'); } else if (ch == ' ') { state = ParseState::ParseFinish; } else { return false; } break; } case ParseState::ParseFinish: { if (ch == ' ') { break; } else { return false; } break; } } } switch (evalOperator) { case Operator::EqEq: { return bp-\u003ehitCount == hitTimes; } case Operator::Gt: { return bp-\u003ehitCount \u003e hitTimes; } case Operator::GtEq: { return bp-\u003ehitCount \u003e= hitTimes; } case Operator::Le: { return bp-\u003ehitCount \u003c hitTimes; } case Operator::LeEq: { return bp-\u003ehitCount \u003c= hitTimes; } } return false; } 4.1. 视频效果展示 4.1.1. 多虚拟机测试 4.1.2. linux测试 4.1.3. 真机测试 4.1.4. 插件下载地址 针对skynet这种微服器框架和自己从 0开发的frog微服务框架编写的lua调试器，感兴趣的可以去vscode商店进行\n下载使用，有任何问题可以加QQ私聊\n",
-  "wordCount" : "3702",
+  "articleBody": "luadebug 实现多虚拟机原理 先从luahook原理说起\n在lua.h 当中我们有 lua_sethook函数来给们设置钩子\nLUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机的地址\nlua_Hook func:我们设定的钩子回调函数\nmask: 状态掩码可以组合操作\nLUA_MASKCALL : 调用函数时回调 LUA_MASKRET :函数返回时回调 LUA_MASKLINE :执行一行代码时候回调 LUA_MASKCOUNT :每执行count条指令时候回调 count：只有掩码包含LUA_MASKCOUNT 这个状态时候才有效果，代表执行count次才会回调一次钩子函数\nLUA_MASKCALL 会在调用函数时回调 我们在追踪lua源码，可以发现在每次调用函数之前都回**ldo.c 去调用 luaD_precall 函数并检测是否设置了掩码标识，如果设置了 LUA_MASKCALL **掩码状态，就会调用 luaD_hook 这个回调函数\nLUA_MASKRET :会在函数返回时回调 ** 我们在追踪lua源码，可以发现在每次函数返回时候都会去ldo.c ** 里面调用luaD_poscall ** 里面的rethook 函数 如果设置了就会调用 LUA_MASKRET **掩码状态 ， 就会调用 luaD_hook 这个回调函数\nLUA_MASKLINE :执行一行代码时候回调 ** 我们在追踪lua源码，可以发现在每次执行一行指令都会去ldebug.c ** 去调用 luaG_traceexec 函数 如果设置了LUA_MASKLINE ** 掩码状态 那么久会调用luaD_hook **函数\nLUA_MASKCOUNT :执行count条指令时候回调 ** 我们在追踪lua源码，可以发现每次执行一行指令都会去ldebug.c ** 去调用 luaG_traceexec 函数 这个函数需要和**count 参数配合才能发挥效果，可以看到如果 L-\u003ehookcount 在一次次递减之后等于 0 了就会调用 luaD_hook **函数\n综合上述我们看到最终都会调用到**luaD_hook 函数，仔细看源码观察可以看到在经过一系列判断以后会回调我们设置好的 L-\u003ehook **函数\n回到我们第**2 **个参数\n/* Functions to be called by the debugger in specific events */ typedef void(*lua_Hook) (lua_State *L, lua_Debug *ar); 可以看到返回了一个**lua_Debug **结构体 我们进入这个结构体\n这里为了兼容每个不同的lua版本，弄了个**union 联合体 写在了 lua_api_loder.h **里面\n我们进入 **lua_Debug_54 **结构体里面\n可以发现这里有许多的信息\n结构变量 解释 event Event codes 事件类型标识如下几种 [LUA_HOOKCALL,LUA_HOOKRET,LUA_HOOKLINE,LUA_HOOKCOUNT,LUA_HOOKTAILCALL] name 函数名字 namewhat 作用域的含义，比如是global，local，method，field 或者\"\" ““代表没有找到这个函数 what 函数的类型 一般为\"lua” source 函数定义的位置，如果是loadstring载入的，source是string 如果是在一个文件中source标识带有前缀的@文件名字 srclen source的长度 currentline 当前函数所在的行 linedefined 函数定义的首行地址 lastlinedefined 函数定义的最后一行的行号 nups 上值的个数 nparams 参数数量 isvararg 是不是可变参数 istailcall 是不是最后一个函数是一个函数调用 形如**function f(x) return g(x) end ** ftransfer 与第一个转移值的偏移量 主要用call/return方式 ntransfer 传输的值 主要用call/return方式 short_src source 的简短表示 i_ci 记录一个函数调用涉及到的栈引用，lua在调用函数的时候会把每个callinfo用双向链表串起来 综合上述原理我们可以看到每一个lua_sethook 被调用时候通过hook返回的信息有这么多，而且每一个lua_state 都是沙盒隔离，所以我们可以利用沙盒原理，通过在进程中创建一个debuggerManager的管理器把所有生成的lua_state的指针保存在这个管理器里面，这样在每次lua调用pcall执行脚本的时候都会去触发自己相对应的lua_sethook设置的hook函数，在里面获取当时触发的时候的上表返回的信息，然后给客服端显示\nluadebug 实现修改变量值 首先需要创建一个protobuf的cmd命令\n**MessageCMD::SetVariableReq ** //修改变量\n客服端设置变量逻辑\n服务器接收到请求逻辑核心逻辑如下\n第一步: 将此lua定义check 用luaL_dostring 进行load执行\nconst char* loadstr = \"function dlua_setvarvalue (name, frame, val, level)\\n\" \" local found\\n\" \"\\n\" \" -- try local variables\\n\" \" local i = 1\\n\" \" while true do\\n\" \" local n, v = debug.getlocal(frame + level, i)\\n\" \" if not n then\\n\" \" break\\n\" \" end\\n\" \" if n == name then\\n\" \" debug.setlocal(frame + level, i, val)\\n\" \" found = true\\n\" \" end\\n\" \" i = i + 1\\n\" \" end\\n\" \" if found then\\n\" \" return true\\n\" \" end\\n\" \"\\n\" \" -- try upvalues\\n\" \" local func = debug.getinfo(frame + level).func\\n\" \" i = 1\\n\" \" while true do\\n\" \" local n, v = debug.getupvalue(func, i)\\n\" \" if not n then\\n\" \" break\\n\" \" end\\n\" \" if n == name then\\n\" \" debug.setupvalue(func, i, val)\\n\" \" return true\\n\" \" end\\n\" \" i = i + 1\\n\" \" end\\n\" \"\\n\" \" return false\\n\" \"end\" \"\"; luaL_dostring(L, loadstr); 如果是set a=1类型\nstd::string loadstr = \"if not dlua_setvarvalue(\\\"\" + val + \"\\\",\" + std::to_string(currentFrameId) + \",\" + input + \", 3\" + \") then\\n\"; loadstr += val + \"=\" + input + \"\\n\"; loadstr += \"end\\n\"; int status = luaL_dostring(L, loadstr.c_str()); if (status != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } 如果是set [t1] t1.a=1 类型\nstd::string loadstr = \"function dlua_set_val(\"; for (auto it = inputval.begin(); it != inputval.end();) { loadstr = loadstr + it-\u003efirst; it++; if (it != inputval.end()) { loadstr = loadstr + \",\"; } } loadstr = loadstr + \")\\n\" + val + \"=\" + input + \"\\n\"; loadstr = loadstr + \"return \"; for (auto it = inputval.begin(); it != inputval.end();) { loadstr = loadstr + it-\u003efirst; it++; if (it != inputval.end()) { loadstr = loadstr + \",\"; } } loadstr = loadstr + \"\\n end\\n\"; int status = luaL_dostring(L, loadstr.c_str()); if (status != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } lua_settop(L, oldn); lua_getglobal(L, \"dlua_set_val\"); if (!lua_isfunction(L, -1)) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, \"get dlua_set_val fail\"); return -1; } for (auto it = inputval.begin(); it != inputval.end(); it++) { if (!FindAndPushVal(L, it-\u003efirst, currentFrameId)) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, (std::string(\"can not find val \") + it-\u003efirst).c_str()); return -1; } } int ret = lua_pcall(L, inputval.size(), inputval.size(), 0); if (ret != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } int index = -inputval.size(); for (auto it = inputval.begin(); it != inputval.end(); it++) { std::string name = it-\u003efirst; int curoldn = lua_gettop(L); lua_getglobal(L, \"dlua_setvarvalue\"); if (!lua_isfunction(L, -1)) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, \"get dlua_setvarvalue fail\"); return -1; } lua_pushstring(L, name.c_str()); lua_pushinteger(L,currentFrameId); lua_pushnil(L); lua_pushinteger(L, 2); lua_copy(L, index - 5, -2); ret = lua_pcall(L, 4, 1, 0); if (ret != 0) { std::string ret = lua_tostring(L, -1); lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, ret.c_str()); return -1; } bool suc = lua_toboolean(L, -1); if (!suc) { lua_settop(L, oldn); EmmyFacade::Get().SendLog(LogType::Error, (std::string(\"dlua_setvarvalue set \") + name + \" fail\").c_str()); return -1; } lua_settop(L, curoldn); index++; } 图片效果 真机调试 adb forward 原理 要想知道怎么真机调试我们首先应该知道adb调试的原理\n比如我现在调试安卓时候的使用的命令: adb forward tcp:8888 tcp:9966\n通过此端口转发我们就可以做到吧电脑tcp端口的消息转发到真机里面tcp9966端口上\n条件断点 条件断点分为\n1：表达式 2：命中次数\n3：日志断点\n首先需要在此结构中定义3个变量用于处理3中类型，然后通过vscode设置条件端点类型\n部分核心代码\nbool Debugger::ProcessBreakPoint(std::shared_ptr\u003cBreakPoint\u003e bp) { if (!bp-\u003econdition.empty()) { auto ctx = std::make_shared\u003cEvalContext\u003e(); ctx-\u003eexpr = bp-\u003econdition; ctx-\u003edepth = 1; bool suc = DoEval(ctx); return suc \u0026\u0026 ctx-\u003eresult-\u003evalueType == LUA_TBOOLEAN \u0026\u0026 ctx-\u003eresult-\u003evalue == \"true\"; } if (!bp-\u003elogMessage.empty()) { DoLogMessage(bp); return false; } if (!bp-\u003ehitCondition.empty()) { bp-\u003ehitCount++; return DoHitCondition(bp); } return true; } bool Debugger::DoEval(std::shared_ptr\u003cEvalContext\u003e evalContext) { if (!currentL || !evalContext) { return false; } auto L = currentL; //auto* const L = L; // From \"cacheId\" if (evalContext-\u003ecacheId \u003e 0) { lua_getfield(L, LUA_REGISTRYINDEX, CACHE_TABLE_NAME); // 1: cacheTable|nil if (lua_type(L, -1) == LUA_TTABLE) { lua_getfield(L, -1, std::to_string(evalContext-\u003ecacheId).c_str()); // 1: cacheTable, 2: value GetVariable(evalContext-\u003eresult, -1, evalContext-\u003edepth); lua_pop(L, 2); return true; } lua_pop(L, 1); } // LOAD AS \"return expr\" std::string statement = \"return \"; statement.append(evalContext-\u003eexpr); int r = luaL_loadstring(L, statement.c_str()); if (r == LUA_ERRSYNTAX) { evalContext-\u003eerror = \"syntax err: \"; evalContext-\u003eerror.append(evalContext-\u003eexpr); return false; } // call const int fIdx = lua_gettop(L); // create env if (!CreateEnv(evalContext-\u003estackLevel)) return false; // setup env #ifndef EMMY_USE_LUA_SOURCE lua_setfenv(L, fIdx); #elif defined(EMMY_LUA_51) || defined(EMMY_LUA_JIT) lua_setfenv(L, fIdx); #else //52 \u0026 53 lua_setupvalue(L, fIdx, 1); #endif assert(lua_gettop(L) == fIdx); // call function() return expr end r = lua_pcall(L, 0, 1, 0); if (r == LUA_OK) { evalContext-\u003eresult-\u003ename = evalContext-\u003eexpr; GetVariable(evalContext-\u003eresult, -1, evalContext-\u003edepth); lua_pop(L, 1); return true; } if (r == LUA_ERRRUN) { evalContext-\u003eerror = lua_tostring(L, -1); } return false; } void Debugger::DoLogMessage(std::shared_ptr\u003cBreakPoint\u003e bp) { std::string\u0026 logMessage = bp-\u003elogMessage; // 为什么不用regex? // 因为gcc 4.8 regex还是空实现 // 而且后续版本的gcc中正则表达式行为似乎也不太正常 enum class ParseState { Normal, LeftBrace, RightBrace } state = ParseState::Normal; std::vector\u003cLogMessageReplaceExpress\u003e replaceExpresses; std::size_t leftBraceBegin = 0; std::size_t rightBraceBegin = 0; // 如果在表达式中出现左大括号 std::size_t exprLeftCount = 0; for (std::size_t index = 0; index != logMessage.size(); index++) { char ch = logMessage[index]; switch (state) { case ParseState::Normal: { if (ch == '{') { state = ParseState::LeftBrace; leftBraceBegin = index; exprLeftCount = 0; } else if (ch == '}') { state = ParseState::RightBrace; rightBraceBegin = index; } break; } case ParseState::LeftBrace: { if (ch == '{') { // 认为是左双大括号转义为可见的'{' if (index == leftBraceBegin + 1) { replaceExpresses.emplace_back(\"{\", leftBraceBegin, index, false); state = ParseState::Normal; } else { exprLeftCount++; } } else if (ch == '}') { // 认为是表达式内的大括号 if (exprLeftCount \u003e 0) { exprLeftCount--; continue; } replaceExpresses.emplace_back(logMessage.substr(leftBraceBegin + 1, index - leftBraceBegin - 1), leftBraceBegin, index, true); state = ParseState::Normal; } break; } case ParseState::RightBrace: { if (ch == '}' \u0026\u0026 (index == rightBraceBegin + 1)) { replaceExpresses.emplace_back(\"}\", rightBraceBegin, index, false); } else { //认为左右大括号失配，之前的不做处理，退格一位回去重新判断 index--; } state = ParseState::Normal; break; } } } std::stringstream message; if (replaceExpresses.empty()) { message \u003c\u003c logMessage; } else { // 拼接字符串 // 怎么replace 函数都没有啊 std::size_t start = 0; for (std::size_t index = 0; index != replaceExpresses.size(); index++) { auto\u0026 replaceExpress = replaceExpresses[index]; if (start \u003c replaceExpress.StartIndex) { auto fragment = logMessage.substr(start, replaceExpress.StartIndex - start); message \u003c\u003c fragment; start = replaceExpress.StartIndex; } if (replaceExpress.NeedEval) { auto ctx = std::make_shared\u003cEvalContext\u003e(); ctx-\u003eexpr = std::move(replaceExpress.Expr); ctx-\u003edepth = 1; bool succeed = DoEval(ctx); if (succeed) { message \u003c\u003c ctx-\u003eresult-\u003evalue; } else { message \u003c\u003c ctx-\u003eerror; } } else { message \u003c\u003c replaceExpress.Expr; } start = replaceExpress.EndIndex + 1; } if (start \u003c logMessage.size()) { auto fragment = logMessage.substr(start, logMessage.size() - start); message \u003c\u003c fragment; } } std::string baseName = BaseName(bp-\u003efile); EmmyFacade::Get().SendLog(LogType::Info, \"[%s:%d] %s\", baseName.c_str(), bp-\u003eline, message.str().c_str()); } bool Debugger::DoHitCondition(std::shared_ptr\u003cBreakPoint\u003e bp) { auto\u0026 hitCondition = bp-\u003ehitCondition; enum class ParseState { ExpectedOperator, // 大于 Gt, // 小于 Le, // 单等号 Eq, ExpectedHitTimes, ParseDigit, ParseFinish } state = ParseState::ExpectedOperator; enum class Operator { // 大于 Gt, // 小于 Le, // 小于等于 LeEq, // 大于等于 GtEq, // 双等号 EqEq, } evalOperator = Operator::EqEq; unsigned long long hitTimes = 0; for (std::size_t index = 0; index != hitCondition.size(); index++) { char ch = hitCondition[index]; switch (state) { case ParseState::ExpectedOperator: { if (ch == ' ') { continue; } if (ch == '=') { state = ParseState::Eq; } else if (ch == '\u003c') { state = ParseState::Le; } else if (ch == '\u003e') { state = ParseState::Gt; } else { return false; } break; } case ParseState::Eq: { if (ch == '=') { evalOperator = Operator::EqEq; state = ParseState::ExpectedHitTimes; } else { return false; } break; } case ParseState::Gt: { if (ch == '=') { evalOperator = Operator::GtEq; state = ParseState::ExpectedHitTimes; } else if (isdigit(ch)) { evalOperator = Operator::Gt; hitTimes = ch - '0'; state = ParseState::ParseDigit; } else if (ch == ' ') { evalOperator = Operator::Gt; state = ParseState::ExpectedHitTimes; } else { return false; } break; } case ParseState::Le: { if (ch == '=') { evalOperator = Operator::LeEq; state = ParseState::ExpectedHitTimes; } else if (isdigit(ch)) { evalOperator = Operator::Le; hitTimes = ch - '0'; state = ParseState::ParseDigit; } else if (ch == ' ') { evalOperator = Operator::Gt; state = ParseState::ExpectedHitTimes; } else { return false; } break; } case ParseState::ExpectedHitTimes: { if (ch == ' ') { continue; } else if (isdigit(ch)) { hitTimes = ch - '0'; state = ParseState::ParseDigit; } else { return false; } break; } case ParseState::ParseDigit: { if (isdigit(ch)) { hitTimes = hitTimes * 10 + (ch - '0'); } else if (ch == ' ') { state = ParseState::ParseFinish; } else { return false; } break; } case ParseState::ParseFinish: { if (ch == ' ') { break; } else { return false; } break; } } } switch (evalOperator) { case Operator::EqEq: { return bp-\u003ehitCount == hitTimes; } case Operator::Gt: { return bp-\u003ehitCount \u003e hitTimes; } case Operator::GtEq: { return bp-\u003ehitCount \u003e= hitTimes; } case Operator::Le: { return bp-\u003ehitCount \u003c hitTimes; } case Operator::LeEq: { return bp-\u003ehitCount \u003c= hitTimes; } } return false; } 视频效果展示 多虚拟机测试 linux测试 真机测试 插件下载地址 针对skynet这种微服器框架和自己从 0开发的frog微服务框架编写的lua调试器，感兴趣的可以去vscode商店进行\n下载使用，有任何问题可以加QQ私聊\n",
+  "wordCount" : "3368",
   "inLanguage": "en",
-  "datePublished": "2022-09-13T01:30:29+08:00",
-  "dateModified": "2022-09-13T01:30:29+08:00",
+  "datePublished": "2022-09-14T01:30:29+08:00",
+  "dateModified": "2022-09-14T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -228,7 +228,7 @@ var _hmt = _hmt || [];
             <h1 class="post-title">
                 微服务lua调试器
             </h1>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;3702字&nbsp;|&nbsp;时长:&nbsp;8分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-14 01:30:29 +0800 CST'>2022-09-14</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-14&nbsp;|&nbsp;字数:&nbsp;3368字&nbsp;|&nbsp;时长:&nbsp;7分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -253,31 +253,31 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-luadebug-%e5%ae%9e%e7%8e%b0%e5%a4%9a%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%8e%9f%e7%90%86" aria-label="1. luadebug 实现多虚拟机原理">1. luadebug 实现多虚拟机原理</a><ul>
+                    <a href="#luadebug-%e5%ae%9e%e7%8e%b0%e5%a4%9a%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%8e%9f%e7%90%86" aria-label="luadebug 实现多虚拟机原理">luadebug 实现多虚拟机原理</a><ul>
                         
                 <li>
                     <a href="#%e5%9b%be%e7%89%87%e6%95%88%e6%9e%9c" aria-label="图片效果">图片效果</a></li></ul>
                 </li>
                 <li>
-                    <a href="#3-%e7%9c%9f%e6%9c%ba%e8%b0%83%e8%af%95" aria-label="3. 真机调试">3. 真机调试</a><ul>
+                    <a href="#%e7%9c%9f%e6%9c%ba%e8%b0%83%e8%af%95" aria-label="真机调试">真机调试</a><ul>
                         
                 <li>
                     <a href="#adb-forward-%e5%8e%9f%e7%90%86" aria-label="adb forward 原理">adb forward 原理</a></li></ul>
                 </li>
                 <li>
-                    <a href="#4-%e6%9d%a1%e4%bb%b6%e6%96%ad%e7%82%b9" aria-label="4. 条件断点">4. 条件断点</a><ul>
+                    <a href="#%e6%9d%a1%e4%bb%b6%e6%96%ad%e7%82%b9" aria-label="条件断点">条件断点</a><ul>
                         
                 <li>
-                    <a href="#41-%e8%a7%86%e9%a2%91%e6%95%88%e6%9e%9c%e5%b1%95%e7%a4%ba" aria-label="4.1. 视频效果展示">4.1. 视频效果展示</a><ul>
+                    <a href="#%e8%a7%86%e9%a2%91%e6%95%88%e6%9e%9c%e5%b1%95%e7%a4%ba" aria-label="视频效果展示">视频效果展示</a><ul>
                         
                 <li>
-                    <a href="#411-%e5%a4%9a%e8%99%9a%e6%8b%9f%e6%9c%ba%e6%b5%8b%e8%af%95" aria-label="4.1.1. 多虚拟机测试">4.1.1. 多虚拟机测试</a></li>
+                    <a href="#%e5%a4%9a%e8%99%9a%e6%8b%9f%e6%9c%ba%e6%b5%8b%e8%af%95" aria-label="多虚拟机测试">多虚拟机测试</a></li>
                 <li>
-                    <a href="#412-linux%e6%b5%8b%e8%af%95" aria-label="4.1.2. linux测试">4.1.2. linux测试</a></li>
+                    <a href="#linux%e6%b5%8b%e8%af%95" aria-label="linux测试">linux测试</a></li>
                 <li>
-                    <a href="#413-%e7%9c%9f%e6%9c%ba%e6%b5%8b%e8%af%95" aria-label="4.1.3. 真机测试">4.1.3. 真机测试</a></li>
+                    <a href="#%e7%9c%9f%e6%9c%ba%e6%b5%8b%e8%af%95" aria-label="真机测试">真机测试</a></li>
                 <li>
-                    <a href="#414-%e6%8f%92%e4%bb%b6%e4%b8%8b%e8%bd%bd%e5%9c%b0%e5%9d%80" aria-label="4.1.4. 插件下载地址">4.1.4. 插件下载地址</a>
+                    <a href="#%e6%8f%92%e4%bb%b6%e4%b8%8b%e8%bd%bd%e5%9c%b0%e5%9d%80" aria-label="插件下载地址">插件下载地址</a>
                 </li>
             </ul>
             </li>
@@ -348,7 +348,7 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="1-luadebug-实现多虚拟机原理">1. luadebug 实现多虚拟机原理<a hidden class="anchor" aria-hidden="true" href="#1-luadebug-实现多虚拟机原理">#</a></h2>
+        <div class="post-content"><h2 id="luadebug-实现多虚拟机原理">luadebug 实现多虚拟机原理<a hidden class="anchor" aria-hidden="true" href="#luadebug-实现多虚拟机原理">#</a></h2>
 <p>先从luahook原理说起</p>
 <p>在lua.h 当中我们有 lua_sethook函数来给们设置钩子</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>LUA_API <span style="color:#a6e22e">void</span> (lua_sethook) (lua_State <span style="color:#f92672">*</span>L, lua_Hook func, <span style="color:#66d9ef">int</span> mask, <span style="color:#66d9ef">int</span> count);
@@ -375,31 +375,31 @@ var _hmt = _hmt || [];
 </li>
 </ul>
 </blockquote>
-<p><code>&lt;font color='orange'&gt;</code><strong>LUA_MASKCALL 会在调用函数时回调</strong> <code>&lt;/font&gt;</code> 我们在追踪lua源码，可以发现在每次调用函数之前都回**<code>&lt;font color='red'&gt;</code>ldo.c <code>&lt;/font&gt;</code><strong>去调用</strong> <code>&lt;font color='red'&gt;</code>luaD_precall <code>&lt;/font&gt;</code><strong>函数并检测是否设置了掩码标识，如果设置了</strong> <code>&lt;font color='red'&gt;</code>LUA_MASKCALL <code>&lt;/font&gt;</code>**掩码状态，就会调用 <code>&lt;font color='red'&gt;</code><strong>luaD_hook</strong> <code>&lt;/font&gt;</code>这个回调函数</p>
+<p><code>&lt;font color='orange'&gt;</code><strong>LUA_MASKCALL 会在调用函数时回调</strong>  我们在追踪lua源码，可以发现在每次调用函数之前都回**ldo.c <strong>去调用</strong> luaD_precall <strong>函数并检测是否设置了掩码标识，如果设置了</strong> LUA_MASKCALL **掩码状态，就会调用 <strong>luaD_hook</strong> 这个回调函数</p>
 <p><img loading="lazy" src="202201211113975.png" alt="202201211113975"  />
 </p>
-<p><strong><code>&lt;font color='orange'&gt;</code>LUA_MASKRET :会在函数返回时回调 <code>&lt;/font&gt;</code></strong>  我们在追踪lua源码，可以发现在每次函数返回时候都会去**<code>&lt;font color='red'&gt;</code>ldo.c <code>&lt;/font&gt;</code>** 里面调用**<code>&lt;font color='red'&gt;</code>luaD_poscall <code>&lt;/font&gt;</code>** 里面的**<code>&lt;font color='red'&gt;</code>rethook <code>&lt;/font&gt;</code><strong>函数 如果设置了就会调用</strong> <code>&lt;font color='red'&gt;</code>LUA_MASKRET <code>&lt;/font&gt;</code>**掩码状态 ， 就会调用 <code>&lt;font color='red'&gt;</code><strong>luaD_hook</strong> <code>&lt;/font&gt;</code>这个回调函数</p>
+<p><strong><code>&lt;font color='orange'&gt;</code>LUA_MASKRET :会在函数返回时回调 **  我们在追踪lua源码，可以发现在每次函数返回时候都会去</strong>ldo.c ** 里面调用<strong>luaD_poscall ** 里面的</strong>rethook <strong>函数 如果设置了就会调用</strong> LUA_MASKRET **掩码状态 ， 就会调用 <strong>luaD_hook</strong> 这个回调函数</p>
 <p><img loading="lazy" src="202201211154326.png" alt="202201211154326"  />
 </p>
 <p><img loading="lazy" src="202201211156389.png" alt="202201211156389"  />
 </p>
-<p><strong><code>&lt;font color='orange'&gt;</code>LUA_MASKLINE :执行一行代码时候回调 <code>&lt;/font&gt;</code></strong>  我们在追踪lua源码，可以发现在每次执行一行指令都会去**<code>&lt;font color='red'&gt;</code>ldebug.c <code>&lt;/font&gt;</code>** 去调用 <code>&lt;font color='red'&gt;</code><strong>luaG_traceexec</strong> <code>&lt;/font&gt;</code>函数 如果设置了**<code>&lt;font color='red'&gt;</code>LUA_MASKLINE <code>&lt;/font&gt;</code>** 掩码状态 那么久会调用**<code>&lt;font color='red'&gt;</code>luaD_hook <code>&lt;/font&gt;</code>**函数</p>
+<p><strong><code>&lt;font color='orange'&gt;</code>LUA_MASKLINE :执行一行代码时候回调 **  我们在追踪lua源码，可以发现在每次执行一行指令都会去</strong>ldebug.c ** 去调用 <strong>luaG_traceexec</strong> 函数 如果设置了<strong>LUA_MASKLINE ** 掩码状态 那么久会调用</strong>luaD_hook **函数</p>
 <p><img loading="lazy" src="202201211515663.png" alt="202201211515663"  />
 </p>
-<p><strong><code>&lt;font color='orange'&gt;</code>LUA_MASKCOUNT :执行count条指令时候回调 <code>&lt;/font&gt;</code></strong>  我们在追踪lua源码，可以发现每次执行一行指令都会去**<code>&lt;font color='red'&gt;</code>ldebug.c <code>&lt;/font&gt;</code>** 去调用 <code>&lt;font color='red'&gt;</code><strong>luaG_traceexec</strong> <code>&lt;/font&gt;</code>函数 这个函数需要和**<code>&lt;font color='red'&gt;</code>count <code>&lt;/font&gt;</code><strong>参数配合才能发挥效果，可以看到如果</strong> <code>&lt;font color='red'&gt;</code>L-&gt;hookcount <code>&lt;/font&gt;</code><strong>在一次次递减之后等于</strong> <code>&lt;font color='red'&gt;</code>0 <code>&lt;/font&gt;</code><strong>了就会调用</strong> <code>&lt;font color='red'&gt;</code>luaD_hook <code>&lt;/font&gt;</code>**函数</p>
+<p><strong><code>&lt;font color='orange'&gt;</code>LUA_MASKCOUNT :执行count条指令时候回调 **  我们在追踪lua源码，可以发现每次执行一行指令都会去</strong>ldebug.c ** 去调用 <strong>luaG_traceexec</strong> 函数 这个函数需要和**count <strong>参数配合才能发挥效果，可以看到如果</strong> L-&gt;hookcount <strong>在一次次递减之后等于</strong> 0 <strong>了就会调用</strong> luaD_hook **函数</p>
 <p><img loading="lazy" src="202201211515663-16530988286073.png" alt="202201211515663"  />
 </p>
-<p>综合上述我们看到最终都会调用到**<code>&lt;font color='red'&gt;</code>luaD_hook <code>&lt;/font&gt;</code><strong>函数，仔细看源码观察可以看到在经过一系列判断以后会回调我们设置好的</strong> <code>&lt;font color='red'&gt;</code>L-&gt;hook <code>&lt;/font&gt;</code>**函数</p>
+<p>综合上述我们看到最终都会调用到**luaD_hook <strong>函数，仔细看源码观察可以看到在经过一系列判断以后会回调我们设置好的</strong> L-&gt;hook **函数</p>
 <p><img loading="lazy" src="202201211215165.png" alt="202201211215165"  />
 </p>
-<p>回到我们第**<code>&lt;font color='red'&gt;</code>2 <code>&lt;/font&gt;</code>**个参数</p>
+<p>回到我们第**2 **个参数</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* Functions to be called by the debugger in specific events */</span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#a6e22e">void</span>(<span style="color:#f92672">*</span>lua_Hook) (lua_State <span style="color:#f92672">*</span>L, lua_Debug <span style="color:#f92672">*</span>ar);
-</span></span></code></pre></div><p>可以看到返回了一个**<code>&lt;font color='red'&gt;</code>lua_Debug <code>&lt;/font&gt;</code>**结构体 我们进入这个结构体</p>
+</span></span></code></pre></div><p>可以看到返回了一个**lua_Debug **结构体 我们进入这个结构体</p>
 <p><img loading="lazy" src="202201211242014-16530988621344.png" alt="202201211242014"  />
 </p>
-<p>这里为了兼容每个不同的lua版本，弄了个**<code>&lt;font color='red'&gt;</code>union <code>&lt;/font&gt;</code><strong>联合体 写在了</strong> <code>&lt;font color='red'&gt;</code>lua_api_loder.h <code>&lt;/font&gt;</code>**里面</p>
-<p>我们进入 **<code>&lt;font color='red'&gt;</code>lua_Debug_54 <code>&lt;/font&gt;</code>**结构体里面</p>
+<p>这里为了兼容每个不同的lua版本，弄了个**union <strong>联合体 写在了</strong> lua_api_loder.h **里面</p>
+<p>我们进入 **lua_Debug_54 **结构体里面</p>
 <p><img loading="lazy" src="202201211342005.png" alt="202201211342005"  />
 </p>
 <p>可以发现这里有许多的信息</p>
@@ -413,7 +413,7 @@ var _hmt = _hmt || [];
 <tbody>
 <tr>
 <td style="text-align:left">event</td>
-<td>Event codes  事件类型标识如下几种 <code>&lt;font color='red'&gt;</code>[LUA_HOOKCALL,LUA_HOOKRET,LUA_HOOKLINE,LUA_HOOKCOUNT,LUA_HOOKTAILCALL]<code>&lt;/font&gt;</code></td>
+<td>Event codes  事件类型标识如下几种 [LUA_HOOKCALL,LUA_HOOKRET,LUA_HOOKLINE,LUA_HOOKCOUNT,LUA_HOOKTAILCALL]</td>
 </tr>
 <tr>
 <td style="text-align:left">name</td>
@@ -461,7 +461,7 @@ var _hmt = _hmt || [];
 </tr>
 <tr>
 <td style="text-align:left">istailcall</td>
-<td>是不是最后一个函数是一个函数调用 形如**<code>&lt;font color='red'&gt;</code>function f(x) return g(x) end <code>&lt;/font&gt;</code>**</td>
+<td>是不是最后一个函数是一个函数调用 形如**function f(x) return g(x) end **</td>
 </tr>
 <tr>
 <td style="text-align:left">ftransfer</td>
@@ -488,7 +488,7 @@ var _hmt = _hmt || [];
 <li>luadebug 实现修改变量值</li>
 </ol>
 <p>首先需要创建一个protobuf的cmd命令</p>
-<p><strong><code>&lt;font color='red'&gt;</code>MessageCMD::SetVariableReq <code>&lt;/font&gt;</code></strong>   //修改变量</p>
+<p>**MessageCMD::SetVariableReq **   //修改变量</p>
 <p>客服端设置变量逻辑</p>
 <p><img loading="lazy" src="202201211620038.png" alt="202201211620038"  />
 </p>
@@ -658,14 +658,14 @@ var _hmt = _hmt || [];
 </span></span></code></pre></div><h3 id="图片效果">图片效果<a hidden class="anchor" aria-hidden="true" href="#图片效果">#</a></h3>
 <p><img loading="lazy" src="imgeimage-20220124163841008.png" alt="imgeimage-20220124163841008"  />
 </p>
-<h2 id="3-真机调试">3. 真机调试<a hidden class="anchor" aria-hidden="true" href="#3-真机调试">#</a></h2>
+<h2 id="真机调试">真机调试<a hidden class="anchor" aria-hidden="true" href="#真机调试">#</a></h2>
 <h3 id="adb-forward-原理">adb forward 原理<a hidden class="anchor" aria-hidden="true" href="#adb-forward-原理">#</a></h3>
 <p>要想知道怎么真机调试我们首先应该知道adb调试的原理</p>
 <p>比如我现在调试安卓时候的使用的命令: adb forward tcp:8888 tcp:9966</p>
 <p><img loading="lazy" src="imgeimage-20220124142626506.png" alt="imgeimage-20220124142626506"  />
 </p>
 <p>通过此端口转发我们就可以做到吧电脑tcp端口的消息转发到真机里面tcp9966端口上</p>
-<h2 id="4-条件断点">4. 条件断点<a hidden class="anchor" aria-hidden="true" href="#4-条件断点">#</a></h2>
+<h2 id="条件断点">条件断点<a hidden class="anchor" aria-hidden="true" href="#条件断点">#</a></h2>
 <p>条件断点分为</p>
 <p>1：表达式 <img loading="lazy" src="imgeimage-20220124162929882.png" alt="imgeimage-20220124162929882"  />
 </p>
@@ -1119,14 +1119,14 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> false;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="41-视频效果展示">4.1. 视频效果展示<a hidden class="anchor" aria-hidden="true" href="#41-视频效果展示">#</a></h3>
-<h4 id="411-多虚拟机测试">4.1.1. 多虚拟机测试<a hidden class="anchor" aria-hidden="true" href="#411-多虚拟机测试">#</a></h4>
+</span></span></code></pre></div><h3 id="视频效果展示">视频效果展示<a hidden class="anchor" aria-hidden="true" href="#视频效果展示">#</a></h3>
+<h4 id="多虚拟机测试">多虚拟机测试<a hidden class="anchor" aria-hidden="true" href="#多虚拟机测试">#</a></h4>
 <iframe src="https://player.bilibili.com/player.html?aid=638985869&bvid=BV1iY4y1r7GE&cid=716979750&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-<h4 id="412-linux测试">4.1.2. linux测试<a hidden class="anchor" aria-hidden="true" href="#412-linux测试">#</a></h4>
+<h4 id="linux测试">linux测试<a hidden class="anchor" aria-hidden="true" href="#linux测试">#</a></h4>
 <iframe src="https://player.bilibili.com/player.html?aid=683901725&bvid=BV1sU4y1S7LS&cid=716979645&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-<h4 id="413-真机测试">4.1.3. 真机测试<a hidden class="anchor" aria-hidden="true" href="#413-真机测试">#</a></h4>
+<h4 id="真机测试">真机测试<a hidden class="anchor" aria-hidden="true" href="#真机测试">#</a></h4>
 <iframe src="https://player.bilibili.com/player.html?aid=553968251&bvid=BV1Bv4y1P7cE&cid=716979648&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-<h4 id="414-插件下载地址">4.1.4. 插件下载地址<a hidden class="anchor" aria-hidden="true" href="#414-插件下载地址">#</a></h4>
+<h4 id="插件下载地址">插件下载地址<a hidden class="anchor" aria-hidden="true" href="#插件下载地址">#</a></h4>
 <p><img loading="lazy" src="image-20220913233913512.png" alt="image-20220913233913512"  />
 </p>
 <p>针对skynet这种微服器框架和自己从 <code>0开发的frog微服务框架</code>编写的lua调试器，感兴趣的可以去vscode商店进行</p>
@@ -1165,15 +1165,15 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/blog/zabbix-mysql8.0/">
+  <a class="prev" href="https://frog-game.github.io/posts/blog/skynet/">
     <span class="title">« 上一页</span>
     <br>
-    <span>zabbix游戏监控日志系统部署</span>
+    <span>skynet赏析</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/wufengdashijie/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/zabbix-mysql8.0/">
     <span class="title">下一页 »</span>
     <br>
-    <span>无缝大世界</span>
+    <span>zabbix游戏日志监控</span>
   </a>
 </nav>
 

@@ -7,11 +7,11 @@
 <meta name="robots" content="index, follow">
 <title>无缝大世界 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电">
+<meta name="description" content="前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/wufengdashijie/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.d8a1c95b1eb964516f02dd7068e2fd42017af5baba0751df317cf8a081744b14.css" integrity="sha256-2KHJWx65ZFFvAt1waOL9QgF69bq6B1HfMXz4oIF0SxQ=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.905fe131597072fcbc87e1225756e27ba28555e0f5e049157c9a9ae308ef3b2b.css" integrity="sha256-kF/hMVlwcvy8h&#43;EiV1bie6KFVeD14EkVfJqa4wjvOys=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -68,7 +68,7 @@ var _hmt = _hmt || [];
 })();
 </script>
 <meta property="og:title" content="无缝大世界" />
-<meta property="og:description" content="1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电" />
+<meta property="og:description" content="前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/wufengdashijie/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
@@ -76,7 +76,7 @@ var _hmt = _hmt || [];
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="无缝大世界"/>
-<meta name="twitter:description" content="1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电"/>
+<meta name="twitter:description" content="前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑"/>
 
 
 <script type="application/ld+json">
@@ -111,12 +111,12 @@ var _hmt = _hmt || [];
   "@type": "BlogPosting",
   "headline": "无缝大世界",
   "name": "无缝大世界",
-  "description": "1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电",
+  "description": "前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑",
   "keywords": [
     ""
   ],
-  "articleBody": "1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑做不到，手机就更加不用说了 这类大地图，在客服端都是分区域进行加载，也就是会进行切割，比如像绝地求生这样的游戏，大概80公里左右大的地图，会被切割成100 *100 个格子，大概每个格子800米左右，每个格子会打上索引标记，当客服端在进行移动的时候就会根据视野，一般都是九宫格区域，然后根据视野新旧对地图块进行预加载和删除。 在绝地求生跳伞阶段，其实是整张地图进行加载的，但是这个时候不是加载的高精度地图块，而是一个经过简化的地图，而且这种地图块不会只有一份，一般会有多份，这种也叫多层LOD，也就是随着你跳伞以后，距离地面越来越近，程序会给你切换不同的地图块，这也就是为什么有时候你在跳伞的过程中有时候会看到闪烁情况，其实这个时候是程序在给你切换不同的地图块 2. 构建大世界地图 2.1. 利用bspTree原理对地图进行动态切割 分裂条件：\n人数达到上线 区域大小必须超过多大，比如必须达到50 *50 大小才能分裂 1.场景管理服务器启动以后会创建一个全局的space，假设大小是100 * 100，同时也创建一个同样大小的cell1\n假如按宽10进行分割，会形成 10 * 100,90 * 100 两个长方形\n假如按长90来对剩下的3进行分割\n一直往下切割的话，左边会越来越多，右儿子会越来越少，从而达到负载均衡的效果但是也有分割也有条件\n兄弟两都为叶子节点 左二子被分割后的大小不应该大于右儿子 2.2. 利用bspTree原理对地图进行动态合并 合并条件:\nCell区域小于100(可配) 人数小于指定人数(可配) 待合并的2个结点必须是叶子结点 删除待合并的两个儿子结点，修改父亲结点的场景区域 合并前\n合并后\n当不管是分割还是合并发现他的实体已经不再当前cell了那么实体应该迁移到他合适的地方去\n3. 边缝处理 假设我们现在有3个cellServer进程管理着各自的ABC3个cell块\n当上面的a角色到达边界的时候，我们这个时候就需要进行real和ghost的数据同步，开始在重叠区域进行转换，进行转换的区域一般要比自己的视野范围要大，比如现在的重叠转换区域就是那个红色圈，大于自己的视野黑色圈\n在entity aoi范围内，又不在同一cell的，在这个cell上创建同坐标的一个ghost 镜像，也就是上面的暗红色和绿色星星就是BC cell上面的ghost镜像 ghost 只能是只读的，每次去修改只能先修改real实体然后在去同步ghost属性 4. 新的边缝处理方法 比如现在有A B两个cell 这个时候黄色的角色从A走向了B 现在过了边界，但是我们现在不用创建镜像和实体的方法来实现无缝地图，而是用传送的方式，传送触发的实际就是那根绿色线和边界的距离，比如5米，当玩家走到了这个触发范围我们就开始直接把人传送到B，这样也不用处理ghost和real之间定时同步，还有异步技能带来的各种异常情况，bug查找\n5. 技能处理 攻击方一定要是real实体，被攻击方可以是real实体，也可以是ghost实体\n下方的数据同步可以写到核心框架，也就是定时同步real实体的信息到ghost实体上\n6. 寻路 因为世界地图很大，所以我们可以用**路点+ 小段距离A星或者jps算法**来实现寻路\n先求路点，比如如下的地铁图，我们可以根据权重值或者时间的组合，通过**Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)**算法求出最短路径，这些路径可以离线先求出来，等使用的时候直接使用 还是以上面这图为例子现在你在红色小人那个位置也就是关庄下面小人的位置，这个时候如果障碍物多，你可以骑单车过来也就是用**A星算法寻路到惠新西街南口，如果障碍物少，那么你可以打车，或者坐大巴也就是jps算法到彗新西街南口，到了起始点之后，你就可以坐地铁也就是前面用Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)**算法算出的离线路径直接到达下面的地跌目的地南锣鼓巷\n到了南锣鼓巷以后，同样你也可以按2步骤，选择是**a星还是jps算法**到达公司\n如果地图超大，其实在用**Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)**算法算地铁图的时候我们可以分几块区域算出各自地铁路线图，然后连接起来，举个栗子，比如可以划分，彗星西街南口到北土城是一个区域，北土城到鼓楼大街是个区域，鼓楼大街到南锣鼓巷是个区域，这3个区域各自算好，各自存储好，到时拼接起来就是惠新西街南口到南锣鼓巷的整条离线路线，如下图红，黑，黄三个框，代表3个区域\n",
-  "wordCount" : "1855",
+  "articleBody": "前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑做不到，手机就更加不用说了 这类大地图，在客服端都是分区域进行加载，也就是会进行切割，比如像绝地求生这样的游戏，大概80公里左右大的地图，会被切割成100 *100 个格子，大概每个格子800米左右，每个格子会打上索引标记，当客服端在进行移动的时候就会根据视野，一般都是九宫格区域，然后根据视野新旧对地图块进行预加载和删除。 在绝地求生跳伞阶段，其实是整张地图进行加载的，但是这个时候不是加载的高精度地图块，而是一个经过简化的地图，而且这种地图块不会只有一份，一般会有多份，这种也叫多层LOD，也就是随着你跳伞以后，距离地面越来越近，程序会给你切换不同的地图块，这也就是为什么有时候你在跳伞的过程中有时候会看到闪烁情况，其实这个时候是程序在给你切换不同的地图块 构建大世界地图 利用bspTree原理对地图进行动态切割 分裂条件：\n人数达到上线 区域大小必须超过多大，比如必须达到50 *50 大小才能分裂 1.场景管理服务器启动以后会创建一个全局的space，假设大小是100 * 100，同时也创建一个同样大小的cell1\n假如按宽10进行分割，会形成 10 * 100,90 * 100 两个长方形\n假如按长90来对剩下的3进行分割\n一直往下切割的话，左边会越来越多，右儿子会越来越少，从而达到负载均衡的效果但是也有分割也有条件\n兄弟两都为叶子节点 左二子被分割后的大小不应该大于右儿子 利用bspTree原理对地图进行动态合并 合并条件:\nCell区域小于100(可配) 人数小于指定人数(可配) 待合并的2个结点必须是叶子结点 删除待合并的两个儿子结点，修改父亲结点的场景区域 合并前\n合并后\n当不管是分割还是合并发现他的实体已经不再当前cell了那么实体应该迁移到他合适的地方去\n边缝处理 假设我们现在有3个cellServer进程管理着各自的ABC3个cell块\n当上面的a角色到达边界的时候，我们这个时候就需要进行real和ghost的数据同步，开始在重叠区域进行转换，进行转换的区域一般要比自己的视野范围要大，比如现在的重叠转换区域就是那个红色圈，大于自己的视野黑色圈\n在entity aoi范围内，又不在同一cell的，在这个cell上创建同坐标的一个ghost 镜像，也就是上面的暗红色和绿色星星就是BC cell上面的ghost镜像 ghost 只能是只读的，每次去修改只能先修改real实体然后在去同步ghost属性 新的边缝处理方法 比如现在有A B两个cell 这个时候黄色的角色从A走向了B 现在过了边界，但是我们现在不用创建镜像和实体的方法来实现无缝地图，而是用传送的方式，传送触发的实际就是那根绿色线和边界的距离，比如5米，当玩家走到了这个触发范围我们就开始直接把人传送到B，这样也不用处理ghost和real之间定时同步，还有异步技能带来的各种异常情况，bug查找\n技能处理 攻击方一定要是real实体，被攻击方可以是real实体，也可以是ghost实体\n下方的数据同步可以写到核心框架，也就是定时同步real实体的信息到ghost实体上\n寻路 因为世界地图很大，所以我们可以用**路点+ 小段距离A星或者jps算法**来实现寻路\n先求路点，比如如下的地铁图，我们可以根据权重值或者时间的组合，通过**Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)**算法求出最短路径，这些路径可以离线先求出来，等使用的时候直接使用 还是以上面这图为例子现在你在红色小人那个位置也就是关庄下面小人的位置，这个时候如果障碍物多，你可以骑单车过来也就是用**A星算法寻路到惠新西街南口，如果障碍物少，那么你可以打车，或者坐大巴也就是jps算法到彗新西街南口，到了起始点之后，你就可以坐地铁也就是前面用Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)**算法算出的离线路径直接到达下面的地跌目的地南锣鼓巷\n到了南锣鼓巷以后，同样你也可以按2步骤，选择是**a星还是jps算法**到达公司\n如果地图超大，其实在用**Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)**算法算地铁图的时候我们可以分几块区域算出各自地铁路线图，然后连接起来，举个栗子，比如可以划分，彗星西街南口到北土城是一个区域，北土城到鼓楼大街是个区域，鼓楼大街到南锣鼓巷是个区域，这3个区域各自算好，各自存储好，到时拼接起来就是惠新西街南口到南锣鼓巷的整条离线路线，如下图红，黑，黄三个框，代表3个区域\n",
+  "wordCount" : "1847",
   "inLanguage": "en",
   "datePublished": "2022-09-13T01:30:29+08:00",
   "dateModified": "2022-09-13T01:30:29+08:00",
@@ -228,7 +228,7 @@ var _hmt = _hmt || [];
             <h1 class="post-title">
                 无缝大世界
             </h1>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;1855字&nbsp;|&nbsp;时长:&nbsp;4分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;1847字&nbsp;|&nbsp;时长:&nbsp;4分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -253,23 +253,23 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#1-%e5%89%8d%e8%a8%80" aria-label="1. 前言">1. 前言</a></li>
+                    <a href="#%e5%89%8d%e8%a8%80" aria-label="前言">前言</a></li>
                 <li>
-                    <a href="#2-%e6%9e%84%e5%bb%ba%e5%a4%a7%e4%b8%96%e7%95%8c%e5%9c%b0%e5%9b%be" aria-label="2. 构建大世界地图">2. 构建大世界地图</a><ul>
+                    <a href="#%e6%9e%84%e5%bb%ba%e5%a4%a7%e4%b8%96%e7%95%8c%e5%9c%b0%e5%9b%be" aria-label="构建大世界地图">构建大世界地图</a><ul>
                         
                 <li>
-                    <a href="#21-font-colorred%e5%88%a9%e7%94%a8bsptree%e5%8e%9f%e7%90%86%e5%af%b9%e5%9c%b0%e5%9b%be%e8%bf%9b%e8%a1%8c%e5%8a%a8%e6%80%81%e5%88%87%e5%89%b2font" aria-label="2.1. 利用bspTree原理对地图进行动态切割">2.1. <strong><font color='red'>利用bspTree原理对地图进行动态切割</font></strong></a></li>
+                    <a href="#font-colorred%e5%88%a9%e7%94%a8bsptree%e5%8e%9f%e7%90%86%e5%af%b9%e5%9c%b0%e5%9b%be%e8%bf%9b%e8%a1%8c%e5%8a%a8%e6%80%81%e5%88%87%e5%89%b2font" aria-label="利用bspTree原理对地图进行动态切割"><strong><font color='red'>利用bspTree原理对地图进行动态切割</font></strong></a></li>
                 <li>
-                    <a href="#22-font-colorred%e5%88%a9%e7%94%a8bsptree%e5%8e%9f%e7%90%86%e5%af%b9%e5%9c%b0%e5%9b%be%e8%bf%9b%e8%a1%8c%e5%8a%a8%e6%80%81%e5%90%88%e5%b9%b6font" aria-label="2.2. 利用bspTree原理对地图进行动态合并">2.2. <font color='red'>利用bspTree原理对地图进行动态合并</font></a></li></ul>
+                    <a href="#font-colorred%e5%88%a9%e7%94%a8bsptree%e5%8e%9f%e7%90%86%e5%af%b9%e5%9c%b0%e5%9b%be%e8%bf%9b%e8%a1%8c%e5%8a%a8%e6%80%81%e5%90%88%e5%b9%b6font" aria-label="利用bspTree原理对地图进行动态合并"><font color='red'>利用bspTree原理对地图进行动态合并</font></a></li></ul>
                 </li>
                 <li>
-                    <a href="#3-%e8%be%b9%e7%bc%9d%e5%a4%84%e7%90%86" aria-label="3. 边缝处理">3. 边缝处理</a></li>
+                    <a href="#%e8%be%b9%e7%bc%9d%e5%a4%84%e7%90%86" aria-label="边缝处理">边缝处理</a></li>
                 <li>
-                    <a href="#4-%e6%96%b0%e7%9a%84%e8%be%b9%e7%bc%9d%e5%a4%84%e7%90%86%e6%96%b9%e6%b3%95" aria-label="4. 新的边缝处理方法">4. 新的边缝处理方法</a></li>
+                    <a href="#%e6%96%b0%e7%9a%84%e8%be%b9%e7%bc%9d%e5%a4%84%e7%90%86%e6%96%b9%e6%b3%95" aria-label="新的边缝处理方法">新的边缝处理方法</a></li>
                 <li>
-                    <a href="#5-%e6%8a%80%e8%83%bd%e5%a4%84%e7%90%86" aria-label="5. 技能处理">5. 技能处理</a></li>
+                    <a href="#%e6%8a%80%e8%83%bd%e5%a4%84%e7%90%86" aria-label="技能处理">技能处理</a></li>
                 <li>
-                    <a href="#6-%e5%af%bb%e8%b7%af" aria-label="6. 寻路">6. 寻路</a>
+                    <a href="#%e5%af%bb%e8%b7%af" aria-label="寻路">寻路</a>
                 </li>
             </ul>
         </div>
@@ -336,14 +336,14 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="1-前言">1. 前言<a hidden class="anchor" aria-hidden="true" href="#1-前言">#</a></h2>
+        <div class="post-content"><h2 id="前言">前言<a hidden class="anchor" aria-hidden="true" href="#前言">#</a></h2>
 <ol>
 <li>无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑做不到，手机就更加不用说了</li>
 <li>这类大地图，在客服端都是分区域进行加载，也就是会进行切割，比如像绝地求生这样的游戏，大概80公里左右大的地图，会被切割成100 *100 个格子，大概每个格子800米左右，每个格子会打上索引标记，当客服端在进行移动的时候就会根据视野，一般都是九宫格区域，然后根据视野新旧对地图块进行预加载和删除。</li>
 <li>在绝地求生跳伞阶段，其实是整张地图进行加载的，但是这个时候不是加载的高精度地图块，而是一个经过简化的地图，而且这种地图块不会只有一份，一般会有多份，这种也叫多层LOD，也就是随着你跳伞以后，距离地面越来越近，程序会给你切换不同的地图块，这也就是为什么有时候你在跳伞的过程中有时候会看到闪烁情况，其实这个时候是程序在给你切换不同的地图块</li>
 </ol>
-<h2 id="2-构建大世界地图">2. 构建大世界地图<a hidden class="anchor" aria-hidden="true" href="#2-构建大世界地图">#</a></h2>
-<h3 id="21-font-colorred利用bsptree原理对地图进行动态切割font">2.1. <strong><font color='red'>利用bspTree原理对地图进行动态切割</font></strong><a hidden class="anchor" aria-hidden="true" href="#21-font-colorred利用bsptree原理对地图进行动态切割font">#</a></h3>
+<h2 id="构建大世界地图">构建大世界地图<a hidden class="anchor" aria-hidden="true" href="#构建大世界地图">#</a></h2>
+<h3 id="font-colorred利用bsptree原理对地图进行动态切割font"><strong><font color='red'>利用bspTree原理对地图进行动态切割</font></strong><a hidden class="anchor" aria-hidden="true" href="#font-colorred利用bsptree原理对地图进行动态切割font">#</a></h3>
 <p><strong><font color='cornflowerblue'>分裂条件：</font></strong></p>
 <ol>
 <li>人数达到上线</li>
@@ -371,7 +371,7 @@ var _hmt = _hmt || [];
 </ul>
 </li>
 </ol>
-<h3 id="22-font-colorred利用bsptree原理对地图进行动态合并font">2.2. <font color='red'>利用bspTree原理对地图进行动态合并</font><a hidden class="anchor" aria-hidden="true" href="#22-font-colorred利用bsptree原理对地图进行动态合并font">#</a></h3>
+<h3 id="font-colorred利用bsptree原理对地图进行动态合并font"><font color='red'>利用bspTree原理对地图进行动态合并</font><a hidden class="anchor" aria-hidden="true" href="#font-colorred利用bsptree原理对地图进行动态合并font">#</a></h3>
 <p><strong><font color='cornflowerblue'>合并条件:</font></strong></p>
 <ul>
 <li>Cell区域小于100(可配)</li>
@@ -386,7 +386,7 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="Typoraimage-20220222112904744-165310001528611.png" alt="Typoraimage-20220222112904744"  />
 </p>
 <p><strong><font color='red'>当不管是分割还是合并发现他的实体已经不再当前cell了那么实体应该迁移到他合适的地方去</font></strong></p>
-<h2 id="3-边缝处理">3. 边缝处理<a hidden class="anchor" aria-hidden="true" href="#3-边缝处理">#</a></h2>
+<h2 id="边缝处理">边缝处理<a hidden class="anchor" aria-hidden="true" href="#边缝处理">#</a></h2>
 <p>假设我们现在有3个cellServer进程管理着各自的ABC3个cell块</p>
 <p><img loading="lazy" src="Typoraimage-20220222120241844.png" alt="Typoraimage-20220222120241844"  />
 </p>
@@ -395,16 +395,16 @@ var _hmt = _hmt || [];
 <li>在entity aoi范围内，又不在同一cell的，在这个cell上创建同坐标的一个ghost 镜像，也就是上面的暗红色和绿色星星就是BC cell上面的ghost镜像</li>
 <li>ghost 只能是只读的，每次去修改只能先修改real实体然后在去同步ghost属性</li>
 </ol>
-<h2 id="4-新的边缝处理方法">4. 新的边缝处理方法<a hidden class="anchor" aria-hidden="true" href="#4-新的边缝处理方法">#</a></h2>
+<h2 id="新的边缝处理方法">新的边缝处理方法<a hidden class="anchor" aria-hidden="true" href="#新的边缝处理方法">#</a></h2>
 <p><img loading="lazy" src="Typoraimage-20220225135200644.png" alt="Typoraimage-20220225135200644"  />
 </p>
 <p>比如现在有A B两个cell 这个时候黄色的角色从A走向了B 现在过了边界，但是我们现在不用创建镜像和实体的方法来实现无缝地图，而是用传送的方式，传送触发的实际就是那根绿色线和边界的距离，比如5米，当玩家走到了这个触发范围我们就开始直接把人传送到B，这样也不用处理ghost和real之间定时同步，还有异步技能带来的各种异常情况，bug查找</p>
-<h2 id="5-技能处理">5. 技能处理<a hidden class="anchor" aria-hidden="true" href="#5-技能处理">#</a></h2>
+<h2 id="技能处理">技能处理<a hidden class="anchor" aria-hidden="true" href="#技能处理">#</a></h2>
 <p>攻击方一定要是real实体，被攻击方可以是real实体，也可以是ghost实体</p>
 <p>下方的数据同步可以写到核心框架，也就是定时同步real实体的信息到ghost实体上</p>
 <p><img loading="lazy" src="Typoraimage-20220225130939947.png" alt="Typoraimage-20220225130939947"  />
 </p>
-<h2 id="6-寻路">6. 寻路<a hidden class="anchor" aria-hidden="true" href="#6-寻路">#</a></h2>
+<h2 id="寻路">寻路<a hidden class="anchor" aria-hidden="true" href="#寻路">#</a></h2>
 <p>因为世界地图很大，所以我们可以用**<font color='red'>路点</font><strong>+ 小段距离</strong><font color='red'>A星或者jps算法</font>**来实现寻路</p>
 <ol>
 <li>先求路点，比如如下的地铁图，我们可以根据权重值或者时间的组合，通过**<font color='red'>Dijkstra(迪杰斯特拉)和floyd(弗洛伊德)</font>**算法求出最短路径，这些路径可以离线先求出来，等使用的时候直接使用</li>
@@ -460,15 +460,15 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/blog/vscode-lua-chajian/">
+  <a class="prev" href="https://frog-game.github.io/posts/blog/zabbix-mysql8.0/">
     <span class="title">« 上一页</span>
     <br>
-    <span>微服务lua调试器</span>
+    <span>zabbix游戏日志监控</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/ringbuff/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/">
     <span class="title">下一页 »</span>
     <br>
-    <span>环形buff</span>
+    <span>网络IO模型总结</span>
   </a>
 </nav>
 

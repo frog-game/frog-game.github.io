@@ -6,50 +6,59 @@
     <description>Recent content in 🧱 搬砖 on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 13 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 18 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>gitlab服务器钩子</title>
       <link>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      <pubDate>Sun, 18 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</guid>
-      <description>1. 背景 每当我们接收一份新的版本，代码拿到手要做的第一件事就是查看 git log，看看这份代码的提交记录，最近代码做什么修改。如果我们看到 git log 杂乱无</description>
+      <description>背景 每当我们接收一份新的版本，代码拿到手要做的第一件事就是查看 git log，看看这份代码的提交记录，最近代码做什么修改。如果我们看到 git log 杂乱无章</description>
     </item>
     
     <item>
-      <title>lua源码赏析笔记</title>
+      <title>lua源码赏析</title>
       <link>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      <pubDate>Sat, 17 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</guid>
-      <description>1. 基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被</description>
+      <description>基础类型 定义 解释 LUA_TNONE 判断这个变量是否等于为空使用的，lua内部使用，注意不是和nil类型不等价 LUA_TNIL 全局变量没被复制就是nil类型，删除变量会被赋</description>
+    </item>
+    
+    <item>
+      <title>环形buff</title>
+      <link>https://frog-game.github.io/posts/blog/ringbuff/</link>
+      <pubDate>Fri, 16 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/ringbuff/</guid>
+      <description>图解释 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteIndex;</description>
     </item>
     
     <item>
       <title>skynet赏析</title>
       <link>https://frog-game.github.io/posts/blog/skynet/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      <pubDate>Thu, 15 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/skynet/</guid>
-      <description>1. linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 2. 网络流程图 2.1 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Soc</description>
-    </item>
-    
-    <item>
-      <title>zabbix游戏监控日志系统部署</title>
-      <link>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
-      <description>演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana 1. zabbix 6.0 1.1. 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 1.2. 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 1.3. 安装Zabbix server，Web前端，agent sudo apt</description>
+      <description>linux编译 make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 网络流程图 work线程和次级队列 每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket</description>
     </item>
     
     <item>
       <title>微服务lua调试器</title>
       <link>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</guid>
-      <description>1. luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟</description>
+      <description>luadebug 实现多虚拟机原理 先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子 LUA_API void (lua_sethook) (lua_State *L, lua_Hook func, int mask, int count); lua_State *L :虚拟机</description>
+    </item>
+    
+    <item>
+      <title>zabbix游戏日志监控</title>
+      <link>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
+      <description>演示 安装环境 版本 Ubuntu 20.04 zabbix 6.0 mysql 8.0 Ubuntu20.04+mysql8.0+zabbix6.0+elk+filebeat+logstash+grafana zabbix 6.0 阿里云镜像地址 https://mirrors.aliyun.com/zabbix/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/ 下载 zabbix sudo wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-1+ubuntu20.04_all.deb sudo dpkg -i zabbix-release_6.0-1+ubuntu20.04_all.deb sudo apt update 安装Zabbix server，Web前端，agent sudo apt install zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf</description>
     </item>
     
     <item>
@@ -58,16 +67,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wufengdashijie/</guid>
-      <description>1. 前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电</description>
-    </item>
-    
-    <item>
-      <title>环形buff</title>
-      <link>https://frog-game.github.io/posts/blog/ringbuff/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/ringbuff/</guid>
-      <description>1. 图解释 2. 结构体 typedef struct byteQueue_s { char* pBuffer;//数据 size_t nCapacity;//容量 size_t nReadIndex;//读指针索引 size_t nWriteInde</description>
+      <description>前言 无缝大地图只是外在表现，其实都是有缝隙的，现在的电脑性能还不足以加载一张非常大的地图，比如80公里，甚至几百，几千公里这么大的地图，电脑</description>
     </item>
     
     <item>
@@ -76,7 +76,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</guid>
-      <description>1. 网络编程流程 2. 堵塞IO 3. 非堵塞IO 4. 信号驱动IO 5. 异步io模型 6. 多路复用 7. 单reactor 代表作：redis 内存数据库 注意：redis 6.0 以</description>
+      <description>网络编程流程 塞IO 非堵塞IO 信号驱动IO 异步io模型 多路复用 单reactor 代表作：redis 内存数据库 注意：redis 6.0 以后是多线程 单re</description>
     </item>
     
     <item>
