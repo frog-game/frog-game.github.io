@@ -13,7 +13,7 @@
       <pubDate>Sun, 18 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</guid>
-      <description>gitlab-pre-receive-hook服务器钩子主要用于对推送钱的代码进行check,格式化,如果没达到要求禁止git提交</description>
+      <description>gitlab-pre-receive-hook服务器钩子,主要用于对推送前的代码,资源进行check,格式化,如果没达到要求禁止git提交,会被无情打退</description>
     </item>
     
     <item>
