@@ -7,7 +7,7 @@
 <meta name="robots" content="index, follow">
 <title>lua源码赏析 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾">
+<meta name="description" content="对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析">
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/luayuanmashagnxi/">
@@ -68,7 +68,7 @@ var _hmt = _hmt || [];
 })();
 </script>
 <meta property="og:title" content="lua源码赏析" />
-<meta property="og:description" content="除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾" />
+<meta property="og:description" content="对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/luayuanmashagnxi/" />
 <meta property="og:image" content="https://frog-game.github.io/posts/blog/luayuanmashagnxi/Typoraimage-20220405220227940.png" /><meta property="article:section" content="posts" />
@@ -78,7 +78,7 @@ var _hmt = _hmt || [];
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://frog-game.github.io/posts/blog/luayuanmashagnxi/Typoraimage-20220405220227940.png" />
 <meta name="twitter:title" content="lua源码赏析"/>
-<meta name="twitter:description" content="除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾"/>
+<meta name="twitter:description" content="对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析"/>
 
 
 <script type="application/ld+json">
@@ -113,7 +113,7 @@ var _hmt = _hmt || [];
   "@type": "BlogPosting",
   "headline": "lua源码赏析",
   "name": "lua源码赏析",
-  "description": "除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾",
+  "description": "对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析",
   "keywords": [
     ""
   ],
@@ -231,7 +231,7 @@ var _hmt = _hmt || [];
                 lua源码赏析
             </h1>
             <div class="post-description">
-                除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾
+                对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析
             </div>
             <div class="post-meta">创建:&nbsp;<span title='2022-09-17 01:30:29 +0800 CST'>2022-09-17</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-17&nbsp;|&nbsp;字数:&nbsp;9217字&nbsp;|&nbsp;时长:&nbsp;19分钟&nbsp;|&nbsp;
 作者:&nbsp;frog

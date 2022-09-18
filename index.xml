@@ -13,7 +13,7 @@
       <pubDate>Sun, 18 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</guid>
-      <description>每当我们接收一份新的版本，代码拿到手要做的第一件事就是查看 git log，看看这份代码的提交记录</description>
+      <description>gitlab-pre-receive-hook服务器钩子主要用于对推送钱的代码进行check,格式化,如果没达到要求禁止git提交</description>
     </item>
     
     <item>
@@ -22,7 +22,7 @@
       <pubDate>Sat, 17 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</guid>
-      <description>除了主线程以外，其它线程和其它Lua对象一样都是垃圾回收的对象。当新建一个线程时，线程会压入栈，这样能确保新线程不会成为垃圾</description>
+      <description>对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析</description>
     </item>
     
     <item>
@@ -31,7 +31,7 @@
       <pubDate>Fri, 16 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/ringbuff/</guid>
-      <description>假设要申请的空间 环形buff`结构体大小为8 nWriteIndex 写指针索引 nReadIndex 读指针索引 环形buff初始化 清空结构体</description>
+      <description>用c代码写的ringbuff代码解析,ringbuff用于从网络中读取到的数据进行存储，解析，此ringbuff已经用于frog-game-frame框架</description>
     </item>
     
     <item>
@@ -40,7 +40,7 @@
       <pubDate>Thu, 15 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/skynet/</guid>
-      <description>每个在线客户端在Skynet服务器上都对应有一个Socket与其连接，一个Socket在Skynet内部对应一个Lua虚拟机和一个客户特定的消息队列per client mq。当客户特定消息队列中有消息时，该队列会挂载到全局队列global message queue上供工作线程worker Threads进行调度处理。</description>
+      <description>云风skynet赏析,注解,图示</description>
     </item>
     
     <item>
@@ -49,7 +49,7 @@
       <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</guid>
-      <description>先从luahook原理说起 在lua.h 当中我们有 lua_sethook函数来给们设置钩子</description>
+      <description>针对云风skynet微服器框架写的vscode-lua调试器</description>
     </item>
     
     <item>
@@ -58,7 +58,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
-      <description>Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana</description>
+      <description>Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana 搭建的游戏日志监控系统,已用于frog-game-frame框架</description>
     </item>
     
     <item>
@@ -67,7 +67,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wufengdashijie/</guid>
-      <description>无缝大地图只是外在表现，其实都是有缝隙的</description>
+      <description>无缝大地图图示,方法总结</description>
     </item>
     
     <item>
@@ -76,7 +76,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</guid>
-      <description>网络编程流程 堵塞IO 非堵塞IO 信号驱动IO 异步io模型 多路复用 单reactor 单reactor 多进程模型 单reactor模型 &#43; 任务队列 &#43; 线程池</description>
+      <description>网络IO模型, reactor 图示</description>
     </item>
     
     <item>
@@ -85,7 +85,7 @@
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/wangluozongjie/</guid>
-      <description>序列号: 在建立连接的时候有计算机生成的随机数并作为初始值，通过syn包传给接收端主机，每发一次数据，就累加一次该数据字节数的大小，主要是用来解决网络包乱序问题</description>
+      <description>网络tcp udp 三次握手,四次挥手,滑动窗口,等等方面的图示,解析</description>
     </item>
     
     <item>
