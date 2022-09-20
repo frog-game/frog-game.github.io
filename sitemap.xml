@@ -11,17 +11,35 @@
     <loc>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</loc>
     <lastmod>2022-09-18T01:30:29+08:00</lastmod>
   </url><url>
+    <loc>https://frog-game.github.io/tags/</loc>
+    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/%E8%BF%90%E7%BB%B4/</loc>
+    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
+  </url><url>
     <loc>https://frog-game.github.io/posts/blog/</loc>
     <lastmod>2022-09-18T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/lua/</loc>
+    <lastmod>2022-09-17T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</loc>
     <lastmod>2022-09-17T01:30:29+08:00</lastmod>
   </url><url>
+    <loc>https://frog-game.github.io/tags/frog-frame-work/</loc>
+    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
+  </url><url>
     <loc>https://frog-game.github.io/posts/blog/ringbuff/</loc>
     <lastmod>2022-09-18T01:30:29+08:00</lastmod>
   </url><url>
+    <loc>https://frog-game.github.io/tags/skynet/</loc>
+    <lastmod>2022-09-15T01:30:29+08:00</lastmod>
+  </url><url>
     <loc>https://frog-game.github.io/posts/blog/skynet/</loc>
     <lastmod>2022-09-15T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/vscode/</loc>
+    <lastmod>2022-09-14T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</loc>
     <lastmod>2022-09-14T01:30:29+08:00</lastmod>
@@ -32,7 +50,13 @@
     <loc>https://frog-game.github.io/posts/blog/wufengdashijie/</loc>
     <lastmod>2022-09-13T01:30:29+08:00</lastmod>
   </url><url>
+    <loc>https://frog-game.github.io/tags/%E6%B8%B8%E6%88%8F%E9%80%BB%E8%BE%91/</loc>
+    <lastmod>2022-09-13T01:30:29+08:00</lastmod>
+  </url><url>
     <loc>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</loc>
+    <lastmod>2022-09-13T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/%E7%BD%91%E7%BB%9C%E5%BA%95%E5%B1%82/</loc>
     <lastmod>2022-09-13T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/posts/blog/wangluozongjie/</loc>
@@ -55,8 +79,6 @@
     <loc>https://frog-game.github.io/categories/</loc>
   </url><url>
     <loc>https://frog-game.github.io/series/</loc>
-  </url><url>
-    <loc>https://frog-game.github.io/tags/</loc>
   </url><url>
     <loc>https://frog-game.github.io/posts/life/</loc>
   </url>

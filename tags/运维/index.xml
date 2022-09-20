@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>运维 on frog&#39;s Blog</title>
+    <link>https://frog-game.github.io/tags/%E8%BF%90%E7%BB%B4/</link>
+    <description>Recent content in 运维 on frog&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 18 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/%E8%BF%90%E7%BB%B4/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>gitlab服务器钩子</title>
+      <link>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</link>
+      <pubDate>Sun, 18 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</guid>
+      <description>gitlab-pre-receive-hook服务器钩子,主要用于对推送前的代码,资源进行check,格式化,如果没达到要求禁止git提交,会被无情打退</description>
+    </item>
+    
+    <item>
+      <title>zabbix游戏日志监控</title>
+      <link>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/zabbix-mysql8.0/</guid>
+      <description>Ubuntu20.04&#43;mysql8.0&#43;zabbix6.0&#43;elk&#43;filebeat&#43;logstash&#43;grafana 搭建的游戏日志监控系统,已用于frog-game-frame框架</description>
+    </item>
+    
+  </channel>
+</rss>

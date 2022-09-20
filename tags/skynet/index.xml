@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>skynet on frog&#39;s Blog</title>
+    <link>https://frog-game.github.io/tags/skynet/</link>
+    <description>Recent content in skynet on frog&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 15 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/skynet/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>skynet赏析</title>
+      <link>https://frog-game.github.io/posts/blog/skynet/</link>
+      <pubDate>Thu, 15 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/skynet/</guid>
+      <description>云风skynet赏析,注解,图示</description>
+    </item>
+    
+  </channel>
+</rss>
