@@ -10,7 +10,7 @@
 <meta name="description" content="用c代码写的四叉树lod灯塔AOI视野同步，此AOI已经用于frog-game-frame框架">
 <meta name="author" content="
 作者:&nbsp;frog">
-<link rel="canonical" href="https://frog-game.github.io/posts/blog/aoi-tower/">
+<link rel="canonical" href="https://frog-game.github.io/posts/blog/aoitower/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.8b1bcfe952e1e1a78b44fa99f358fddf187aee65873bbc85ca10d6f18a3bff33.css" integrity="sha256-ixvP6VLh4aeLRPqZ81j93xh67mWHO7yFyhDW8Yo7/zM=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
@@ -70,7 +70,7 @@ var _hmt = _hmt || [];
 <meta property="og:title" content="四叉树Lod灯塔AOI" />
 <meta property="og:description" content="用c代码写的四叉树lod灯塔AOI视野同步，此AOI已经用于frog-game-frame框架" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://frog-game.github.io/posts/blog/aoi-tower/" />
+<meta property="og:url" content="https://frog-game.github.io/posts/blog/aoitower/" />
 <meta property="og:image" content="https://frog-game.github.io/posts/blog/AOI-tower/image-20221028105101531.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-10-28T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2022-10-28T01:30:29&#43;08:00" />
@@ -102,7 +102,7 @@ var _hmt = _hmt || [];
       "@type": "ListItem",
       "position":  3 ,
       "name": "四叉树Lod灯塔AOI",
-      "item": "https://frog-game.github.io/posts/blog/aoi-tower/"
+      "item": "https://frog-game.github.io/posts/blog/aoitower/"
     }
   ]
 }
@@ -128,7 +128,7 @@ var _hmt = _hmt || [];
   }],
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://frog-game.github.io/posts/blog/aoi-tower/"
+    "@id": "https://frog-game.github.io/posts/blog/aoitower/"
   },
   "publisher": {
     "@type": "Organization",
@@ -442,7 +442,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="四叉树lod示意图">[四叉树]lod示意图<a hidden class="anchor" aria-hidden="true" href="#四叉树lod示意图">#</a></h2>
-<p><img loading="lazy" src="image/AOI-tower/image-20221028105101531.png" alt="image-20221028105101531"  />
+<p><img loading="lazy" src="image-20221028105101531.png" alt="image-20221028105101531"  />
 </p>
 <ol>
 <li>黑色大框是AOI的区域大小</li>
@@ -1232,11 +1232,11 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="在此aoi模式下微服务器大世界地图分割方法和传统进程分割方法的不同">在此AOI模式下微服务器大世界地图分割方法和传统进程分割方法的不同<a hidden class="anchor" aria-hidden="true" href="#在此aoi模式下微服务器大世界地图分割方法和传统进程分割方法的不同">#</a></h2>
 <p><strong>传统大世界地图分割方法</strong>
-<img loading="lazy" src="/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTYxMDI2MA==,size_16,color_FFFFFF,t_70.png" alt="在这里插入图片描述"  />
+<img loading="lazy" src="watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTYxMDI2MA==,size_16,color_FFFFFF,t_70.png" alt="在这里插入图片描述"  />
 
 此方法为垂直分割方法，将一个一二十公里的大地图分割成很多小地图放到各自的进程当中去处理数据，这种需要处理大世界地图边缝问题，需要做镜像数据管理，还有如果角色在一个进程中也就是某个小地图上面堆积，那么这个进程的压力会很大，别的进程却很休闲，这个也需要处理，总之很多麻烦。所以我们改成了微服务器水平分割加灯塔AOI方式</p>
 <p><strong>微服务大世界地图处理方法</strong></p>
-<p><img loading="lazy" src="/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTYxMDI2MA==,size_16,color_FFFFFF,t_70-16669255366962.png" alt="在这里插入图片描述"  />
+<p><img loading="lazy" src="watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTYxMDI2MA==,size_16,color_FFFFFF,t_70-16669255366962.png" alt="在这里插入图片描述"  />
 </p>
 <p>此结构基于微服务水平分割，每个相同微服务可以并行再开很多来并行处理减少压力，比如灯塔AOI开了5个微服务我发现算力还是不够，
 那么我可以在增加新的灯塔AOI微服务来并行处理数据，所以理论上一个20公里的地图撑个10多万的人不成问题。而且这种模式在服务器不需要处理无缝问题</p>
@@ -1248,7 +1248,7 @@ var _hmt = _hmt || [];
 <p>因为有时候想主动检查对象的状态，从怪物AI会定时检查被观察者集合的距离，决定是否发动攻击；又比如释放技能需要遍历被观察者集合，判断它们是否命中。如果没有被观察者集合，就必须遍历整个场景的对象</p>
 </blockquote>
 <h2 id="简单测试数据">简单测试数据<a hidden class="anchor" aria-hidden="true" href="#简单测试数据">#</a></h2>
-<p><img loading="lazy" src="/2.png" alt="在这里插入图片描述"  />
+<p><img loading="lazy" src="2.png" alt="在这里插入图片描述"  />
 </p>
 
 
