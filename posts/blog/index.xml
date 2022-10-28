@@ -6,7 +6,16 @@
     <description>Recent content in 🧱 搬砖 on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 18 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 28 Oct 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>四叉树Lod灯塔AOI</title>
+      <link>https://frog-game.github.io/posts/blog/aoi-tower/</link>
+      <pubDate>Fri, 28 Oct 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/aoi-tower/</guid>
+      <description>用c代码写的四叉树lod灯塔AOI视野同步，此AOI已经用于frog-game-frame框架</description>
+    </item>
+    
     <item>
       <title>gitlab服务器钩子</title>
       <link>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</link>
@@ -95,15 +104,6 @@
       
       <guid>https://frog-game.github.io/posts/blog/wangluozongjie/</guid>
       <description>网络tcp udp 三次握手,四次挥手,滑动窗口,等等方面的图示,解析</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://frog-game.github.io/posts/blog/aoi-tower/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/aoi-tower/</guid>
-      <description>一些字段的解释 观察者：我可以观察到那些人。 被观察者：那些人能观察到自己。 #define WATCHER_MODE 0x01 观察者模式 #define MARKER_MODE 0x02 被观察者模式 灯塔相关[结构体] 1：灯塔区域结构</description>
     </item>
     
   </channel>

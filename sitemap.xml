@@ -3,21 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://frog-game.github.io/posts/</loc>
-    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
+    <lastmod>2022-10-28T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/</loc>
-    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
+    <lastmod>2022-10-28T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/</loc>
+    <lastmod>2022-10-28T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/posts/blog/aoi-tower/</loc>
+    <lastmod>2022-10-28T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/tags/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/</loc>
+    <lastmod>2022-10-28T01:30:29+08:00</lastmod>
+  </url><url>
+    <loc>https://frog-game.github.io/posts/blog/</loc>
+    <lastmod>2022-10-28T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</loc>
     <lastmod>2022-09-18T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/tags/</loc>
-    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
-  </url><url>
     <loc>https://frog-game.github.io/tags/%E8%BF%90%E7%BB%B4/</loc>
-    <lastmod>2022-09-18T01:30:29+08:00</lastmod>
-  </url><url>
-    <loc>https://frog-game.github.io/posts/blog/</loc>
     <lastmod>2022-09-18T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/tags/lua/</loc>
@@ -71,16 +77,11 @@
     <loc>https://frog-game.github.io/posts/blog/wangluozongjie/</loc>
     <lastmod>2022-09-13T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/tags/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2022-09-13T01:30:29+08:00</lastmod>
-  </url><url>
     <loc>https://frog-game.github.io/links/</loc>
     <lastmod>2021-11-06T15:15:53+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/about/</loc>
     <lastmod>2021-11-06T14:57:28+08:00</lastmod>
-  </url><url>
-    <loc>https://frog-game.github.io/posts/blog/aoi-tower/</loc>
   </url><url>
     <loc>https://frog-game.github.io/archives/</loc>
   </url><url>
