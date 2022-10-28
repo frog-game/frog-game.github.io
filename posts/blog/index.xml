@@ -9,10 +9,10 @@
     <lastBuildDate>Fri, 28 Oct 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>四叉树Lod灯塔AOI</title>
-      <link>https://frog-game.github.io/posts/blog/aoitower/</link>
+      <link>https://frog-game.github.io/posts/blog/aoi-tower/</link>
       <pubDate>Fri, 28 Oct 2022 01:30:29 +0800</pubDate>
       
-      <guid>https://frog-game.github.io/posts/blog/aoitower/</guid>
+      <guid>https://frog-game.github.io/posts/blog/aoi-tower/</guid>
       <description>用c代码写的四叉树lod灯塔AOI视野同步，此AOI已经用于frog-game-frame框架</description>
     </item>
     
