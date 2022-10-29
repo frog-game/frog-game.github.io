@@ -9,10 +9,10 @@
     <lastBuildDate>Tue, 13 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/%E7%BD%91%E7%BB%9C%E5%BA%95%E5%B1%82/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>网络IO模型总结</title>
-      <link>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</link>
+      <link>https://frog-game.github.io/posts/read/wangluo_io_zhongjie/</link>
       <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
       
-      <guid>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</guid>
+      <guid>https://frog-game.github.io/posts/read/wangluo_io_zhongjie/</guid>
       <description>网络IO模型, reactor 图示</description>
     </item>
     
