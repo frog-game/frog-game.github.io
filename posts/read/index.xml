@@ -5,6 +5,16 @@
     <link>https://frog-game.github.io/posts/read/</link>
     <description>Recent content in 📕 阅读 on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language><atom:link href="https://frog-game.github.io/posts/read/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 17 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/read/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>lua源码赏析</title>
+      <link>https://frog-game.github.io/posts/read/luayuanmashagnxi/</link>
+      <pubDate>Sat, 17 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/read/luayuanmashagnxi/</guid>
+      <description>对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析</description>
+    </item>
+    
   </channel>
 </rss>
