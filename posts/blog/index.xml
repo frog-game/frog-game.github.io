@@ -17,21 +17,21 @@
     </item>
     
     <item>
+      <title>lua开发经验总结</title>
+      <link>https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/</link>
+      <pubDate>Sun, 16 Oct 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/</guid>
+      <description>lua开发经验总结,不定期持续更新</description>
+    </item>
+    
+    <item>
       <title>gitlab服务器钩子</title>
       <link>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</link>
       <pubDate>Sun, 18 Sep 2022 01:30:29 +0800</pubDate>
       
       <guid>https://frog-game.github.io/posts/blog/gitlab-pre-receive-hook/</guid>
       <description>gitlab-pre-receive-hook服务器钩子,主要用于对推送前的代码,资源进行check,格式化,如果没达到要求禁止git提交,会被无情打退</description>
-    </item>
-    
-    <item>
-      <title>lua源码赏析</title>
-      <link>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</link>
-      <pubDate>Sat, 17 Sep 2022 01:30:29 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/luayuanmashagnxi/</guid>
-      <description>对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析</description>
     </item>
     
     <item>
