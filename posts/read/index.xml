@@ -16,5 +16,23 @@
       <description>对lua源代码阅读做得记录，还有lua使用中遇到的一些坑和和经验赏析</description>
     </item>
     
+    <item>
+      <title>skynet赏析</title>
+      <link>https://frog-game.github.io/posts/read/skynet/</link>
+      <pubDate>Thu, 15 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/read/skynet/</guid>
+      <description>云风skynet赏析,注解,图示</description>
+    </item>
+    
+    <item>
+      <title>网络底层总结</title>
+      <link>https://frog-game.github.io/posts/read/wangluozongjie/</link>
+      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/read/wangluozongjie/</guid>
+      <description>网络tcp udp 三次握手,四次挥手,滑动窗口,等等方面的图示,解析</description>
+    </item>
+    
   </channel>
 </rss>

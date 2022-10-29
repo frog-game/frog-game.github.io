@@ -44,15 +44,6 @@
     </item>
     
     <item>
-      <title>skynet赏析</title>
-      <link>https://frog-game.github.io/posts/blog/skynet/</link>
-      <pubDate>Thu, 15 Sep 2022 01:30:29 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/skynet/</guid>
-      <description>云风skynet赏析,注解,图示</description>
-    </item>
-    
-    <item>
       <title>微服务lua调试器</title>
       <link>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</link>
       <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>
@@ -95,15 +86,6 @@
       
       <guid>https://frog-game.github.io/posts/blog/wangluo_io_zhongjie/</guid>
       <description>网络IO模型, reactor 图示</description>
-    </item>
-    
-    <item>
-      <title>网络底层总结</title>
-      <link>https://frog-game.github.io/posts/blog/wangluozongjie/</link>
-      <pubDate>Tue, 13 Sep 2022 01:30:29 +0800</pubDate>
-      
-      <guid>https://frog-game.github.io/posts/blog/wangluozongjie/</guid>
-      <description>网络tcp udp 三次握手,四次挥手,滑动窗口,等等方面的图示,解析</description>
     </item>
     
   </channel>
