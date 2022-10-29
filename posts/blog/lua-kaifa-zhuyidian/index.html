@@ -71,12 +71,12 @@ var _hmt = _hmt || [];
 <meta property="og:description" content="lua开发经验总结,不定期持续更新" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/blog/image-20220720102135093.png" /><meta property="article:section" content="posts" />
+<meta property="og:image" content="https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/image-20220720102135093.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-10-16T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2022-10-18T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/blog/image-20220720102135093.png" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/image-20220720102135093.png" />
 <meta name="twitter:title" content="lua开发经验总结"/>
 <meta name="twitter:description" content="lua开发经验总结,不定期持续更新"/>
 
@@ -120,7 +120,7 @@ var _hmt = _hmt || [];
   "articleBody": "lua删除table中的多个元素 很多时候，我们有这样的需求:删除table中若干符合条件的元素，最原始的想法就是用for遍历一边table，符合条件的用table.remove就可以了\nfunction test1(t) for i , v in ipairs(t) do if v.id%3 == 0 then table.remove(t ,i) end end end 结果证明这是不行的，因为table.remove删除第i元素后，i后面的元素会向前补齐，这样删除前处于i+1的元素就变成了i元素，然后for循环从t中取第i+1个元素，这样就漏掉了第i+1个元素，既然这样不行，很自然的就想到用while循环，可以自由控制“遍历的指针”是否前进，有删除操作，就不前进，否则才前进\n代码如下\nfunction test2(t) local int i =1 while(t[i]) do if t[i].id%3 == 0 then table.remove(t , i) else i = i + 1 end end end 跑一下，很正常！\n但是注意table.remove是删除队列中的一个元素，每一次操作都要移动大量元素，性能不会太好，因此可以考虑用临时的table，用来保存没有被删除的元素，最后再让t指向这个table，以空间来换时间，而实际使用中，t中的元素往往是table类型，这样临时的table中只会保存元素的引用，因此占用的空间几乎可以忽略不计。\n代码如下\nfunction test3(t) local newT = {} for i ,v in ipairs(t) do if v.id%3 ~= 0 then table.insert(newT , v) end end t= newT end 很好奇test3()到底比test2()快多少呢，我测试了一下\nt = {} local n = 10000 for i = 1,n do table.insert(t ,{id = i}) end n是10000的情况下：\ntest2耗时0.234s\ntest3耗时0.002s\n相差非常大。\n结论：\n删除table中的多个元素，在table较大，且删除操作较频繁时，切忌使用table.remove\nLUA-点号和冒号 由于LUA中是模拟类，没有class，\n所以这里是使用.号来访问实例的成员\nre.SetActive(re, re.activeSelf == false); 而冒号： 则是种语法糖，省略了上面代码中的第一个参数\nre:SetActive(re.activeSelf == false); 也就是说：lua中对象.方法，只能找到方法，对象只能是类型，即使传入的是对象，所以等效于确定了单纯的方法！\n所以冒号的方法，模拟了对象访问自己方法的思想，但本质不是！\n记住：lua没有面向对象！\n为什么JSON字符串当中会出现反斜杠? 对table或者对象进行了两次的序列化。说白了就是进行了两次的toJSONString\nlua 取余问题 lua 对数字字符串取余 lua 对字符串'0'取余， lua因为是弱语言所以会尝试把上面的字符串'0'转换成数字0，然后去进行取余，但是又不能对0进行取余所以会返回NaN\n为啥返回NaN 有可能是这个原因\n类型是int时做了判断，为double或者字符串会做转换跳过了前置判断，也就NaN了\nlua直接对数字0取余 会直接报语法错误\n",
   "wordCount" : "1030",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/blog/image-20220720102135093.png","datePublished": "2022-10-16T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/image-20220720102135093.png","datePublished": "2022-10-16T01:30:29+08:00",
   "dateModified": "2022-10-18T01:30:29+08:00",
   "author":[{
     "@type": "Person",
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/blog/image-20220720102135093.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/blog/lua-kaifa-zhuyidian/image-20220720102135093.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
