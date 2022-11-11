@@ -71,12 +71,12 @@ var _hmt = _hmt || [];
 <meta property="og:description" content="skynet-blueprint-debug lua多虚拟机调试 指导和演示" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221104184650997.png" /><meta property="article:section" content="posts" />
+<meta property="og:image" content="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221105210016638.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-09-13T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2022-09-13T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221104184650997.png" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221105210016638.png" />
 <meta name="twitter:title" content="skynet-blueprint-debug lua多虚拟机调试"/>
 <meta name="twitter:description" content="skynet-blueprint-debug lua多虚拟机调试 指导和演示"/>
 
@@ -117,10 +117,10 @@ var _hmt = _hmt || [];
   "keywords": [
     ""
   ],
-  "articleBody": "在service_snlua.c 中增加此函数 void addLuaState(struct snlua *l,const char *debug_ip,const char * debug_port) { if (NULL == debug_ip) { return; } if (NULL == debug_port) { return; } int port = strtol(debug_port, NULL, 10); const char *lua_dofunction = \"function snlua_addLuaState()\\n\" \"local dbg = require('frog_debug')\\n\" \"dbg.startDebugServer('%s', %d)\\n\" \"dbg.addLuaState()\\n\" \"end\" \"\"; char loadstr[200]; sprintf(loadstr, lua_dofunction, debug_ip, port); int oldn = lua_gettop(l-\u003eL); int status = luaL_dostring(l-\u003eL, loadstr); if (status != 0) { const char *ret = lua_tostring(l-\u003eL, -1); lua_settop(l-\u003eL, oldn); skynet_error(l-\u003ectx, \"[ERROR] addLuaState lua_tostring error!! err:%s\", ret); return; } lua_getglobal(l-\u003eL, \"snlua_addLuaState\"); if (!lua_isfunction(l-\u003eL, -1)) { const char *ret = lua_tostring(l-\u003eL, -1); lua_settop(l-\u003eL, oldn); skynet_error( l-\u003ectx, \"[ERROR] addLuaState lua_getglobal addLuaState error!! err:%s\", ret); return; } status = lua_pcall(l-\u003eL, 0, 0, 0); if (status != 0) { const char *ret = lua_tostring(l-\u003eL, -1); lua_settop(l-\u003eL, oldn); skynet_error(l-\u003ectx, \"[ERROR] addLuaState lua_pcall addLuaState error!! err:%s\", ret); return; } } 将addLuaState函数插入到service_snlua.c对应位置 static int init_cb(struct snlua *l, struct skynet_context *ctx, const char * args, size_t sz) { lua_State *L = l-\u003eL; l-\u003ectx = ctx; lua_gc(L, LUA_GCSTOP, 0); lua_pushboolean(L, 1); /* signal for libraries to ignore env. vars. */ lua_setfield(L, LUA_REGISTRYINDEX, \"LUA_NOENV\"); luaL_openlibs(L); luaL_requiref(L, \"skynet.profile\", init_profile, 0); int profile_lib = lua_gettop(L); // replace coroutine.resume / coroutine.wrap lua_getglobal(L, \"coroutine\"); lua_getfield(L, profile_lib, \"resume\"); lua_setfield(L, -2, \"resume\"); lua_getfield(L, profile_lib, \"wrap\"); lua_setfield(L, -2, \"wrap\"); lua_settop(L, profile_lib-1); lua_pushlightuserdata(L, ctx); lua_setfield(L, LUA_REGISTRYINDEX, \"skynet_context\"); luaL_requiref(L, \"skynet.codecache\", codecache , 0); lua_pop(L,1); lua_gc(L, LUA_GCGEN, 0, 0); const char *path = optstring(ctx, \"lua_path\",\"./lualib/?.lua;./lualib/?/init.lua\"); lua_pushstring(L, path); lua_setglobal(L, \"LUA_PATH\"); const char *cpath = optstring(ctx, \"lua_cpath\",\"./luaclib/?.so\"); lua_pushstring(L, cpath); lua_setglobal(L, \"LUA_CPATH\"); const char *service = optstring(ctx, \"luaservice\", \"./service/?.lua\"); lua_pushstring(L, service); lua_setglobal(L, \"LUA_SERVICE\"); const char *preload = skynet_command(ctx, \"GETENV\", \"preload\"); lua_pushstring(L, preload); lua_setglobal(L, \"LUA_PRELOAD\"); lua_pushcfunction(L, traceback); assert(lua_gettop(L) == 1); const char * loader = optstring(ctx, \"lualoader\", \"./lualib/loader.lua\"); int r = luaL_loadfile(L,loader); if (r != LUA_OK) { skynet_error(ctx, \"Can't load %s : %s\", loader, lua_tostring(L, -1)); report_launcher_error(ctx); return 1; } lua_pushlstring(L, args, sz); r = lua_pcall(L,1,0,1); if (r != LUA_OK) { skynet_error(ctx, \"lua loader error : %s\", lua_tostring(L, -1)); report_launcher_error(ctx); return 1; } lua_settop(L,0); if (lua_getfield(L, LUA_REGISTRYINDEX, \"memlimit\") == LUA_TNUMBER) { size_t limit = lua_tointeger(L, -1); l-\u003emem_limit = limit; skynet_error(ctx, \"Set memory limit to %.2f M\", (float)limit / (1024 * 1024)); lua_pushnil(L); lua_setfield(L, LUA_REGISTRYINDEX, \"memlimit\"); } lua_pop(L, 1); addLuaState(l, optstring(ctx, \"debug_ip\", NULL), optstring(ctx, \"debug_port\", NULL));//调用函数放到这里 lua_gc(L, LUA_GCRESTART, 0); return 0; } 去vscode插件商场下载此插件并安装 用everthing 找到 frog_debug.so 然后放到luaclib目录下上传到服务器 在config里面加上两个字段 debug_ip = \"127.0.0.1\" debug_port = \"9966\" 重编skynet代码 cd skynet make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 在vscode上按如下填写 创建.json文件 { // 使用 IntelliSense 了解相关属性。 // 悬停以查看现有属性的描述。 // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387 \"version\": \"0.2.0\", \"configurations\": [ { \"type\": \"lua_new\", \"request\": \"launch\", \"name\": \"Lua New Debug\", \"host\": \"127.0.0.1\", \"port\": 9966, \"ext\": [ \".lua\", \".lua.txt\", \".lua.bytes\" ], \"ideConnectDebugger\": true } ] } 我用的是wsl2,直接到你的skynet目录下启动 如果嫌弃麻烦,可以在github直接下载example example地址:https://github.com/frog-game/skynet-blueprint-debug.git\n然后按 6到8步骤执行就可以进行调试了\n利用nc命令调试skynet debug_console演示 调试展示 ",
-  "wordCount" : "790",
+  "articleBody": "在service_snlua.c 中增加此函数 void addLuaState(struct snlua *l,const char *debug_ip,const char * debug_port) { if (NULL == debug_ip) { return; } if (NULL == debug_port) { return; } int port = strtol(debug_port, NULL, 10); const char *lua_dofunction = \"function snlua_addLuaState()\\n\" \"local dbg = require('frog_debug')\\n\" \"dbg.startDebugServer('%s', %d)\\n\" \"dbg.addLuaState()\\n\" \"end\" \"\"; char loadstr[200]; sprintf(loadstr, lua_dofunction, debug_ip, port); int oldn = lua_gettop(l-\u003eL); int status = luaL_dostring(l-\u003eL, loadstr); if (status != 0) { const char *ret = lua_tostring(l-\u003eL, -1); lua_settop(l-\u003eL, oldn); skynet_error(l-\u003ectx, \"[ERROR] addLuaState lua_tostring error!! err:%s\", ret); return; } lua_getglobal(l-\u003eL, \"snlua_addLuaState\"); if (!lua_isfunction(l-\u003eL, -1)) { const char *ret = lua_tostring(l-\u003eL, -1); lua_settop(l-\u003eL, oldn); skynet_error( l-\u003ectx, \"[ERROR] addLuaState lua_getglobal addLuaState error!! err:%s\", ret); return; } status = lua_pcall(l-\u003eL, 0, 0, 0); if (status != 0) { const char *ret = lua_tostring(l-\u003eL, -1); lua_settop(l-\u003eL, oldn); skynet_error(l-\u003ectx, \"[ERROR] addLuaState lua_pcall addLuaState error!! err:%s\", ret); return; } } 将addLuaState函数插入到service_snlua.c对应位置 static int init_cb(struct snlua *l, struct skynet_context *ctx, const char * args, size_t sz) { lua_State *L = l-\u003eL; l-\u003ectx = ctx; lua_gc(L, LUA_GCSTOP, 0); lua_pushboolean(L, 1); /* signal for libraries to ignore env. vars. */ lua_setfield(L, LUA_REGISTRYINDEX, \"LUA_NOENV\"); luaL_openlibs(L); luaL_requiref(L, \"skynet.profile\", init_profile, 0); int profile_lib = lua_gettop(L); // replace coroutine.resume / coroutine.wrap lua_getglobal(L, \"coroutine\"); lua_getfield(L, profile_lib, \"resume\"); lua_setfield(L, -2, \"resume\"); lua_getfield(L, profile_lib, \"wrap\"); lua_setfield(L, -2, \"wrap\"); lua_settop(L, profile_lib-1); lua_pushlightuserdata(L, ctx); lua_setfield(L, LUA_REGISTRYINDEX, \"skynet_context\"); luaL_requiref(L, \"skynet.codecache\", codecache , 0); lua_pop(L,1); lua_gc(L, LUA_GCGEN, 0, 0); const char *path = optstring(ctx, \"lua_path\",\"./lualib/?.lua;./lualib/?/init.lua\"); lua_pushstring(L, path); lua_setglobal(L, \"LUA_PATH\"); const char *cpath = optstring(ctx, \"lua_cpath\",\"./luaclib/?.so\"); lua_pushstring(L, cpath); lua_setglobal(L, \"LUA_CPATH\"); const char *service = optstring(ctx, \"luaservice\", \"./service/?.lua\"); lua_pushstring(L, service); lua_setglobal(L, \"LUA_SERVICE\"); const char *preload = skynet_command(ctx, \"GETENV\", \"preload\"); lua_pushstring(L, preload); lua_setglobal(L, \"LUA_PRELOAD\"); lua_pushcfunction(L, traceback); assert(lua_gettop(L) == 1); const char * loader = optstring(ctx, \"lualoader\", \"./lualib/loader.lua\"); int r = luaL_loadfile(L,loader); if (r != LUA_OK) { skynet_error(ctx, \"Can't load %s : %s\", loader, lua_tostring(L, -1)); report_launcher_error(ctx); return 1; } lua_pushlstring(L, args, sz); r = lua_pcall(L,1,0,1); if (r != LUA_OK) { skynet_error(ctx, \"lua loader error : %s\", lua_tostring(L, -1)); report_launcher_error(ctx); return 1; } lua_settop(L,0); if (lua_getfield(L, LUA_REGISTRYINDEX, \"memlimit\") == LUA_TNUMBER) { size_t limit = lua_tointeger(L, -1); l-\u003emem_limit = limit; skynet_error(ctx, \"Set memory limit to %.2f M\", (float)limit / (1024 * 1024)); lua_pushnil(L); lua_setfield(L, LUA_REGISTRYINDEX, \"memlimit\"); } lua_pop(L, 1); addLuaState(l, optstring(ctx, \"debug_ip\", NULL), optstring(ctx, \"debug_port\", NULL));//调用函数放到这里 lua_gc(L, LUA_GCRESTART, 0); return 0; } 去vscode插件商场下载此插件并安装 远程调试 用everthing 找到 frog_debug.so 然后放到luaclib目录下上传到服务器 在config里面加上两个字段 debug_ip = \"127.0.0.1\" debug_port = \"9966\" 重编skynet代码 cd skynet make linux MALLOC_STATICLIB= SKYNET_DEFINES=-DNOUSE_JEMALLOC 在vscode上按如下填写 创建launch.json文件 { // 使用 IntelliSense 了解相关属性。 // 悬停以查看现有属性的描述。 // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387 \"version\": \"0.2.0\", \"configurations\": [ { \"type\": \"lua_remote\", \"request\": \"launch\", \"name\": \"远程调试\", \"host\": \"localhost\", \"port\": 9966, \"ext\": [ \".lua\", \".lua.txt\", \".lua.bytes\" ], \"ideConnectDebugger\": true } ] } 我用的是wsl2,直接到你的skynet目录下启动 如果嫌弃麻烦,可以在github直接下载example example地址:https://github.com/frog-game/skynet-blueprint-debug.git\n然后按 6到8步骤执行就可以进行调试了\n利用nc命令调试skynet debug_console演示 调试展示 启动进程调试方法 ",
+  "wordCount" : "820",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221104184650997.png","datePublished": "2022-09-13T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221105210016638.png","datePublished": "2022-09-13T01:30:29+08:00",
   "dateModified": "2022-09-13T01:30:29+08:00",
   "author":[{
     "@type": "Person",
@@ -238,7 +238,7 @@ var _hmt = _hmt || [];
             <div class="post-description">
                 skynet-blueprint-debug lua多虚拟机调试 指导和演示
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;790字&nbsp;|&nbsp;时长:&nbsp;2分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-09-13 01:30:29 +0800 CST'>2022-09-13</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-13&nbsp;|&nbsp;字数:&nbsp;820字&nbsp;|&nbsp;时长:&nbsp;2分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221104184650997.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/image-20221105210016638.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
@@ -273,6 +273,9 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#%e5%8e%bbvscode%e6%8f%92%e4%bb%b6%e5%95%86%e5%9c%ba%e4%b8%8b%e8%bd%bd%e6%ad%a4%e6%8f%92%e4%bb%b6%e5%b9%b6%e5%ae%89%e8%a3%85" aria-label="去vscode插件商场下载此插件并安装">去vscode插件商场下载此插件并安装</a></li>
                 <li>
+                    <a href="#%e8%bf%9c%e7%a8%8b%e8%b0%83%e8%af%95" aria-label="远程调试">远程调试</a><ul>
+                        
+                <li>
                     <a href="#%e7%94%a8everthing-%e6%89%be%e5%88%b0-frog_debugso" aria-label="用everthing 找到 frog_debug.so">用everthing 找到 frog_debug.so</a></li>
                 <li>
                     <a href="#%e7%84%b6%e5%90%8e%e6%94%be%e5%88%b0luaclib%e7%9b%ae%e5%bd%95%e4%b8%8b%e4%b8%8a%e4%bc%a0%e5%88%b0%e6%9c%8d%e5%8a%a1%e5%99%a8" aria-label="然后放到luaclib目录下上传到服务器">然后放到luaclib目录下上传到服务器</a></li>
@@ -283,7 +286,7 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#%e5%9c%a8vscode%e4%b8%8a%e6%8c%89%e5%a6%82%e4%b8%8b%e5%a1%ab%e5%86%99" aria-label="在vscode上按如下填写">在vscode上按如下填写</a></li>
                 <li>
-                    <a href="#%e5%88%9b%e5%bb%bajson%e6%96%87%e4%bb%b6" aria-label="创建.json文件">创建.json文件</a></li>
+                    <a href="#%e5%88%9b%e5%bb%balaunchjson%e6%96%87%e4%bb%b6" aria-label="创建launch.json文件">创建launch.json文件</a></li>
                 <li>
                     <a href="#%e6%88%91%e7%94%a8%e7%9a%84%e6%98%afwsl2%e7%9b%b4%e6%8e%a5%e5%88%b0%e4%bd%a0%e7%9a%84skynet%e7%9b%ae%e5%bd%95%e4%b8%8b%e5%90%af%e5%8a%a8" aria-label="我用的是wsl2,直接到你的skynet目录下启动">我用的是wsl2,直接到你的skynet目录下启动</a></li>
                 <li>
@@ -291,7 +294,10 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#%e5%88%a9%e7%94%a8nc%e5%91%bd%e4%bb%a4%e8%b0%83%e8%af%95skynet-debug_console%e6%bc%94%e7%a4%ba" aria-label="利用nc命令调试skynet debug_console演示">利用nc命令调试skynet debug_console演示</a></li>
                 <li>
-                    <a href="#%e8%b0%83%e8%af%95%e5%b1%95%e7%a4%ba" aria-label="调试展示">调试展示</a>
+                    <a href="#%e8%b0%83%e8%af%95%e5%b1%95%e7%a4%ba" aria-label="调试展示">调试展示</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%90%af%e5%8a%a8%e8%bf%9b%e7%a8%8b%e8%b0%83%e8%af%95%e6%96%b9%e6%b3%95" aria-label="启动进程调试方法">启动进程调试方法</a>
                 </li>
             </ul>
         </div>
@@ -494,35 +500,38 @@ var _hmt = _hmt || [];
 </span></span></code></pre></div><h2 id="去vscode插件商场下载此插件并安装">去vscode插件商场下载此插件并安装<a hidden class="anchor" aria-hidden="true" href="#去vscode插件商场下载此插件并安装">#</a></h2>
 <p><img loading="lazy" src="image-20221105210016638.png" alt="image-20221105210016638"  />
 </p>
-<h2 id="用everthing-找到-frog_debugso">用everthing 找到 frog_debug.so<a hidden class="anchor" aria-hidden="true" href="#用everthing-找到-frog_debugso">#</a></h2>
+<h2 id="远程调试">远程调试<a hidden class="anchor" aria-hidden="true" href="#远程调试">#</a></h2>
+<h3 id="用everthing-找到-frog_debugso">用everthing 找到 frog_debug.so<a hidden class="anchor" aria-hidden="true" href="#用everthing-找到-frog_debugso">#</a></h3>
 <p><img loading="lazy" src="image-20221105210227124.png" alt="image-20221105210227124"  />
 </p>
-<h2 id="然后放到luaclib目录下上传到服务器">然后放到luaclib目录下上传到服务器<a hidden class="anchor" aria-hidden="true" href="#然后放到luaclib目录下上传到服务器">#</a></h2>
+<h3 id="然后放到luaclib目录下上传到服务器">然后放到luaclib目录下上传到服务器<a hidden class="anchor" aria-hidden="true" href="#然后放到luaclib目录下上传到服务器">#</a></h3>
 <p><img loading="lazy" src="image-20221104185615852.png" alt="image-20221104185615852"  />
 </p>
-<h2 id="在config里面加上两个字段">在config里面加上两个字段<a hidden class="anchor" aria-hidden="true" href="#在config里面加上两个字段">#</a></h2>
+<h3 id="在config里面加上两个字段">在config里面加上两个字段<a hidden class="anchor" aria-hidden="true" href="#在config里面加上两个字段">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>debug_ip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>
 </span></span><span style="display:flex;"><span>debug_port <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;9966&#34;</span>
 </span></span></code></pre></div><p><img loading="lazy" src="image-20221105012732137.png" alt="image-20221105012732137"  />
 </p>
-<h2 id="重编skynet代码">重编skynet代码<a hidden class="anchor" aria-hidden="true" href="#重编skynet代码">#</a></h2>
+<h3 id="重编skynet代码">重编skynet代码<a hidden class="anchor" aria-hidden="true" href="#重编skynet代码">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cd skynet
 </span></span><span style="display:flex;"><span>make linux MALLOC_STATICLIB<span style="color:#f92672">=</span> SKYNET_DEFINES<span style="color:#f92672">=</span>-DNOUSE_JEMALLOC 
-</span></span></code></pre></div><h2 id="在vscode上按如下填写">在vscode上按如下填写<a hidden class="anchor" aria-hidden="true" href="#在vscode上按如下填写">#</a></h2>
-<p><img loading="lazy" src="image-20221105210836279.png" alt="image-20221105210836279"  />
+</span></span></code></pre></div><h3 id="在vscode上按如下填写">在vscode上按如下填写<a hidden class="anchor" aria-hidden="true" href="#在vscode上按如下填写">#</a></h3>
+<p><img loading="lazy" src="image-20221111223442496.png" alt="image-20221111223442496"  />
 </p>
-<h2 id="创建json文件">创建.json文件<a hidden class="anchor" aria-hidden="true" href="#创建json文件">#</a></h2>
+<h3 id="创建launchjson文件">创建launch.json文件<a hidden class="anchor" aria-hidden="true" href="#创建launchjson文件">#</a></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用 IntelliSense 了解相关属性。 
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 悬停以查看现有属性的描述。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#e6db74">&#34;0.2.0&#34;</span>,
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;configurations&#34;</span>: [
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lua_new&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lua_remote&#34;</span>,
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;request&#34;</span>: <span style="color:#e6db74">&#34;launch&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Lua New Debug&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;host&#34;</span>: <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;远程调试&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;host&#34;</span>: <span style="color:#e6db74">&#34;localhost&#34;</span>,
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;port&#34;</span>: <span style="color:#ae81ff">9966</span>,
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;ext&#34;</span>: [
 </span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;.lua&#34;</span>,
@@ -533,16 +542,18 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="我用的是wsl2直接到你的skynet目录下启动">我用的是wsl2,直接到你的skynet目录下启动<a hidden class="anchor" aria-hidden="true" href="#我用的是wsl2直接到你的skynet目录下启动">#</a></h2>
+</span></span></code></pre></div><h3 id="我用的是wsl2直接到你的skynet目录下启动">我用的是wsl2,直接到你的skynet目录下启动<a hidden class="anchor" aria-hidden="true" href="#我用的是wsl2直接到你的skynet目录下启动">#</a></h3>
 <p><img loading="lazy" src="image-20221105210323903.png" alt="image-20221105210323903"  />
 </p>
-<h2 id="如果嫌弃麻烦可以在github直接下载example">如果嫌弃麻烦,可以在github直接下载example<a hidden class="anchor" aria-hidden="true" href="#如果嫌弃麻烦可以在github直接下载example">#</a></h2>
+<h3 id="如果嫌弃麻烦可以在github直接下载example">如果嫌弃麻烦,可以在github直接下载example<a hidden class="anchor" aria-hidden="true" href="#如果嫌弃麻烦可以在github直接下载example">#</a></h3>
 <p>example地址:https://github.com/frog-game/skynet-blueprint-debug.git</p>
 <p>然后按 6到8步骤执行就可以进行调试了</p>
-<h2 id="利用nc命令调试skynet-debug_console演示">利用nc命令调试skynet debug_console演示<a hidden class="anchor" aria-hidden="true" href="#利用nc命令调试skynet-debug_console演示">#</a></h2>
+<h3 id="利用nc命令调试skynet-debug_console演示">利用nc命令调试skynet debug_console演示<a hidden class="anchor" aria-hidden="true" href="#利用nc命令调试skynet-debug_console演示">#</a></h3>
 <iframe src="//player.bilibili.com/player.html?aid=262296240&bvid=BV1Ve411F7QX&cid=882497141&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-<h2 id="调试展示">调试展示<a hidden class="anchor" aria-hidden="true" href="#调试展示">#</a></h2>
+<h3 id="调试展示">调试展示<a hidden class="anchor" aria-hidden="true" href="#调试展示">#</a></h3>
 <iframe src="//player.bilibili.com/player.html?aid=432314430&bvid=BV1XG411c7hN&cid=881607941&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
+<h2 id="启动进程调试方法">启动进程调试方法<a hidden class="anchor" aria-hidden="true" href="#启动进程调试方法">#</a></h2>
+<iframe src="//player.bilibili.com/player.html?aid=605116858&bvid=BV1h84y1y7qx&cid=888595685&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
 
 
         </div>
