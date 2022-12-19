@@ -389,9 +389,9 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> byteQueue_s
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>	pBuffer;<span style="color:#75715e">//数据
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	size_t	nCapacity;<span style="color:#75715e">//容量
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	size_t	nReadIndex;<span style="color:#75715e">//读指针索引
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	size_t	nWriteIndex;<span style="color:#75715e">//写指针索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">size_t</span>	nCapacity;<span style="color:#75715e">//容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">size_t</span>	nReadIndex;<span style="color:#75715e">//读指针索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">size_t</span>	nWriteIndex;<span style="color:#75715e">//写指针索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} byteQueue_tt;
 </span></span></code></pre></div><h2 id="初始-结构体">初始 结构体<a hidden class="anchor" aria-hidden="true" href="#初始-结构体">#</a></h2>
 <p>假设要申请的空间 <code>环形buff</code>结构体大小为<code>8</code></p>
@@ -400,14 +400,14 @@ var _hmt = _hmt || [];
 <li><code>nReadIndex</code> 读指针索引</li>
 </ul>
 <p>环形buff初始化</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_init</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue,size_t nCapacity <span style="color:#f92672">=</span> <span style="color:#75715e">/* = 8*/</span>)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_init</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue,<span style="color:#66d9ef">size_t</span> nCapacity <span style="color:#f92672">=</span> <span style="color:#75715e">/* = 8*/</span>)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> nCapacity;<span style="color:#75715e">//读指针索引位置设置为8,放到末尾
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//写指针索引位置设置成0，放到开头
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> nCapacity;<span style="color:#75715e">//容量
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>( nCapacity <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> )
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> mem_malloc(nCapacity);<span style="color:#75715e">//申请空间
+</span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(nCapacity);<span style="color:#75715e">//申请空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
@@ -424,14 +424,14 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//容量设置为0
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		mem_free(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//如果有数据进行释放
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">mem_free</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//如果有数据进行释放
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> NULL;<span style="color:#75715e">//并且置空
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><img loading="lazy" src="Typoraimage-20220307215525672.png" alt="image-20220307215525672"  />
 </p>
 <h2 id="获取剩余全部可写空间">获取剩余全部可写空间<a hidden class="anchor" aria-hidden="true" href="#获取剩余全部可写空间">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> size_t <span style="color:#a6e22e">byteQueue_getBytesWritable</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">size_t</span> <span style="color:#a6e22e">byteQueue_getBytesWritable</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">&gt;=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex )<span style="color:#75715e">//写指针和读指针重合，或者在读指针前面
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
@@ -449,7 +449,7 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="Typoraimage-20220401170218636.png" alt="Typoraimage-20220401170218636"  />
 </p>
 <h2 id="获取剩余全部可读空间">获取剩余全部可读空间<a hidden class="anchor" aria-hidden="true" href="#获取剩余全部可读空间">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> size_t <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">size_t</span> <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">&gt;</span> pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex) <span style="color:#75715e">//读指针在写指针前面
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
@@ -469,7 +469,7 @@ var _hmt = _hmt || [];
 <h2 id="查看连续的可写空间">查看连续的可写空间<a hidden class="anchor" aria-hidden="true" href="#查看连续的可写空间">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//查看连续的可写空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//size_t* pWriteBytes 能连续写入的大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesWrite</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, size_t<span style="color:#f92672">*</span> pWriteBytes)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesWrite</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">size_t</span><span style="color:#f92672">*</span> pWriteBytes)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">&gt;=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex)<span style="color:#75715e">//读指针在写指针后面
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
@@ -491,7 +491,7 @@ var _hmt = _hmt || [];
 <h2 id="查看连续可读空间">查看连续可读空间<a hidden class="anchor" aria-hidden="true" href="#查看连续可读空间">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//查看连续的可读空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//size_t* pWriteBytes 能连续读取的大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, size_t<span style="color:#f92672">*</span> pReadBytes)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">size_t</span><span style="color:#f92672">*</span> pReadBytes)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">&gt;</span> pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex)<span style="color:#75715e">//写指针在读指针后面
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
@@ -516,27 +516,27 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>	{
 </span></span><span style="display:flex;"><span>		<span style="color:#75715e">//初始化容量,buffer大小，可读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> <span style="color:#ae81ff">256</span>;<span style="color:#75715e">//初始化容量大小[256]
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> mem_malloc(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity);<span style="color:#75715e">//申请空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity);<span style="color:#75715e">//申请空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity;<span style="color:#75715e">//初始化读索引位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		size_t nBytesWritable <span style="color:#f92672">=</span> byteQueue_getBytesWritable(pByteQueue);<span style="color:#75715e">//获取获取剩余全部可写空间
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">size_t</span> nBytesWritable <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesWritable</span>(pByteQueue);<span style="color:#75715e">//获取获取剩余全部可写空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&gt;</span> nBytesWritable)
 </span></span><span style="display:flex;"><span>		{
 </span></span><span style="display:flex;"><span>			<span style="color:#75715e">//align_size  将size按align大小整数倍提升,用于内存对齐
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			size_t nNewCapacity <span style="color:#f92672">=</span> align_size( (pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">256</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">size_t</span> nNewCapacity <span style="color:#f92672">=</span> <span style="color:#a6e22e">align_size</span>( (pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">256</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> mem_malloc(nNewCapacity);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(nNewCapacity);
 </span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">!=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity)<span style="color:#75715e">//说明还有数据没有读走
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			{
-</span></span><span style="display:flex;"><span>				size_t nWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//获取剩余全部可读的空间
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				size_t nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间的大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesRead(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//开始读取数据的起始位置
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				memcpy(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//直接拷贝
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">size_t</span> nWritten <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(pByteQueue);<span style="color:#75715e">//获取剩余全部可读的空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">size_t</span> nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间的大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//开始读取数据的起始位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">memcpy</span>(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//直接拷贝
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span>( nReadBytes <span style="color:#f92672">!=</span> nWritten )<span style="color:#75715e">//如果连续可读的空间的大小!=剩余全部可读的空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				{
-</span></span><span style="display:flex;"><span>					memcpy(pBuffer<span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//把剩下的可读的空间写入新buffer空间
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">memcpy</span>(pBuffer<span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//把剩下的可读的空间写入新buffer空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				}
 </span></span><span style="display:flex;"><span>				pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//到了新空间需要重新移动读指针
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> nWritten;<span style="color:#75715e">//到了新空间需要重新移动写指针
@@ -548,7 +548,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>			pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> nNewCapacity;
-</span></span><span style="display:flex;"><span>			mem_free(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">mem_free</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);
 </span></span><span style="display:flex;"><span>			pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> pBuffer;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
@@ -561,33 +561,33 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="写入指定大小空间的数据空间不足按256的倍数自动扩展">写入指定大小空间的数据[空间不足按256的倍数自动扩展]<a hidden class="anchor" aria-hidden="true" href="#写入指定大小空间的数据空间不足按256的倍数自动扩展">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_write</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pInBytes, size_t nLength)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_write</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pInBytes, <span style="color:#66d9ef">size_t</span> nLength)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	assert(nLength <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">assert</span>(nLength <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>);
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)<span style="color:#75715e">//容量大小为0
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
-</span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> align_size(nLength,<span style="color:#ae81ff">256</span>);<span style="color:#75715e">//初始化容量大小[256的倍数]
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> mem_malloc(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity);<span style="color:#75715e">//申请空间
+</span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> <span style="color:#a6e22e">align_size</span>(nLength,<span style="color:#ae81ff">256</span>);<span style="color:#75715e">//初始化容量大小[256的倍数]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity);<span style="color:#75715e">//申请空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity;<span style="color:#75715e">//初始化读索引位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		size_t nBytesWritable <span style="color:#f92672">=</span> byteQueue_getBytesWritable(pByteQueue);<span style="color:#75715e">//获取剩余可写空间
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">size_t</span> nBytesWritable <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesWritable</span>(pByteQueue);<span style="color:#75715e">//获取剩余可写空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> (nLength <span style="color:#f92672">&gt;</span> nBytesWritable)<span style="color:#75715e">//如果写入的大小大于剩余可写空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		{
 </span></span><span style="display:flex;"><span>			<span style="color:#75715e">//数据进行扩展
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			size_t nNewCapacity <span style="color:#f92672">=</span> align_size( (pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> (nLength<span style="color:#f92672">-</span>nBytesWritable),<span style="color:#ae81ff">256</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">size_t</span> nNewCapacity <span style="color:#f92672">=</span> <span style="color:#a6e22e">align_size</span>( (pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> (nLength<span style="color:#f92672">-</span>nBytesWritable),<span style="color:#ae81ff">256</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> mem_malloc(nNewCapacity);<span style="color:#75715e">//申请空间大小
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(nNewCapacity);<span style="color:#75715e">//申请空间大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">!=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity )<span style="color:#75715e">//还有数据可读
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			{
-</span></span><span style="display:flex;"><span>				size_t nWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//剩余全部可读空间
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				size_t nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesRead(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//开始连续读入指针的起始位置
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				memcpy(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//把连续可读的空间写入新buffer空间
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">size_t</span> nWritten <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(pByteQueue);<span style="color:#75715e">//剩余全部可读空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">size_t</span> nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//开始连续读入指针的起始位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">memcpy</span>(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//把连续可读的空间写入新buffer空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span>( nReadBytes <span style="color:#f92672">!=</span> nWritten )<span style="color:#75715e">//如果连续可读的空间!=剩余全部可读空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				{
-</span></span><span style="display:flex;"><span>					memcpy(pBuffer <span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//把剩下的可读的空间写入新buffer空间
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">memcpy</span>(pBuffer <span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//把剩下的可读的空间写入新buffer空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				}
 </span></span><span style="display:flex;"><span>				pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> nWritten;<span style="color:#75715e">//重置写索引
@@ -598,22 +598,22 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置写索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			}
 </span></span><span style="display:flex;"><span>			pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> nNewCapacity;<span style="color:#75715e">////重置容量大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			mem_free(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//释放旧buff空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">mem_free</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//释放旧buff空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> pBuffer;<span style="color:#75715e">//重置指针到新buff空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	size_t nWriteBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可写的空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pWrite <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesWrite(pByteQueue,<span style="color:#f92672">&amp;</span>nWriteBytes);<span style="color:#75715e">//开始写入的指针位置
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">size_t</span> nWriteBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可写的空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pWrite <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesWrite</span>(pByteQueue,<span style="color:#f92672">&amp;</span>nWriteBytes);<span style="color:#75715e">//开始写入的指针位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (nWriteBytes <span style="color:#f92672">&gt;=</span> nLength)<span style="color:#75715e">//如果连续写入的空间能够满足需要写入的空间大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
-</span></span><span style="display:flex;"><span>		memcpy(pWrite, pInBytes, nLength);<span style="color:#75715e">//直接拷贝
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">memcpy</span>(pWrite, pInBytes, nLength);<span style="color:#75715e">//直接拷贝
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		memcpy(pWrite, pInBytes, nWriteBytes);<span style="color:#75715e">//先拷贝连续可写入的空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		memcpy(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer, (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>)pInBytes <span style="color:#f92672">+</span> nWriteBytes, nLength <span style="color:#f92672">-</span> nWriteBytes);<span style="color:#75715e">//再把剩余要写入的大小空间写入
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">memcpy</span>(pWrite, pInBytes, nWriteBytes);<span style="color:#75715e">//先拷贝连续可写入的空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">memcpy</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer, (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>)pInBytes <span style="color:#f92672">+</span> nWriteBytes, nLength <span style="color:#f92672">-</span> nWriteBytes);<span style="color:#75715e">//再把剩余要写入的大小空间写入
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">+</span> nLength) <span style="color:#f92672">%</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity;<span style="color:#75715e">//重置读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">==</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity)
@@ -622,31 +622,31 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="写入指定大小空间的数据空间不足按剩余需要空间大小申请">写入指定大小空间的数据[空间不足按剩余需要空间大小申请]<a hidden class="anchor" aria-hidden="true" href="#写入指定大小空间的数据空间不足按剩余需要空间大小申请">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_writeBytes</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pInBytes, size_t nLength)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_writeBytes</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pInBytes, <span style="color:#66d9ef">size_t</span> nLength)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	assert(nLength <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">assert</span>(nLength <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>);
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)<span style="color:#75715e">//容量大小为0
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
 </span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> nLength;<span style="color:#75715e">//初始化容量大小[需要空间大小]
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> mem_malloc(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity);<span style="color:#75715e">//申请空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity);<span style="color:#75715e">//申请空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity;<span style="color:#75715e">//初始化读索引位置
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		size_t nBytesWritable <span style="color:#f92672">=</span> byteQueue_getBytesWritable(pByteQueue);<span style="color:#75715e">//剩余可写的全部空间大小
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">size_t</span> nBytesWritable <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesWritable</span>(pByteQueue);<span style="color:#75715e">//剩余可写的全部空间大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> (nLength <span style="color:#f92672">&gt;</span> nBytesWritable)<span style="color:#75715e">//如果写入的大小大于剩余可写入的空间大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		{
-</span></span><span style="display:flex;"><span>			size_t nNewCapacity <span style="color:#f92672">=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">+</span> (nLength <span style="color:#f92672">-</span> nBytesWritable);<span style="color:#75715e">//开辟正好大小的空间
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> mem_malloc(nNewCapacity);<span style="color:#75715e">//申请空间
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">size_t</span> nNewCapacity <span style="color:#f92672">=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">+</span> (nLength <span style="color:#f92672">-</span> nBytesWritable);<span style="color:#75715e">//开辟正好大小的空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(nNewCapacity);<span style="color:#75715e">//申请空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">!=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity)<span style="color:#75715e">//还有空间可读需要把这段空间赋值到新空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			{
-</span></span><span style="display:flex;"><span>				size_t nWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//剩余可读的全部空间
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				size_t nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesRead(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//开始读取空间的起始位置
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				memcpy(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//拷贝到新空间
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">size_t</span> nWritten <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(pByteQueue);<span style="color:#75715e">//剩余可读的全部空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">size_t</span> nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//开始读取空间的起始位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#a6e22e">memcpy</span>(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//拷贝到新空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span>( nReadBytes <span style="color:#f92672">!=</span> nWritten )<span style="color:#75715e">//连续可读的空间!=剩余可读的全部空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				{
-</span></span><span style="display:flex;"><span>					memcpy(pBuffer<span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//拷贝剩余数据到新空间
+</span></span><span style="display:flex;"><span>					<span style="color:#a6e22e">memcpy</span>(pBuffer<span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//拷贝剩余数据到新空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				}
 </span></span><span style="display:flex;"><span>				pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> nWritten;<span style="color:#75715e">//重置写索引
@@ -657,21 +657,21 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置写索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			}
 </span></span><span style="display:flex;"><span>			pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity <span style="color:#f92672">=</span> nNewCapacity;<span style="color:#75715e">//重置容量
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			mem_free(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//释放旧空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#a6e22e">mem_free</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//释放旧空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> pBuffer;<span style="color:#75715e">//新空间指针指向旧空间指针
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	size_t nWriteBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可写入空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pWrite <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesWrite(pByteQueue,<span style="color:#f92672">&amp;</span>nWriteBytes);<span style="color:#75715e">//可写入开始指针
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">size_t</span> nWriteBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可写入空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pWrite <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesWrite</span>(pByteQueue,<span style="color:#f92672">&amp;</span>nWriteBytes);<span style="color:#75715e">//可写入开始指针
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (nWriteBytes <span style="color:#f92672">&gt;=</span> nLength)<span style="color:#75715e">//容量足够
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
-</span></span><span style="display:flex;"><span>		memcpy(pWrite, pInBytes, nLength);<span style="color:#75715e">//直接拷贝
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">memcpy</span>(pWrite, pInBytes, nLength);<span style="color:#75715e">//直接拷贝
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		memcpy(pWrite, pInBytes, nWriteBytes);<span style="color:#75715e">//先拷贝连续可写入空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		memcpy(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer, (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>)pInBytes <span style="color:#f92672">+</span> nWriteBytes, nLength <span style="color:#f92672">-</span> nWriteBytes);<span style="color:#75715e">//剩余的在直接拷贝
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">memcpy</span>(pWrite, pInBytes, nWriteBytes);<span style="color:#75715e">//先拷贝连续可写入空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">memcpy</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer, (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>)pInBytes <span style="color:#f92672">+</span> nWriteBytes, nLength <span style="color:#f92672">-</span> nWriteBytes);<span style="color:#75715e">//剩余的在直接拷贝
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">+</span> nLength) <span style="color:#f92672">%</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity;<span style="color:#75715e">//重置写索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">==</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity)
@@ -680,36 +680,36 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="读取数据">读取数据<a hidden class="anchor" aria-hidden="true" href="#读取数据">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">byteQueue_readBytes</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pOutBytes, size_t nMaxLengthToRead, <span style="color:#66d9ef">bool</span> bPeek <span style="color:#75715e">/*= false*/</span> )
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">byteQueue_readBytes</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> pOutBytes, <span style="color:#66d9ef">size_t</span> nMaxLengthToRead, <span style="color:#66d9ef">bool</span> bPeek <span style="color:#75715e">/*= false*/</span> )
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	size_t nBytesWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//可读的空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	size_t nBytesToRead <span style="color:#f92672">=</span> nBytesWritten <span style="color:#f92672">&lt;</span> nMaxLengthToRead <span style="color:#f92672">?</span> nBytesWritten : nMaxLengthToRead;<span style="color:#75715e">//得到可读取的大小
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">size_t</span> nBytesWritten <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(pByteQueue);<span style="color:#75715e">//可读的空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">size_t</span> nBytesToRead <span style="color:#f92672">=</span> nBytesWritten <span style="color:#f92672">&lt;</span> nMaxLengthToRead <span style="color:#f92672">?</span> nBytesWritten : nMaxLengthToRead;<span style="color:#75715e">//得到可读取的大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (nBytesToRead <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
 </span></span><span style="display:flex;"><span>	{
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> false;
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	size_t nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesRead(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//连续可读空间大小的起始索引
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">size_t</span> nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//连续可读空间大小的起始索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>( nReadBytes <span style="color:#f92672">&gt;=</span> nBytesToRead )<span style="color:#75715e">//满足可读大小需求
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
-</span></span><span style="display:flex;"><span>		memcpy(pOutBytes,pRead,nBytesToRead);<span style="color:#75715e">//直接读取
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">memcpy</span>(pOutBytes,pRead,nBytesToRead);<span style="color:#75715e">//直接读取
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		memcpy(pOutBytes,pRead,nReadBytes);<span style="color:#75715e">//直接连续可读的空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		memcpy((<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>)pOutBytes<span style="color:#f92672">+</span>nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nBytesToRead<span style="color:#f92672">-</span>nReadBytes);<span style="color:#75715e">//读取剩余需要读取的大小
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">memcpy</span>(pOutBytes,pRead,nReadBytes);<span style="color:#75715e">//直接连续可读的空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">memcpy</span>((<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>)pOutBytes<span style="color:#f92672">+</span>nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nBytesToRead<span style="color:#f92672">-</span>nReadBytes);<span style="color:#75715e">//读取剩余需要读取的大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>bPeek)<span style="color:#75715e">//不是探测
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		byteQueue_readOffset(pByteQueue,nBytesToRead);<span style="color:#75715e">//直接移动指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">byteQueue_readOffset</span>(pByteQueue,nBytesToRead);<span style="color:#75715e">//直接移动指针
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> true;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="重置容量">重置容量<a hidden class="anchor" aria-hidden="true" href="#重置容量">#</a></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_reserve</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, size_t nCapacity)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">byteQueue_reserve</span>(byteQueue_tt<span style="color:#f92672">*</span> pByteQueue, <span style="color:#66d9ef">size_t</span> nCapacity)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	size_t nWritten <span style="color:#f92672">=</span> byteQueue_getBytesReadable(pByteQueue);<span style="color:#75715e">//剩余全部可读大小
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">size_t</span> nWritten <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_getBytesReadable</span>(pByteQueue);<span style="color:#75715e">//剩余全部可读大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(nWritten <span style="color:#f92672">&gt;</span> nCapacity)<span style="color:#75715e">//如果全部可读的大小大于要重置的容量大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
 </span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span>;
@@ -717,22 +717,22 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span>(pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">!=</span> pByteQueue<span style="color:#f92672">-&gt;</span>nCapacity)<span style="color:#75715e">//有剩余需要读取的空间数据
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> mem_malloc(nCapacity);<span style="color:#75715e">//申请新的重置空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		size_t nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> byteQueue_peekContiguousBytesRead(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//连续可读空间大小的起始位置
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		memcpy(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//直接拷贝
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_malloc</span>(nCapacity);<span style="color:#75715e">//申请新的重置空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">size_t</span> nReadBytes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//连续可读的空间大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pRead <span style="color:#f92672">=</span> <span style="color:#a6e22e">byteQueue_peekContiguousBytesRead</span>(pByteQueue, <span style="color:#f92672">&amp;</span>nReadBytes);<span style="color:#75715e">//连续可读空间大小的起始位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">memcpy</span>(pBuffer,pRead,nReadBytes);<span style="color:#75715e">//直接拷贝
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>( nReadBytes <span style="color:#f92672">!=</span> nWritten )<span style="color:#75715e">//还有剩余要拷贝的空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		{
-</span></span><span style="display:flex;"><span>			memcpy(pBuffer <span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//拷贝剩余要拷贝的数据
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">memcpy</span>(pBuffer <span style="color:#f92672">+</span> nReadBytes,pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nWritten <span style="color:#f92672">-</span> nReadBytes);<span style="color:#75715e">//拷贝剩余要拷贝的数据
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		}
 </span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> nWritten;<span style="color:#75715e">//重置写索引
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		mem_free(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//释放旧空间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#a6e22e">mem_free</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer);<span style="color:#75715e">//释放旧空间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> pBuffer;<span style="color:#75715e">//新空间的指针指向旧空间指针
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> mem_realloc(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nCapacity);<span style="color:#75715e">//直接指向申请空间的大小
+</span></span><span style="display:flex;"><span>		pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">mem_realloc</span>(pByteQueue<span style="color:#f92672">-&gt;</span>pBuffer,nCapacity);<span style="color:#75715e">//直接指向申请空间的大小
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nReadIndex <span style="color:#f92672">=</span> nCapacity;<span style="color:#75715e">//重置读索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		pByteQueue<span style="color:#f92672">-&gt;</span>nWriteIndex <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//重置写索引
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
