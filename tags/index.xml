@@ -6,7 +6,16 @@
     <description>Recent content in Tags on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 28 Oct 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 19 Dec 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HybridCLR</title>
+      <link>https://frog-game.github.io/tags/hybridclr/</link>
+      <pubDate>Mon, 19 Dec 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/tags/hybridclr/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>frog-frame-work</title>
       <link>https://frog-game.github.io/tags/frog-frame-work/</link>
