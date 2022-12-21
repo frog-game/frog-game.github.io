@@ -26,6 +26,15 @@
     </item>
     
     <item>
+      <title>NTP时间同步</title>
+      <link>https://frog-game.github.io/posts/blog/ntp-shijian-tongbu/</link>
+      <pubDate>Mon, 14 Nov 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/ntp-shijian-tongbu/</guid>
+      <description>NTP时间同步</description>
+    </item>
+    
+    <item>
       <title>四叉树Lod灯塔AOI</title>
       <link>https://frog-game.github.io/posts/blog/aoi-tower/</link>
       <pubDate>Fri, 28 Oct 2022 01:30:29 +0800</pubDate>

@@ -6,7 +6,16 @@
     <description>Recent content in frog-frame-work on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 28 Oct 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/frog-frame-work/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Nov 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/tags/frog-frame-work/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>NTP时间同步</title>
+      <link>https://frog-game.github.io/posts/blog/ntp-shijian-tongbu/</link>
+      <pubDate>Mon, 14 Nov 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/blog/ntp-shijian-tongbu/</guid>
+      <description>NTP时间同步</description>
+    </item>
+    
     <item>
       <title>四叉树Lod灯塔AOI</title>
       <link>https://frog-game.github.io/posts/blog/aoi-tower/</link>
