@@ -80,6 +80,15 @@
     </item>
     
     <item>
+      <title>NTP时间同步</title>
+      <link>https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/</link>
+      <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/</guid>
+      <description>NTP时间同步</description>
+    </item>
+    
+    <item>
       <title>微服务lua调试器</title>
       <link>https://frog-game.github.io/posts/blog/vscode-lua-chajian/</link>
       <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>

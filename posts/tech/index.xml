@@ -6,7 +6,16 @@
     <description>Recent content in 👨🏻‍💻 白皮书 on frog&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 13 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/tech/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 14 Sep 2022 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>NTP时间同步</title>
+      <link>https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/</link>
+      <pubDate>Wed, 14 Sep 2022 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/</guid>
+      <description>NTP时间同步</description>
+    </item>
+    
     <item>
       <title>skynet-blueprint-debug lua多虚拟机调试</title>
       <link>https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/</link>
