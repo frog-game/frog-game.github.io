@@ -36,10 +36,10 @@
     
     <item>
       <title>四叉树Lod灯塔AOI</title>
-      <link>https://frog-game.github.io/posts/blog/aoi-tower/</link>
+      <link>https://frog-game.github.io/posts/tech/aoi-tower/</link>
       <pubDate>Fri, 28 Oct 2022 01:30:29 +0800</pubDate>
       
-      <guid>https://frog-game.github.io/posts/blog/aoi-tower/</guid>
+      <guid>https://frog-game.github.io/posts/tech/aoi-tower/</guid>
       <description>用c代码写的四叉树lod灯塔AOI视野同步，此AOI已经用于frog-game-frame框架</description>
     </item>
     
@@ -72,10 +72,10 @@
     
     <item>
       <title>环形buff</title>
-      <link>https://frog-game.github.io/posts/blog/ringbuff/</link>
+      <link>https://frog-game.github.io/posts/tech/ringbuff/</link>
       <pubDate>Fri, 16 Sep 2022 01:30:29 +0800</pubDate>
       
-      <guid>https://frog-game.github.io/posts/blog/ringbuff/</guid>
+      <guid>https://frog-game.github.io/posts/tech/ringbuff/</guid>
       <description>用c代码写的ringbuff代码解析,ringbuff用于从网络中读取到的数据进行存储，解析，此ringbuff已经用于frog-game-frame框架</description>
     </item>
     
