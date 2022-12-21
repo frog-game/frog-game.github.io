@@ -72,8 +72,8 @@ var _hmt = _hmt || [];
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/" />
 <meta property="og:image" content="https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/image-20221221121158636.png" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-09-14T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2022-09-14T01:30:29&#43;08:00" />
+<meta property="article:published_time" content="2022-11-14T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-11-14T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/image-20221221121158636.png" />
@@ -120,8 +120,8 @@ var _hmt = _hmt || [];
   "articleBody": "NTP授时原理 C1 客户端发送请求的时间 S2 服务器接收请求的时间 S3 包离开场景时候的时间 C4 客户端接到返回包时间 m_nNetDelay 网络延时 d = (S2 - C1) + (C4 - S3) m_nDiftime 服务器与客户端的时差 T = [(S2 - C1) + (S3 - C4)] / 2 m_nNetDelay 其实就是RTT 也就是往返时间 也可以这么求 C4 - C1 - (S3 - S2) protobuff包定义 message SceneClocksyncRequest { int64\toriginate_timestamp = 1;客户端发送请求的时间C1 } message SceneClocksyncRet { int64 originate_timestamp = 1;客户端发送请求的时间 C1 int64 receive_timestamp = 2;服务器接收请求的时间 S2 int64 scene_timestamp = 3;场景同步时间戳【不参与NPT计算】 int64 transmit_timestamp = 4;包离开场景时候的时间 S3 } 具体代码实现 -- 同步请求 local function SendClockSyncReqMsg() local sceneClocksyncRequest = { originate_timestamp = serviceCore.getClockRealtime() } serviceCore.send(m_channelID,\"SceneClocksyncRequest\",sceneClocksyncRequest) end -- 同步反馈 function robotStateMachine.SceneClocksyncRet(proto) --proto.originate_timestamp C1 客户端发送请求的时间 --proto.receive_timestamp S2 服务器接收请求的时间 --proto.transmit_timestamp S3 包离开场景时候的时间 --destination_timestamp C4 客户端接到返回包时间 --m_nNetDelay 网络延时 d = (S2 - C1) + (C4 - S3) --m_nDiftime 服务器与客户端的时差 T = [(S2 - C1) + (S3 - C4)] / 2 --m_nNetDelay 其实就是RTT也就是往返时间 也可以这么求 C4 - C1 - (S3 - S2) local destination_timestamp = serviceCore.getClockRealtime() m_nNetDelay = (proto.receive_timestamp - proto.originate_timestamp) + ((destination_timestamp - proto.transmit_timestamp)) m_nDiftime = ((proto.receive_timestamp - proto.originate_timestamp) + (proto.transmit_timestamp - destination_timestamp) / 2) RTT = destination_timestamp - proto.originate_timestamp - (proto.transmit_timestamp - proto.receive_timestamp); end -- 真正算出来的同步时间 function GetServerTime() return serviceCore.getClockRealtime() + m_nNetDelay + m_nDiftime end ",
   "wordCount" : "419",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/image-20221221121158636.png","datePublished": "2022-09-14T01:30:29+08:00",
-  "dateModified": "2022-09-14T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/tech/ntp-shijian-tongbu/image-20221221121158636.png","datePublished": "2022-11-14T01:30:29+08:00",
+  "dateModified": "2022-11-14T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -238,7 +238,7 @@ var _hmt = _hmt || [];
             <div class="post-description">
                 NTP时间同步
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2022-09-14 01:30:29 +0800 CST'>2022-09-14</span>&nbsp;|&nbsp;更新:&nbsp;2022-09-14&nbsp;|&nbsp;字数:&nbsp;419字&nbsp;|&nbsp;时长:&nbsp;1分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-11-14 01:30:29 +0800 CST'>2022-11-14</span>&nbsp;|&nbsp;更新:&nbsp;2022-11-14&nbsp;|&nbsp;字数:&nbsp;419字&nbsp;|&nbsp;时长:&nbsp;1分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -343,13 +343,13 @@ var _hmt = _hmt || [];
 </p>
 <p><img loading="lazy" src="image-20221111195238770.png" alt="image-20221111195238770"  />
 </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>C1        客户端发送请求的时间
-</span></span><span style="display:flex;"><span>S2        服务器接收请求的时间
-</span></span><span style="display:flex;"><span>S3        包离开场景时候的时间
-</span></span><span style="display:flex;"><span>C4        客户端接到返回包时间
-</span></span><span style="display:flex;"><span>m_nNetDelay 网络延时 d = (S2 - C1) + (C4 - S3)
-</span></span><span style="display:flex;"><span>m_nDiftime 服务器与客户端的时差 T = [(S2 - C1) + (S3 - C4)] / 2
-</span></span><span style="display:flex;"><span>m_nNetDelay 其实就是RTT 也就是往返时间 也可以这么求  C4 - C1 - (S3 - S2)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>C1        <span style="color:#960050;background-color:#1e0010">客户端发送请求的时间</span>
+</span></span><span style="display:flex;"><span>S2        <span style="color:#960050;background-color:#1e0010">服务器接收请求的时间</span>
+</span></span><span style="display:flex;"><span>S3        <span style="color:#960050;background-color:#1e0010">包离开场景时候的时间</span>
+</span></span><span style="display:flex;"><span>C4        <span style="color:#960050;background-color:#1e0010">客户端接到返回包时间</span>
+</span></span><span style="display:flex;"><span>m_nNetDelay <span style="color:#960050;background-color:#1e0010">网络延时</span> d <span style="color:#f92672">=</span> (S2 <span style="color:#f92672">-</span> C1) <span style="color:#f92672">+</span> (C4 <span style="color:#f92672">-</span> S3)
+</span></span><span style="display:flex;"><span>m_nDiftime <span style="color:#960050;background-color:#1e0010">服务器与客户端的时差</span> T <span style="color:#f92672">=</span> [(S2 <span style="color:#f92672">-</span> C1) <span style="color:#f92672">+</span> (S3 <span style="color:#f92672">-</span> C4)] <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>m_nNetDelay <span style="color:#960050;background-color:#1e0010">其实就是</span>RTT <span style="color:#960050;background-color:#1e0010">也就是往返时间</span> <span style="color:#960050;background-color:#1e0010">也可以这么求</span>  C4 <span style="color:#f92672">-</span> C1 <span style="color:#f92672">-</span> (S3 <span style="color:#f92672">-</span> S2)
 </span></span></code></pre></div><h2 id="protobuff包定义">protobuff包定义<a hidden class="anchor" aria-hidden="true" href="#protobuff包定义">#</a></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>message SceneClocksyncRequest
 </span></span><span style="display:flex;"><span>{
@@ -428,15 +428,15 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/read/skynet/">
+  <a class="prev" href="https://frog-game.github.io/posts/read/hybridclr-yuanmayuedu/">
     <span class="title">« 上一页</span>
     <br>
-    <span>skynet赏析</span>
+    <span>HybridCLR源码赏析</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/blog/vscode-lua-chajian/">
+  <a class="next" href="https://frog-game.github.io/posts/blog/aoi-tower/">
     <span class="title">下一页 »</span>
     <br>
-    <span>微服务lua调试器</span>
+    <span>四叉树Lod灯塔AOI</span>
   </a>
 </nav>
 
