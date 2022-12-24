@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>汇编阅读 | frog&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="对8086汇编知识点的总结,思维导图绘制">
+<meta name="author" content="
+作者:&nbsp;frog">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/huibianzognjie/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8b1bcfe952e1e1a78b44fa99f358fddf187aee65873bbc85ca10d6f18a3bff33.css" integrity="sha256-ixvP6VLh4aeLRPqZ81j93xh67mWHO7yFyhDW8Yo7/zM=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+        onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://frog-game.github.io/img/Q.gif">
+<link rel="apple-touch-icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="mask-icon" href="https://frog-game.github.io/img/Q.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="汇编阅读" />
+<meta property="og:description" content="对8086汇编知识点的总结,思维导图绘制" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/huibianzognjie/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-12-24T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-12-24T01:30:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png" />
+<meta name="twitter:title" content="汇编阅读"/>
+<meta name="twitter:description" content="对8086汇编知识点的总结,思维导图绘制"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://frog-game.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://frog-game.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "汇编阅读",
+      "item": "https://frog-game.github.io/posts/read/huibianzognjie/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "汇编阅读",
+  "name": "汇编阅读",
+  "description": "对8086汇编知识点的总结,思维导图绘制",
+  "keywords": [
+    ""
+  ],
+  "articleBody": "思维导图 《汇编》.xmind\n初识汇编 汇编的介绍 - **执行过程** - - **特点** - 汇编语言与机器语言一一对应,每条机器指令都有与之对应的汇编指令 - 汇编语言可以通过编译得到机器语言,机器语言可以通过反汇编得到汇编语言 - 高级语言可以通过编译得到汇编\\机器语言,但汇编语言\\机器语言几乎不可能还原成高级语言 - 汇编语言可以直接访问,控制各种硬件设备,比如存储器，CPU等,能最大限度的发挥硬件的功能 - 能够不受编译器的限制,对生成的二进制代码直接完全控制 - 目标代码简短,占用内存少,执行速度快 - 汇编指令是机器指令的助记符,同机器指令一一对应,每一种CPU都有自己的机器指令\\汇编指令集,所以不具备可移植性 - 学习的时候知识点,挺多的,而且开发者需要对CPU硬件结构有所了解,不易于编译,调试，维护 - 不区分大小写,mov和MOV是一样的 - **用途** - 编写驱动程序,操作系统,编写linux内核 - 对性能要求极高的程序和代码片段编写,也可以和高级语言混合使用 - 软件安全 - 病毒的分析,防治 - 逆向,加壳,破解,外挂,免杀,加密解密,漏洞,黑客 - 作为理解整个计算机系统运作是个不错的途径 - 为写下高效代码打下基础 - 弄清代码的本质 - 函数的本质是什么 - sizeof底层到底在做什么事情 - ++a, a++ 底层是如何执行的 - 编译器到底帮我们做了那些事情 - DEBUG和RELEASE模式有啥关键地方被我们忽略 - **app执行过程** - 汇编的种类 - 8086汇编（8086汇编是16位的CPU） - Win32汇编 - Win64汇编 - ARM汇编（嵌入式,Mac,IOS） - 总线 数据总线 传送数据信息\n他的宽度觉得了CPU的单次数据传送量,也就是数据的传输速度 8086的数据总线是16,所以单次最大传递2个字节的数据 8088的数据总线宽度是8,8086的数据总线宽度是16 地址总线 传送地址信息\n他的宽度决定了CPU的寻址能力 8086地址总线的宽度是20,所以他的寻址能力是1M(2^20) 控制总线 传送控制信息(完成总线操作功能) QA 为什么用16机制\n因为简短,容易识别查看 0XFF\n用两个16进制位F表示一个字节 H结尾的是多少进制\n代表16进制和OX一个意思 H的单词是Hexadecimal 寻址的能力\n我们都熟知32为的操作系统的寻址空间的大小为4G，因此我们安装一个32位系统在配置4g的内存条，这似乎非常完美。但是当我们打开任务管理器发现我们的物理内存只有3g左右\n寻址空间一般指的是CPU对于内存寻址的能力。通俗地讲，就是最多能用到多少内存的一个问题。数据在存储器（RAM）中存放是有规律的，CPU在运算的时间需要把数据取出来，就必须 需要知道数据储存在哪里，这时我们需要挨家挨户地找（也就是在其能够寻址的空间进行查找），这就叫做寻址。 但是如果地址超出了CPU的寻址范围，CPU就无法找到数据了。CPU最大查找多大范围的地址叫做寻址能力，CPU的寻址能力以字节为单位。 地址总线找地址图示 CPU 内部部件之间由总线连接 内存 - 内存地址空间的大小受CPU地址总线宽度的限制,8086的地址总线宽度为20可以定位2^20个不同的内存单元(内存地址范围0x00000~0xFFFFF)所以8086的内存地址为1MB 0x00000-0x9FFFF 主存储器,可读可写 0xA0000-0xBFFFF 向显存中写入数据,这些数据会被显卡输出到显示器,可读可写 0xC0000-0xFFFFF 存储各种硬件/系统信息,只读 寄存器 CPU最主要的部件是寄存器,可以通过改变寄存器的内容实现对CPU的控制 不同的CPU,寄存器的个数,结构是不相同的(8086是16位结构的) 8086有14个寄存器 都是16位的寄存器 可以存放2个字节 8086寻址 CPU访问内存单元时,要给出内存单元的地址,所有的内存单元都有唯一的地址,叫做物理地址 8086有20位地址总线,可以传送20位的地址,1M的寻址能力 但它又是16位的CPU,它内部能够一次性出力,传输,暂时存储的地址为16位,如果将地址从内部简单的发出,那么它只能发送出16位的地址,表现出来的寻址能力只有64KB 8086寻址能力1M地址方位== 0x00000 - Oxfffff 假设有个地址:OxCFFA7 我们16位CPU没法直接接受这个数据 因为只能接受最大OxFFFF\n0xCFFA7 = 0xCFFA * 16 +0x007 OxCFFA7 = 0xCFF0 16 + 0x0A7 OxCFFA7 = 0xCF00 16 +OxFA7 物理地址=段地址* 16 +偏移地址\n8086采用一种在内部用2个16位地址合成的方法来生成1个20位的物理地址 内存分段管理 段寄存器 8086在访问内存时要由相关部件提供内存单元的短地址和偏移地址,送入地址加法器合成物理地址 段地址在8086的段寄存器中存放 8086有4个段寄存器 CS(Code Segment):代码段寄存器 DS(Data Segment):数据段寄存器 SS(Stack Segment):堆栈寄存器 ES(Extra Segment):附加段寄存器 CS和IP CS为代码段寄存器,IP为指令指针寄存器,它指示了CPU当前要读的指令地址 任意时刻,8086CPU都会将CS:IP指向的指令作为下一条需要取出执行的指令 QA 为啥是偏移3个字节\n因为这里的汇编指令是3个,占3个字节 8086开机第一条指令\n在8086CPU 加电启动或复位后(即CPU 刚开始工作时)CS 和IP被设置为CS=FFFFH，IP-0000H，即在8086PC机刚启动时，CPU从内存FFFFOH单元中读取指令执行,FFFFOH单元中的指令是8086PC机开机后执行的第一条指令。 CS端才有IP,数据段不需要IP\nIP是告诉CPU CS寄存器往下走多少偏移是我的代码指令,数据段是不需要这个的,只需要偏移地址 偏移地址就是[…] jmp指令 指令和数据 在内存或者磁盘上，指令和数据没有任何区别，都是二进制信息\nCPU在工作的时候把有的信息看做指令，有的信息看做数据，为同样的信息赋予了不同的意义\n例如，内存中的二进制信息1000100111011000，计算机可以把它看作大小为89D8H的数据来处理。也可以将其看作指令mov ax.bx来执行。 1000100111011000—\u003e89DeH(数据) 1000100111011000–\u003emov px,bx(程序)\nCPU根据什么将内存中的信息看做指令?\nCPU将CS:IP指向的内存单元的内容看做指令 如果内存中的某段内容曾被CPU执行过，那么它所在的内存单元必然被CS:IP指向过 jmp指令 CPU从何处执行指令是由CS、IP中的内容决定的。我们可以通过改变CS、IP的内容来控制CPU执行目标指令 8086提供了一个mov指令(传送指令)，可以用来修改大部分寄存器的值，比如 mov ax 10、mov bx,20mov cx,30、mov dx,40 但是，mov指令不能用于设置CS、IP的值，8086没有提供这样的功能 8086提供了另外的指令来修改CS、IP的值，这些指令统称为转移指令，最简单的是jmp指令 数据段DS寄存器 CPU要读写一个内存单元时，必须要先给出这个内存单元的地址，在8086中，内存地址由段地址和偏移地址组成 8086中有一个DS段寄存器，通常用来存放要访问数据的段地址 mov bx,1000H mov ds, bx mov al,[0]\nal是低八位\n[…]里面放的是偏移地址\nmov al,[0] 等价于mov al,[ds:0] 等价于1000H地址偏移0位\n[0]左边的指令寄存器al决定读取多少位,比如 al读取8位 ax读取16位 eax读取32位\n上面3条指令的作用将10000H(1000:0)中的内存数据赋值到al寄存器中 mov al.[address]的意思将DS.address中的内存数据赋值到al寄存器中 由于al是8位寄存器，所以是将一个字节的数据赋值给al寄存器\n8086不支持将数据直接送入段寄存器中，mov ds,1000H是错误的 将AH中的数据送入内存单元AC10BH中 段:AC10H 偏移:BH mov bx,AC10H mov ds,bx mov[B],AH\n大端小端 mov指令 注意: mov内存单元.内存单元\"是不允许的。比如mov [0],[1]\n为什么不允许,因为这里没有寄存器我不知道你要取几个字节，放几个字节 mov dx,20\n20等价于偏移20个字节 add,sub指令 数据段 对于8086来说，在编程时，可以根据需要，将一组内存单元定义为一个段\n我们可以将一组长度为N(N\u003c=64KB)、地址连续、起始地址为16倍数的内存单元当做专门存储数据的内存空间，称为数据段。比如用123B0H~123B9H这段内存空间来存放数据，我们就可以认为123B0H~123B9H是一个数据段，它的段地址为123BH,长度为10字节\n如何访问数据段中的数据?\n用DS存放数据段的段地址，再根据需要，用相关指令访问数据段中的具体单元 8086开发工具 下载地址 演示代码 assume cs:code code segment mov ax,1122H ;将1122H放入ax寄存器 mov bx,3344H ;将3344H放入bx寄存器 add ax,bx ;ax = ax + bx mov ah, 4cH ;是向A寄存器高字节ah赋值16进制数4c,此语句和int 21h 组合成一个完整的中断调用功能 int 21H ;21H是中断码 ;int 表示中断，中断有很多种类， ;其中21h表示DOS系统的系统调用中断这一大类，下面还分了很多小类 ;小类的选择是放在ah寄存器中的。2个语句组合表示这个中断是21h大类中的4c小类 ;类似于（21h）年级 （4c）班 code ends end\n- 汇编指令 如mov、add、sub等 有对应的机器指令，可以被编译为机器指令，最终被CPU执行 伪指令 如assume、segment、ends、end等 没有对应的机器指令，由编译器解析，最终不被CPU执行\nsegment、ends assume end db(define byte)自定义字节 dw(define word)自定义字\n注意点 如果用的是dl 进行相加的时候因为用的是低8位,所以会溢出,他不会进行进阶放到dh\n- 正确版本 中断 中断是由于软件,硬件的信号,使的CPU暂停当前的任务,转而去执行另一段子程序 也就是说,在程序运行的过程中,系统出现了一个必须有CPU立即处理的情况,此时,CPU暂时中止当前程序的执行转而处理这个新的情况的过程就叫中断 分类 硬中断(外中断)\n由外部设备,比如网卡,硬盘随机引发的,比如当网卡收到数据包的时候,就会发出一个中断,网卡信号发给操作系统,操作系统然后通过API告诉你 软中断(内中断)\n由执行中断的指令产生的,可以通过程序控制触发 常见中断\n栈 图示 解释 8086会将CS作为代码段的段地址，将CS:IP指向的指令作为下一条需要取出执行的指令\n一个栈段最大可以设为多少?为什么?\n指令所完成的功能的角度上来看，push、pop等指令在执行的时候只修改SP，所以栈顶的变化范围是 0~FFFFH，从栈空时候的SP=0，一直压栈，直到栈满时SP=0;如果再次压栈，栈顶将环绕，覆盖了原来栈中的内容。SP的最大范围值是FFFF,所以一个栈段的容量最大为64KB。 8086会将DS作为数据段的段地址， mov ax.[address]就是取出DS:address的内存数据放到ax寄存器中\n8086提供了PUSH(入栈)和POP(出栈)指令来操作栈段的数据 比如push ax是将ax的数据入栈，pop ax是将栈顶的数据送入ax\n8086会将SS作为栈段的段地址，任意时刻，SS:SP指向栈顶元素\n8086CPU的入栈和出栈操作都是以字为单位进行的\n8086CPU 不保证我们对栈的操作不会超界。这也就是说，8086CPU只知道栈顶在何处(由SS:SP指示)，而不知道我们安排的栈空间有多大。这点就好像CPU 只知道当前要执行的指令在何处(由CS:IP指示)，而不知道要执行的指令有多少。从这两点上我们可以看出 8086CPU 的工作机理，它只考虑当前的情况:当前的栈顶在何处、当前要执行的指令是哪一条。\n我们在编程的时候要自己操心栈顶超界的问题，要根据可能用到的最大栈空间，来安排栈的大小，防止入栈的数据太多而导致的超界;执行出栈操作的时候也要注意，以防栈空的时候继续出栈而导致的超界。\n8086 栈操作 push ax pop ax push/pop 注意:在8086中,push、pop操作的数据都是2个字节的 栈段 - Loop指令 LOOP等价于jmp, jmp到标号位置 ;计算2^6使用1oop配合cx mov ax,2h mov cx,5\ns: add ax, ax loop s mov ah, 4cH\nint 21H\nend\n- ;计算2^6使用1oop配合cx mov ax,2h mov cx,0H s: add ax, ax loop s mov ah, 4cH\nint 21H\nend\n- 代码分段 场景 当我们需要在内存中申请一块空间，可以使用伪指令db和dw db–\u003edefine byte 定义字节 dw–\u003edefine word 定义字 如果按照以下写法 assume cs:code code segment db 1,2,3,4,5 db ‘hello’ db “pangshu”\nmov al ,cs:[0] ;取出预先定义好的数据 ip默认从0开始 ;退出程序 mov ah 4ch int 21h code ends end 以上代码存在一个问题, 由于数据是在代码段中定义, cpu默认将数据识别为代码, 将导致数据不可用\n解决办法\nassume cs:code code segment db 1,2,3,4,5 db ‘hello’ db “pangshu” start:\tmov al ,cs:[0] ;取出预先定义好的数据 ip默认从0开始 ;退出程序 mov ah 4ch int 21h code ends end start ;标记名称可自定义\n标记是为了告诉编译器代码段入口位置, 这样就能保证db数据不被识别为指令\n知识点 如果我想定义20个0数据,有一种快捷的语法\nassume cs:code code segment db 20 dup(0) ;申请20个字节的空间 然后存放0 start:\tmov al ,cs:[0] ;取出预先定义好的数据 ip默认从0开始 ;退出程序 mov ah 4ch int 21h code ends end start ;标记名称可自定义\n数据段和栈段的定义\nassume cs:code code segment db 20 dup(0) ;可存数据也可当作栈 db 20 dup(0) ;可存数据也可当作栈 start:\t;将数据所在的物理基地址交由ds段寄存器进行存放管理 mov dx,cs mov ds,dx mov ax,1122h mov [0],ax\n;定义栈段 将栈空间所在的物理基地址交由ss栈段进行保存管理 mov ss,ds mov sp,40 ;从高字节往低字节存放 push ax\n;退出程序 mov ah 4ch int 21h code ends end start ;标记名称可自定义\n分段定义\nassume cs:code,ds:data,ss:stack ;数据段 代码段可直接获取数据段中数据, 相当于高级语言中的局部变量 stack segment db 20 dup(0) ;定义数据相当于是定义了段地址 stack ends\n;数据段 代码段可直接获取数据段中数据, 相当于高级语言中的全局变量 data segment db 20 dup(0) ;定义数据相当于是定义了段地址 age dw 20h ;给数据取个别名为age\ndata ends\ncode segment\nstart: mov ax,1122h mov age,ax ; 相当于[14h],ax\n;退出程序 mov ah 4ch int 21h code ends end start ;标记名称可自定义\nCall和ret指令 call指令 将下一条指令的偏移地址入栈 跳转到定位的地址执行指令 call 标号 call 函数地址 ret指令 将栈顶的值POP给IP 跳转到定位的地址执行指令 图示 函数局部变量有可能入栈,得看寄存器空间够不够,如果寄存器不够用,或者如果在函数内部再次调用函数\n在函数内部再次调用函数,b会入栈 汇编函数调用过程 栈帧是指为一个函数调用单独分配的那部分栈空间。比如，当运行中的程序调用另一个函数时，就要进入一个新的栈帧，原来函数的栈帧称为调用者的帧，新的栈帧称为当前帧。被调用的函数运行结束后当前帧全部收缩，回到调用者的帧\n- 当发生函数调用的时候,栈空间中存放的数据是这样的: 1、调用者函数把被调函数所需要的参数按照与被调函数的形参顺序相反的顺序压入栈中,即:从右向左依次把被调函数所需要的参数压入栈; 2、调用者函数使用call指令调用被调函数,并把call指令的下一条指令的地址当成返回地址压入栈中(这个压栈操作隐含在call指令中); 3、在被调函数中,被调函数会先保存调用者函数的栈底地址(push ebp)(从高内在地址–》低内存地址),然后再保存调用者函数的栈顶地址,即:当前被调函数的栈底地址(mov ebp,esp); 4、在被调函数中,从ebp的位置处开始存放被调函数中的局部变量和临时变量,并且这些变量的地址按照定义时的顺序依次减小,即:这些变量的地址是按照栈的延伸方向排列的,先定义的变量先入栈,后定义的变量后入\nebp是帧指针，它总是指向当前帧的底部；esp是栈指针，它总是指向当前帧的顶部 标记寄存器 这是一个存放条件标志、控制标志寄存器，主要用于反映处理器的状态和运算结果的某些特征及控制指令的执行 ",
+  "wordCount" : "6133",
+  "inLanguage": "en",
+  "image":"https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png","datePublished": "2022-12-24T01:30:29+08:00",
+  "dateModified": "2022-12-24T01:30:29+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "frog"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://frog-game.github.io/posts/read/huibianzognjie/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "frog's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://frog-game.github.io/img/Q.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://frog-game.github.io/" accesskey="h" title="frog&#39;s Blog (Alt + H)">
+            <img src="https://frog-game.github.io/img/Q.gif" alt="logo" aria-label="logo"
+                 height="35">frog&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://frog-game.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/" title="🏠 主页">
+                <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/posts" title="📚 文章">
+                <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/tags" title="🧩 标签">
+                <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/archives/" title="⏱ 时间轴">
+                <span>⏱ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/about" title="🙋🏻‍♂️ 关于">
+                <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/links" title="🤝 友链">
+                <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/read/">📕 阅读</a></div>
+            <h1 class="post-title">
+                汇编阅读
+            </h1>
+            <div class="post-description">
+                对8086汇编知识点的总结,思维导图绘制
+            </div>
+            <div class="post-meta">创建:&nbsp;<span title='2022-12-24 01:30:29 +0800 CST'>2022-12-24</span>&nbsp;|&nbsp;更新:&nbsp;2022-12-24&nbsp;|&nbsp;字数:&nbsp;6133字&nbsp;|&nbsp;时长:&nbsp;13分钟&nbsp;|&nbsp;
+作者:&nbsp;frog
+
+
+
+                &nbsp;|&nbsp;标签: &nbsp;
+                <ul class="post-tags-meta">
+                    <a href="https://frog-game.github.io/tags/hybridclr/">HybridCLR</a>
+                </ul>
+
+                
+                <span id="busuanzi_container_page_pv">
+                &nbsp;| 访问: <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+</div>
+        </header> 
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png" alt="">
+        
+</figure>
+        <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%80%9d%e7%bb%b4%e5%af%bc%e5%9b%be" aria-label="思维导图">思维导图</a></li>
+                <li>
+                    <a href="#%e5%88%9d%e8%af%86%e6%b1%87%e7%bc%96" aria-label="初识汇编">初识汇编</a><ul>
+                        
+                <li>
+                    <a href="#%e6%b1%87%e7%bc%96%e7%9a%84%e4%bb%8b%e7%bb%8d" aria-label="汇编的介绍">汇编的介绍</a></li>
+                <li>
+                    <a href="#%e6%b1%87%e7%bc%96%e7%9a%84%e7%a7%8d%e7%b1%bb" aria-label="汇编的种类">汇编的种类</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%ba%bf" aria-label="总线">总线</a><ul>
+                        
+                <li>
+                    <a href="#%e6%95%b0%e6%8d%ae%e6%80%bb%e7%ba%bf" aria-label="数据总线">数据总线</a></li>
+                <li>
+                    <a href="#%e5%9c%b0%e5%9d%80%e6%80%bb%e7%ba%bf" aria-label="地址总线">地址总线</a></li>
+                <li>
+                    <a href="#%e6%8e%a7%e5%88%b6%e6%80%bb%e7%ba%bf" aria-label="控制总线">控制总线</a></li>
+                <li>
+                    <a href="#qa" aria-label="QA">QA</a></li>
+                <li>
+                    <a href="#%e5%9c%b0%e5%9d%80%e6%80%bb%e7%ba%bf%e6%89%be%e5%9c%b0%e5%9d%80%e5%9b%be%e7%a4%ba" aria-label="地址总线找地址图示">地址总线找地址图示</a></li></ul>
+                </li>
+                <li>
+                    <a href="#cpu" aria-label="CPU">CPU</a><ul>
+                        
+                <li>
+                    <a href="#%e5%86%85%e9%83%a8%e9%83%a8%e4%bb%b6%e4%b9%8b%e9%97%b4%e7%94%b1%e6%80%bb%e7%ba%bf%e8%bf%9e%e6%8e%a5" aria-label="内部部件之间由总线连接">内部部件之间由总线连接</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%86%85%e5%ad%98" aria-label="内存">内存</a><ul>
+                        
+                <li>
+                    <a href="#%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%e7%a9%ba%e9%97%b4%e7%9a%84%e5%a4%a7%e5%b0%8f%e5%8f%97cpu%e5%9c%b0%e5%9d%80%e6%80%bb%e7%ba%bf%e5%ae%bd%e5%ba%a6%e7%9a%84%e9%99%90%e5%88%b68086%e7%9a%84%e5%9c%b0%e5%9d%80%e6%80%bb%e7%ba%bf%e5%ae%bd%e5%ba%a6%e4%b8%ba20%e5%8f%af%e4%bb%a5%e5%ae%9a%e4%bd%8d220%e4%b8%aa%e4%b8%8d%e5%90%8c%e7%9a%84%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%e8%8c%83%e5%9b%b40x000000xfffff%e6%89%80%e4%bb%a58086%e7%9a%84%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%e4%b8%ba1mb" aria-label="内存地址空间的大小受CPU地址总线宽度的限制,8086的地址总线宽度为20可以定位2^20个不同的内存单元(内存地址范围0x00000~0xFFFFF)所以8086的内存地址为1MB">内存地址空间的大小受CPU地址总线宽度的限制,8086的地址总线宽度为20可以定位2^20个不同的内存单元(内存地址范围0x00000~0xFFFFF)所以8086的内存地址为1MB</a></li>
+                <li>
+                    <a href="#0x00000-0x9ffff--%e4%b8%bb%e5%ad%98%e5%82%a8%e5%99%a8%e5%8f%af%e8%af%bb%e5%8f%af%e5%86%99" aria-label="0x00000-0x9FFFF  主存储器,可读可写">0x00000-0x9FFFF  主存储器,可读可写</a></li>
+                <li>
+                    <a href="#0xa0000-0xbffff-%e5%90%91%e6%98%be%e5%ad%98%e4%b8%ad%e5%86%99%e5%85%a5%e6%95%b0%e6%8d%ae%e8%bf%99%e4%ba%9b%e6%95%b0%e6%8d%ae%e4%bc%9a%e8%a2%ab%e6%98%be%e5%8d%a1%e8%be%93%e5%87%ba%e5%88%b0%e6%98%be%e7%a4%ba%e5%99%a8%e5%8f%af%e8%af%bb%e5%8f%af%e5%86%99" aria-label="0xA0000-0xBFFFF 向显存中写入数据,这些数据会被显卡输出到显示器,可读可写">0xA0000-0xBFFFF 向显存中写入数据,这些数据会被显卡输出到显示器,可读可写</a></li>
+                <li>
+                    <a href="#0xc0000-0xfffff-%e5%ad%98%e5%82%a8%e5%90%84%e7%a7%8d%e7%a1%ac%e4%bb%b6%e7%b3%bb%e7%bb%9f%e4%bf%a1%e6%81%af%e5%8f%aa%e8%af%bb" aria-label="0xC0000-0xFFFFF 存储各种硬件/系统信息,只读">0xC0000-0xFFFFF 存储各种硬件/系统信息,只读</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%af%84%e5%ad%98%e5%99%a8" aria-label="寄存器">寄存器</a><ul>
+                        
+                <li>
+                    <a href="#cpu%e6%9c%80%e4%b8%bb%e8%a6%81%e7%9a%84%e9%83%a8%e4%bb%b6%e6%98%af%e5%af%84%e5%ad%98%e5%99%a8%e5%8f%af%e4%bb%a5%e9%80%9a%e8%bf%87%e6%94%b9%e5%8f%98%e5%af%84%e5%ad%98%e5%99%a8%e7%9a%84%e5%86%85%e5%ae%b9%e5%ae%9e%e7%8e%b0%e5%af%b9cpu%e7%9a%84%e6%8e%a7%e5%88%b6" aria-label="CPU最主要的部件是寄存器,可以通过改变寄存器的内容实现对CPU的控制">CPU最主要的部件是寄存器,可以通过改变寄存器的内容实现对CPU的控制</a></li>
+                <li>
+                    <a href="#%e4%b8%8d%e5%90%8c%e7%9a%84cpu%e5%af%84%e5%ad%98%e5%99%a8%e7%9a%84%e4%b8%aa%e6%95%b0%e7%bb%93%e6%9e%84%e6%98%af%e4%b8%8d%e7%9b%b8%e5%90%8c%e7%9a%848086%e6%98%af16%e4%bd%8d%e7%bb%93%e6%9e%84%e7%9a%84" aria-label="不同的CPU,寄存器的个数,结构是不相同的(8086是16位结构的)">不同的CPU,寄存器的个数,结构是不相同的(8086是16位结构的)</a></li>
+                <li>
+                    <a href="#8086%e6%9c%8914%e4%b8%aa%e5%af%84%e5%ad%98%e5%99%a8" aria-label="8086有14个寄存器">8086有14个寄存器</a></li></ul>
+                </li>
+                <li>
+                    <a href="#8086%e5%af%bb%e5%9d%80" aria-label="8086寻址">8086寻址</a><ul>
+                        
+                <li>
+                    <a href="#cpu%e8%ae%bf%e9%97%ae%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e6%97%b6%e8%a6%81%e7%bb%99%e5%87%ba%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e7%9a%84%e5%9c%b0%e5%9d%80%e6%89%80%e6%9c%89%e7%9a%84%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e9%83%bd%e6%9c%89%e5%94%af%e4%b8%80%e7%9a%84%e5%9c%b0%e5%9d%80%e5%8f%ab%e5%81%9a%e7%89%a9%e7%90%86%e5%9c%b0%e5%9d%80" aria-label="CPU访问内存单元时,要给出内存单元的地址,所有的内存单元都有唯一的地址,叫做物理地址">CPU访问内存单元时,要给出内存单元的地址,所有的内存单元都有唯一的地址,叫做物理地址</a></li>
+                <li>
+                    <a href="#8086%e6%9c%8920%e4%bd%8d%e5%9c%b0%e5%9d%80%e6%80%bb%e7%ba%bf%e5%8f%af%e4%bb%a5%e4%bc%a0%e9%80%8120%e4%bd%8d%e7%9a%84%e5%9c%b0%e5%9d%801m%e7%9a%84%e5%af%bb%e5%9d%80%e8%83%bd%e5%8a%9b" aria-label="8086有20位地址总线,可以传送20位的地址,1M的寻址能力">8086有20位地址总线,可以传送20位的地址,1M的寻址能力</a></li>
+                <li>
+                    <a href="#%e4%bd%86%e5%ae%83%e5%8f%88%e6%98%af16%e4%bd%8d%e7%9a%84cpu%e5%ae%83%e5%86%85%e9%83%a8%e8%83%bd%e5%a4%9f%e4%b8%80%e6%ac%a1%e6%80%a7%e5%87%ba%e5%8a%9b%e4%bc%a0%e8%be%93%e6%9a%82%e6%97%b6%e5%ad%98%e5%82%a8%e7%9a%84%e5%9c%b0%e5%9d%80%e4%b8%ba16%e4%bd%8d%e5%a6%82%e6%9e%9c%e5%b0%86%e5%9c%b0%e5%9d%80%e4%bb%8e%e5%86%85%e9%83%a8%e7%ae%80%e5%8d%95%e7%9a%84%e5%8f%91%e5%87%ba%e9%82%a3%e4%b9%88%e5%ae%83%e5%8f%aa%e8%83%bd%e5%8f%91%e9%80%81%e5%87%ba16%e4%bd%8d%e7%9a%84%e5%9c%b0%e5%9d%80%e8%a1%a8%e7%8e%b0%e5%87%ba%e6%9d%a5%e7%9a%84%e5%af%bb%e5%9d%80%e8%83%bd%e5%8a%9b%e5%8f%aa%e6%9c%8964kb" aria-label="但它又是16位的CPU,它内部能够一次性出力,传输,暂时存储的地址为16位,如果将地址从内部简单的发出,那么它只能发送出16位的地址,表现出来的寻址能力只有64KB">但它又是16位的CPU,它内部能够一次性出力,传输,暂时存储的地址为16位,如果将地址从内部简单的发出,那么它只能发送出16位的地址,表现出来的寻址能力只有64KB</a></li>
+                <li>
+                    <a href="#8086%e5%af%bb%e5%9d%80%e8%83%bd%e5%8a%9b1m%e5%9c%b0%e5%9d%80%e6%96%b9%e4%bd%8d-0x00000---oxfffff" aria-label="8086寻址能力1M地址方位== 0x00000 - Oxfffff">8086寻址能力1M地址方位== 0x00000 - Oxfffff</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%86%85%e5%ad%98%e5%88%86%e6%ae%b5%e7%ae%a1%e7%90%86" aria-label="内存分段管理">内存分段管理</a></li>
+                <li>
+                    <a href="#%e6%ae%b5%e5%af%84%e5%ad%98%e5%99%a8" aria-label="段寄存器">段寄存器</a><ul>
+                        
+                <li>
+                    <a href="#8086%e5%9c%a8%e8%ae%bf%e9%97%ae%e5%86%85%e5%ad%98%e6%97%b6%e8%a6%81%e7%94%b1%e7%9b%b8%e5%85%b3%e9%83%a8%e4%bb%b6%e6%8f%90%e4%be%9b%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e7%9a%84%e7%9f%ad%e5%9c%b0%e5%9d%80%e5%92%8c%e5%81%8f%e7%a7%bb%e5%9c%b0%e5%9d%80%e9%80%81%e5%85%a5%e5%9c%b0%e5%9d%80%e5%8a%a0%e6%b3%95%e5%99%a8%e5%90%88%e6%88%90%e7%89%a9%e7%90%86%e5%9c%b0%e5%9d%80" aria-label="8086在访问内存时要由相关部件提供内存单元的短地址和偏移地址,送入地址加法器合成物理地址">8086在访问内存时要由相关部件提供内存单元的短地址和偏移地址,送入地址加法器合成物理地址</a></li>
+                <li>
+                    <a href="#%e6%ae%b5%e5%9c%b0%e5%9d%80%e5%9c%a88086%e7%9a%84%e6%ae%b5%e5%af%84%e5%ad%98%e5%99%a8%e4%b8%ad%e5%ad%98%e6%94%be" aria-label="段地址在8086的段寄存器中存放">段地址在8086的段寄存器中存放</a></li>
+                <li>
+                    <a href="#8086%e6%9c%894%e4%b8%aa%e6%ae%b5%e5%af%84%e5%ad%98%e5%99%a8" aria-label="8086有4个段寄存器">8086有4个段寄存器</a></li></ul>
+                </li>
+                <li>
+                    <a href="#cs%e5%92%8cip" aria-label="CS和IP">CS和IP</a><ul>
+                        
+                <li>
+                    <a href="#cs%e4%b8%ba%e4%bb%a3%e7%a0%81%e6%ae%b5%e5%af%84%e5%ad%98%e5%99%a8ip%e4%b8%ba%e6%8c%87%e4%bb%a4%e6%8c%87%e9%92%88%e5%af%84%e5%ad%98%e5%99%a8%e5%ae%83%e6%8c%87%e7%a4%ba%e4%ba%86cpu%e5%bd%93%e5%89%8d%e8%a6%81%e8%af%bb%e7%9a%84%e6%8c%87%e4%bb%a4%e5%9c%b0%e5%9d%80" aria-label="CS为代码段寄存器,IP为指令指针寄存器,它指示了CPU当前要读的指令地址">CS为代码段寄存器,IP为指令指针寄存器,它指示了CPU当前要读的指令地址</a></li>
+                <li>
+                    <a href="#%e4%bb%bb%e6%84%8f%e6%97%b6%e5%88%bb8086cpu%e9%83%bd%e4%bc%9a%e5%b0%86csip%e6%8c%87%e5%90%91%e7%9a%84%e6%8c%87%e4%bb%a4%e4%bd%9c%e4%b8%ba%e4%b8%8b%e4%b8%80%e6%9d%a1%e9%9c%80%e8%a6%81%e5%8f%96%e5%87%ba%e6%89%a7%e8%a1%8c%e7%9a%84%e6%8c%87%e4%bb%a4" aria-label="任意时刻,8086CPU都会将CS:IP指向的指令作为下一条需要取出执行的指令">任意时刻,8086CPU都会将CS:IP指向的指令作为下一条需要取出执行的指令</a></li>
+                <li>
+                    <a href="#qa-1" aria-label="QA">QA</a></li></ul>
+                </li>
+                <li>
+                    <a href="#jmp%e6%8c%87%e4%bb%a4" aria-label="jmp指令">jmp指令</a><ul>
+                        
+                <li>
+                    <a href="#%e6%8c%87%e4%bb%a4%e5%92%8c%e6%95%b0%e6%8d%ae" aria-label="指令和数据">指令和数据</a></li>
+                <li>
+                    <a href="#jmp%e6%8c%87%e4%bb%a4-1" aria-label="jmp指令">jmp指令</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%95%b0%e6%8d%ae%e6%ae%b5ds%e5%af%84%e5%ad%98%e5%99%a8" aria-label="数据段DS寄存器">数据段DS寄存器</a><ul>
+                        
+                <li>
+                    <a href="#cpu%e8%a6%81%e8%af%bb%e5%86%99%e4%b8%80%e4%b8%aa%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e6%97%b6%e5%bf%85%e9%a1%bb%e8%a6%81%e5%85%88%e7%bb%99%e5%87%ba%e8%bf%99%e4%b8%aa%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83%e7%9a%84%e5%9c%b0%e5%9d%80%e5%9c%a88086%e4%b8%ad%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%e7%94%b1%e6%ae%b5%e5%9c%b0%e5%9d%80%e5%92%8c%e5%81%8f%e7%a7%bb%e5%9c%b0%e5%9d%80%e7%bb%84%e6%88%90" aria-label="CPU要读写一个内存单元时，必须要先给出这个内存单元的地址，在8086中，内存地址由段地址和偏移地址组成">CPU要读写一个内存单元时，必须要先给出这个内存单元的地址，在8086中，内存地址由段地址和偏移地址组成</a></li>
+                <li>
+                    <a href="#8086%e4%b8%ad%e6%9c%89%e4%b8%80%e4%b8%aads%e6%ae%b5%e5%af%84%e5%ad%98%e5%99%a8%e9%80%9a%e5%b8%b8%e7%94%a8%e6%9d%a5%e5%ad%98%e6%94%be%e8%a6%81%e8%ae%bf%e9%97%ae%e6%95%b0%e6%8d%ae%e7%9a%84%e6%ae%b5%e5%9c%b0%e5%9d%80" aria-label="8086中有一个DS段寄存器，通常用来存放要访问数据的段地址">8086中有一个DS段寄存器，通常用来存放要访问数据的段地址</a></li>
+                <li>
+                    <a href="#mov-bx1000h" aria-label="mov bx,1000H">mov bx,1000H</a></li>
+                <li>
+                    <a href="#%e4%b8%8a%e9%9d%a23%e6%9d%a1%e6%8c%87%e4%bb%a4%e7%9a%84%e4%bd%9c%e7%94%a8%e5%b0%8610000h10000%e4%b8%ad%e7%9a%84%e5%86%85%e5%ad%98%e6%95%b0%e6%8d%ae%e8%b5%8b%e5%80%bc%e5%88%b0al%e5%af%84%e5%ad%98%e5%99%a8%e4%b8%ad" aria-label="上面3条指令的作用将10000H(1000:0)中的内存数据赋值到al寄存器中">上面3条指令的作用将10000H(1000:0)中的内存数据赋值到al寄存器中</a></li>
+                <li>
+                    <a href="#8086%e4%b8%8d%e6%94%af%e6%8c%81%e5%b0%86%e6%95%b0%e6%8d%ae%e7%9b%b4%e6%8e%a5%e9%80%81%e5%85%a5%e6%ae%b5%e5%af%84%e5%ad%98%e5%99%a8%e4%b8%admov-ds1000h%e6%98%af%e9%94%99%e8%af%af%e7%9a%84" aria-label="8086不支持将数据直接送入段寄存器中，mov ds,1000H是错误的">8086不支持将数据直接送入段寄存器中，mov ds,1000H是错误的</a></li>
+                <li>
+                    <a href="#%e5%b0%86ah%e4%b8%ad%e7%9a%84%e6%95%b0%e6%8d%ae%e9%80%81%e5%85%a5%e5%86%85%e5%ad%98%e5%8d%95%e5%85%83ac10bh%e4%b8%ad" aria-label="将AH中的数据送入内存单元AC10BH中">将AH中的数据送入内存单元AC10BH中</a></li>
+                <li>
+                    <a href="#%e5%a4%a7%e7%ab%af%e5%b0%8f%e7%ab%af" aria-label="大端小端">大端小端</a></li>
+                <li>
+                    <a href="#mov%e6%8c%87%e4%bb%a4" aria-label="mov指令">mov指令</a></li>
+                <li>
+                    <a href="#addsub%e6%8c%87%e4%bb%a4" aria-label="add,sub指令">add,sub指令</a></li>
+                <li>
+                    <a href="#%e6%95%b0%e6%8d%ae%e6%ae%b5" aria-label="数据段">数据段</a></li></ul>
+                </li>
+                <li>
+                    <a href="#8086%e5%bc%80%e5%8f%91%e5%b7%a5%e5%85%b7" aria-label="8086开发工具">8086开发工具</a><ul>
+                        
+                <li>
+                    <a href="#%e4%b8%8b%e8%bd%bd%e5%9c%b0%e5%9d%80httpswwwmalavidacomensoftemu8086download" aria-label="下载地址"><a href="https://www.malavida.com/en/soft/emu8086/download">下载地址</a></a></li>
+                <li>
+                    <a href="#%e6%b1%87%e7%bc%96%e6%8c%87%e4%bb%a4" aria-label="汇编指令">汇编指令</a></li>
+                <li>
+                    <a href="#%e4%bc%aa%e6%8c%87%e4%bb%a4" aria-label="伪指令">伪指令</a></li>
+                <li>
+                    <a href="#%e6%b3%a8%e6%84%8f%e7%82%b9" aria-label="注意点">注意点</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%b8%ad%e6%96%ad" aria-label="中断">中断</a><ul>
+                        
+                <li>
+                    <a href="#%e4%b8%ad%e6%96%ad%e6%98%af%e7%94%b1%e4%ba%8e%e8%bd%af%e4%bb%b6%e7%a1%ac%e4%bb%b6%e7%9a%84%e4%bf%a1%e5%8f%b7%e4%bd%bf%e7%9a%84cpu%e6%9a%82%e5%81%9c%e5%bd%93%e5%89%8d%e7%9a%84%e4%bb%bb%e5%8a%a1%e8%bd%ac%e8%80%8c%e5%8e%bb%e6%89%a7%e8%a1%8c%e5%8f%a6%e4%b8%80%e6%ae%b5%e5%ad%90%e7%a8%8b%e5%ba%8f" aria-label="中断是由于软件,硬件的信号,使的CPU暂停当前的任务,转而去执行另一段子程序">中断是由于软件,硬件的信号,使的CPU暂停当前的任务,转而去执行另一段子程序</a></li>
+                <li>
+                    <a href="#%e4%b9%9f%e5%b0%b1%e6%98%af%e8%af%b4%e5%9c%a8%e7%a8%8b%e5%ba%8f%e8%bf%90%e8%a1%8c%e7%9a%84%e8%bf%87%e7%a8%8b%e4%b8%ad%e7%b3%bb%e7%bb%9f%e5%87%ba%e7%8e%b0%e4%ba%86%e4%b8%80%e4%b8%aa%e5%bf%85%e9%a1%bb%e6%9c%89cpu%e7%ab%8b%e5%8d%b3%e5%a4%84%e7%90%86%e7%9a%84%e6%83%85%e5%86%b5%e6%ad%a4%e6%97%b6cpu%e6%9a%82%e6%97%b6%e4%b8%ad%e6%ad%a2%e5%bd%93%e5%89%8d%e7%a8%8b%e5%ba%8f%e7%9a%84%e6%89%a7%e8%a1%8c%e8%bd%ac%e8%80%8c%e5%a4%84%e7%90%86%e8%bf%99%e4%b8%aa%e6%96%b0%e7%9a%84%e6%83%85%e5%86%b5%e7%9a%84%e8%bf%87%e7%a8%8b%e5%b0%b1%e5%8f%ab%e4%b8%ad%e6%96%ad" aria-label="也就是说,在程序运行的过程中,系统出现了一个必须有CPU立即处理的情况,此时,CPU暂时中止当前程序的执行转而处理这个新的情况的过程就叫中断">也就是说,在程序运行的过程中,系统出现了一个必须有CPU立即处理的情况,此时,CPU暂时中止当前程序的执行转而处理这个新的情况的过程就叫中断</a></li>
+                <li>
+                    <a href="#%e5%88%86%e7%b1%bb" aria-label="分类">分类</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%a0%88" aria-label="栈">栈</a><ul>
+                        
+                <li>
+                    <a href="#%e5%9b%be%e7%a4%ba" aria-label="图示">图示</a></li>
+                <li>
+                    <a href="#%e8%a7%a3%e9%87%8a" aria-label="解释">解释</a></li>
+                <li>
+                    <a href="#8086-%e6%a0%88%e6%93%8d%e4%bd%9c" aria-label="8086 栈操作">8086 栈操作</a></li>
+                <li>
+                    <a href="#push-ax" aria-label="push ax">push ax</a></li>
+                <li>
+                    <a href="#pop-ax" aria-label="pop ax">pop ax</a></li>
+                <li>
+                    <a href="#pushpop" aria-label="push/pop">push/pop</a></li>
+                <li>
+                    <a href="#%e6%a0%88%e6%ae%b5" aria-label="栈段">栈段</a></li></ul>
+                </li>
+                <li>
+                    <a href="#loop%e6%8c%87%e4%bb%a4" aria-label="Loop指令">Loop指令</a><ul>
+                        
+                <li>
+                    <a href="#loop%e7%ad%89%e4%bb%b7%e4%ba%8ejmp-jmp%e5%88%b0%e6%a0%87%e5%8f%b7%e4%bd%8d%e7%bd%ae" aria-label="LOOP等价于jmp, jmp到标号位置">LOOP等价于jmp, jmp到标号位置</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%bb%a3%e7%a0%81%e5%88%86%e6%ae%b5" aria-label="代码分段">代码分段</a><ul>
+                        
+                <li>
+                    <a href="#%e5%9c%ba%e6%99%af" aria-label="场景">场景</a></li>
+                <li>
+                    <a href="#%e7%9f%a5%e8%af%86%e7%82%b9" aria-label="知识点">知识点</a></li></ul>
+                </li>
+                <li>
+                    <a href="#call%e5%92%8cret%e6%8c%87%e4%bb%a4" aria-label="Call和ret指令">Call和ret指令</a><ul>
+                        
+                <li>
+                    <a href="#call%e6%8c%87%e4%bb%a4" aria-label="call指令">call指令</a></li>
+                <li>
+                    <a href="#ret%e6%8c%87%e4%bb%a4" aria-label="ret指令">ret指令</a></li>
+                <li>
+                    <a href="#%e5%9b%be%e7%a4%ba-1" aria-label="图示">图示</a></li>
+                <li>
+                    <a href="#%e6%b1%87%e7%bc%96%e5%87%bd%e6%95%b0%e8%b0%83%e7%94%a8%e8%bf%87%e7%a8%8b" aria-label="汇编函数调用过程">汇编函数调用过程</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%a0%87%e8%ae%b0%e5%af%84%e5%ad%98%e5%99%a8" aria-label="标记寄存器">标记寄存器</a><ul>
+                        
+                <li>
+                    <a href="#%e8%bf%99%e6%98%af%e4%b8%80%e4%b8%aa%e5%ad%98%e6%94%be%e6%9d%a1%e4%bb%b6%e6%a0%87%e5%bf%97%e6%8e%a7%e5%88%b6%e6%a0%87%e5%bf%97%e5%af%84%e5%ad%98%e5%99%a8%e4%b8%bb%e8%a6%81%e7%94%a8%e4%ba%8e%e5%8f%8d%e6%98%a0%e5%a4%84%e7%90%86%e5%99%a8%e7%9a%84%e7%8a%b6%e6%80%81%e5%92%8c%e8%bf%90%e7%ae%97%e7%bb%93%e6%9e%9c%e7%9a%84%e6%9f%90%e4%ba%9b%e7%89%b9%e5%be%81%e5%8f%8a%e6%8e%a7%e5%88%b6%e6%8c%87%e4%bb%a4%e7%9a%84%e6%89%a7%e8%a1%8c" aria-label="这是一个存放条件标志、控制标志寄存器，主要用于反映处理器的状态和运算结果的某些特征及控制指令的执行">这是一个存放条件标志、控制标志寄存器，主要用于反映处理器的状态和运算结果的某些特征及控制指令的执行</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+            const id = encodeURI(element.getAttribute('id')).toLowerCase();
+            if (element === activeElement){
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+            } else {
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+            }
+        })
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        
+        <div class="post-content"><h2 id="思维导图">思维导图<a hidden class="anchor" aria-hidden="true" href="#思维导图">#</a></h2>
+<p><a href="huibian.xmind">《汇编》.xmind</a></p>
+<p><img loading="lazy" src="%e3%80%8a%e6%b1%87%e7%bc%96%e3%80%8b.svg" alt="Typora类图"  />
+</p>
+<h2 id="初识汇编">初识汇编<a hidden class="anchor" aria-hidden="true" href="#初识汇编">#</a></h2>
+<p><img loading="lazy" src="bce0754ea69fba152e2aac45320fae629a44f9eec1040cf13c6146e11288442f.svg" alt="image"  />
+</p>
+<h3 id="汇编的介绍">汇编的介绍<a hidden class="anchor" aria-hidden="true" href="#汇编的介绍">#</a></h3>
+<p><img loading="lazy" src="4f42fbe15b79341fcfccd742f452e61aab8202acde1dbd1d96ea3ad70da7522e.svg" alt="image"  />
+</p>
+<ul>
+<li></li>
+</ul>
+<pre><code>- **执行过程**
+
+	- 
+</code></pre>
+<p><img loading="lazy" src="27df030961df13456ea67e5a3a0e52bc6e133a3273f015d4c18667db5ab6d17c.png" alt="image"  />
+</p>
+<pre><code>- **特点**
+
+	- 汇编语言与机器语言一一对应,每条机器指令都有与之对应的汇编指令
+	- 汇编语言可以通过编译得到机器语言,机器语言可以通过反汇编得到汇编语言
+	- 高级语言可以通过编译得到汇编\机器语言,但汇编语言\机器语言几乎不可能还原成高级语言
+	- 汇编语言可以直接访问,控制各种硬件设备,比如存储器，CPU等,能最大限度的发挥硬件的功能
+	- 能够不受编译器的限制,对生成的二进制代码直接完全控制
+	- 目标代码简短,占用内存少,执行速度快
+	- 汇编指令是机器指令的助记符,同机器指令一一对应,每一种CPU都有自己的机器指令\汇编指令集,所以不具备可移植性
+	- 学习的时候知识点,挺多的,而且开发者需要对CPU硬件结构有所了解,不易于编译,调试，维护
+	- 不区分大小写,mov和MOV是一样的
+
+- **用途**
+
+	- 编写驱动程序,操作系统,编写linux内核
+	- 对性能要求极高的程序和代码片段编写,也可以和高级语言混合使用
+	- 软件安全
+
+		- 病毒的分析,防治
+		- 逆向,加壳,破解,外挂,免杀,加密解密,漏洞,黑客
+
+	- 作为理解整个计算机系统运作是个不错的途径
+	- 为写下高效代码打下基础
+	- 弄清代码的本质
+
+		- 函数的本质是什么
+		- sizeof底层到底在做什么事情
+		- ++a, a++ 底层是如何执行的
+		- 编译器到底帮我们做了那些事情
+		- DEBUG和RELEASE模式有啥关键地方被我们忽略
+
+- **app执行过程**
+
+	- 
+</code></pre>
+<p><img loading="lazy" src="ca494679e6253e3a7da462f573090504810e4275ee7e6d071281516c59017039.png" alt="image"  />
+</p>
+<h3 id="汇编的种类">汇编的种类<a hidden class="anchor" aria-hidden="true" href="#汇编的种类">#</a></h3>
+<p><img loading="lazy" src="8cf60cc9ea3acb1347ab37653dd59d07e0a970aba41a1f6bbb8d5110ba9dfb75.svg" alt="image"  />
+</p>
+<ul>
+<li></li>
+</ul>
+<pre><code>- 8086汇编（8086汇编是16位的CPU）
+- Win32汇编
+- Win64汇编
+- ARM汇编（嵌入式,Mac,IOS）
+
+	- 
+</code></pre>
+<p><img loading="lazy" src="62b31dfa8aadc9b8be21de5206fbc1e36893139262c4351a8198e5789c9f3562.png" alt="image"  />
+</p>
+<h2 id="总线">总线<a hidden class="anchor" aria-hidden="true" href="#总线">#</a></h2>
+<p><img loading="lazy" src="24f5fd76deea11a79341342ae08c067e995794109aa7554416a4fd7a38607aa1.png" alt="image"  />
+</p>
+<h3 id="数据总线">数据总线<a hidden class="anchor" aria-hidden="true" href="#数据总线">#</a></h3>
+<ul>
+<li>
+<p>传送数据信息</p>
+<ul>
+<li>他的宽度觉得了CPU的单次数据传送量,也就是数据的传输速度</li>
+<li>8086的数据总线是16,所以单次最大传递2个字节的数据</li>
+<li>8088的数据总线宽度是8,8086的数据总线宽度是16</li>
+</ul>
+</li>
+</ul>
+<h3 id="地址总线">地址总线<a hidden class="anchor" aria-hidden="true" href="#地址总线">#</a></h3>
+<ul>
+<li>
+<p>传送地址信息</p>
+<ul>
+<li>他的宽度决定了CPU的寻址能力</li>
+<li>8086地址总线的宽度是20,所以他的寻址能力是1M(2^20)</li>
+</ul>
+</li>
+</ul>
+<h3 id="控制总线">控制总线<a hidden class="anchor" aria-hidden="true" href="#控制总线">#</a></h3>
+<ul>
+<li>传送控制信息(完成总线操作功能)</li>
+</ul>
+<h3 id="qa">QA<a hidden class="anchor" aria-hidden="true" href="#qa">#</a></h3>
+<ul>
+<li>
+<p>为什么用16机制</p>
+<ul>
+<li>因为简短,容易识别查看</li>
+</ul>
+</li>
+<li>
+<p>0XFF</p>
+<ul>
+<li>用两个16进制位F表示一个字节</li>
+</ul>
+</li>
+<li>
+<p>H结尾的是多少进制</p>
+<ul>
+<li>代表16进制和OX一个意思 H的单词是Hexadecimal</li>
+</ul>
+</li>
+<li>
+<p>寻址的能力</p>
+<ul>
+<li>
+<p>我们都熟知32为的操作系统的寻址空间的大小为4G，因此我们安装一个32位系统在配置4g的内存条，这似乎非常完美。但是当我们打开任务管理器发现我们的物理内存只有3g左右</p>
+<ul>
+<li>寻址空间一般指的是CPU对于内存寻址的能力。通俗地讲，就是最多能用到多少内存的一个问题。数据在存储器（RAM）中存放是有规律的，CPU在运算的时间需要把数据取出来，就必须 需要知道数据储存在哪里，这时我们需要挨家挨户地找（也就是在其能够寻址的空间进行查找），这就叫做寻址。
+但是如果地址超出了CPU的寻址范围，CPU就无法找到数据了。CPU最大查找多大范围的地址叫做寻址能力，CPU的寻址能力以字节为单位。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="地址总线找地址图示">地址总线找地址图示<a hidden class="anchor" aria-hidden="true" href="#地址总线找地址图示">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="ac192fb486f745356c326e71871042aaac999de100c5ffdd4182cb7538cce0af.png" alt="image"  />
+</p>
+<h2 id="cpu">CPU<a hidden class="anchor" aria-hidden="true" href="#cpu">#</a></h2>
+<p><img loading="lazy" src="ab2236e9da4254bfba327ce770749f1d2973df4d86c815681ad5dc027ace88ab.png" alt="image"  />
+</p>
+<h3 id="内部部件之间由总线连接">内部部件之间由总线连接<a hidden class="anchor" aria-hidden="true" href="#内部部件之间由总线连接">#</a></h3>
+<p><img loading="lazy" src="d274c9989f160c1953e63e77fa4082788f7369a78a69a1029898b9c0a8a7dc1a.png" alt="image"  />
+</p>
+<h2 id="内存">内存<a hidden class="anchor" aria-hidden="true" href="#内存">#</a></h2>
+<p><img loading="lazy" src="f9d86fb6d194f10c149601cfd16a90811734648390e6450f85236697b0359d3e.png" alt="image"  />
+</p>
+<h3 id="heading"><a hidden class="anchor" aria-hidden="true" href="#heading">#</a></h3>
+<p><img loading="lazy" src="bd2987b6a04a4faa76f56b3e11746aa9d6c2331811154faddde01864be246876.png" alt="image"  />
+</p>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="5628b80c6bb8405586005cad811f7850423427ae0ce1c3928f56931336737f05.png" alt="image"  />
+</p>
+<pre><code>- 
+</code></pre>
+<p><img loading="lazy" src="7a503f011e3a5101169e6c32e1d099bce5716a13627a41b03f6f45da67271b45.png" alt="image"  />
+</p>
+<h3 id="内存地址空间的大小受cpu地址总线宽度的限制8086的地址总线宽度为20可以定位220个不同的内存单元内存地址范围0x000000xfffff所以8086的内存地址为1mb">内存地址空间的大小受CPU地址总线宽度的限制,8086的地址总线宽度为20可以定位2^20个不同的内存单元(内存地址范围0x00000~0xFFFFF)所以8086的内存地址为1MB<a hidden class="anchor" aria-hidden="true" href="#内存地址空间的大小受cpu地址总线宽度的限制8086的地址总线宽度为20可以定位220个不同的内存单元内存地址范围0x000000xfffff所以8086的内存地址为1mb">#</a></h3>
+<h3 id="0x00000-0x9ffff--主存储器可读可写">0x00000-0x9FFFF  主存储器,可读可写<a hidden class="anchor" aria-hidden="true" href="#0x00000-0x9ffff--主存储器可读可写">#</a></h3>
+<h3 id="0xa0000-0xbffff-向显存中写入数据这些数据会被显卡输出到显示器可读可写">0xA0000-0xBFFFF 向显存中写入数据,这些数据会被显卡输出到显示器,可读可写<a hidden class="anchor" aria-hidden="true" href="#0xa0000-0xbffff-向显存中写入数据这些数据会被显卡输出到显示器可读可写">#</a></h3>
+<h3 id="0xc0000-0xfffff-存储各种硬件系统信息只读">0xC0000-0xFFFFF 存储各种硬件/系统信息,只读<a hidden class="anchor" aria-hidden="true" href="#0xc0000-0xfffff-存储各种硬件系统信息只读">#</a></h3>
+<h2 id="寄存器">寄存器<a hidden class="anchor" aria-hidden="true" href="#寄存器">#</a></h2>
+<p><img loading="lazy" src="fef08518fd114c17a6f9cfc6b4d0537619a6a300af2932c4ce8c7e2c5eee3f8d.png" alt="image"  />
+</p>
+<h3 id="cpu最主要的部件是寄存器可以通过改变寄存器的内容实现对cpu的控制">CPU最主要的部件是寄存器,可以通过改变寄存器的内容实现对CPU的控制<a hidden class="anchor" aria-hidden="true" href="#cpu最主要的部件是寄存器可以通过改变寄存器的内容实现对cpu的控制">#</a></h3>
+<h3 id="不同的cpu寄存器的个数结构是不相同的8086是16位结构的">不同的CPU,寄存器的个数,结构是不相同的(8086是16位结构的)<a hidden class="anchor" aria-hidden="true" href="#不同的cpu寄存器的个数结构是不相同的8086是16位结构的">#</a></h3>
+<h3 id="8086有14个寄存器">8086有14个寄存器<a hidden class="anchor" aria-hidden="true" href="#8086有14个寄存器">#</a></h3>
+<ul>
+<li>都是16位的寄存器</li>
+<li>可以存放2个字节</li>
+</ul>
+<h2 id="8086寻址">8086寻址<a hidden class="anchor" aria-hidden="true" href="#8086寻址">#</a></h2>
+<p><img loading="lazy" src="254af1fc753dfae242695e9c876cae3a926e177060ccd338bf0c9a7a593c3d9e.svg" alt="image"  />
+</p>
+<h3 id="cpu访问内存单元时要给出内存单元的地址所有的内存单元都有唯一的地址叫做物理地址">CPU访问内存单元时,要给出内存单元的地址,所有的内存单元都有唯一的地址,叫做物理地址<a hidden class="anchor" aria-hidden="true" href="#cpu访问内存单元时要给出内存单元的地址所有的内存单元都有唯一的地址叫做物理地址">#</a></h3>
+<h3 id="8086有20位地址总线可以传送20位的地址1m的寻址能力">8086有20位地址总线,可以传送20位的地址,1M的寻址能力<a hidden class="anchor" aria-hidden="true" href="#8086有20位地址总线可以传送20位的地址1m的寻址能力">#</a></h3>
+<h3 id="但它又是16位的cpu它内部能够一次性出力传输暂时存储的地址为16位如果将地址从内部简单的发出那么它只能发送出16位的地址表现出来的寻址能力只有64kb">但它又是16位的CPU,它内部能够一次性出力,传输,暂时存储的地址为16位,如果将地址从内部简单的发出,那么它只能发送出16位的地址,表现出来的寻址能力只有64KB<a hidden class="anchor" aria-hidden="true" href="#但它又是16位的cpu它内部能够一次性出力传输暂时存储的地址为16位如果将地址从内部简单的发出那么它只能发送出16位的地址表现出来的寻址能力只有64kb">#</a></h3>
+<h3 id="8086寻址能力1m地址方位-0x00000---oxfffff">8086寻址能力1M地址方位== 0x00000 - Oxfffff<a hidden class="anchor" aria-hidden="true" href="#8086寻址能力1m地址方位-0x00000---oxfffff">#</a></h3>
+<p>假设有个地址:OxCFFA7
+我们16位CPU没法直接接受这个数据
+因为只能接受最大OxFFFF</p>
+<ul>
+<li>
+<p>0xCFFA7 = 0xCFFA * 16 +0x007
+OxCFFA7 = 0xCFF0 <em>16 + 0x0A7
+OxCFFA7 = 0xCF00</em> 16 +OxFA7
+物理地址=段地址* 16 +偏移地址</p>
+<ul>
+<li>
+<p>8086采用一种在内部用2个16位地址合成的方法来生成1个20位的物理地址
+<img loading="lazy" src="24b18a01546ae7a7a3d5aca309c7931abf4cfca78176caad5c1f750574f66863.png" alt="image"  />
+</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="3f53cc8f420b15510c4debafac86608289f219ca19ebfd8acfd021e7cff7af0b.png" alt="image"  />
+</p>
+<h2 id="内存分段管理">内存分段管理<a hidden class="anchor" aria-hidden="true" href="#内存分段管理">#</a></h2>
+<p><img loading="lazy" src="cf4008241181a3aa2dc4f77505949ecc7fbc339a096f6a44762bbcb42423d8f8.svg" alt="image"  />
+</p>
+<h3 id="heading-1"><a hidden class="anchor" aria-hidden="true" href="#heading-1">#</a></h3>
+<p><img loading="lazy" src="27f7eb1bf81177075ff1b91b347ede1d866921b2f58cb463240a0c362b344f9e.png" alt="image"  />
+</p>
+<h2 id="段寄存器">段寄存器<a hidden class="anchor" aria-hidden="true" href="#段寄存器">#</a></h2>
+<p><img loading="lazy" src="2eab7ad27b34eb682797170d508129813fab09b257a7421d4cb6d0e3c719b663.png" alt="image"  />
+</p>
+<h3 id="8086在访问内存时要由相关部件提供内存单元的短地址和偏移地址送入地址加法器合成物理地址">8086在访问内存时要由相关部件提供内存单元的短地址和偏移地址,送入地址加法器合成物理地址<a hidden class="anchor" aria-hidden="true" href="#8086在访问内存时要由相关部件提供内存单元的短地址和偏移地址送入地址加法器合成物理地址">#</a></h3>
+<h3 id="段地址在8086的段寄存器中存放">段地址在8086的段寄存器中存放<a hidden class="anchor" aria-hidden="true" href="#段地址在8086的段寄存器中存放">#</a></h3>
+<h3 id="8086有4个段寄存器">8086有4个段寄存器<a hidden class="anchor" aria-hidden="true" href="#8086有4个段寄存器">#</a></h3>
+<ul>
+<li>CS(Code Segment):代码段寄存器</li>
+<li>DS(Data Segment):数据段寄存器</li>
+<li>SS(Stack Segment):堆栈寄存器</li>
+<li>ES(Extra Segment):附加段寄存器</li>
+</ul>
+<h2 id="cs和ip">CS和IP<a hidden class="anchor" aria-hidden="true" href="#cs和ip">#</a></h2>
+<p><img loading="lazy" src="585f1b7054eb270e42b9f400ac5fd8fca33daa7d1647ef0a99c807282db5e403.svg" alt="image"  />
+</p>
+<h3 id="cs为代码段寄存器ip为指令指针寄存器它指示了cpu当前要读的指令地址">CS为代码段寄存器,IP为指令指针寄存器,它指示了CPU当前要读的指令地址<a hidden class="anchor" aria-hidden="true" href="#cs为代码段寄存器ip为指令指针寄存器它指示了cpu当前要读的指令地址">#</a></h3>
+<h3 id="任意时刻8086cpu都会将csip指向的指令作为下一条需要取出执行的指令">任意时刻,8086CPU都会将CS:IP指向的指令作为下一条需要取出执行的指令<a hidden class="anchor" aria-hidden="true" href="#任意时刻8086cpu都会将csip指向的指令作为下一条需要取出执行的指令">#</a></h3>
+<h3 id="qa-1">QA<a hidden class="anchor" aria-hidden="true" href="#qa-1">#</a></h3>
+<ul>
+<li>
+<p>为啥是偏移3个字节</p>
+<ul>
+<li>因为这里的汇编指令是3个,占3个字节</li>
+</ul>
+</li>
+<li>
+<p>8086开机第一条指令</p>
+<ul>
+<li>在8086CPU 加电启动或复位后(即CPU 刚开始工作时)CS 和IP被设置为CS=FFFFH，IP-0000H，即在8086PC机刚启动时，CPU从内存FFFFOH单元中读取指令执行,FFFFOH单元中的指令是8086PC机开机后执行的第一条指令。</li>
+</ul>
+</li>
+<li>
+<p>CS端才有IP,数据段不需要IP</p>
+<ul>
+<li>IP是告诉CPU CS寄存器往下走多少偏移是我的代码指令,数据段是不需要这个的,只需要偏移地址
+偏移地址就是[&hellip;]</li>
+</ul>
+</li>
+</ul>
+<h2 id="jmp指令">jmp指令<a hidden class="anchor" aria-hidden="true" href="#jmp指令">#</a></h2>
+<p><img loading="lazy" src="b3c5c7aef884097483c0638ce2c17b5cd38603f190efee6ccfc2c419b1445049.svg" alt="image"  />
+</p>
+<h3 id="指令和数据">指令和数据<a hidden class="anchor" aria-hidden="true" href="#指令和数据">#</a></h3>
+<ul>
+<li>
+<p>在内存或者磁盘上，指令和数据没有任何区别，都是二进制信息</p>
+</li>
+<li>
+<p>CPU在工作的时候把有的信息看做指令，有的信息看做数据，为同样的信息赋予了不同的意义</p>
+</li>
+<li>
+<p>例如，内存中的二进制信息1000100111011000，计算机可以把它看作大小为89D8H的数据来处理。也可以将其看作指令mov ax.bx来执行。
+1000100111011000&mdash;&gt;89DeH(数据)
+1000100111011000&ndash;&gt;mov px,bx(程序)</p>
+</li>
+<li>
+<p>CPU根据什么将内存中的信息看做指令?</p>
+<ul>
+<li>CPU将CS:IP指向的内存单元的内容看做指令</li>
+<li>如果内存中的某段内容曾被CPU执行过，那么它所在的内存单元必然被CS:IP指向过</li>
+</ul>
+</li>
+</ul>
+<h3 id="jmp指令-1">jmp指令<a hidden class="anchor" aria-hidden="true" href="#jmp指令-1">#</a></h3>
+<ul>
+<li>CPU从何处执行指令是由CS、IP中的内容决定的。我们可以通过改变CS、IP的内容来控制CPU执行目标指令</li>
+<li>8086提供了一个mov指令(传送指令)，可以用来修改大部分寄存器的值，比如
+mov ax 10、mov bx,20mov cx,30、mov dx,40</li>
+<li>但是，mov指令不能用于设置CS、IP的值，8086没有提供这样的功能</li>
+<li>8086提供了另外的指令来修改CS、IP的值，这些指令统称为转移指令，最简单的是jmp指令</li>
+</ul>
+<h2 id="数据段ds寄存器">数据段DS寄存器<a hidden class="anchor" aria-hidden="true" href="#数据段ds寄存器">#</a></h2>
+<p><img loading="lazy" src="2eab7ad27b34eb682797170d508129813fab09b257a7421d4cb6d0e3c719b663.png" alt="image"  />
+</p>
+<h3 id="cpu要读写一个内存单元时必须要先给出这个内存单元的地址在8086中内存地址由段地址和偏移地址组成">CPU要读写一个内存单元时，必须要先给出这个内存单元的地址，在8086中，内存地址由段地址和偏移地址组成<a hidden class="anchor" aria-hidden="true" href="#cpu要读写一个内存单元时必须要先给出这个内存单元的地址在8086中内存地址由段地址和偏移地址组成">#</a></h3>
+<h3 id="8086中有一个ds段寄存器通常用来存放要访问数据的段地址">8086中有一个DS段寄存器，通常用来存放要访问数据的段地址<a hidden class="anchor" aria-hidden="true" href="#8086中有一个ds段寄存器通常用来存放要访问数据的段地址">#</a></h3>
+<h3 id="mov-bx1000h">mov bx,1000H<a hidden class="anchor" aria-hidden="true" href="#mov-bx1000h">#</a></h3>
+<p>mov ds, bx
+mov al,[0]</p>
+<ul>
+<li>
+<p>al是低八位</p>
+</li>
+<li>
+<p>[&hellip;]里面放的是偏移地址</p>
+</li>
+<li>
+<p>mov al,[0] 等价于mov al,[ds:0] 等价于1000H地址偏移0位</p>
+<ul>
+<li></li>
+</ul>
+</li>
+<li>
+<p>[0]左边的指令寄存器al决定读取多少位,比如
+al读取8位
+ax读取16位
+eax读取32位</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="92cebbb70a3a1b218b8b4af64ba143ebdfe663de1ca2e1ad8d1d2a6395ee8587.png" alt="image"  />
+</p>
+<h3 id="上面3条指令的作用将10000h10000中的内存数据赋值到al寄存器中">上面3条指令的作用将10000H(1000:0)中的内存数据赋值到al寄存器中<a hidden class="anchor" aria-hidden="true" href="#上面3条指令的作用将10000h10000中的内存数据赋值到al寄存器中">#</a></h3>
+<p>mov al.[address]的意思将DS.address中的内存数据赋值到al寄存器中
+由于al是8位寄存器，所以是将一个字节的数据赋值给al寄存器</p>
+<h3 id="8086不支持将数据直接送入段寄存器中mov-ds1000h是错误的">8086不支持将数据直接送入段寄存器中，mov ds,1000H是错误的<a hidden class="anchor" aria-hidden="true" href="#8086不支持将数据直接送入段寄存器中mov-ds1000h是错误的">#</a></h3>
+<h3 id="将ah中的数据送入内存单元ac10bh中">将AH中的数据送入内存单元AC10BH中<a hidden class="anchor" aria-hidden="true" href="#将ah中的数据送入内存单元ac10bh中">#</a></h3>
+<p>段:AC10H
+偏移:BH
+mov bx,AC10H
+mov ds,bx
+mov[B],AH</p>
+<h3 id="大端小端">大端小端<a hidden class="anchor" aria-hidden="true" href="#大端小端">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="38667adc4ef5856aba0151d06424ce9ae7f4dee853e12439f18d944cc61c479d.png" alt="image"  />
+</p>
+<h3 id="mov指令">mov指令<a hidden class="anchor" aria-hidden="true" href="#mov指令">#</a></h3>
+<ul>
+<li>
+<p><img loading="lazy" src="84957a2ed084dee23c59f546bf43bd4fda1147ed49919c8d050910f5d17c2ffa.png" alt="image"  />
+</p>
+<ul>
+<li>
+<p>注意: mov内存单元.内存单元&quot;是不允许的。比如mov  [0],[1]</p>
+<ul>
+<li>为什么不允许,因为这里没有寄存器我不知道你要取几个字节，放几个字节</li>
+</ul>
+</li>
+<li>
+<p>mov dx,20</p>
+<ul>
+<li>20等价于偏移20个字节</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="addsub指令">add,sub指令<a hidden class="anchor" aria-hidden="true" href="#addsub指令">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="7474f0a5652e2f6e7f57b9725f37676b5a0e8a4642d3bc10e51ddfa344d8ff63.png" alt="image"  />
+</p>
+<h3 id="数据段">数据段<a hidden class="anchor" aria-hidden="true" href="#数据段">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p>对于8086来说，在编程时，可以根据需要，将一组内存单元定义为一个段</p>
+<ul>
+<li>
+<p>我们可以将一组长度为N(N&lt;=64KB)、地址连续、起始地址为16倍数的内存单元当做专门存储数据的内存空间，称为数据段。比如用123B0H~123B9H这段内存空间来存放数据，我们就可以认为123B0H~123B9H是一个数据段，它的段地址为123BH,长度为10字节</p>
+</li>
+<li>
+<p>如何访问数据段中的数据?</p>
+<ul>
+<li>用DS存放数据段的段地址，再根据需要，用相关指令访问数据段中的具体单元</li>
+</ul>
+</li>
+</ul>
+<h2 id="8086开发工具">8086开发工具<a hidden class="anchor" aria-hidden="true" href="#8086开发工具">#</a></h2>
+<p><img loading="lazy" src="15ea63a583c50ce848b53d1d7521d3c2a167004486a1a8cb06a7695887744310.png" alt="image"  />
+</p>
+<h3 id="下载地址httpswwwmalavidacomensoftemu8086download"><a href="https://www.malavida.com/en/soft/emu8086/download">下载地址</a><a hidden class="anchor" aria-hidden="true" href="#下载地址httpswwwmalavidacomensoftemu8086download">#</a></h3>
+<ul>
+<li>演示代码
+assume cs:code</li>
+</ul>
+<p>code segment
+mov ax,1122H   ;将1122H放入ax寄存器
+mov bx,3344H   ;将3344H放入bx寄存器
+add ax,bx      ;ax = ax + bx
+mov ah, 4cH    ;是向A寄存器高字节ah赋值16进制数4c,此语句和int 21h 组合成一个完整的中断调用功能
+int 21H        ;21H是中断码 <br>
+;int 表示中断，中断有很多种类，
+;其中21h表示DOS系统的系统调用中断这一大类，下面还分了很多小类
+;小类的选择是放在ah寄存器中的。2个语句组合表示这个中断是21h大类中的4c小类
+;类似于（21h）年级 （4c）班
+code ends
+end</p>
+<pre><code>- 
+</code></pre>
+<p><img loading="lazy" src="9728b2d8d686115f1b4ce3c6920216202d6fa724ccf10f50fb0591b494930099.png" alt="image"  />
+</p>
+<h3 id="汇编指令">汇编指令<a hidden class="anchor" aria-hidden="true" href="#汇编指令">#</a></h3>
+<ul>
+<li>如mov、add、sub等
+有对应的机器指令，可以被编译为机器指令，最终被CPU执行</li>
+</ul>
+<h3 id="伪指令">伪指令<a hidden class="anchor" aria-hidden="true" href="#伪指令">#</a></h3>
+<ul>
+<li>
+<p>如assume、segment、ends、end等
+没有对应的机器指令，由编译器解析，最终不被CPU执行</p>
+<ul>
+<li>
+<p>segment、ends
+<img loading="lazy" src="af646028fcbd90073c6e9491800ff0e866be90d915720a1c28f2629d103753c6.png" alt="image"  />
+</p>
+</li>
+<li>
+<p>assume
+<img loading="lazy" src="d74f029c8dd7102ff7de287a49bba1d7ace7836f82d2af82e9b9e30662ab7e49.png" alt="image"  />
+</p>
+</li>
+<li>
+<p>end
+<img loading="lazy" src="19a9ce14b81e9a3c74597fe92e9e2a8f7d93e148ca2507df2058a4f9562ec162.png" alt="image"  />
+</p>
+</li>
+<li>
+<p>db(define byte)自定义字节
+dw(define word)自定义字</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="b4b5029a74a6deae1bf98dcd5f9fdd64f27961524bb7206c47def0905675db7b.png" alt="image"  />
+</p>
+<h3 id="注意点">注意点<a hidden class="anchor" aria-hidden="true" href="#注意点">#</a></h3>
+<ul>
+<li>
+<p>如果用的是dl 进行相加的时候因为用的是低8位,所以会溢出,他不会进行进阶放到dh</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="dc8838db664df1b3ef718f02e056417585293311cd7a38b0057d84616cd16570.png" alt="image"  />
+</p>
+<pre><code>	- 正确版本
+</code></pre>
+<p><img loading="lazy" src="bd173919f029611774706f51a6d3556f59fcca5dc2686b2ea8c0275b2fcbb002.png" alt="image"  />
+</p>
+<h2 id="中断">中断<a hidden class="anchor" aria-hidden="true" href="#中断">#</a></h2>
+<p><img loading="lazy" src="a5100aa234d0f208fd5aaaac0f971bda50ed14128a1a6986ea2e4eea24907e6f.png" alt="image"  />
+</p>
+<h3 id="中断是由于软件硬件的信号使的cpu暂停当前的任务转而去执行另一段子程序">中断是由于软件,硬件的信号,使的CPU暂停当前的任务,转而去执行另一段子程序<a hidden class="anchor" aria-hidden="true" href="#中断是由于软件硬件的信号使的cpu暂停当前的任务转而去执行另一段子程序">#</a></h3>
+<h3 id="也就是说在程序运行的过程中系统出现了一个必须有cpu立即处理的情况此时cpu暂时中止当前程序的执行转而处理这个新的情况的过程就叫中断">也就是说,在程序运行的过程中,系统出现了一个必须有CPU立即处理的情况,此时,CPU暂时中止当前程序的执行转而处理这个新的情况的过程就叫中断<a hidden class="anchor" aria-hidden="true" href="#也就是说在程序运行的过程中系统出现了一个必须有cpu立即处理的情况此时cpu暂时中止当前程序的执行转而处理这个新的情况的过程就叫中断">#</a></h3>
+<h3 id="分类">分类<a hidden class="anchor" aria-hidden="true" href="#分类">#</a></h3>
+<ul>
+<li>
+<p>硬中断(外中断)</p>
+<ul>
+<li>由外部设备,比如网卡,硬盘随机引发的,比如当网卡收到数据包的时候,就会发出一个中断,网卡信号发给操作系统,操作系统然后通过API告诉你</li>
+</ul>
+</li>
+<li>
+<p>软中断(内中断)</p>
+<ul>
+<li>由执行中断的指令产生的,可以通过程序控制触发</li>
+</ul>
+</li>
+<li>
+<p>常见中断</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="b545c2520dcbddf061b0e753170e16a404185c7ea4fb5c56fdf7d8342f829cb2.png" alt="image"  />
+</p>
+<h2 id="栈">栈<a hidden class="anchor" aria-hidden="true" href="#栈">#</a></h2>
+<p><img loading="lazy" src="8e505cb2a0a631bf7a210e42e93935b673a407976c76aa829771b631ef685a1d.png" alt="image"  />
+</p>
+<h3 id="图示">图示<a hidden class="anchor" aria-hidden="true" href="#图示">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<h2 id="image4ed1ba2880a08f56507986b32d45bd6dacfce5be7ecc257202346086883dbe1cgif"><img loading="lazy" src="4ed1ba2880a08f56507986b32d45bd6dacfce5be7ecc257202346086883dbe1c.gif" alt="image"  />
+</h2>
+<p><img loading="lazy" src="5bc37435d51e52c6cfa287e24022f3f0300e9e09d7b07c17a4603c4f64e988b8.gif" alt="image"  />
+</p>
+<h3 id="解释">解释<a hidden class="anchor" aria-hidden="true" href="#解释">#</a></h3>
+<ul>
+<li>
+<p>8086会将CS作为代码段的段地址，将CS:IP指向的指令作为下一条需要取出执行的指令</p>
+</li>
+<li>
+<p>一个栈段最大可以设为多少?为什么?</p>
+<ul>
+<li>指令所完成的功能的角度上来看，push、pop等指令在执行的时候只修改SP，所以栈顶的变化范围是 0~FFFFH，从栈空时候的SP=0，一直压栈，直到栈满时SP=0;如果再次压栈，栈顶将环绕，覆盖了原来栈中的内容。SP的最大范围值是FFFF,所以一个栈段的容量最大为64KB。</li>
+</ul>
+</li>
+<li>
+<p>8086会将DS作为数据段的段地址，
+mov ax.[address]就是取出DS:address的内存数据放到ax寄存器中</p>
+</li>
+<li>
+<p>8086提供了PUSH(入栈)和POP(出栈)指令来操作栈段的数据
+比如push ax是将ax的数据入栈，pop ax是将栈顶的数据送入ax</p>
+</li>
+<li>
+<p>8086会将SS作为栈段的段地址，任意时刻，SS:SP指向栈顶元素</p>
+</li>
+<li>
+<p>8086CPU的入栈和出栈操作都是以字为单位进行的</p>
+</li>
+<li>
+<p>8086CPU 不保证我们对栈的操作不会超界。这也就是说，8086CPU只知道栈顶在何处(由SS:SP指示)，而不知道我们安排的栈空间有多大。这点就好像CPU 只知道当前要执行的指令在何处(由CS:IP指示)，而不知道要执行的指令有多少。从这两点上我们可以看出 8086CPU 的工作机理，它只考虑当前的情况:当前的栈顶在何处、当前要执行的指令是哪一条。</p>
+<ul>
+<li></li>
+</ul>
+</li>
+<li>
+<p>我们在编程的时候要自己操心栈顶超界的问题，要根据可能用到的最大栈空间，来安排栈的大小，防止入栈的数据太多而导致的超界;执行出栈操作的时候也要注意，以防栈空的时候继续出栈而导致的超界。</p>
+</li>
+</ul>
+<h3 id="8086-栈操作">8086 栈操作<a hidden class="anchor" aria-hidden="true" href="#8086-栈操作">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="56ca373c73c3a2385a1c6a60c9af8cfe19be3a43737642d633697547a9d94c00.png" alt="image"  />
+</p>
+<h3 id="push-ax">push ax<a hidden class="anchor" aria-hidden="true" href="#push-ax">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="b0008de79bdfc6eed737598c950156fdbba70ad2327c221c405d321e3be33944.png" alt="image"  />
+</p>
+<h3 id="pop-ax">pop ax<a hidden class="anchor" aria-hidden="true" href="#pop-ax">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="04762cb3e39c52500a28e126971a6925033cadf6c2fde31bd19586f507b0af50.png" alt="image"  />
+</p>
+<h3 id="pushpop">push/pop<a hidden class="anchor" aria-hidden="true" href="#pushpop">#</a></h3>
+<ul>
+<li>
+<p><img loading="lazy" src="a110121fbb3ad39f1d3534b6e136f5a44c3dad38c4c085c2215f8fe1c66a862d.png" alt="image"  />
+</p>
+<ul>
+<li>注意:在8086中,push、pop操作的数据都是2个字节的</li>
+</ul>
+</li>
+</ul>
+<h3 id="栈段">栈段<a hidden class="anchor" aria-hidden="true" href="#栈段">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="526788f5af6fbc5192effe440900bc9bf5321ddea300b8d4e767704cc417a4a0.png" alt="image"  />
+</p>
+<pre><code>- 
+</code></pre>
+<p><img loading="lazy" src="31a1ebec72c82f9cd5749ecb2f088dfbace08900bf47e54b83d44a30d9a4a3f9.png" alt="image"  />
+</p>
+<h2 id="loop指令">Loop指令<a hidden class="anchor" aria-hidden="true" href="#loop指令">#</a></h2>
+<p><img loading="lazy" src="c81b8b64f348fa088fea319ceef50b4bdac2c8200f0de959da7bdde5522e04ea.png" alt="image"  />
+</p>
+<h3 id="loop等价于jmp-jmp到标号位置">LOOP等价于jmp, jmp到标号位置<a hidden class="anchor" aria-hidden="true" href="#loop等价于jmp-jmp到标号位置">#</a></h3>
+<p><img loading="lazy" src="f3fe198754696612f5beb5f928a4b09327beb9d50f77b087e309ec6dd05321ae.png" alt="image"  />
+</p>
+<ul>
+<li>;计算2^6使用1oop配合cx
+mov ax,2h  <br>
+mov cx,5<br>
+s: add ax, ax
+loop s</li>
+</ul>
+<p>mov ah, 4cH<br>
+int 21H</p>
+<p>end</p>
+<pre><code>- 
+</code></pre>
+<p><img loading="lazy" src="fe62f4c5bfd474026245e77efa05c29eadaaf61749ba08234dbbcc57ad4fbcda.png" alt="image"  />
+</p>
+<ul>
+<li>;计算2^6使用1oop配合cx
+mov ax,2h  <br>
+mov cx,0H
+s: add ax, ax
+loop s</li>
+</ul>
+<p>mov ah, 4cH<br>
+int 21H</p>
+<p>end</p>
+<pre><code>- 
+</code></pre>
+<p><img loading="lazy" src="6275d3a1cef67a2146443ad73a216569073d47b21b07e0c82c981f2a91460746.png" alt="image"  />
+</p>
+<h2 id="代码分段">代码分段<a hidden class="anchor" aria-hidden="true" href="#代码分段">#</a></h2>
+<p><img loading="lazy" src="c036e009774e06320a48f27f29a77595612612d7a3f7d16b52b495c3ca77893f.svg" alt="image"  />
+</p>
+<h3 id="场景">场景<a hidden class="anchor" aria-hidden="true" href="#场景">#</a></h3>
+<ul>
+<li>
+<p>当我们需要在内存中申请一块空间，可以使用伪指令db和dw
+db&ndash;&gt;define byte  定义字节
+dw&ndash;&gt;define word  定义字
+如果按照以下写法
+assume cs:code
+code segment
+db 1,2,3,4,5
+db &lsquo;hello&rsquo;
+db &ldquo;pangshu&rdquo;</p>
+<p>mov al ,cs:[0] ;取出预先定义好的数据 ip默认从0开始
+;退出程序
+mov ah 4ch
+int 21h
+code ends
+end
+以上代码存在一个问题, 由于数据是在代码段中定义, cpu默认将数据识别为代码, 将导致数据不可用</p>
+<ul>
+<li>
+<p>解决办法</p>
+<ul>
+<li>assume cs:code
+code segment
+db 1,2,3,4,5
+db &lsquo;hello&rsquo;
+db &ldquo;pangshu&rdquo;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>start:	mov al ,cs:[0] ;取出预先定义好的数据 ip默认从0开始
+;退出程序
+mov ah 4ch
+int 21h
+code ends
+end start ;标记名称可自定义</p>
+<p>标记是为了告诉编译器代码段入口位置, 这样就能保证db数据不被识别为指令</p>
+<h3 id="知识点">知识点<a hidden class="anchor" aria-hidden="true" href="#知识点">#</a></h3>
+<ul>
+<li>
+<p>如果我想定义20个0数据,有一种快捷的语法</p>
+<ul>
+<li>assume cs:code
+code segment
+db 20 dup(0) ;申请20个字节的空间 然后存放0</li>
+</ul>
+</li>
+</ul>
+<p>start:	mov al ,cs:[0] ;取出预先定义好的数据 ip默认从0开始
+;退出程序
+mov ah 4ch
+int 21h
+code ends
+end start ;标记名称可自定义</p>
+<ul>
+<li>
+<p>数据段和栈段的定义</p>
+<ul>
+<li>
+<p>assume cs:code
+code segment
+db 20 dup(0) ;可存数据也可当作栈
+db 20 dup(0) ;可存数据也可当作栈
+start:	;将数据所在的物理基地址交由ds段寄存器进行存放管理
+mov dx,cs
+mov ds,dx
+mov ax,1122h
+mov [0],ax</p>
+<p>;定义栈段 将栈空间所在的物理基地址交由ss栈段进行保存管理
+mov ss,ds
+mov sp,40 ;从高字节往低字节存放
+push ax</p>
+<p>;退出程序
+mov ah 4ch
+int 21h
+code ends
+end start ;标记名称可自定义</p>
+</li>
+</ul>
+</li>
+<li>
+<p>分段定义</p>
+<ul>
+<li>assume cs:code,ds:data,ss:stack</li>
+</ul>
+</li>
+</ul>
+<p>;数据段 代码段可直接获取数据段中数据, 相当于高级语言中的局部变量
+stack segment
+db 20 dup(0) ;定义数据相当于是定义了段地址
+stack ends</p>
+<p>;数据段 代码段可直接获取数据段中数据, 相当于高级语言中的全局变量
+data segment
+db 20 dup(0) ;定义数据相当于是定义了段地址
+age dw 20h ;给数据取个别名为age</p>
+<p>data ends</p>
+<p>code segment</p>
+<p>start:
+mov ax,1122h
+mov age,ax ; 相当于[14h],ax</p>
+<pre><code>	;退出程序
+	mov ah 4ch
+	int 21h
+</code></pre>
+<p>code ends
+end start ;标记名称可自定义</p>
+<h2 id="call和ret指令">Call和ret指令<a hidden class="anchor" aria-hidden="true" href="#call和ret指令">#</a></h2>
+<p><img loading="lazy" src="0984c2ad11af8db640487ccfa2a1be02a7a13df29837e05a7b7a3c90d20f96ce.svg" alt="image"  />
+</p>
+<h3 id="call指令">call指令<a hidden class="anchor" aria-hidden="true" href="#call指令">#</a></h3>
+<ul>
+<li>将下一条指令的偏移地址入栈</li>
+<li>跳转到定位的地址执行指令</li>
+<li>call 标号</li>
+<li>call 函数地址</li>
+</ul>
+<h3 id="ret指令">ret指令<a hidden class="anchor" aria-hidden="true" href="#ret指令">#</a></h3>
+<ul>
+<li>将栈顶的值POP给IP</li>
+<li>跳转到定位的地址执行指令</li>
+</ul>
+<h3 id="图示-1">图示<a hidden class="anchor" aria-hidden="true" href="#图示-1">#</a></h3>
+<ul>
+<li>
+<p>函数局部变量有可能入栈,得看寄存器空间够不够,如果寄存器不够用,或者如果在函数内部再次调用函数</p>
+<ul>
+<li>在函数内部再次调用函数,b会入栈
+<img loading="lazy" src="22bfa4fb635149a1aa0fcead3a28446aa39ef16a94187ab76989ac52433ae721.png" alt="image"  />
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="汇编函数调用过程">汇编函数调用过程<a hidden class="anchor" aria-hidden="true" href="#汇编函数调用过程">#</a></h3>
+<ul>
+<li>
+<p>栈帧是指为一个函数调用单独分配的那部分栈空间。比如，当运行中的程序调用另一个函数时，就要进入一个新的栈帧，原来函数的栈帧称为调用者的帧，新的栈帧称为当前帧。被调用的函数运行结束后当前帧全部收缩，回到调用者的帧</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="93df95409cd5ef125f59fb0a570b4cbc89b393b558ed0f887847e20c60da4fee.png" alt="image"  />
+</p>
+<pre><code>	- 当发生函数调用的时候,栈空间中存放的数据是这样的:
+</code></pre>
+<p>1、调用者函数把被调函数所需要的参数按照与被调函数的形参顺序相反的顺序压入栈中,即:从右向左依次把被调函数所需要的参数压入栈;
+2、调用者函数使用call指令调用被调函数,并把call指令的下一条指令的地址当成返回地址压入栈中(这个压栈操作隐含在call指令中);
+3、在被调函数中,被调函数会先保存调用者函数的栈底地址(push ebp)(从高内在地址&ndash;》低内存地址),然后再保存调用者函数的栈顶地址,即:当前被调函数的栈底地址(mov ebp,esp);
+4、在被调函数中,从ebp的位置处开始存放被调函数中的局部变量和临时变量,并且这些变量的地址按照定义时的顺序依次减小,即:这些变量的地址是按照栈的延伸方向排列的,先定义的变量先入栈,后定义的变量后入</p>
+<ul>
+<li>ebp是帧指针，它总是指向当前帧的底部；esp是栈指针，它总是指向当前帧的顶部</li>
+</ul>
+<h2 id="标记寄存器">标记寄存器<a hidden class="anchor" aria-hidden="true" href="#标记寄存器">#</a></h2>
+<p><img loading="lazy" src="fd90ee0c38fcd6b110bdb02b8ec160e5c56c1c316932a1d3623092edfe2c38d9.png" alt="image"  />
+</p>
+<h3 id="这是一个存放条件标志控制标志寄存器主要用于反映处理器的状态和运算结果的某些特征及控制指令的执行">这是一个存放条件标志、控制标志寄存器，主要用于反映处理器的状态和运算结果的某些特征及控制指令的执行<a hidden class="anchor" aria-hidden="true" href="#这是一个存放条件标志控制标志寄存器主要用于反映处理器的状态和运算结果的某些特征及控制指令的执行">#</a></h3>
+<ul>
+<li></li>
+</ul>
+<p><img loading="lazy" src="3008ceb8d5698b323b8f2dd3506890504638540993693f7672f4ba6ed129a1d1.png" alt="image"  />
+</p>
+
+
+        </div>
+        <div class="post-reward">
+            <div style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; font-size:16px; text-align: center;">
+                <div id="QR" style="opacity: 0;">
+                    <div id="wechat" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="wechat_qr" src="https://frog-game.github.io/img/wechat_pay.png" alt="wechat_pay"></a>
+                        <p>微信</p>
+                    </div>
+                    <div id="alipay" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="alipay_qr" src="https://frog-game.github.io/img/alipay_pay.png" alt="alipay"></a>
+                        <p>支付宝</p>
+                    </div>
+                </div>
+                <button id="rewardButton"
+                        onclick="
+                    var qr = document.getElementById('QR');
+                    if (qr.style.opacity === '0') {
+                        qr.style.opacity='1';
+                    } else {
+                        qr.style.opacity='0'
+                    }"
+                >
+                    <span>🧧 鼓励</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://frog-game.github.io/posts/life/hybridclr-ios-dabao/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>HybridCLR IOS打包热更新</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+
+
+
+<div>
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">💬评论</span>
+        <hr />
+    </div>
+
+    <div id="tcomment"></div>
+
+    <script src="https://cdn.staticfile.org/twikoo/1.6.7/twikoo.all.min.js">
+    </script>
+    
+
+    
+
+    <script>
+        twikoo.init({
+            envId: "https://www.frog-game.work/", 
+            el: "#tcomment",
+            lang: 'zh-CN',
+            region: "ap-beijing",
+            path: window.TWIKOO_MAGIC_PATH||window.location.pathname,
+            
+            
+            
+            
+            
+            
+            
+        });
+    </script>
+
+</div>
+</article>
+</main>
+
+
+<script async src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2020-2022 
+        <a href="https://frog-game.github.io/" style="color:#939393;">frog&#39;s Blog</a>
+         All Rights Reserved
+    </span>
+
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;">备案号</a>&nbsp;
+
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="https://frog-game.github.io/img/beian.png" style="float:left;margin: 0px 5px 0px 0px;"/>
+            公网安备
+        </a>
+    </span>
+
+    <span id="busuanzi_container">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        总访客数: <span id="busuanzi_value_site_uv"></span>
+        总访问量: <span id="busuanzi_value_site_pv"></span>
+    </span>
+    
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {
+            }
+            ;
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
