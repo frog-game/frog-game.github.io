@@ -5,12 +5,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
-<title>汇编总结 | frog&#39;s Blog</title>
+<title>[Lua5.4.4源码]结构分析 | frog&#39;s Blog</title>
 <meta name="keywords" content="">
-<meta name="description" content="对8086汇编知识点的总结,思维导图绘制">
+<meta name="description" content="lua源码结构分析">
 <meta name="author" content="
 作者:&nbsp;frog">
-<link rel="canonical" href="https://frog-game.github.io/posts/read/huibianzognjie/">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.8b1bcfe952e1e1a78b44fa99f358fddf187aee65873bbc85ca10d6f18a3bff33.css" integrity="sha256-ixvP6VLh4aeLRPqZ81j93xh67mWHO7yFyhDW8Yo7/zM=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
@@ -67,18 +67,18 @@ var _hmt = _hmt || [];
   s.parentNode.insertBefore(hm, s);
 })();
 </script>
-<meta property="og:title" content="汇编总结" />
-<meta property="og:description" content="对8086汇编知识点的总结,思维导图绘制" />
+<meta property="og:title" content="[Lua5.4.4源码]结构分析" />
+<meta property="og:description" content="lua源码结构分析" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://frog-game.github.io/posts/read/huibianzognjie/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/%5Blua5.4.4%5Djiegoufenxi/image-20230122214914018.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-12-24T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2022-12-24T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png" />
-<meta name="twitter:title" content="汇编总结"/>
-<meta name="twitter:description" content="对8086汇编知识点的总结,思维导图绘制"/>
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/%5Blua5.4.4%5Djiegoufenxi/image-20230122214914018.png" />
+<meta name="twitter:title" content="[Lua5.4.4源码]结构分析"/>
+<meta name="twitter:description" content="lua源码结构分析"/>
 
 
 <script type="application/ld+json">
@@ -101,8 +101,8 @@ var _hmt = _hmt || [];
     {
       "@type": "ListItem",
       "position":  3 ,
-      "name": "汇编总结",
-      "item": "https://frog-game.github.io/posts/read/huibianzognjie/"
+      "name": "[Lua5.4.4源码]结构分析",
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/"
     }
   ]
 }
@@ -111,16 +111,16 @@ var _hmt = _hmt || [];
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "汇编总结",
-  "name": "汇编总结",
-  "description": "对8086汇编知识点的总结,思维导图绘制",
+  "headline": "[Lua5.4.4源码]结构分析",
+  "name": "[Lua5.4.4源码]结构分析",
+  "description": "lua源码结构分析",
   "keywords": [
     ""
   ],
-  "articleBody": "思维导图 点击下载《汇编》.xmind\n",
-  "wordCount" : "18",
+  "articleBody": "lua简介 lua 很小\n将lua添加到应用程序不会让代码膨胀,也不会有很多的第三方库,繁琐的配置,很容易就能键入到你的应用程序当中\nLua 5.4.4的压缩包含源代码和文档，压缩值为353K，未压缩值为1.3M。源代码包含大约30000行c语言。在64位Linux下，用所有标准Lua库构建的Lua解释器占用281K, Lua库占用468K\nlua是可移植性\nlua以一个小包的形式发布,可以在所有具有标准c编译器的平台上开箱即用\nlua速度很快\nlua在经过不断的版本迭代现在lua5.4.4上应用分代GC和增量GC GC这块已经不是什么卡壳点,还有TBC局部变量,元表提供的GC元方法,等等一些新特性能够让你更好的优化自己项目的性能\nlua已经经过很多应用和游戏的验证\n比如魔兽世界,愤怒的小鸟,巴西数字电视的ginga中间件,还有skynet的actor方式的微服务框架\nlua 嵌入\nlua可以很方便的和c,c++ 语言进行嵌入,还用于Java c# Smalltalk Fortran Ada Erlang，甚至其他脚本语言(如Perl和Ruby)编写的程序\n下载 本人已经在GitHub上对lua作者的源码进行大部分注解,后面还会逐步继续完善\nfrog-game/lua-5.4.4-comments: lua-5.4.4-每行都加注释版本 (github.com)\nlua 源码结构 虚拟机运转的核心功能 文件 作用 lapi.c Lua API。实现大量的Lua C API（lua_ *函数） ldebug.c 调试接口 ldo.c 函数调用以及栈管理 lfunc.c 函数原型及闭包管理 lgc.c 垃圾回收 lmem.c 内存管理接口[luaM_realloc / luaM_growaux_] lobject.c 对象操作的一些函数。包括数据类型\u003c-\u003e字符串转换 lstate.c 状态机 管理全局信息,和状态机相关的逻辑 lstring.c 字符串池 ltable.c 表类型的相关操作。Lua表（哈希） ltm.c 标记方法。实现从对象访问元方法。 lvm.c 虚拟机。执行字节码（luaV_execute）。还公开了lapi.c使用的一些功能（例如luaV_concat） lzio.c 通用的缓冲输入流接口 内嵌库 文件 作用 lauxlib.c c库编写用到的辅助函数库 lbaselib.c lua基础库 lcorolib.c 协程库 lctype.c 标准库中ctype相关实现 ldblib.c Debug库 linit.c 内嵌库的初始化 liolib.c IO库 lmathlib.c 数学库 loadlib.c 动态扩展库管理 loslib.c OS库 lstrlib.c 字符串库 ltablib.c 表处理库 源代码解析以及预编译字节码 文件 作用 lcode.c Lua的代码生成器。由lparser.c使用 ldump.c 序列化预编译的Lua字节码 llex.c 词法分析器。由lparser.c使用 lparser.c 解析器 lundump.c 还原预编译的字节码 可执行的解析器，字节码编译器 文件 作用 lua.c Lua独立解释器 luac.c Lua编译器（将字节码保存到文件中；还列出字节码） ",
+  "wordCount" : "988",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png","datePublished": "2022-12-24T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/read/%5Blua5.4.4%5Djiegoufenxi/image-20230122214914018.png","datePublished": "2022-12-24T01:30:29+08:00",
   "dateModified": "2022-12-24T01:30:29+08:00",
   "author":[{
     "@type": "Person",
@@ -128,7 +128,7 @@ var _hmt = _hmt || [];
   }],
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://frog-game.github.io/posts/read/huibianzognjie/"
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/"
   },
   "publisher": {
     "@type": "Organization",
@@ -233,19 +233,19 @@ var _hmt = _hmt || [];
         <header class="post-header">
             <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/read/">📕 阅读</a></div>
             <h1 class="post-title">
-                汇编总结
+                [Lua5.4.4源码]结构分析
             </h1>
             <div class="post-description">
-                对8086汇编知识点的总结,思维导图绘制
+                lua源码结构分析
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2022-12-24 01:30:29 +0800 CST'>2022-12-24</span>&nbsp;|&nbsp;更新:&nbsp;2022-12-24&nbsp;|&nbsp;字数:&nbsp;18字&nbsp;|&nbsp;时长:&nbsp;1分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2022-12-24 01:30:29 +0800 CST'>2022-12-24</span>&nbsp;|&nbsp;更新:&nbsp;2022-12-24&nbsp;|&nbsp;字数:&nbsp;988字&nbsp;|&nbsp;时长:&nbsp;2分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
 
                 &nbsp;|&nbsp;标签: &nbsp;
                 <ul class="post-tags-meta">
-                    <a href="https://frog-game.github.io/tags/hybridclr/">HybridCLR</a>
+                    <a href="https://frog-game.github.io/tags/lua5.4.4%E6%BA%90%E7%A0%81/">Lua5.4.4源码</a>
                 </ul>
 
                 
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/huibianzognjie/bb77115bda3237bff1ec4cf57f2ac609a092d97292957696acf9d4d627e0d8d3.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/%5Blua5.4.4%5Djiegoufenxi/image-20230122214914018.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
@@ -267,8 +267,23 @@ var _hmt = _hmt || [];
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#%e6%80%9d%e7%bb%b4%e5%af%bc%e5%9b%be" aria-label="思维导图">思维导图</a>
+                    <a href="#lua%e7%ae%80%e4%bb%8b" aria-label="lua简介">lua简介</a></li>
+                <li>
+                    <a href="#%e4%b8%8b%e8%bd%bd" aria-label="下载">下载</a></li>
+                <li>
+                    <a href="#lua-%e6%ba%90%e7%a0%81%e7%bb%93%e6%9e%84" aria-label="lua 源码结构">lua 源码结构</a><ul>
+                        
+                <li>
+                    <a href="#%e8%99%9a%e6%8b%9f%e6%9c%ba%e8%bf%90%e8%bd%ac%e7%9a%84%e6%a0%b8%e5%bf%83%e5%8a%9f%e8%83%bd" aria-label="虚拟机运转的核心功能">虚拟机运转的核心功能</a></li>
+                <li>
+                    <a href="#%e5%86%85%e5%b5%8c%e5%ba%93" aria-label="内嵌库">内嵌库</a></li>
+                <li>
+                    <a href="#%e6%ba%90%e4%bb%a3%e7%a0%81%e8%a7%a3%e6%9e%90%e4%bb%a5%e5%8f%8a%e9%a2%84%e7%bc%96%e8%af%91%e5%ad%97%e8%8a%82%e7%a0%81" aria-label="源代码解析以及预编译字节码">源代码解析以及预编译字节码</a></li>
+                <li>
+                    <a href="#%e5%8f%af%e6%89%a7%e8%a1%8c%e7%9a%84%e8%a7%a3%e6%9e%90%e5%99%a8%e5%ad%97%e8%8a%82%e7%a0%81%e7%bc%96%e8%af%91%e5%99%a8" aria-label="可执行的解析器，字节码编译器">可执行的解析器，字节码编译器</a>
                 </li>
+            </ul>
+            </li>
             </ul>
         </div>
         </details>
@@ -334,10 +349,208 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="思维导图">思维导图<a hidden class="anchor" aria-hidden="true" href="#思维导图">#</a></h2>
-<p><a href="huibian.xmind">点击下载《汇编》.xmind</a></p>
-<p><img loading="lazy" src="%e3%80%8a%e6%b1%87%e7%bc%96%e3%80%8b.svg" alt="Typora类图"  />
+        <div class="post-content"><h2 id="lua简介">lua简介<a hidden class="anchor" aria-hidden="true" href="#lua简介">#</a></h2>
+<ul>
+<li>
+<p>lua 很小</p>
+<p>将lua添加到应用程序不会让代码膨胀,也不会有很多的第三方库,繁琐的配置,很容易就能键入到你的应用程序当中</p>
+<p><code>Lua 5.4.4</code>的压缩包含源代码和文档，压缩值为<code>353K</code>，未压缩值为<code>1.3M</code>。源代码包含大约<code>30000</code>行c语言。在<code>64</code>位<code>Linux</code>下，用所有标准<code>Lua</code>库构建的<code>Lua</code>解释器占用<code>281K</code>, <code>Lua</code>库占用<code>468K</code></p>
+</li>
+<li>
+<p>lua是可移植性</p>
+<p><code>lua</code>以一个小包的形式发布,可以在所有具有标准c编译器的平台上开箱即用</p>
+</li>
+<li>
+<p>lua速度很快</p>
+<p><code>lua</code>在经过不断的版本迭代现在<code>lua5.4.4</code>上应用<code>分代GC</code>和<code>增量GC</code> <code>GC</code>这块已经不是什么卡壳点,还有<code>TBC局部变量</code>,元表提供的<code>GC元方法</code>,等等一些新特性能够让你更好的优化自己项目的性能</p>
+</li>
+<li>
+<p>lua已经经过很多应用和游戏的验证</p>
+<p>比如魔兽世界,愤怒的小鸟,巴西数字电视的<code>ginga</code>中间件,还有<code>skyne</code>t的<code>actor</code>方式的微服务框架</p>
+</li>
+<li>
+<p>lua 嵌入</p>
+<p><code>lua</code>可以很方便的和<code>c</code>,<code>c++</code> 语言进行嵌入,还用于<code>Java</code> <code>c#</code> <code>Smalltalk</code> <code>Fortran</code> <code>Ada</code> <code>Erlang</code>，甚至其他脚本语言(如<code>Perl</code>和<code>Ruby</code>)编写的程序</p>
+</li>
+</ul>
+<h2 id="下载">下载<a hidden class="anchor" aria-hidden="true" href="#下载">#</a></h2>
+<p>本人已经在<code>GitHub</code>上对<code>lua</code>作者的源码进行大部分注解,后面还会逐步继续完善</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments">frog-game/lua-5.4.4-comments: lua-5.4.4-每行都加注释版本 (github.com)</a></p>
+<h2 id="lua-源码结构">lua 源码结构<a hidden class="anchor" aria-hidden="true" href="#lua-源码结构">#</a></h2>
+<p><img loading="lazy" src="image-20230122214914018.png" alt="image-20230122214914018"  />
 </p>
+<h3 id="虚拟机运转的核心功能">虚拟机运转的核心功能<a hidden class="anchor" aria-hidden="true" href="#虚拟机运转的核心功能">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lapi.c</td>
+<td>Lua API。实现大量的Lua C API（lua_ *函数）</td>
+</tr>
+<tr>
+<td>ldebug.c</td>
+<td>调试接口</td>
+</tr>
+<tr>
+<td>ldo.c</td>
+<td>函数调用以及栈管理</td>
+</tr>
+<tr>
+<td>lfunc.c</td>
+<td>函数原型及闭包管理</td>
+</tr>
+<tr>
+<td>lgc.c</td>
+<td>垃圾回收</td>
+</tr>
+<tr>
+<td>lmem.c</td>
+<td>内存管理接口[luaM_realloc / luaM_growaux_]</td>
+</tr>
+<tr>
+<td>lobject.c</td>
+<td>对象操作的一些函数。包括数据类型&lt;-&gt;字符串转换</td>
+</tr>
+<tr>
+<td>lstate.c</td>
+<td>状态机 管理全局信息,和状态机相关的逻辑</td>
+</tr>
+<tr>
+<td>lstring.c</td>
+<td>字符串池</td>
+</tr>
+<tr>
+<td>ltable.c</td>
+<td>表类型的相关操作。Lua表（哈希）</td>
+</tr>
+<tr>
+<td>ltm.c</td>
+<td>标记方法。实现从对象访问元方法。</td>
+</tr>
+<tr>
+<td>lvm.c</td>
+<td>虚拟机。执行字节码（luaV_execute）。还公开了lapi.c使用的一些功能（例如luaV_concat）</td>
+</tr>
+<tr>
+<td>lzio.c</td>
+<td>通用的缓冲输入流接口</td>
+</tr>
+</tbody>
+</table>
+<h3 id="内嵌库">内嵌库<a hidden class="anchor" aria-hidden="true" href="#内嵌库">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lauxlib.c</td>
+<td>c库编写用到的辅助函数库</td>
+</tr>
+<tr>
+<td>lbaselib.c</td>
+<td>lua基础库</td>
+</tr>
+<tr>
+<td>lcorolib.c</td>
+<td>协程库</td>
+</tr>
+<tr>
+<td>lctype.c</td>
+<td>标准库中ctype相关实现</td>
+</tr>
+<tr>
+<td>ldblib.c</td>
+<td>Debug库</td>
+</tr>
+<tr>
+<td>linit.c</td>
+<td>内嵌库的初始化</td>
+</tr>
+<tr>
+<td>liolib.c</td>
+<td>IO库</td>
+</tr>
+<tr>
+<td>lmathlib.c</td>
+<td>数学库</td>
+</tr>
+<tr>
+<td>loadlib.c</td>
+<td>动态扩展库管理</td>
+</tr>
+<tr>
+<td>loslib.c</td>
+<td>OS库</td>
+</tr>
+<tr>
+<td>lstrlib.c</td>
+<td>字符串库</td>
+</tr>
+<tr>
+<td>ltablib.c</td>
+<td>表处理库</td>
+</tr>
+</tbody>
+</table>
+<h3 id="源代码解析以及预编译字节码">源代码解析以及预编译字节码<a hidden class="anchor" aria-hidden="true" href="#源代码解析以及预编译字节码">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lcode.c</td>
+<td>Lua的代码生成器。由lparser.c使用</td>
+</tr>
+<tr>
+<td>ldump.c</td>
+<td>序列化预编译的Lua字节码</td>
+</tr>
+<tr>
+<td>llex.c</td>
+<td>词法分析器。由lparser.c使用</td>
+</tr>
+<tr>
+<td>lparser.c</td>
+<td>解析器</td>
+</tr>
+<tr>
+<td>lundump.c</td>
+<td>还原预编译的字节码</td>
+</tr>
+</tbody>
+</table>
+<h3 id="可执行的解析器字节码编译器">可执行的解析器，字节码编译器<a hidden class="anchor" aria-hidden="true" href="#可执行的解析器字节码编译器">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lua.c</td>
+<td>Lua独立解释器</td>
+</tr>
+<tr>
+<td>luac.c</td>
+<td>Lua编译器（将字节码保存到文件中；还列出字节码）</td>
+</tr>
+</tbody>
+</table>
 
 
         </div>
@@ -372,15 +585,10 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/">
-    <span class="title">« 上一页</span>
-    <br>
-    <span>[Lua5.4.4源码]结构分析</span>
-  </a>
-  <a class="next" href="https://frog-game.github.io/posts/life/hybridclr-ios-dabao/">
+  <a class="next" href="https://frog-game.github.io/posts/read/huibianzognjie/">
     <span class="title">下一页 »</span>
     <br>
-    <span>HybridCLR IOS打包热更新</span>
+    <span>汇编总结</span>
   </a>
 </nav>
 
