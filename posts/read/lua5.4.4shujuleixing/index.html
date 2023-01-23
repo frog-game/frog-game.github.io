@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[Lua5.4.4源码]数据类型 | frog&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="lua源码数据类型分析">
+<meta name="author" content="
+作者:&nbsp;frog">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8b1bcfe952e1e1a78b44fa99f358fddf187aee65873bbc85ca10d6f18a3bff33.css" integrity="sha256-ixvP6VLh4aeLRPqZ81j93xh67mWHO7yFyhDW8Yo7/zM=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+        onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://frog-game.github.io/img/Q.gif">
+<link rel="apple-touch-icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="mask-icon" href="https://frog-game.github.io/img/Q.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="[Lua5.4.4源码]数据类型" />
+<meta property="og:description" content="lua源码数据类型分析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-23T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-01-23T01:30:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png" />
+<meta name="twitter:title" content="[Lua5.4.4源码]数据类型"/>
+<meta name="twitter:description" content="lua源码数据类型分析"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://frog-game.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://frog-game.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "[Lua5.4.4源码]数据类型",
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Lua5.4.4源码]数据类型",
+  "name": "[Lua5.4.4源码]数据类型",
+  "description": "lua源码数据类型分析",
+  "keywords": [
+    ""
+  ],
+  "articleBody": "LUA_TNIL nil表示的意思就是无效值 如果赋值为nil,等价于就是删除,到时候GC判断没有任何关联,就会把这个值回收 LUA_TNIL 除了定义对外的LUA_VNIL nil类型,还会分为{LUA_VEMPTY:,LUA_VABSTKEY}这两个东西不对外,用于C层逻辑的判断 LUA_VEMPTY: 空槽位, C层用来占位和清除逻辑 LUA_VABSTKEY:C层用来查找Key时候找不到的时候返回类型 LUA_TBOOLEAN 在lua里面0也是真值,这点和其他语言比如C/C++等等语言不一样,要注意\n0:真\nnil:假\nfalse:假\n其他值:真\nLUA_TLIGHTUSERDATA 和 LUA_TUSERDATA 区别 LUA_TUSERDATA LUA_TLIGHTUSERDATA 作用 通常用来表示C中的结构体一小段固定的内存区域 通常用来表示C中的指针(void *) 内存管理 由Lua的垃圾回收器管理 使用者需要关心其内存 元表 有独立的元表 没有独立的元表 创建 void *lua_newuserdata(lua_State *L, size_t size) lua_pushlightuserdata(lua_State *L, void *p); 具体区别其实我们在lua源码中也能找到区别\n我们在源码中找到了这段代码可以看到这里根据类型返回了1和2两个不同的地址\n首先我们来说LUA_TUSERDATA\nLUA_TUSERDATA 1处我们返回的是一个宏,可以看到其实是返回的是一块实实在在的内存地址\n///计算用户数据的内存区域的偏移量 // offsetof是结构成员相对于结构开头的字节偏移量 #define udatamemoffset(nuv) \\ ((nuv) == 0 ? offsetof(Udata0, bindata) \\ : offsetof(Udata, uv) + (sizeof(UValue) * (nuv))) #define getudatamem(u)\t(cast_charp(u) + udatamemoffset((u)-\u003enuvalue)) //返回内存块的地址 从下图中我们也能看到LUA_TUSERDATA里面有 独立元表\nLUA_TUSERDATA实现例子 //c文件 //#include extern \"C\" { #include \"lua.h\" #include \"lauxlib.h\" #include \"lualib.h\" } #include using namespace std; static struct StudentTag { char *strName; // 学生姓名 char *strNum; // 学号 int iSex; // 学生性别 int iAge; // 学生年龄 }T; static int Student(lua_State *L) { size_t iBytes = sizeof(struct StudentTag); struct StudentTag *pStudent; pStudent = (struct StudentTag *)lua_newuserdata(L, iBytes); //设置元表 luaL_getmetatable(L, \"Student\"); lua_setmetatable(L, -2); //lua_pushnumber(L, 123); return 1; // 新的userdata已经在栈上了 } static int GetName(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushstring(L, pStudent-\u003estrName); return 1; } static int SetName(lua_State *L) { // 第一个参数是userdata struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); // 第二个参数是一个字符串 const char *pName = luaL_checkstring(L, 2); luaL_argcheck(L, pName != NULL \u0026\u0026 pName != \"\", 2, \"Wrong Parameter\"); pStudent-\u003estrName =(char*) pName; return 0; } static int GetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushinteger(L, pStudent-\u003eiAge); return 1; } static int SetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); int iAge = luaL_checkinteger(L, 2); luaL_argcheck(L, iAge \u003e= 6 \u0026\u0026 iAge \u003c= 100, 2, \"Wrong Parameter\"); pStudent-\u003eiAge = iAge; return 0; } static int GetSex(lua_State *L) { // 这里由你来补充 return 1; } static int SetSex(lua_State *L) { // 这里由你来补充 return 0; } static int GetNum(lua_State *L) { // 这里由你来补充 return 1; } static int SetNum(lua_State *L) { // 这里由你来补充 return 0; } static luaL_Reg arrayFunc_meta[] = { { \"getName\", GetName }, { \"setName\", SetName }, { \"getAge\", GetAge }, { \"setAge\", SetAge }, { \"getSex\", GetSex }, { \"setSex\", SetSex }, { \"getNum\", GetNum }, { \"setNum\", SetNum }, { NULL, NULL } }; static luaL_Reg arrayFunc[] = { { \"new\", Student}, { NULL, NULL } }; extern \"C\" _declspec(dllexport) int luaopen_mytestlib(lua_State *L) { // 创建一个新的元表 luaL_newmetatable(L, \"Student\"); // 元表.__index = 元表 lua_pushvalue(L, -1); lua_setfield(L, -2, \"__index\"); luaL_setfuncs(L, arrayFunc_meta, 0); luaL_newlib(L, arrayFunc); lua_pushvalue(L, -1); lua_setglobal(L, \"Sdudent\"); /* the module name */ return 1; } -- lua 文件 require \"mytestlib\" local objStudent = Sdudent.new() objStudent:setName(\"果冻\") local strName = objStudent:getName() print(strName ) for k,v in pairs(getmetatable(objStudent)) do print(tostring(k),tostring(v)) end LUA_TLIGHTUSERDATA 2处我们返回的也是个宏\n#define pvalue(o)\tcheck_exp(ttislightuserdata(o), val_(o).p) //获取light userdata的指针 进一步追踪我们可以看到p指针指向的是这个结构体,里面并没有元表相关的实现,所以后面元表相关的处理都得我们自己处理\n体外话为什么有时候用CJSON去反序列化的时候能看到打印table里面的值居然是null 比如这样的结果\n{\"key1\":\"value\",\"key\":null,\"key2\":\"value2\"} 首先看看lua_pushlightuserdata实现\n在看看cjson.so的实现\nlua_newtable(L); lua_pushlightuserdata(L, NULL); lua_setfield(L, -2, \"null\"); 我们进入lua_pushlightuserdata(L, NULL); 然后看到了 setpvalue(L-\u003etop, p)的调用\n这样在实际调用时, setpvalue(L-\u003etop, p) 相当于 void *p = NULL 最后是被封装到table变量里返回的\n这个点需要注意很容易造成bug\nLUA_TLIGHTUSERDATA实现例子 //C文件 #include #include #include using namespace std; extern \"C\" { #include \"lua.h\" #include \"lualib.h\" #include \"lauxlib.h\" } typedef struct { int x; int y; int z; }TData; static int getAttribute(lua_State* L) { TData *data = (TData*)lua_touserdata(L, 1); std::string attribute = luaL_checkstring(L, 2); int result = 0; if (attribute == \"x\") { result = data-\u003ex; } else if (attribute == \"y\") { result = data-\u003ey; } else { result = data-\u003ez; } lua_pushnumber(L, result); return 1; } static luaL_Reg dataLib[] = { { \"__index\", getAttribute }, { NULL, NULL } }; void getMetaTable(lua_State* L, luaL_Reg* methods) { lua_pushlightuserdata(L, methods); lua_gettable(L, LUA_REGISTRYINDEX); if (lua_isnil(L, -1)) { /* not found */ lua_pop(L, 1); lua_newtable(L); luaL_setfuncs(L, methods, 0); lua_pushlightuserdata(L, methods); lua_pushvalue(L, -2); lua_settable(L, LUA_REGISTRYINDEX); } } int main() { const char* filename = \"test.lua\"; lua_State *lua = luaL_newstate(); if (lua == NULL) { fprintf(stderr, \"open lua failed\"); return -1; } luaL_openlibs(lua); TData input = { 123, 231, 321 }; lua_pushlightuserdata(lua, \u0026input); getMetaTable(lua, dataLib); lua_setmetatable(lua, -2); lua_setglobal(lua, \"input\"); if (luaL_dofile(lua, filename)) { //luaL_error(lua, \"load file %s failed\", filename); } lua_getglobal(lua, \"data\"); int output = lua_tointeger(lua, -1); std::cout \u003c\u003c output \u003c\u003c std::endl; return 0; } --lua文件 data = input.x; print(data) LUA_TNUMBER lua5.3以后已经把这个数值类型分为了2中类型\nLUA_VNUMINT 整数类型 其实就是c中的longlong,占用8个字节 LUA_VNUMFLT 浮点类型 其实就是c中的double,占用8个字节 对应的源码如下\nLUA_TSTRING lua5.4将string分为了两种\nLUA_VSHRSTR:短字符串\n小于等于40字节的 hash值是在创建时就计算出来的 LUA_VLNGSTR 长字符串\n大于40字节的就是长字符串 真正需要它的hash值时，才会手动调用luaS_hashlongstr函数生成该值,lua内部现在只有在把长串作为table的key时，才会去计算它 字符串结构 存储位置 短字符串 相同hash字符串存储在 stringtable strt 链表结构上 一般短字符串会使用这种方式存储\n长字符串 因为长字符串是惰性生成的，只有在需要hash值得时候才会去创建,所以不会想短字符串一样存在global_State-\u003estrt里面的,而是真正生成一片Tstring内存空间,所以相同的长字符串会有不同的内存空间副本存储,这点需要特别注意\nhashMap缓存方式 为了提高查找命中率,lua作者还使用hashMap这种方式来提高命中率\n下图中N是数组行，M是数组列\ni的下标值通过unsigned int i = point2uint(str) % STRCACHE_N求得\nj的最大值固定就是下面的宏函数 STRCACHE_M 2\n鉴于篇幅长度,后面会专门出一篇文章详细的讲解lua的string里里外外\nLUA_TTABLE 表 lua 的table是个很神奇的结构,他是hash,数组的混合体,通过table可以很方便的实现模块,元表,环境,面向对象,stl,等等功能\ntable的源码结构\n结构示意图\n详细解释,会在单独出一篇文章\nLUA_TTHREAD thread即为线程,但是在lua中是没有线程的概念的，这个线程并不是真正意义上操作系统的线程,而更多的是一个能储存运行状态的数据结构,这个结构更多的是给协程**coroutine**使用的\n线程和协程的区别 线程消耗操作系统资源，协程可以靠编译语言实现，因此称为用户态线程量级更轻 线程并行，协程并发 线程同步，协程异步 线程抢占式，协程非抢占式，需要手动切换 线程上千，协程上万 线程切换需要上下文切换，协程切换不需要上下文切换，只在用户态进行切换 源码结构\n/// @brief Lua 主线程栈 数据结构 ///作用：管理整个栈和当前函数使用的栈的情况，最主要的功能就是函数调用以及和c的通信 struct lua_State { CommonHeader; lu_byte status;//当前状态机的状态,LUA_YIELD和LUA_OK为lua_State状态机的状态,这两个状态和协程有这对应关系,详见auxstatus函数 lu_byte allowhook;//是否允许hook unsigned short nci; /* number of items in 'ci' list *///ci列表中的条目数，存储一共多少个CallInfo StkId top; /* first free slot in the stack *///指向栈的顶部，压入数据，都通过移动栈顶指针来实现 global_State *l_G;//全局状态机，维护全局字符串表、内存管理函数、gc等信息 CallInfo *ci; /* call info for current function *///当前运行函数信息 StkId stack_last; /* end of stack (last element + 1) *///执行lua stack最后一个空闲的slot StkId stack; /* stack base *///stack基地址 UpVal *openupval; /* list of open upvalues in this stack */// upvalues open状态时候的的链表 StkId tbclist; /* list of to-be-closed variables *///此堆栈中所有活动的将要关闭的变量的列表 GCObject *gclist;//GC列表 struct lua_State *twups; /* list of threads with open upvalues *///twups 链表 所有带有 open upvalue 的 thread 都会放到这个链表中，这样提供了一个方便的遍历 thread 的途径，并且排除掉了没有 open upvalue 的 thread struct lua_longjmp *errorJmp; /* current error recover point *///发生错误的长跳转位置，用于记录当函数发生错误时跳转出去的位置 CallInfo base_ci; /* CallInfo for first level (C calling Lua) *///指向函数调用栈的栈底 volatile lua_Hook hook;//用户注册的hook回调函数 ptrdiff_t errfunc; /* current error handling function (stack index) *///发生错误的回调函数 l_uint32 nCcalls; /* number of nested (non-yieldable | C) calls */// 当前C函数的调用的深度 int oldpc; /* last pc traced *///最后一次执行的指令的位置 int basehookcount;//用户设置的执行指令数（在hookmask=LUA_MASK_COUNT生效） int hookcount;//运行时，跑了多少条指令 volatile l_signalT hookmask;//支持那些hook能力 }; 详细解释,会在单独出一篇文章\n值对象结构 /// @brief 实际存储的值 // GCObject和其他不需要进行进行GC的数据放在一个联合体里面构成了Value类型 // lua5.3以后 number类型就有了两个类型float和int 也就是下面的 lua_Number n和 lua_Integer i typedef union Value { struct GCObject *gc; /* collectable objects */// 可回收的对象 /*下面都是不可回收类型*/ void *p; /* light userdata *///轻量级userdata lua_CFunction f; /* light C functions *///函数指针 例如（typedef int (*lua_CFunction)(lua_State *L)） lua_Integer i; /* integer numbers *///整型 c中的longlong，占用8个字节 lua_Number n; /* float numbers *///浮点类型 c中的double，占用8个字节 } Value; 变量 说明 GCObject gc 用于垃圾回收 主要是为了连接垃圾回收对象的互相引用关系 void *p 为c中传入的指针，由c 分配和释放 light userdata lua_CFunction f 表示C导出给lua的函数指针，typedef int (*lua_CFunction) (lua_State *L) lua_Integer i 表示整数类型，typedef long long lua_Integer lua_Number n 表示双精度浮点类型，typedef double lua_Number 非GC对象 从上面可以看到非GC的对象有4中\nlight userdata C函数 整型 浮点型 int b(lua 5.4数字分为整数和浮点，而i正好也可以用作bool,所以把这个给**删除**,和 lua_Integer i 结合到一起了) GC对象 union GCUnion { GCObject gc; /* common header */ struct TString ts;//字符串 struct Udata u;//用户数据 union Closure cl;//闭包 struct Table h;//表 struct Proto p;//函数原型:存放函数字节码信息 struct lua_State th; /* thread *///线程 struct UpVal upv;//上值 }; 从上面的union结构体可以看到GC对象有6中\n字符串 userdata closure 闭包 table lua 函数原型 lua 线程 (其实就是协程) lua上值 CommonHeader类型 #define CommonHeader\tstruct GCObject *next; lu_byte tt; lu_byte marked next 指针 指向下一个GC对象 tt GC对象的实际类型(比如上面6中GC对象) marked 标识GC的状态 TValuefields 类型 #define TValuefields Value value_; int tt_ Value：存储具体数据的值 tt_：表示这个值的类型，即所有的基础数据类型 ",
+  "wordCount" : "3862",
+  "inLanguage": "en",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png","datePublished": "2022-01-23T01:30:29+08:00",
+  "dateModified": "2022-01-23T01:30:29+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "frog"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "frog's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://frog-game.github.io/img/Q.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://frog-game.github.io/" accesskey="h" title="frog&#39;s Blog (Alt + H)">
+            <img src="https://frog-game.github.io/img/Q.gif" alt="logo" aria-label="logo"
+                 height="35">frog&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://frog-game.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/" title="🏠 主页">
+                <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/posts" title="📚 文章">
+                <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/tags" title="🧩 标签">
+                <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/archives/" title="⏱ 时间轴">
+                <span>⏱ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/about" title="🙋🏻‍♂️ 关于">
+                <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/links" title="🤝 友链">
+                <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/read/">📕 阅读</a></div>
+            <h1 class="post-title">
+                [Lua5.4.4源码]数据类型
+            </h1>
+            <div class="post-description">
+                lua源码数据类型分析
+            </div>
+            <div class="post-meta">创建:&nbsp;<span title='2022-01-23 01:30:29 +0800 CST'>2022-01-23</span>&nbsp;|&nbsp;更新:&nbsp;2022-01-23&nbsp;|&nbsp;字数:&nbsp;3862字&nbsp;|&nbsp;时长:&nbsp;8分钟&nbsp;|&nbsp;
+作者:&nbsp;frog
+
+
+
+                &nbsp;|&nbsp;标签: &nbsp;
+                <ul class="post-tags-meta">
+                    <a href="https://frog-game.github.io/tags/lua5.4.4%E6%BA%90%E7%A0%81/">Lua5.4.4源码</a>
+                </ul>
+
+                
+                <span id="busuanzi_container_page_pv">
+                &nbsp;| 访问: <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+</div>
+        </header> 
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png" alt="">
+        
+</figure>
+        <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#lua_tnil" aria-label="LUA_TNIL">LUA_TNIL</a></li>
+                <li>
+                    <a href="#lua_tboolean" aria-label="LUA_TBOOLEAN">LUA_TBOOLEAN</a></li>
+                <li>
+                    <a href="#lua_tlightuserdata-%e5%92%8c-lua_tuserdata" aria-label="LUA_TLIGHTUSERDATA 和 LUA_TUSERDATA">LUA_TLIGHTUSERDATA 和 LUA_TUSERDATA</a><ul>
+                        
+                <li>
+                    <a href="#lua_tuserdata" aria-label="LUA_TUSERDATA">LUA_TUSERDATA</a><ul>
+                        
+                <li>
+                    <a href="#lua_tuserdata%e5%ae%9e%e7%8e%b0%e4%be%8b%e5%ad%90" aria-label="LUA_TUSERDATA实现例子">LUA_TUSERDATA实现例子</a></li></ul>
+                </li>
+                <li>
+                    <a href="#lua_tlightuserdata" aria-label="LUA_TLIGHTUSERDATA">LUA_TLIGHTUSERDATA</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bd%93%e5%a4%96%e8%af%9d%e4%b8%ba%e4%bb%80%e4%b9%88%e6%9c%89%e6%97%b6%e5%80%99%e7%94%a8cjson%e5%8e%bb%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e7%9a%84%e6%97%b6%e5%80%99%e8%83%bd%e7%9c%8b%e5%88%b0%e6%89%93%e5%8d%b0table%e9%87%8c%e9%9d%a2%e7%9a%84%e5%80%bc%e5%b1%85%e7%84%b6%e6%98%afnull" aria-label="体外话为什么有时候用CJSON去反序列化的时候能看到打印table里面的值居然是null">体外话为什么有时候用<code>CJSON</code>去反序列化的时候能看到打印<code>table</code>里面的值居然是<code>null</code></a></li>
+                <li>
+                    <a href="#lua_tlightuserdata%e5%ae%9e%e7%8e%b0%e4%be%8b%e5%ad%90" aria-label="LUA_TLIGHTUSERDATA实现例子">LUA_TLIGHTUSERDATA实现例子</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#lua_tnumber" aria-label="LUA_TNUMBER">LUA_TNUMBER</a></li>
+                <li>
+                    <a href="#lua_tstring" aria-label="LUA_TSTRING">LUA_TSTRING</a><ul>
+                        
+                <li>
+                    <a href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%bb%93%e6%9e%84" aria-label="字符串结构"><strong>字符串结构</strong></a></li>
+                <li>
+                    <a href="#%e5%ad%98%e5%82%a8%e4%bd%8d%e7%bd%ae" aria-label="存储位置">存储位置</a><ul>
+                        
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="短字符串">短字符串</a></li>
+                <li>
+                    <a href="#%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="长字符串">长字符串</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hashmap%e7%bc%93%e5%ad%98%e6%96%b9%e5%bc%8f" aria-label="hashMap缓存方式">hashMap缓存方式</a></li></ul>
+                </li>
+                <li>
+                    <a href="#lua_ttable-%e8%a1%a8" aria-label="LUA_TTABLE 表">LUA_TTABLE 表</a></li>
+                <li>
+                    <a href="#lua_tthread" aria-label="LUA_TTHREAD">LUA_TTHREAD</a><ul>
+                        
+                <li>
+                    <a href="#%e7%ba%bf%e7%a8%8b%e5%92%8c%e5%8d%8f%e7%a8%8b%e7%9a%84%e5%8c%ba%e5%88%ab" aria-label="线程和协程的区别">线程和协程的区别</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%80%bc%e5%af%b9%e8%b1%a1%e7%bb%93%e6%9e%84" aria-label="值对象结构">值对象结构</a><ul>
+                        
+                <li>
+                    <a href="#%e9%9d%9egc%e5%af%b9%e8%b1%a1" aria-label="非GC对象">非GC对象</a></li>
+                <li>
+                    <a href="#gc%e5%af%b9%e8%b1%a1" aria-label="GC对象">GC对象</a></li>
+                <li>
+                    <a href="#commonheader%e7%b1%bb%e5%9e%8b" aria-label="CommonHeader类型">CommonHeader类型</a></li>
+                <li>
+                    <a href="#tvaluefields-%e7%b1%bb%e5%9e%8b" aria-label="TValuefields 类型">TValuefields 类型</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+            const id = encodeURI(element.getAttribute('id')).toLowerCase();
+            if (element === activeElement){
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+            } else {
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+            }
+        })
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        
+        <div class="post-content"><h2 id="lua_tnil">LUA_TNIL<a hidden class="anchor" aria-hidden="true" href="#lua_tnil">#</a></h2>
+<ol>
+<li><code>nil</code>表示的意思就是无效值</li>
+<li>如果赋值为<code>nil</code>,等价于就是删除,到时候<code>GC</code>判断没有任何关联,就会把这个值回收</li>
+<li><code>LUA_TNIL</code> 除了定义对外的<code>LUA_VNIL nil类型</code>,还会分为<code>{LUA_VEMPTY:,LUA_VABSTKEY}</code>这两个东西不对外,用于<code>C</code>层逻辑的判断
+<ul>
+<li><code>LUA_VEMPTY</code>: 空槽位, <code>C</code>层用来占位和清除逻辑</li>
+<li><code>LUA_VABSTKEY</code>:<code>C</code>层用来查找<code>Key</code>时候找不到的时候返回类型</li>
+</ul>
+</li>
+</ol>
+<h2 id="lua_tboolean">LUA_TBOOLEAN<a hidden class="anchor" aria-hidden="true" href="#lua_tboolean">#</a></h2>
+<ol>
+<li>
+<p>在<code>lua</code>里面<code>0也是真值</code>,这点和其他语言比如<code>C/C++</code>等等语言不一样,要注意</p>
+<ul>
+<li>
+<p><code>0</code>:真</p>
+</li>
+<li>
+<p><code>nil</code>:假</p>
+</li>
+<li>
+<p><code>false</code>:假</p>
+</li>
+<li>
+<p><code>其他值</code>:真</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="lua_tlightuserdata-和-lua_tuserdata">LUA_TLIGHTUSERDATA 和 LUA_TUSERDATA<a hidden class="anchor" aria-hidden="true" href="#lua_tlightuserdata-和-lua_tuserdata">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>区别</th>
+<th><strong>LUA_TUSERDATA</strong></th>
+<th>LUA_TLIGHTUSERDATA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>作用</td>
+<td>通常用来表示C中的结构体一小段固定的内存区域</td>
+<td>通常用来表示C中的指针(void *)</td>
+</tr>
+<tr>
+<td>内存管理</td>
+<td>由Lua的垃圾回收器管理</td>
+<td>使用者需要关心其内存</td>
+</tr>
+<tr>
+<td>元表</td>
+<td>有独立的元表</td>
+<td>没有独立的元表</td>
+</tr>
+<tr>
+<td>创建</td>
+<td>void *lua_newuserdata(lua_State *L, size_t size)</td>
+<td>lua_pushlightuserdata(lua_State *L, void *p);</td>
+</tr>
+</tbody>
+</table>
+<p>具体区别其实我们在<code>lua</code>源码中也能找到区别</p>
+<p><img loading="lazy" src="image-20230123103128853.png" alt="image-20230123103128853"  />
+</p>
+<p>我们在源码中找到了这段代码可以看到这里根据类型返回了<code>1</code>和<code>2</code>两个不同的地址</p>
+<p>首先我们来说<code>LUA_TUSERDATA</code></p>
+<h3 id="lua_tuserdata">LUA_TUSERDATA<a hidden class="anchor" aria-hidden="true" href="#lua_tuserdata">#</a></h3>
+<p><code>1</code>处我们返回的是一个宏,可以看到其实是返回的是一块实实在在的内存地址</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">///计算用户数据的内存区域的偏移量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// offsetof是结构成员相对于结构开头的字节偏移量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define udatamemoffset(nuv) \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	((nuv) == 0 ? offsetof(Udata0, bindata)  \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                    : offsetof(Udata, uv) + (sizeof(UValue) * (nuv)))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define getudatamem(u)	(cast_charp(u) + udatamemoffset((u)-&gt;nuvalue)) </span><span style="color:#75715e">//返回内存块的地址
+</span></span></span></code></pre></div><p>从下图中我们也能看到<code>LUA_TUSERDATA</code>里面有 独立元表</p>
+<p><img loading="lazy" src="image-20230123103834850.png" alt="image-20230123103834850"  />
+</p>
+<h4 id="lua_tuserdata实现例子">LUA_TUSERDATA实现例子<a hidden class="anchor" aria-hidden="true" href="#lua_tuserdata实现例子">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//c文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//#include &lt;string.h&gt;  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;lua.h&#34;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;lauxlib.h&#34;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;lualib.h&#34;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>using namespace std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">struct</span> StudentTag
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>strName; <span style="color:#75715e">// 学生姓名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>strNum; <span style="color:#75715e">// 学号
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> iSex; <span style="color:#75715e">// 学生性别
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> iAge; <span style="color:#75715e">// 学生年龄
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}T;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">Student</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">size_t</span> iBytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">struct</span> StudentTag);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>pStudent;
+</span></span><span style="display:flex;"><span>	pStudent <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>)<span style="color:#a6e22e">lua_newuserdata</span>(L, iBytes);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	 <span style="color:#75715e">//设置元表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">luaL_getmetatable</span>(L, <span style="color:#e6db74">&#34;Student&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setmetatable</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//lua_pushnumber(L, 123);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 新的userdata已经在栈上了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">GetName</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>pStudent <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>)<span style="color:#a6e22e">luaL_checkudata</span>(L, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;Student&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushstring</span>(L, pStudent<span style="color:#f92672">-&gt;</span>strName);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">SetName</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 第一个参数是userdata
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>pStudent <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>)<span style="color:#a6e22e">luaL_checkudata</span>(L, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;Student&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 第二个参数是一个字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>pName <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_checkstring</span>(L, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_argcheck</span>(L, pName <span style="color:#f92672">!=</span> NULL <span style="color:#f92672">&amp;&amp;</span> pName <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#34;&#34;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;Wrong Parameter&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	pStudent<span style="color:#f92672">-&gt;</span>strName <span style="color:#f92672">=</span>(<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span>) pName;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">GetAge</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>pStudent <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>)<span style="color:#a6e22e">luaL_checkudata</span>(L, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;Student&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushinteger</span>(L, pStudent<span style="color:#f92672">-&gt;</span>iAge);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">SetAge</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>pStudent <span style="color:#f92672">=</span> (<span style="color:#66d9ef">struct</span> StudentTag <span style="color:#f92672">*</span>)<span style="color:#a6e22e">luaL_checkudata</span>(L, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;Student&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> iAge <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_checkinteger</span>(L, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_argcheck</span>(L, iAge <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">6</span> <span style="color:#f92672">&amp;&amp;</span> iAge <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;Wrong Parameter&#34;</span>);
+</span></span><span style="display:flex;"><span>	pStudent<span style="color:#f92672">-&gt;</span>iAge <span style="color:#f92672">=</span> iAge;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">GetSex</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里由你来补充
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">SetSex</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里由你来补充
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">GetNum</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里由你来补充
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">SetNum</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 这里由你来补充
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span>  luaL_Reg arrayFunc_meta[] <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;getName&#34;</span>, GetName },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;setName&#34;</span>, SetName },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;getAge&#34;</span>, GetAge },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;setAge&#34;</span>, SetAge },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;getSex&#34;</span>, GetSex },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;setSex&#34;</span>, SetSex },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;getNum&#34;</span>, GetNum },
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;setNum&#34;</span>, SetNum },
+</span></span><span style="display:flex;"><span>	{ NULL, NULL }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> luaL_Reg arrayFunc[] <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;new&#34;</span>, Student},
+</span></span><span style="display:flex;"><span>	{ NULL, NULL }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span>  <span style="color:#a6e22e">_declspec</span>(dllexport) <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">luaopen_mytestlib</span>(lua_State <span style="color:#f92672">*</span>L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 创建一个新的元表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">luaL_newmetatable</span>(L, <span style="color:#e6db74">&#34;Student&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 元表.__index = 元表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lua_pushvalue</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setfield</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;__index&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_setfuncs</span>(L, arrayFunc_meta, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_newlib</span>(L, arrayFunc);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushvalue</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setglobal</span>(L, <span style="color:#e6db74">&#34;Sdudent&#34;</span>); <span style="color:#75715e">/* the module name */</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span> lua <span style="color:#960050;background-color:#1e0010">文件</span>
+</span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#34;mytestlib&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>local objStudent <span style="color:#f92672">=</span> Sdudent.<span style="color:#a6e22e">new</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>objStudent:<span style="color:#a6e22e">setName</span>(<span style="color:#e6db74">&#34;果冻&#34;</span>)
+</span></span><span style="display:flex;"><span>local strName <span style="color:#f92672">=</span> objStudent:<span style="color:#a6e22e">getName</span>()
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">print</span>(strName )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> k,v in <span style="color:#a6e22e">pairs</span>(<span style="color:#a6e22e">getmetatable</span>(objStudent)) <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">print</span>(<span style="color:#a6e22e">tostring</span>(k),<span style="color:#a6e22e">tostring</span>(v))
+</span></span><span style="display:flex;"><span>end
+</span></span></code></pre></div><h3 id="lua_tlightuserdata">LUA_TLIGHTUSERDATA<a hidden class="anchor" aria-hidden="true" href="#lua_tlightuserdata">#</a></h3>
+<p><code>2</code>处我们返回的也是个宏</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p) </span><span style="color:#75715e">//获取light userdata的指针
+</span></span></span></code></pre></div><p>进一步追踪我们可以看到<code>p</code>指针指向的是这个结构体,里面并没有元表相关的实现,所以后面元表相关的处理都得我们自己处理</p>
+<p><img loading="lazy" src="image-20230123104539735.png" alt="image-20230123104539735"  />
+</p>
+<h4 id="体外话为什么有时候用cjson去反序列化的时候能看到打印table里面的值居然是null">体外话为什么有时候用<code>CJSON</code>去反序列化的时候能看到打印<code>table</code>里面的值居然是<code>null</code><a hidden class="anchor" aria-hidden="true" href="#体外话为什么有时候用cjson去反序列化的时候能看到打印table里面的值居然是null">#</a></h4>
+<p>比如这样的结果</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>{<span style="color:#e6db74">&#34;key1&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;value&#34;</span>,<span style="color:#e6db74">&#34;key&#34;</span><span style="color:#f92672">:</span>null,<span style="color:#e6db74">&#34;key2&#34;</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;value2&#34;</span>}
+</span></span></code></pre></div><p>首先看看<code>lua_pushlightuserdata</code>实现</p>
+<p><img loading="lazy" src="image-20230123111513660.png" alt="image-20230123111513660"  />
+</p>
+<p>在看看<code>cjson.so</code>的实现</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>lua_newtable(L);
+</span></span><span style="display:flex;"><span>lua_pushlightuserdata(L, NULL);
+</span></span><span style="display:flex;"><span>lua_setfield(L, -2, &#34;null&#34;);
+</span></span></code></pre></div><p>我们进入<code>lua_pushlightuserdata(L, NULL);</code>  然后看到了 <code>setpvalue(L-&gt;top, p)</code>的调用</p>
+<p>这样在实际调用时,<code> setpvalue(L-&gt;top, p)</code> 相当于 <code>void *p = NULL</code>  最后是被封装到<code>table</code>变量里返回的</p>
+<p>这个点需要注意很容易造成<code>bug</code></p>
+<h4 id="lua_tlightuserdata实现例子">LUA_TLIGHTUSERDATA实现例子<a hidden class="anchor" aria-hidden="true" href="#lua_tlightuserdata实现例子">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">//C文件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>using namespace std;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;lua.h&#34;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;lualib.h&#34;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;lauxlib.h&#34;  </span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> x;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> y;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> z;
+</span></span><span style="display:flex;"><span>}TData;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAttribute</span>(lua_State<span style="color:#f92672">*</span> L)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	TData <span style="color:#f92672">*</span>data <span style="color:#f92672">=</span> (TData<span style="color:#f92672">*</span>)<span style="color:#a6e22e">lua_touserdata</span>(L, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>string attribute <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_checkstring</span>(L, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (attribute <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;x&#34;</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		result <span style="color:#f92672">=</span> data<span style="color:#f92672">-&gt;</span>x;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (attribute <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;y&#34;</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		result <span style="color:#f92672">=</span> data<span style="color:#f92672">-&gt;</span>y;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		result <span style="color:#f92672">=</span> data<span style="color:#f92672">-&gt;</span>z;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushnumber</span>(L, result);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span>  luaL_Reg dataLib[] <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	{ <span style="color:#e6db74">&#34;__index&#34;</span>, getAttribute },
+</span></span><span style="display:flex;"><span>	{ NULL, NULL }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">getMetaTable</span>(lua_State<span style="color:#f92672">*</span> L, luaL_Reg<span style="color:#f92672">*</span> methods)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushlightuserdata</span>(L, methods);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_gettable</span>(L, LUA_REGISTRYINDEX);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">lua_isnil</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)) {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* not found */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_pop</span>(L, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_newtable</span>(L);
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">luaL_setfuncs</span>(L, methods, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_pushlightuserdata</span>(L, methods);
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_pushvalue</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_settable</span>(L, LUA_REGISTRYINDEX);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> filename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;test.lua&#34;</span>;
+</span></span><span style="display:flex;"><span>	lua_State <span style="color:#f92672">*</span>lua <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_newstate</span>();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (lua <span style="color:#f92672">==</span> NULL)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">fprintf</span>(stderr, <span style="color:#e6db74">&#34;open lua failed&#34;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_openlibs</span>(lua);
+</span></span><span style="display:flex;"><span>	TData input <span style="color:#f92672">=</span> { <span style="color:#ae81ff">123</span>, <span style="color:#ae81ff">231</span>, <span style="color:#ae81ff">321</span> };
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushlightuserdata</span>(lua, <span style="color:#f92672">&amp;</span>input);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">getMetaTable</span>(lua, dataLib);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setmetatable</span>(lua, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setglobal</span>(lua, <span style="color:#e6db74">&#34;input&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">luaL_dofile</span>(lua, filename))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//luaL_error(lua, &#34;load file %s failed&#34;, filename);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_getglobal</span>(lua, <span style="color:#e6db74">&#34;data&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> output <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tointeger</span>(lua, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> output <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span>lua<span style="color:#960050;background-color:#1e0010">文件</span>
+</span></span><span style="display:flex;"><span>data <span style="color:#f92672">=</span> input.x;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">print</span>(data)
+</span></span></code></pre></div><h2 id="lua_tnumber">LUA_TNUMBER<a hidden class="anchor" aria-hidden="true" href="#lua_tnumber">#</a></h2>
+<p><code>lua5.3以后</code>已经把这个数值类型分为了<code>2</code>中类型</p>
+<ul>
+<li><code>LUA_VNUMINT</code> 整数类型 其实就是c中的<code>longlong</code>,占用<code>8</code>个字节</li>
+<li><code>LUA_VNUMFLT</code> 浮点类型 其实就是c中的<code>double</code>,占用<code>8</code>个字节</li>
+</ul>
+<p>对应的源码如下</p>
+<p><img loading="lazy" src="image-20230123112120451.png" alt="image-20230123112120451"  />
+</p>
+<h2 id="lua_tstring">LUA_TSTRING<a hidden class="anchor" aria-hidden="true" href="#lua_tstring">#</a></h2>
+<p><code>lua5.4</code>将<code>string</code>分为了两种</p>
+<p><code>LUA_VSHRSTR</code>:短字符串</p>
+<ul>
+<li>小于等于<code>40</code>字节的</li>
+<li><code>hash</code>值是在创建时就计算出来的</li>
+</ul>
+<p><code>LUA_VLNGSTR</code> 长字符串</p>
+<ul>
+<li>大于<code>40</code>字节的就是长字符串</li>
+<li>真正需要它的hash值时，才会手动调用<code>luaS_hashlongstr</code>函数生成该值,<code>lua</code>内部现在只有在把长串作为<code>table</code>的<code>key</code>时，才会去计算它</li>
+</ul>
+<h3 id="字符串结构"><strong>字符串结构</strong><a hidden class="anchor" aria-hidden="true" href="#字符串结构">#</a></h3>
+<p><img loading="lazy" src="image-20230123132740554.png" alt="image-20230123132740554"  />
+</p>
+<h3 id="存储位置">存储位置<a hidden class="anchor" aria-hidden="true" href="#存储位置">#</a></h3>
+<h4 id="短字符串">短字符串<a hidden class="anchor" aria-hidden="true" href="#短字符串">#</a></h4>
+<p><img loading="lazy" src="image-20230123134046523.png" alt="image-20230123134046523"  />
+</p>
+<p>相同<code>hash</code>字符串存储在 <code>stringtable strt</code> 链表结构上 一般<code>短字符串</code>会使用这种方式存储</p>
+<p><img loading="lazy" src="image-20230123162130402.png" alt="image-20230123162130402"  />
+</p>
+<h4 id="长字符串">长字符串<a hidden class="anchor" aria-hidden="true" href="#长字符串">#</a></h4>
+<p>因为长字符串是惰性生成的，只有在需要<code>hash</code>值得时候才会去创建,所以不会想短字符串一样存在<code>global_State-&gt;strt</code>里面的,而是真正生成一片<code>Tstring</code>内存空间,所以相同的长字符串会有不同的内存空间副本存储,这点需要特别注意</p>
+<h3 id="hashmap缓存方式">hashMap缓存方式<a hidden class="anchor" aria-hidden="true" href="#hashmap缓存方式">#</a></h3>
+<p>为了提高查找命中率<code>,lu</code>a作者还使用<code>hashMap</code>这种方式来提高命中率</p>
+<p>下图中<code>N</code>是数组行，<code>M</code>是数组列</p>
+<p><code>i</code>的下标值通过<code>unsigned int i = point2uint(str) % STRCACHE_N</code>求得</p>
+<p><code>j</code>的最大值固定就是下面的宏函数 <code>STRCACHE_M 2</code></p>
+<p><img loading="lazy" src="Typoraimage-20220405133449863.png" alt="Typoraimage-20220405133449863"  />
+</p>
+<p><img loading="lazy" src="image-20230123163118382.png" alt="image-20230123163118382"  />
+</p>
+<p>鉴于篇幅长度,后面会专门出一篇文章详细的讲解<code>lua</code>的<code>string</code>里里外外</p>
+<h2 id="lua_ttable-表">LUA_TTABLE 表<a hidden class="anchor" aria-hidden="true" href="#lua_ttable-表">#</a></h2>
+<p><code>lua</code> 的<code>table</code>是个很神奇的结构,他是<code>hash</code>,数组的混合体,通过<code>table</code>可以很方便的实现模块,元表,环境,面向对象,<code>stl</code>,等等功能</p>
+<p><code>table</code>的源码结构</p>
+<p><img loading="lazy" src="image-20230123170655933.png" alt="image-20230123170655933"  />
+</p>
+<p>结构示意图</p>
+<p><img loading="lazy" src="image-20230123175321761.png" alt="image-20230123175321761"  />
+</p>
+<p>详细解释,会在单独出一篇文章</p>
+<h2 id="lua_tthread">LUA_TTHREAD<a hidden class="anchor" aria-hidden="true" href="#lua_tthread">#</a></h2>
+<p><code>thread</code>即为线程,但是在<code>lua</code>中是没有线程的概念的，这个线程并不是真正意义上操作系统的线程,而更多的是一个能储存运行状态的数据结构,这个结构更多的是给协程**<code>coroutine</code>**使用的</p>
+<h3 id="线程和协程的区别">线程和协程的区别<a hidden class="anchor" aria-hidden="true" href="#线程和协程的区别">#</a></h3>
+<ol>
+<li>线程消耗操作系统资源，协程可以靠编译语言实现，因此称为用户态线程量级更轻</li>
+<li>线程并行，协程并发</li>
+<li>线程同步，协程异步</li>
+<li>线程抢占式，协程非抢占式，需要手动切换</li>
+<li>线程上千，协程上万</li>
+<li>线程切换需要上下文切换，协程切换不需要上下文切换，只在用户态进行切换</li>
+</ol>
+<p><strong>源码结构</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/// @brief Lua 主线程栈 数据结构
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">///作用：管理整个栈和当前函数使用的栈的情况，最主要的功能就是函数调用以及和c的通信
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> lua_State {
+</span></span><span style="display:flex;"><span>  CommonHeader;
+</span></span><span style="display:flex;"><span>  lu_byte status;<span style="color:#75715e">//当前状态机的状态,LUA_YIELD和LUA_OK为lua_State状态机的状态,这两个状态和协程有这对应关系,详见auxstatus函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  lu_byte allowhook;<span style="color:#75715e">//是否允许hook
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">short</span> nci;  <span style="color:#75715e">/* number of items in &#39;ci&#39; list */</span><span style="color:#75715e">//ci列表中的条目数，存储一共多少个CallInfo
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  StkId top;  <span style="color:#75715e">/* first free slot in the stack */</span><span style="color:#75715e">//指向栈的顶部，压入数据，都通过移动栈顶指针来实现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  global_State <span style="color:#f92672">*</span>l_G;<span style="color:#75715e">//全局状态机，维护全局字符串表、内存管理函数、gc等信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  CallInfo <span style="color:#f92672">*</span>ci;  <span style="color:#75715e">/* call info for current function */</span><span style="color:#75715e">//当前运行函数信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  StkId stack_last;  <span style="color:#75715e">/* end of stack (last element + 1) */</span><span style="color:#75715e">//执行lua stack最后一个空闲的slot
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  StkId stack;  <span style="color:#75715e">/* stack base */</span><span style="color:#75715e">//stack基地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  UpVal <span style="color:#f92672">*</span>openupval;  <span style="color:#75715e">/* list of open upvalues in this stack */</span><span style="color:#75715e">// upvalues open状态时候的的链表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  StkId tbclist;  <span style="color:#75715e">/* list of to-be-closed variables */</span><span style="color:#75715e">//此堆栈中所有活动的将要关闭的变量的列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  GCObject <span style="color:#f92672">*</span>gclist;<span style="color:#75715e">//GC列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> lua_State <span style="color:#f92672">*</span>twups;  <span style="color:#75715e">/* list of threads with open upvalues */</span><span style="color:#75715e">//twups 链表  所有带有 open upvalue 的 thread 都会放到这个链表中，这样提供了一个方便的遍历 thread 的途径，并且排除掉了没有 open upvalue 的 thread
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> lua_longjmp <span style="color:#f92672">*</span>errorJmp;  <span style="color:#75715e">/* current error recover point */</span><span style="color:#75715e">//发生错误的长跳转位置，用于记录当函数发生错误时跳转出去的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  CallInfo base_ci;  <span style="color:#75715e">/* CallInfo for first level (C calling Lua) */</span><span style="color:#75715e">//指向函数调用栈的栈底
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">volatile</span> lua_Hook hook;<span style="color:#75715e">//用户注册的hook回调函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">ptrdiff_t</span> errfunc;  <span style="color:#75715e">/* current error handling function (stack index) */</span><span style="color:#75715e">//发生错误的回调函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  l_uint32 nCcalls;  <span style="color:#75715e">/* number of nested (non-yieldable | C)  calls */</span><span style="color:#75715e">// 当前C函数的调用的深度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> oldpc;  <span style="color:#75715e">/* last pc traced */</span><span style="color:#75715e">//最后一次执行的指令的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> basehookcount;<span style="color:#75715e">//用户设置的执行指令数（在hookmask=LUA_MASK_COUNT生效）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> hookcount;<span style="color:#75715e">//运行时，跑了多少条指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">volatile</span> l_signalT hookmask;<span style="color:#75715e">//支持那些hook能力
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>详细解释,会在单独出一篇文章</p>
+<h2 id="值对象结构">值对象结构<a hidden class="anchor" aria-hidden="true" href="#值对象结构">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/// @brief 实际存储的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// GCObject和其他不需要进行进行GC的数据放在一个联合体里面构成了Value类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// lua5.3以后 number类型就有了两个类型float和int 也就是下面的 lua_Number n和 lua_Integer i
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">union</span> Value {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> GCObject <span style="color:#f92672">*</span>gc;    <span style="color:#75715e">/* collectable objects */</span><span style="color:#75715e">// 可回收的对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">/*下面都是不可回收类型*/</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>p;         <span style="color:#75715e">/* light userdata */</span><span style="color:#75715e">//轻量级userdata
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  lua_CFunction f; <span style="color:#75715e">/* light C functions */</span><span style="color:#75715e">//函数指针 例如（typedef int (*lua_CFunction)(lua_State *L)）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  lua_Integer i;   <span style="color:#75715e">/* integer numbers */</span><span style="color:#75715e">//整型  c中的longlong，占用8个字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  lua_Number n;    <span style="color:#75715e">/* float numbers */</span><span style="color:#75715e">//浮点类型 c中的double，占用8个字节 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} Value;
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th><strong>变量</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GCObject gc</strong></td>
+<td>用于垃圾回收 主要是为了连接垃圾回收对象的互相引用关系</td>
+</tr>
+<tr>
+<td><strong>void *p</strong></td>
+<td>为c中传入的指针，由c 分配和释放 <code>light userdata</code></td>
+</tr>
+<tr>
+<td><strong>lua_CFunction f</strong></td>
+<td>表示C导出给lua的函数指针，<code>typedef int (*lua_CFunction) (lua_State *L)</code></td>
+</tr>
+<tr>
+<td><strong>lua_Integer i</strong></td>
+<td>表示整数类型，<code>typedef long long lua_Integer</code></td>
+</tr>
+<tr>
+<td><strong>lua_Number n</strong></td>
+<td>表示双精度浮点类型，<code>typedef double lua_Number</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="非gc对象">非GC对象<a hidden class="anchor" aria-hidden="true" href="#非gc对象">#</a></h3>
+<p>从上面可以看到<code>非GC的对象</code>有<code>4</code>中</p>
+<ul>
+<li><code>light userdata</code></li>
+<li><code>C</code>函数</li>
+<li>整型</li>
+<li>浮点型</li>
+<li><del><strong><font color='red'>int b</font></strong></del>(<code>lua 5.4</code>数字分为整数和浮点，而i正好也可以用作<code>bool</code>,所以把这个给**<font color='red'>删除</font>**,和<code> lua_Integer i</code> 结合到一起了)</li>
+</ul>
+<h3 id="gc对象">GC对象<a hidden class="anchor" aria-hidden="true" href="#gc对象">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">union</span> GCUnion {
+</span></span><span style="display:flex;"><span>  GCObject gc;  <span style="color:#75715e">/* common header */</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> TString ts;<span style="color:#75715e">//字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> Udata u;<span style="color:#75715e">//用户数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">union</span> Closure cl;<span style="color:#75715e">//闭包
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> Table h;<span style="color:#75715e">//表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> Proto p;<span style="color:#75715e">//函数原型:存放函数字节码信息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> lua_State th;  <span style="color:#75715e">/* thread */</span><span style="color:#75715e">//线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">struct</span> UpVal upv;<span style="color:#75715e">//上值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>从上面的<code>union</code>结构体可以看到<code>GC对象</code>有<code>6</code>中</p>
+<ul>
+<li>字符串</li>
+<li><code>userdata</code></li>
+<li><code>closure</code> 闭包</li>
+<li><code>table</code></li>
+<li><code>lua</code> 函数原型</li>
+<li><code>lua</code> 线程 (其实就是协程)</li>
+<li><code>lua</code>上值</li>
+</ul>
+<h3 id="commonheader类型">CommonHeader类型<a hidden class="anchor" aria-hidden="true" href="#commonheader类型">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define CommonHeader	struct GCObject *next; lu_byte tt; lu_byte marked
+</span></span></span></code></pre></div><ul>
+<li><code>next</code> 指针 指向下一个<code>GC</code>对象</li>
+<li><code>tt</code> <code>GC</code>对象的实际类型(比如上面<code>6</code>中<code>GC</code>对象)</li>
+<li><code>marked</code> 标识<code>GC</code>的状态</li>
+</ul>
+<h3 id="tvaluefields-类型">TValuefields 类型<a hidden class="anchor" aria-hidden="true" href="#tvaluefields-类型">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define TValuefields    Value value_; int tt_
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Value<span style="color:#960050;background-color:#1e0010">：存储具体数据的值</span>
+</span></span><span style="display:flex;"><span>tt_<span style="color:#960050;background-color:#1e0010">：表示这个值的类型，即所有的基础数据类型</span>
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230123181051049.png" alt="image-20230123181051049"  />
+</p>
+
+
+        </div>
+        <div class="post-reward">
+            <div style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; font-size:16px; text-align: center;">
+                <div id="QR" style="opacity: 0;">
+                    <div id="wechat" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="wechat_qr" src="https://frog-game.github.io/img/wechat_pay.png" alt="wechat_pay"></a>
+                        <p>微信</p>
+                    </div>
+                    <div id="alipay" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="alipay_qr" src="https://frog-game.github.io/img/alipay_pay.png" alt="alipay"></a>
+                        <p>支付宝</p>
+                    </div>
+                </div>
+                <button id="rewardButton"
+                        onclick="
+                    var qr = document.getElementById('QR');
+                    if (qr.style.opacity === '0') {
+                        qr.style.opacity='1';
+                    } else {
+                        qr.style.opacity='0'
+                    }"
+                >
+                    <span>🧧 鼓励</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="prev" href="https://frog-game.github.io/posts/read/wangluozongjie/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>网络底层总结</span>
+  </a>
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>[Lua5.4.4源码]结构分析</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+
+
+
+<div>
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">💬评论</span>
+        <hr />
+    </div>
+
+    <div id="tcomment"></div>
+
+    <script src="https://cdn.staticfile.org/twikoo/1.6.7/twikoo.all.min.js">
+    </script>
+    
+
+    
+
+    <script>
+        twikoo.init({
+            envId: "https://www.frog-game.work/", 
+            el: "#tcomment",
+            lang: 'zh-CN',
+            region: "ap-beijing",
+            path: window.TWIKOO_MAGIC_PATH||window.location.pathname,
+            
+            
+            
+            
+            
+            
+            
+        });
+    </script>
+
+</div>
+</article>
+</main>
+
+
+<script async src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2020-2023 
+        <a href="https://frog-game.github.io/" style="color:#939393;">frog&#39;s Blog</a>
+         All Rights Reserved
+    </span>
+
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;">备案号</a>&nbsp;
+
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="https://frog-game.github.io/img/beian.png" style="float:left;margin: 0px 5px 0px 0px;"/>
+            公网安备
+        </a>
+    </span>
+
+    <span id="busuanzi_container">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        总访客数: <span id="busuanzi_value_site_uv"></span>
+        总访问量: <span id="busuanzi_value_site_pv"></span>
+    </span>
+    
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {
+            }
+            ;
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
