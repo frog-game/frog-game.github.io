@@ -11,7 +11,7 @@
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/tech/vscode-chajian-zhidao/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.8b1bcfe952e1e1a78b44fa99f358fddf187aee65873bbc85ca10d6f18a3bff33.css" integrity="sha256-ixvP6VLh4aeLRPqZ81j93xh67mWHO7yFyhDW8Yo7/zM=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.f89395a5b9ff191f350adc4510e58a924c33f1d4920eabc9056758ad24f08435.css" integrity="sha256-&#43;JOVpbn/GR81CtxFEOWKkkwz8dSSDqvJBWdYrSTwhDU=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -364,7 +364,7 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="在service_snluac-中增加此函数">在service_snlua.c 中增加此函数<a hidden class="anchor" aria-hidden="true" href="#在service_snluac-中增加此函数">#</a></h2>
+        <div class="post-content"><h2 id="在service_snluac-中增加此函数"><span>在service_snlua.c 中增加此函数</span></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addLuaState</span>(<span style="color:#66d9ef">struct</span> snlua <span style="color:#f92672">*</span>l,<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>debug_ip,<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> debug_port)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> debug_ip)
@@ -423,7 +423,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="将addluastate函数插入到service_snluac对应位置">将addLuaState函数插入到service_snlua.c对应位置<a hidden class="anchor" aria-hidden="true" href="#将addluastate函数插入到service_snluac对应位置">#</a></h2>
+</span></span></code></pre></div><h2 id="将addluastate函数插入到service_snluac对应位置"><span>将addLuaState函数插入到service_snlua.c对应位置</span></h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">init_cb</span>(<span style="color:#66d9ef">struct</span> snlua <span style="color:#f92672">*</span>l, <span style="color:#66d9ef">struct</span> skynet_context <span style="color:#f92672">*</span>ctx, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> args, <span style="color:#66d9ef">size_t</span> sz) {
 </span></span><span style="display:flex;"><span>	lua_State <span style="color:#f92672">*</span>L <span style="color:#f92672">=</span> l<span style="color:#f92672">-&gt;</span>L;
@@ -497,28 +497,28 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="去vscode插件商场下载此插件并安装">去vscode插件商场下载此插件并安装<a hidden class="anchor" aria-hidden="true" href="#去vscode插件商场下载此插件并安装">#</a></h2>
+</span></span></code></pre></div><h2 id="去vscode插件商场下载此插件并安装"><span>去vscode插件商场下载此插件并安装</span></h2>
 <p><img loading="lazy" src="image-20221105210016638.png" alt="image-20221105210016638"  />
 </p>
-<h2 id="远程调试">远程调试<a hidden class="anchor" aria-hidden="true" href="#远程调试">#</a></h2>
-<h3 id="用everthing-找到-frog_debugso">用everthing 找到 frog_debug.so<a hidden class="anchor" aria-hidden="true" href="#用everthing-找到-frog_debugso">#</a></h3>
+<h2 id="远程调试"><span>远程调试</span></h2>
+<h3 id="用everthing-找到-frog_debugso"><span>用everthing 找到 frog_debug.so</span></h3>
 <p><img loading="lazy" src="image-20221105210227124.png" alt="image-20221105210227124"  />
 </p>
-<h3 id="然后放到luaclib目录下上传到服务器">然后放到luaclib目录下上传到服务器<a hidden class="anchor" aria-hidden="true" href="#然后放到luaclib目录下上传到服务器">#</a></h3>
+<h3 id="然后放到luaclib目录下上传到服务器"><span>然后放到luaclib目录下上传到服务器</span></h3>
 <p><img loading="lazy" src="image-20221104185615852.png" alt="image-20221104185615852"  />
 </p>
-<h3 id="在config里面加上两个字段">在config里面加上两个字段<a hidden class="anchor" aria-hidden="true" href="#在config里面加上两个字段">#</a></h3>
+<h3 id="在config里面加上两个字段"><span>在config里面加上两个字段</span></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>debug_ip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>
 </span></span><span style="display:flex;"><span>debug_port <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;9966&#34;</span>
 </span></span></code></pre></div><p><img loading="lazy" src="image-20221105012732137.png" alt="image-20221105012732137"  />
 </p>
-<h3 id="重编skynet代码">重编skynet代码<a hidden class="anchor" aria-hidden="true" href="#重编skynet代码">#</a></h3>
+<h3 id="重编skynet代码"><span>重编skynet代码</span></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cd skynet
 </span></span><span style="display:flex;"><span>make linux MALLOC_STATICLIB<span style="color:#f92672">=</span> SKYNET_DEFINES<span style="color:#f92672">=</span>-DNOUSE_JEMALLOC 
-</span></span></code></pre></div><h3 id="在vscode上按如下填写">在vscode上按如下填写<a hidden class="anchor" aria-hidden="true" href="#在vscode上按如下填写">#</a></h3>
+</span></span></code></pre></div><h3 id="在vscode上按如下填写"><span>在vscode上按如下填写</span></h3>
 <p><img loading="lazy" src="image-20221111223442496.png" alt="image-20221111223442496"  />
 </p>
-<h3 id="创建launchjson文件">创建launch.json文件<a hidden class="anchor" aria-hidden="true" href="#创建launchjson文件">#</a></h3>
+<h3 id="创建launchjson文件"><span>创建launch.json文件</span></h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用 IntelliSense 了解相关属性。 
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 悬停以查看现有属性的描述。
@@ -542,17 +542,17 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h3 id="我用的是wsl2直接到你的skynet目录下启动">我用的是wsl2,直接到你的skynet目录下启动<a hidden class="anchor" aria-hidden="true" href="#我用的是wsl2直接到你的skynet目录下启动">#</a></h3>
+</span></span></code></pre></div><h3 id="我用的是wsl2直接到你的skynet目录下启动"><span>我用的是wsl2,直接到你的skynet目录下启动</span></h3>
 <p><img loading="lazy" src="image-20221105210323903.png" alt="image-20221105210323903"  />
 </p>
-<h3 id="如果嫌弃麻烦可以在github直接下载example">如果嫌弃麻烦,可以在github直接下载example<a hidden class="anchor" aria-hidden="true" href="#如果嫌弃麻烦可以在github直接下载example">#</a></h3>
+<h3 id="如果嫌弃麻烦可以在github直接下载example"><span>如果嫌弃麻烦,可以在github直接下载example</span></h3>
 <p>example地址:https://github.com/frog-game/skynet-blueprint-debug.git</p>
 <p>然后按 6到8步骤执行就可以进行调试了</p>
-<h3 id="利用nc命令调试skynet-debug_console演示">利用nc命令调试skynet debug_console演示<a hidden class="anchor" aria-hidden="true" href="#利用nc命令调试skynet-debug_console演示">#</a></h3>
+<h3 id="利用nc命令调试skynet-debug_console演示"><span>利用nc命令调试skynet debug_console演示</span></h3>
 <iframe src="//player.bilibili.com/player.html?aid=262296240&bvid=BV1Ve411F7QX&cid=882497141&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-<h3 id="调试展示">调试展示<a hidden class="anchor" aria-hidden="true" href="#调试展示">#</a></h3>
+<h3 id="调试展示"><span>调试展示</span></h3>
 <iframe src="//player.bilibili.com/player.html?aid=432314430&bvid=BV1XG411c7hN&cid=881607941&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-<h2 id="启动进程调试方法">启动进程调试方法<a hidden class="anchor" aria-hidden="true" href="#启动进程调试方法">#</a></h2>
+<h2 id="启动进程调试方法"><span>启动进程调试方法</span></h2>
 <iframe src="//player.bilibili.com/player.html?aid=605116858&bvid=BV1h84y1y7qx&cid=888595685&page=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
 
 

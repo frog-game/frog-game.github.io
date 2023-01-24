@@ -11,7 +11,7 @@
 <meta name="author" content="
 作者:&nbsp;frog">
 <link rel="canonical" href="https://frog-game.github.io/posts/blog/zhentongbu/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.8b1bcfe952e1e1a78b44fa99f358fddf187aee65873bbc85ca10d6f18a3bff33.css" integrity="sha256-ixvP6VLh4aeLRPqZ81j93xh67mWHO7yFyhDW8Yo7/zM=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.f89395a5b9ff191f350adc4510e58a924c33f1d4920eabc9056758ad24f08435.css" integrity="sha256-&#43;JOVpbn/GR81CtxFEOWKkkwz8dSSDqvJBWdYrSTwhDU=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://frog-game.github.io/img/Q.gif">
@@ -378,7 +378,7 @@ var _hmt = _hmt || [];
     }
 </script>
         
-        <div class="post-content"><h2 id="为啥选择帧同步">为啥选择帧同步<a hidden class="anchor" aria-hidden="true" href="#为啥选择帧同步">#</a></h2>
+        <div class="post-content"><h2 id="为啥选择帧同步"><span>为啥选择帧同步</span></h2>
 <p>和写单机游戏类似，客服端收集自己的指令操作发送到服务器，服务器进行收集广播给所有的玩家，客服端本地通过收到的包来推进游戏进度</p>
 <p>服务器：每隔一段时间收集客服端的操作，发给客服端，然后继续采集下一次的操作，在发给客服端</p>
 <p>客服端：收到服务器的广播下来的操作&mdash;-&gt;计算逻辑&mdash;&gt;采集自己操作上报服务器</p>
@@ -392,7 +392,7 @@ var _hmt = _hmt || [];
 <p>算下带宽是多少，承受的了吗</p>
 <p>假设5000个人，按一个房间10人，那么就得500个房间</p>
 <p>假设**<font color='red'>1</font><strong>秒的数据， 一帧我们每人</strong><font color='red'>16</font><strong>个字节的指令数据，那么</strong><font color='red'>16 * 10 * 15 * 500</font>** &mdash;&gt;<strong><font color='red'>1,200,000Byte</font></strong>  &ndash;&gt; <strong><font color='red'>1172KB</font></strong> &mdash;&gt; **<font color='red'>1MB</font>**带宽，对于现在的服务器完全是可以承受的</p>
-<h2 id="选用udp还是tcp">选用udp还是tcp<a hidden class="anchor" aria-hidden="true" href="#选用udp还是tcp">#</a></h2>
+<h2 id="选用udp还是tcp"><span>选用udp还是tcp</span></h2>
 <p>tcp ：准确 丢包重传</p>
 <p>通常tcp也能做到做帧同步，但是很难因对网络波动，因为假如tcp有条链路发送了一个1号包过去，这个时候因为网络波动这个链路网速下降，这个时候可能会触发重传，在发送2号包过来的时候，就可能会卡主2号包，从而导致客服端收不到包数据</p>
 <p><img loading="lazy" src="Typoraimage-20220220233319776.png" alt="Typoraimage-20220220233319776"  />
@@ -422,7 +422,7 @@ var _hmt = _hmt || [];
 </ol>
 <p><strong>区别</strong></p>
 <p>但是这两种方式，区别是巨大的。可靠传输的UDP，在帧同步中，个人认为是不合适的，因为他为了保证包的顺序和处理丢包重传等，在网络不佳的情况下，delay很大，将导致收发包处理都会变成类似tcp的效果，只是比TCP会好一些。必须要用冗余信息的UDP的方式，才能获得好的效果。并且实现并不复杂，只要和服务器商议好确认帧和如何重传即可，自己实现，有很大的优化空间</p>
-<h2 id="帧同步运行前提">帧同步运行前提<a hidden class="anchor" aria-hidden="true" href="#帧同步运行前提">#</a></h2>
+<h2 id="帧同步运行前提"><span>帧同步运行前提</span></h2>
 <ol>
 <li>
 <p>输入一致性</p>
@@ -486,7 +486,7 @@ var _hmt = _hmt || [];
 </blockquote>
 </li>
 </ol>
-<h2 id="战斗流畅保证方法">战斗流畅保证方法<a hidden class="anchor" aria-hidden="true" href="#战斗流畅保证方法">#</a></h2>
+<h2 id="战斗流畅保证方法"><span>战斗流畅保证方法</span></h2>
 <ol>
 <li>
 <p>逻辑帧保证在<code>15-18</code>帧上下</p>
@@ -497,7 +497,7 @@ var _hmt = _hmt || [];
 <p>常见的客户端预测，客户端插值，服务器延迟补偿方法保证客户端画面流畅</p>
 </li>
 </ol>
-<h2 id="帧同步流程">帧同步流程<a hidden class="anchor" aria-hidden="true" href="#帧同步流程">#</a></h2>
+<h2 id="帧同步流程"><span>帧同步流程</span></h2>
 <p><img loading="lazy" src="image-20221015152041408.png" alt="image-20221015152041408"  />
 </p>
 <p><strong><font color='red'>服务器:</font></strong></p>
@@ -612,10 +612,10 @@ var _hmt = _hmt || [];
 <p>保存玩家的操作，等待下一帧的触发，goto到逻辑4</p>
 </li>
 </ol>
-<h2 id="如何克服udp的时序和丢包问题">如何克服udp的时序和丢包问题<a hidden class="anchor" aria-hidden="true" href="#如何克服udp的时序和丢包问题">#</a></h2>
+<h2 id="如何克服udp的时序和丢包问题"><span>如何克服udp的时序和丢包问题</span></h2>
 <p>客服端: 丢包, 晚到，服务器会补发丢掉的帧</p>
 <p>服务器: 丢包, 没有太多的影响， 下一帧马上就可以处理</p>
-<h2 id="防外挂">防外挂<a hidden class="anchor" aria-hidden="true" href="#防外挂">#</a></h2>
+<h2 id="防外挂"><span>防外挂</span></h2>
 <ol>
 <li>
 <p>视野外挂</p>
@@ -644,7 +644,7 @@ var _hmt = _hmt || [];
 <p>因此对于帧同步，反外挂相对是一件比较容易的事情。游戏过程中，玩家作弊只会影响到自己，不会影响到他人。游戏结算时，当服务器检测到玩家之间游戏结果不一致时，通过验证服务器，对游戏录像进行验证计算，很容易就能发现是哪个玩家发生了作弊。</p>
 </li>
 </ol>
-<h2 id="怎么优化卡顿的问题">怎么优化卡顿的问题<a hidden class="anchor" aria-hidden="true" href="#怎么优化卡顿的问题">#</a></h2>
+<h2 id="怎么优化卡顿的问题"><span>怎么优化卡顿的问题</span></h2>
 <ol>
 <li>
 <p><code>buffer</code>缓存</p>
@@ -667,7 +667,7 @@ var _hmt = _hmt || [];
 <p>最近用ET框架遇到的问题 NLOG没有开启异步日志模式导致的周期性卡顿</p>
 </li>
 </ol>
-<h2 id="逻辑帧率是否越高越好">逻辑帧率是否越高越好<a hidden class="anchor" aria-hidden="true" href="#逻辑帧率是否越高越好">#</a></h2>
+<h2 id="逻辑帧率是否越高越好"><span>逻辑帧率是否越高越好</span></h2>
 <p>并非如此，建议15帧/秒。</p>
 <p>逻辑帧率增加带来的影响如下：</p>
 <ol>
@@ -675,8 +675,8 @@ var _hmt = _hmt || [];
 <li>网络流量消耗越多</li>
 <li>对服务器CPU和带宽压力增大</li>
 </ol>
-<h2 id="利用预测回滚客服端插值对抗高延迟">利用预测回滚,客服端插值，对抗高延迟<a hidden class="anchor" aria-hidden="true" href="#利用预测回滚客服端插值对抗高延迟">#</a></h2>
-<h3 id="预测">预测<a hidden class="anchor" aria-hidden="true" href="#预测">#</a></h3>
+<h2 id="利用预测回滚客服端插值对抗高延迟"><span>利用预测回滚,客服端插值，对抗高延迟</span></h2>
+<h3 id="预测"><span>预测</span></h3>
 <p><strong>预测就是将玩家的输入立即应用到本地状态，而无需等待服务端返回。</strong></p>
 <p>如果玩家的每一次操作如果都要等到服务端确认后才能生效，那么延迟将是不可避免的。解决方案就是：玩家做出任何操作后，立刻将输入应用到本地状态，并刷新表现层显示。例如按下了 “右”，那么就立即向右移动，而无需等待服务端返回，效果如图。</p>
 <p><img loading="lazy" src="640-166744442912126.gif" alt="图片"  />
@@ -692,14 +692,14 @@ var _hmt = _hmt || [];
 </ol>
 <p>由于延迟的存在，服务端的同步总是滞后的，所以你总是被拉回之前的位置。如此往复，就是你在图中看到的抖动和拉扯。</p>
 <p>归根到底，是服务端同步过来的状态与本地预测的状态不一致，所以我们需要 “和解” 它们。</p>
-<h3 id="和解">和解<a hidden class="anchor" aria-hidden="true" href="#和解">#</a></h3>
+<h3 id="和解"><span>和解</span></h3>
 <p><strong>和解</strong>就是一个公式：<code>预测状态 =权威状态 + 预测输入</code></p>
 <p>重要</p>
 <p>和解的概念最难理解，但也是实现无延迟感体验最重要的一步。你可以先简单记住上面的公式，应用到项目中试试看。</p>
-<h4 id="权威和预测">权威和预测<a hidden class="anchor" aria-hidden="true" href="#权威和预测">#</a></h4>
+<h4 id="权威和预测"><span>权威和预测</span></h4>
 <p>一般我们认为服务器总是权威的，从服务端接收到的输入称为 <strong>权威输入</strong>，经权威输入计算出来的状态称为 <strong>权威状态</strong>。同样的，当我们发出一个输入，但尚未得到服务端的返回确认时，这个输入称为非权威输入，也叫 <strong>预测输入</strong>。</p>
 <p>在网络畅通的情况下，预测输入迟早会按发送顺序变成权威输入。我们需要知道发出去的输入，哪些已经变成了权威输入，哪些还是预测输入。在可靠的传输协议下（例如 WebSocket）你无需关注丢包和包序问题，所以只需简单地对比消息序号即可做到。</p>
-<h4 id="和解过程">和解过程<a hidden class="anchor" aria-hidden="true" href="#和解过程">#</a></h4>
+<h4 id="和解过程"><span>和解过程</span></h4>
 <p>在前述预测的基础上，和解就是我们处理服务端同步的状态的方式。如果使用的是状态同步，那么这个过程是：</p>
 <ol>
 <li>收到服务端同步来的 <strong>权威状态</strong></li>
@@ -714,7 +714,7 @@ var _hmt = _hmt || [];
 <li>在权威状态的基础上，应用当前所有 <strong>预测输入</strong></li>
 </ol>
 <p>由此可见，状态同步和帧同步只是网络传输的内容不同，但它们是完全可以相互替代的 —— 最终目的都是为了同步权威状态。</p>
-<h4 id="例子">例子<a hidden class="anchor" aria-hidden="true" href="#例子">#</a></h4>
+<h4 id="例子"><span>例子</span></h4>
 <p>这有用吗？我们回看一下上面预测的例子，有了和解之后，会变成怎样：</p>
 <ol>
 <li>
@@ -757,7 +757,7 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="640-166744443569928.gif" alt="图片"  />
 </p>
 <p>预测 + 和解处理本地输入是非常通用的方式。你会发现，在没有冲突时，网络延迟可以完全不影响操作延迟，就跟单机游戏一样！例如上面移动的例子，如果不发生冲突（例如与它人碰撞），即便网络延迟有 10 秒，你也可以毫无延迟并且平滑的移动。这就是在有延迟的情况下，还能实现无延迟体验的魔术。</p>
-<h3 id="冲突">冲突<a hidden class="anchor" aria-hidden="true" href="#冲突">#</a></h3>
+<h3 id="冲突"><span>冲突</span></h3>
 <p>那么冲突的情况会怎样呢？比如上面的例子，你发送了 4 次移动指令，但在服务端，第 2 次移动指令之后，服务端插入了一个新输入 —— “你被人一板砖拍晕了”。这意味着，你的后两次右移指令将不会生效（因为你晕了）。那么该过程会变成这样：</p>
 <ol>
 <li>
@@ -807,7 +807,7 @@ var _hmt = _hmt || [];
 </li>
 </ol>
 <p>此时，之前的预测状态 <code>(4,0)</code> 与最新的预测状态 <code>(2,0)</code> 发生了冲突，客户端当然是以最新状态为主，所以你的位置被拉回了 <code>(2,0)</code> 并表现为晕眩。这就是网络延迟的代价 —— 冲突概率。</p>
-<h3 id="插值">插值<a hidden class="anchor" aria-hidden="true" href="#插值">#</a></h3>
+<h3 id="插值"><span>插值</span></h3>
 <p><strong>插值指在表现层更新 “其它人” 的状态变化时使用插值动画去平滑过渡。</strong></p>
 <p>到目前为止，我们已经获得了自己在本地无延迟的丝滑体验。但在其它玩家的眼中，我们依旧是卡顿的。这是由于同步帧率和显示帧率不一致导致的，所以我们在更新其它人的状态时，并非一步到位的更新，而是通过插值动画来平滑过渡。</p>
 <p>预测+和解是解决 <strong>自己</strong> 的问题，发生在 <strong>逻辑层</strong>；插值是解决 <strong>其它人</strong> 的问题，发生在 <strong>表现层</strong> 。</p>
@@ -815,7 +815,7 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="640-166744443919930.gif" alt="图片"  />
 </p>
 <p>解决快节奏有冲突的同步，就是 <strong>预测、和解、插值</strong> 这 3 个核心思想，掌握了它们你应该就能举一反三，轻松应对各种场景。</p>
-<h2 id="延迟不影响操作">延迟不影响操作<a hidden class="anchor" aria-hidden="true" href="#延迟不影响操作">#</a></h2>
+<h2 id="延迟不影响操作"><span>延迟不影响操作</span></h2>
 <p>从上面的几个例子中，我们可以得出几个重要的结论：</p>
 <ul>
 <li>在无冲突时，网络延迟并 <strong>不会</strong> 影响操作延迟，预测+和解能实现本地 <strong>零延迟</strong> 的操作体验</li>
@@ -824,7 +824,7 @@ var _hmt = _hmt || [];
 </ul>
 <p>当使用了预测 + 和解之后，我们之前认为的 “网络延迟越大操作延迟越大”，就变成了一个 <strong>误解</strong> 。</p>
 <p>即便是一个 MOBA 游戏，你在打野，另外一名玩家在刷兵线 —— 你们之间不存在 “冲突” 的可能性。此时即便网络有很大延迟，你们各自的游戏体验也应该都是单机游戏般 <strong>零延迟</strong> 的！只有当你们在打团战时，才可能出现因为网络延迟导致技能判定等冲突；也只有当冲突出现时，你们才能直观感受到延迟的存在。</p>
-<h2 id="延迟越小越好吗">延迟越小越好吗<a hidden class="anchor" aria-hidden="true" href="#延迟越小越好吗">#</a></h2>
+<h2 id="延迟越小越好吗"><span>延迟越小越好吗</span></h2>
 <p>服务端可以在收到客户端输入后立即广播出去，也可以通过 LockStep 的方式固定同步频率。除了网络之外，同步频率也会影响延迟。比如服务端逻辑帧率每秒同步 10 次，那么意味着即便局域网内也可能出现 100ms 的延迟。</p>
 <p>但网络延迟真的越低越好吗？其实，<strong>延迟小也有一个副作用</strong>：插值不平滑。</p>
 <p>假设你用 1 秒时间从 A 点匀速移动到 B 点，如果同步频率恰好是每秒 1 次，那么通过插值，其它玩家看到的应该是一个完全匀速的移动过程。但如果同步频率是每秒 60 次呢？理论上每 16ms 你就会收到一个新状态，然后每 16ms 就要更新一次插值动画。但就跟延迟一样，<strong>网络抖动也是客观存在的</strong> 。你大概率不是均匀的每 16ms 收到一次消息，而是很可能时而 200ms 才收到一条消息，时而 20ms 内就收到 N 条消息。如此，其它玩家看到的移动过程将是忽快忽慢的，这种不平滑的动画会带来直观的卡顿感。</p>
@@ -834,7 +834,7 @@ var _hmt = _hmt || [];
 <li><strong>延迟小</strong> ：插值不平滑，冲突概率更小</li>
 </ul>
 <p>延迟和同步频率在多少是最好的呢？这个没有标准答案，应该根据实际玩法需要权衡利弊后决定。</p>
-<h2 id="有延迟下的判定">有延迟下的判定<a hidden class="anchor" aria-hidden="true" href="#有延迟下的判定">#</a></h2>
+<h2 id="有延迟下的判定"><span>有延迟下的判定</span></h2>
 <p>在有延迟的情况下，技能命中的判定，该听谁的呢？来看一个简单的例子。</p>
 <p>场景举例</p>
 <p>在一片空地上，你拿起狙击枪瞄准一个正在移动的敌人头部。点下鼠标，一发弹道闪过 —— 你很确定，命中了！然而，由于网络延迟的存在，你看到的敌人，实际上是 200ms 以前的位置。在服务端的视角看来，你开枪的时刻敌人已经走远 —— 你打空了。那么此时，应当如何判定呢？我们分别来看看。</p>
@@ -843,7 +843,7 @@ var _hmt = _hmt || [];
 <p>所以看起来听客户端的大家都开心，那么是不是这样就万无一失了呢？也存在例外。</p>
 <p>假如对面不是在空地上跑，而是躲进了一堵墙后面。此时他认为自己是安全的，但由于网络延迟，你这边依旧判定打中了他。此时在墙后的他仍然受到了伤害，他肯定很不爽，要么是网卡了要么是你开了穿墙挂。所以并没有 100% 完美的解决方案，权衡利弊后，如果你觉得出现这种情况的概率比较小可以接受，那么可以选择以客户端判定为准从而带来更好的游戏体验。</p>
 <p>你也可以在客户端发送输入时带上游戏时间，由服务端根据实际延迟来决定由谁判定。比如延迟在 200ms 以内时由客户端判定，否则由服务端判定。</p>
-<h2 id="断线重连">断线重连<a hidden class="anchor" aria-hidden="true" href="#断线重连">#</a></h2>
+<h2 id="断线重连"><span>断线重连</span></h2>
 <p>下面方法从低级到高级递增</p>
 <p>方法1:在玩家登录的时候把所有历史帧的数据发送给客户端，让客户去进行追帧</p>
 <p>方法2:客户端记录当前已经跑到了第几帧，把当前帧数据和状态值数据存入本地文档,并定时把文档数据MD5发送到服务器进行对比验证合法性,然后当断线重连的时候服务器把客户端的已经执行到的最新帧数发送到服务器进行请求,也就是只请求（客服端断线是最新帧,服务器现在跑到的帧数）发送给客户端进行追帧,极端情况下玩家在玩的途中，换新手机这个时候客户端已经没有本地存档了，那么我们就应该在服务器建立一个通过指令跑出断线客户端执行到了第几帧,如果能算出内存数据一下发给客户端最好,这也是方法3</p>
