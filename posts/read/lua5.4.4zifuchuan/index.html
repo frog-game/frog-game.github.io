@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[Lua5.4.4源码]字符串 | frog&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="lua源码字符串分析">
+<meta name="author" content="
+作者:&nbsp;frog">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8b75bf56d6fb0c429b5f3ce03bce19c9ef1e90cc024b64bd12ec321c68cca894.css" integrity="sha256-i3W/Vtb7DEKbXzzgO84Zye8ekMwCS2S9EuwyHGjMqJQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+        onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://frog-game.github.io/img/Q.gif">
+<link rel="apple-touch-icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="mask-icon" href="https://frog-game.github.io/img/Q.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="[Lua5.4.4源码]字符串" />
+<meta property="og:description" content="lua源码字符串分析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/image-20230124205100514.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-23T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2022-01-23T01:30:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/image-20230124205100514.png" />
+<meta name="twitter:title" content="[Lua5.4.4源码]字符串"/>
+<meta name="twitter:description" content="lua源码字符串分析"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://frog-game.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://frog-game.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "[Lua5.4.4源码]字符串",
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Lua5.4.4源码]字符串",
+  "name": "[Lua5.4.4源码]字符串",
+  "description": "lua源码字符串分析",
+  "keywords": [
+    ""
+  ],
+  "articleBody": "TString内存结构 TString 的内存结构分为公共头和内容,所以其实我们的字符串真正存储的地方是 contents 里面的，因为是C语言，所以其实还会在后面添一个'\\0'\n求大小 从TString的内存结构我们可以看出真正变化大小的因素是contents 里面的内容,所以我们可以这么求\noffsetof(TString, contents) 相对于TString开始到contents的字节偏移量,其实也就是公共头的字节大小 (l) 内容大小 + 1 是因为屁股后面要添加一个'\\0' 类型 从上图的宏定义来说,lua5.4通过40个字节的分界线将string分为了两种\nLUA_VSHRSTR 短字符串 小于等于40字节的 hash值是在创建时就计算出来的 LUA_VLNGSTR 长字符串 大于40字节的就是长字符串 真正需要它的hash值时，才会手动调用luaS_hashlongstr函数生成该值,lua内部现在只有在把长串作为table的key时，才会去计算它 缓存 为了提高查找命中率,lua作者还使用hashMap这种方式来提高命中率\n下图中N是数组行，M是数组列\ni的下标值通过unsigned int i = point2uint(str) % STRCACHE_N求得\nj的最大值固定就是下面的宏函数 STRCACHE_M 2\n创建 短字符串创建 短字符串的hash桶结构数据都会存储在这个地方\n让我们进入stringtable结构可以发现如下情况\nTString **hash:指向一个hash的数组，hash数组里面存着一堆hash*一维指针指向一个hash桶链表，当通过\n有冲突的时候,如果在hash桶链表中没找到短字符串数据,那么就通过\n创建一个短字符串插入到hash桶的后面\n总体图示方式\n通过这样的方式短字符串就能高效重复利用,而且相同的短字符串在内存中也只有一份,在查找,删除,比较的时候短字符串的时候只需要调用下面的宏比较指针地址相同不相同就行了\n长字符串创建 上面是TString的数据结构,也是长字符串在内存中的存储结构\n通过分析下面的luaS_createlngstrobj和createstrobj函数\n通过上面两张图上红线的分析\n我们可以得出结论在每一次创建长字符串的时候,并不会想短字符串一样有所谓的hash桶链表,来处理重复的使用的问题,也就是说如果是两个相同的长字符串,那么内存中就会有两份内存存在,这块地方需要注意. 长字符串的hash值也不是在创建的时候就生成了,只是随机的给了一个seed种子值,具体在哪里创建的可以看下面的章节 创建流程图 hash值 短字符hash值得计算 从这3部流程我们可以看到luaS_newlstr-\u003einternshrstr-\u003ecreatestrobj中间并没有阻拦,就在创建的时候就把hash值给创建出来了\n短字符串hash表的扩容和缩小 创建时候的扩容 从这里可以看出如果可以hash扩容,那么就原来2的倍数增长\n分代gc时候的收缩 短字符串的重新计算哈希 当短字符串hash表在进行收缩和扩容的时候会重新计算哈希\n长字符串hash处理 从上面代码1-\u003e2的步骤可以看出长字符串的hash值是在lua内部现在只有在把长串作为table的key时，才会去计算它\n比较 短字符串的比较 短字符串会放入字符串常量池中，因此短串在内存中总是只有一份，直接比较地址即可\n长字符串的比较 可以看到比较步骤如下\n先比较是不是同类型 是不是指向同一个对象(指针地址相等的话,那么就说明指向了同一个地址) 如果还不行,就在比较长度是否相等，如果长度相等,那么就利用字符串长度, 用memcmp比较内存内容是否相等 TString-\u003eextra作用 长字符串extra作用 从上图中我们看到长字符串在设置hash值得时候会把这个字段设置成1\n短字符串extra作用 可以看到这个llex.c文件中luaX_init()函数中在创建保留字的时候会吧这个字段设置成1,其实也从侧面来说保留字不可能会大于40个字节\n更详细的注释请去我的GitHub地址 以下是我几乎每行都加了注释的GitHub地址\nlstring.h注释地址\nlstring.h注释\nlstring.c注释地址\nlstring.c注释\n",
+  "wordCount" : "1625",
+  "inLanguage": "en",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/image-20230124205100514.png","datePublished": "2022-01-23T01:30:29+08:00",
+  "dateModified": "2022-01-23T01:30:29+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "frog"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "frog's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://frog-game.github.io/img/Q.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://frog-game.github.io/" accesskey="h" title="frog&#39;s Blog (Alt + H)">
+            <img src="https://frog-game.github.io/img/Q.gif" alt="logo" aria-label="logo"
+                 height="35">frog&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://frog-game.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/" title="🏠 主页">
+                <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/posts" title="📚 文章">
+                <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/tags" title="🧩 标签">
+                <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/archives/" title="⏱ 时间轴">
+                <span>⏱ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/about" title="🙋🏻‍♂️ 关于">
+                <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/links" title="🤝 友链">
+                <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/read/">📕 阅读</a></div>
+            <h1 class="post-title">
+                [Lua5.4.4源码]字符串
+            </h1>
+            <div class="post-description">
+                lua源码字符串分析
+            </div>
+            <div class="post-meta">创建:&nbsp;<span title='2022-01-23 01:30:29 +0800 CST'>2022-01-23</span>&nbsp;|&nbsp;更新:&nbsp;2022-01-23&nbsp;|&nbsp;字数:&nbsp;1625字&nbsp;|&nbsp;时长:&nbsp;4分钟&nbsp;|&nbsp;
+作者:&nbsp;frog
+
+
+
+                &nbsp;|&nbsp;标签: &nbsp;
+                <ul class="post-tags-meta">
+                    <a href="https://frog-game.github.io/tags/lua5.4.4%E6%BA%90%E7%A0%81/">Lua5.4.4源码</a>
+                </ul>
+
+                
+                <span id="busuanzi_container_page_pv">
+                &nbsp;| 访问: <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+</div>
+        </header> 
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/image-20230124205100514.png" alt="">
+        
+</figure>
+        <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#tstring%e5%86%85%e5%ad%98%e7%bb%93%e6%9e%84" aria-label="TString内存结构">TString内存结构</a></li>
+                <li>
+                    <a href="#%e6%b1%82%e5%a4%a7%e5%b0%8f" aria-label="求大小">求大小</a></li>
+                <li>
+                    <a href="#%e7%b1%bb%e5%9e%8b" aria-label="类型">类型</a><ul>
+                        
+                <li>
+                    <a href="#lua_vshrstr-%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="LUA_VSHRSTR 短字符串"><code>LUA_VSHRSTR</code> 短字符串</a></li>
+                <li>
+                    <a href="#lua_vlngstr-%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="LUA_VLNGSTR 长字符串"><code>LUA_VLNGSTR</code> 长字符串</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e7%bc%93%e5%ad%98" aria-label="缓存">缓存</a></li>
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%ba" aria-label="创建">创建</a><ul>
+                        
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%88%9b%e5%bb%ba" aria-label="短字符串创建">短字符串创建</a></li>
+                <li>
+                    <a href="#%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%88%9b%e5%bb%ba" aria-label="长字符串创建">长字符串创建</a></li>
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e6%b5%81%e7%a8%8b%e5%9b%be" aria-label="创建流程图">创建流程图</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hash%e5%80%bc" aria-label="hash值">hash值</a><ul>
+                        
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6hash%e5%80%bc%e5%be%97%e8%ae%a1%e7%ae%97" aria-label="短字符hash值得计算">短字符hash值得计算</a></li>
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2hash%e8%a1%a8%e7%9a%84%e6%89%a9%e5%ae%b9%e5%92%8c%e7%bc%a9%e5%b0%8f" aria-label="短字符串hash表的扩容和缩小">短字符串hash表的扩容和缩小</a><ul>
+                        
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e6%97%b6%e5%80%99%e7%9a%84%e6%89%a9%e5%ae%b9" aria-label="创建时候的扩容">创建时候的扩容</a></li>
+                <li>
+                    <a href="#%e5%88%86%e4%bb%a3gc%e6%97%b6%e5%80%99%e7%9a%84%e6%94%b6%e7%bc%a9" aria-label="分代gc时候的收缩">分代gc时候的收缩</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%9a%84%e9%87%8d%e6%96%b0%e8%ae%a1%e7%ae%97%e5%93%88%e5%b8%8c" aria-label="短字符串的重新计算哈希">短字符串的重新计算哈希</a></li>
+                <li>
+                    <a href="#%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2hash%e5%a4%84%e7%90%86" aria-label="长字符串hash处理">长字符串hash处理</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%af%94%e8%be%83" aria-label="比较">比较</a><ul>
+                        
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%9a%84%e6%af%94%e8%be%83" aria-label="短字符串的比较">短字符串的比较</a></li>
+                <li>
+                    <a href="#%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%9a%84%e6%af%94%e8%be%83" aria-label="长字符串的比较">长字符串的比较</a></li></ul>
+                </li>
+                <li>
+                    <a href="#tstring-extra%e4%bd%9c%e7%94%a8" aria-label="TString-&amp;gt;extra作用">TString-&gt;extra作用</a><ul>
+                        
+                <li>
+                    <a href="#%e9%95%bf%e5%ad%97%e7%ac%a6%e4%b8%b2extra%e4%bd%9c%e7%94%a8" aria-label="长字符串extra作用">长字符串extra作用</a></li>
+                <li>
+                    <a href="#%e7%9f%ad%e5%ad%97%e7%ac%a6%e4%b8%b2extra%e4%bd%9c%e7%94%a8" aria-label="短字符串extra作用">短字符串extra作用</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%9b%b4%e8%af%a6%e7%bb%86%e7%9a%84%e6%b3%a8%e9%87%8a%e8%af%b7%e5%8e%bb%e6%88%91%e7%9a%84github%e5%9c%b0%e5%9d%80" aria-label="更详细的注释请去我的GitHub地址">更详细的注释请去我的GitHub地址</a>
+                </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+            const id = encodeURI(element.getAttribute('id')).toLowerCase();
+            if (element === activeElement){
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+            } else {
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+            }
+        })
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        
+        <div class="post-content"><h2 id="tstring内存结构"><span>TString内存结构</span></h2>
+<p><img loading="lazy" src="image-20230124225544418.png" alt="image-20230124225544418"  />
+</p>
+<p><img loading="lazy" src="image-20230124225230080.png" alt="image-20230124225230080"  />
+</p>
+<p><code>TString </code>的内存结构分为<code>公共头</code>和<code>内容</code>,所以其实我们的字符串真正存储的地方是 <code>contents</code> 里面的，因为是<code>C</code>语言，所以其实还会在后面添一个<code>'\0'</code></p>
+<h2 id="求大小"><span>求大小</span></h2>
+<p>从<code>TString</code>的内存结构我们可以看出真正变化大小的因素是<code>contents</code> 里面的内容,所以我们可以这么求</p>
+<p><img loading="lazy" src="image-20230124225749713.png" alt="image-20230124225749713"  />
+</p>
+<ul>
+<li><code>offsetof(TString, contents)</code> 相对于<code>TString</code>开始到<code>contents</code>的字节偏移量,其实也就是公共头的字节大小</li>
+<li><code>(l)</code> 内容大小</li>
+<li><code>+ 1</code> 是因为屁股后面要添加一个<code>'\0'</code></li>
+</ul>
+<h2 id="类型"><span>类型</span></h2>
+<p><img loading="lazy" src="image-20230124200834319.png" alt="image-20230124200834319"  />
+</p>
+<p>从上图的宏定义来说,<code>lua5.4</code>通过<code>40</code>个字节的分界线将<code>string</code>分为了两种</p>
+<h3 id="lua_vshrstr-短字符串"><span><code>LUA_VSHRSTR</code> 短字符串</span></h3>
+<ul>
+<li>小于等于<code>40</code>字节的</li>
+<li><code>hash</code>值是在创建时就计算出来的</li>
+</ul>
+<h3 id="lua_vlngstr-长字符串"><span><code>LUA_VLNGSTR</code> 长字符串</span></h3>
+<ul>
+<li>大于<code>40</code>字节的就是长字符串</li>
+<li>真正需要它的<code>hash</code>值时，才会手动调用<code>luaS_hashlongstr</code>函数生成该值,<code>lua</code>内部现在只有在把长串作为<code>table</code>的<code>key</code>时，才会去计算它</li>
+</ul>
+<h2 id="缓存"><span>缓存</span></h2>
+<p>为了提高查找命中率,<code>lua</code>作者还使用<code>hashMap</code>这种方式来提高命中率</p>
+<p>下图中<code>N</code>是数组行，<code>M</code>是数组列</p>
+<p><code>i</code>的下标值通过<code>unsigned int i = point2uint(str) % STRCACHE_N</code>求得</p>
+<p><code>j</code>的最大值固定就是下面的宏函数 <code>STRCACHE_M 2</code></p>
+<p><img loading="lazy" src="Typoraimage-20220405133449863.png" alt="Typoraimage-20220405133449863"  />
+</p>
+<p><img loading="lazy" src="image-20230123163118382.png" alt="image-20230123163118382"  />
+</p>
+<h2 id="创建"><span>创建</span></h2>
+<h3 id="短字符串创建"><span>短字符串创建</span></h3>
+<p>短字符串的<code>hash</code>桶结构数据都会存储在这个地方</p>
+<p><img loading="lazy" src="image-20230124202039563.png" alt="image-20230124202039563"  />
+</p>
+<p>让我们进入<code>stringtable</code>结构可以发现如下情况</p>
+<p><img loading="lazy" src="image-20230124202625983.png" alt="image-20230124202625983"  />
+</p>
+<p><code>TString **hash</code>:指向一个<code>hash</code>的数组，<code>hash</code>数组里面存着一堆<code>hash*</code>一维指针指向一个<code>hash桶</code>链表，当通过</p>
+<p><img loading="lazy" src="image-20230124203545227.png" alt="image-20230124203545227"  />
+</p>
+<p>有冲突的时候,如果在<code>hash桶</code>链表中没找到短字符串数据,那么就通过</p>
+<p><img loading="lazy" src="image-20230124203828957.png" alt="image-20230124203828957"  />
+</p>
+<p>创建一个短字符串插入到<code>hash桶</code>的后面</p>
+<p><img loading="lazy" src="image-20230124203954019.png" alt="image-20230124203954019"  />
+</p>
+<p>总体图示方式</p>
+<p><img loading="lazy" src="image-20230124201858756.png" alt="image-20230124201858756"  />
+</p>
+<p>通过这样的方式短字符串就能高效重复利用,而且相同的短字符串在内存中也只有一份,在查找,删除,比较的时候短字符串的时候只需要调用下面的宏比较指针地址相同不相同就行了</p>
+<h3 id="长字符串创建"><span>长字符串创建</span></h3>
+<p><img loading="lazy" src="image-20230124205521868.png" alt="image-20230124205521868"  />
+</p>
+<p>上面是<code>TString</code>的数据结构,也是长字符串在内存中的存储结构</p>
+<p>通过分析下面的<code>luaS_createlngstrobj</code>和<code>createstrobj</code>函数</p>
+<p><img loading="lazy" src="image-20230124221141286.png" alt="image-20230124221141286"  />
+</p>
+<p><img loading="lazy" src="image-20230124221203226.png" alt="image-20230124221203226"  />
+</p>
+<p>通过上面两张图上红线的分析</p>
+<ul>
+<li>我们可以得出结论在每一次创建长字符串的时候,并不会想短字符串一样有所谓的<code>hash桶</code>链表,来处理重复的使用的问题,也就是说如果是两个相同的长字符串,那么内存中就会有两份内存存在,这块地方需要注意.</li>
+<li>长字符串的<code>hash</code>值也不是在创建的时候就生成了,只是随机的给了一个<code>seed</code>种子值,具体在哪里创建的可以看下面的章节</li>
+</ul>
+<h3 id="创建流程图"><span>创建流程图</span></h3>
+<p><img loading="lazy" src="image-20230124231754662.png" alt="image-20230124231754662"  />
+</p>
+<h2 id="hash值"><span>hash值</span></h2>
+<h3 id="短字符hash值得计算"><span>短字符hash值得计算</span></h3>
+<p><img loading="lazy" src="image-20230124211158375.png" alt="image-20230124211158375"  />
+</p>
+<p><img loading="lazy" src="image-20230124211226911.png" alt="image-20230124211226911"  />
+</p>
+<p><img loading="lazy" src="image-20230124211251630.png" alt="image-20230124211251630"  />
+</p>
+<p>从这<code>3</code>部流程我们可以看到<code>luaS_newlstr-&gt;internshrstr-&gt;createstrobj</code>中间并没有阻拦,就在创建的时候就把<code>hash</code>值给创建出来了</p>
+<h3 id="短字符串hash表的扩容和缩小"><span>短字符串hash表的扩容和缩小</span></h3>
+<h4 id="创建时候的扩容"><span>创建时候的扩容</span></h4>
+<p><img loading="lazy" src="image-20230124215922068.png" alt="image-20230124215922068"  />
+</p>
+<p>从这里可以看出如果可以<code>hash</code>扩容,那么就原来<code>2</code>的倍数增长</p>
+<h4 id="分代gc时候的收缩"><span>分代gc时候的收缩</span></h4>
+<p><img loading="lazy" src="image-20230124220126860.png" alt="image-20230124220126860"  />
+</p>
+<p><img loading="lazy" src="image-20230124220139439.png" alt="image-20230124220139439"  />
+</p>
+<p><img loading="lazy" src="image-20230124220038524.png" alt="image-20230124220038524"  />
+</p>
+<h3 id="短字符串的重新计算哈希"><span>短字符串的重新计算哈希</span></h3>
+<p>当短字符串<code>hash</code>表在进行收缩和扩容的时候会重新计算哈希</p>
+<p><img loading="lazy" src="image-20230124215322024.png" alt="image-20230124215322024"  />
+</p>
+<h3 id="长字符串hash处理"><span>长字符串hash处理</span></h3>
+<p><img loading="lazy" src="image-20230124220411865.png" alt="image-20230124220411865"  />
+</p>
+<p><img loading="lazy" src="image-20230124220457664.png" alt="image-20230124220457664"  />
+</p>
+<p><img loading="lazy" src="image-20230124220511813.png" alt="image-20230124220511813"  />
+</p>
+<p>从上面代码<code>1-&gt;2</code>的步骤可以看出长字符串的<code>hash</code>值是在<code>lua</code>内部现在只有在把长串作为<code>table</code>的<code>key</code>时，才会去计算它</p>
+<h2 id="比较"><span>比较</span></h2>
+<h3 id="短字符串的比较"><span>短字符串的比较</span></h3>
+<p><img loading="lazy" src="image-20230124221448880.png" alt="image-20230124221448880"  />
+</p>
+<p>短字符串会放入字符串常量池中，因此短串在内存中总是只有一份，直接比较地址即可</p>
+<h3 id="长字符串的比较"><span>长字符串的比较</span></h3>
+<p><img loading="lazy" src="image-20230124221540889.png" alt="image-20230124221540889"  />
+</p>
+<p>可以看到比较步骤如下</p>
+<ol>
+<li>先比较是不是同类型</li>
+<li>是不是指向同一个对象(指针地址相等的话,那么就说明指向了同一个地址)</li>
+<li>如果还不行,就在比较长度是否相等，如果长度相等,那么就利用字符串长度, 用<code>memcmp</code>比较内存内容是否相等</li>
+</ol>
+<h2 id="tstring-extra作用"><span>TString-&gt;extra作用</span></h2>
+<p><img loading="lazy" src="image-20230124222506463.png" alt="image-20230124222506463"  />
+</p>
+<h3 id="长字符串extra作用"><span>长字符串extra作用</span></h3>
+<p><img loading="lazy" src="image-20230124222546582.png" alt="image-20230124222546582"  />
+</p>
+<p>从上图中我们看到长字符串在设置<code>hash</code>值得时候会把这个字段设置成<code>1</code></p>
+<h3 id="短字符串extra作用"><span>短字符串extra作用</span></h3>
+<p><img loading="lazy" src="image-20230124222711385.png" alt="image-20230124222711385"  />
+</p>
+<p>可以看到这个<code>llex.c</code>文件中<code>luaX_init()</code>函数中在创建保留字的时候会吧这个字段设置成<code>1</code>,其实也从侧面来说保留字不可能会大于<code>40</code>个字节</p>
+<h2 id="更详细的注释请去我的github地址"><span>更详细的注释请去我的GitHub地址</span></h2>
+<p>以下是我几乎每行都加了注释的<code>GitHub</code>地址</p>
+<ol>
+<li>
+<p><code>lstring.h</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/lstring.h"><strong>lstring.h注释</strong></a></p>
+</li>
+<li>
+<p><code>lstring.c</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/lstring.c"><strong>lstring.c注释</strong></a></p>
+</li>
+</ol>
+
+
+        </div>
+        <div class="post-reward">
+            <div style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; font-size:16px; text-align: center;">
+                <div id="QR" style="opacity: 0;">
+                    <div id="wechat" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="wechat_qr" src="https://frog-game.github.io/img/wechat_pay.png" alt="wechat_pay"></a>
+                        <p>微信</p>
+                    </div>
+                    <div id="alipay" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="alipay_qr" src="https://frog-game.github.io/img/alipay_pay.png" alt="alipay"></a>
+                        <p>支付宝</p>
+                    </div>
+                </div>
+                <button id="rewardButton"
+                        onclick="
+                    var qr = document.getElementById('QR');
+                    if (qr.style.opacity === '0') {
+                        qr.style.opacity='1';
+                    } else {
+                        qr.style.opacity='0'
+                    }"
+                >
+                    <span>🧧 鼓励</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="prev" href="https://frog-game.github.io/posts/read/wangluozongjie/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>网络底层总结</span>
+  </a>
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>[Lua5.4.4源码]数据类型</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+
+
+
+<div>
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">💬评论</span>
+        <hr />
+    </div>
+
+    <div id="tcomment"></div>
+
+    <script src="https://cdn.staticfile.org/twikoo/1.6.7/twikoo.all.min.js">
+    </script>
+    
+
+    
+
+    <script>
+        twikoo.init({
+            envId: "https://www.frog-game.work/", 
+            el: "#tcomment",
+            lang: 'zh-CN',
+            region: "ap-beijing",
+            path: window.TWIKOO_MAGIC_PATH||window.location.pathname,
+            
+            
+            
+            
+            
+            
+            
+        });
+    </script>
+
+</div>
+</article>
+</main>
+
+
+<script async src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2020-2023 
+        <a href="https://frog-game.github.io/" style="color:#939393;">frog&#39;s Blog</a>
+         All Rights Reserved
+    </span>
+
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;">备案号</a>&nbsp;
+
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="https://frog-game.github.io/img/beian.png" style="float:left;margin: 0px 5px 0px 0px;"/>
+            公网安备
+        </a>
+    </span>
+
+    <span id="busuanzi_container">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        总访客数: <span id="busuanzi_value_site_uv"></span>
+        总访问量: <span id="busuanzi_value_site_pv"></span>
+    </span>
+    
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {
+            }
+            ;
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
