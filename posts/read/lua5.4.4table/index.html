@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[Lua5.4.4源码]表 | frog&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="lua源码表分析">
+<meta name="author" content="
+作者:&nbsp;frog">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4table/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8b75bf56d6fb0c429b5f3ce03bce19c9ef1e90cc024b64bd12ec321c68cca894.css" integrity="sha256-i3W/Vtb7DEKbXzzgO84Zye8ekMwCS2S9EuwyHGjMqJQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+        onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://frog-game.github.io/img/Q.gif">
+<link rel="apple-touch-icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="mask-icon" href="https://frog-game.github.io/img/Q.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="[Lua5.4.4源码]表" />
+<meta property="og:description" content="lua源码表分析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4table/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4table/image-20230126210936840.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-26T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2023-01-26T01:30:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4table/image-20230126210936840.png" />
+<meta name="twitter:title" content="[Lua5.4.4源码]表"/>
+<meta name="twitter:description" content="lua源码表分析"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://frog-game.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://frog-game.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "[Lua5.4.4源码]表",
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4table/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Lua5.4.4源码]表",
+  "name": "[Lua5.4.4源码]表",
+  "description": "lua源码表分析",
+  "keywords": [
+    ""
+  ],
+  "articleBody": "Table的结构 首先上一张示意图\n从上图中我们可以了解到Table是由数组和hash混合而成\nTable的数组部分的key和hash部分的key都不能为nil\nTable的下标是从1开始\n数组部分实际按2的指数增长\n不同key类型放数组段,还是hash段\n数字key一般放数组段 没有初始化的key都为nil,所以哪个段都放不了 在重新分配空间大小的时候,只有利用率超过50%的数组元素进入数组,否则进去hash 0和负数放在hash段 注意在使用长度操作符#对数组其长度时，数组不应该包含nil值，否则很容易出错。\nprint(#{1,nil}) --1 print(#{1,nil,1}) --3 print(#{1,nil,1,nil}) --1 尽量可以提前分配大小，明确知道table的内容或者知道大小的，可以先预先初始化。例如 不建议:local tb = {}; tb[1] = 1; tb[2] = 2; tb[3] = 3因为这样会多次触发rehash 建议:local tb = {nil, nil, nil}或者local tb = {1, 2, 3}后面再作赋值操作 对应的源码数据结构表如下\n哈希表部分 hash表中式通过Node结构来组成闭散列的数组\n用lsizenode字段来进行hash表的扩容\n用 1 \u003c\u003c lsizenode来求实际的size,比如现在是2^3这样的情况,那么3就是现在lsizenode的大小\n用 int next字段来把冲突的节点连起来,这样哈希表就会非常的紧凑,只需要一块连续的内存就可以了,如下图一样\n源码定义如下\n假设lua代码是这样定义的\nlocal t = {} t[\"xxx\"] = 2222; 那么 上面例子中\nNodeKey的部分为\"xxx\"\nlu_byte key_tt是短字符串类型\nValue key_val是\"xxx\"\nTValuefields-\u003e tt_是整型\nTValuefields-\u003e value_是2222\nTValue i_va里面的tt_为整型\nTValue i_val里面的value_为2222\nTValue i_val指向了NodeKey里面的TValuefields,这么做只是为了方便后面进行读取\nhash解决冲突时候的两种方法 闭散列 (即开放地址法):当发生哈希冲突时，如果该哈希表还没有被填满，那么就把该元素放到哈希表的下一个空闲的位置\n优点:简单 易懂,当hash表已经没有空格的时候，lua就会resize这个hash表。这样做的好处主要是不用动态申请内存空间，hash表初始化的时候有多少内存空间就用多少，不够就resize这个hash表。\n缺点:一旦发生了哈希冲突，所有的冲突连接在一起，很容易产生数据堆积。即不同的数据占用可以利用的位置，就使得寻找其余数据的位置需要进行多次比较，就会导致查找的效率降低。\n通过前面的知识点学习,其实可以看出lua中Table的hash部分中用的就是这种闭散列的方式来解决冲突的\n开散列 开散列法(哈希桶):又名链地址法，先用哈希函数计算每个数据的散列地址，把具有相同地址的元素归于同一个集合之中，把该集合处理为一个链表，链表的头节点存储于哈希表之中。\n优点:解决了数据溢出的问题\n缺点:需要增加链接的指针，增加存储开销\n通过前面的知识点学习,其实可以看出lua的短字符串中用的就是这种开散列的方式来解决冲突的\n找free节点 主要是通过getfreepos来从后往前找第一个free的节点\n创建hash表 主要是通过下面的setnodevector函数生成\nsetnodevector(L, t, 0)会创建空表 hash表利用指向一个虚拟节点dummynode,并将lastfree指向NULL来代表这个Table的hash是个空表，图示如下\n2.setnodevector(L, t, 3)会创建一个 size为3, lsizenode为2,hash表的大小为1 \u003c",
+  "wordCount" : "3942",
+  "inLanguage": "en",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4table/image-20230126210936840.png","datePublished": "2023-01-26T01:30:29+08:00",
+  "dateModified": "2023-01-26T01:30:29+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "frog"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4table/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "frog's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://frog-game.github.io/img/Q.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://frog-game.github.io/" accesskey="h" title="frog&#39;s Blog (Alt + H)">
+            <img src="https://frog-game.github.io/img/Q.gif" alt="logo" aria-label="logo"
+                 height="35">frog&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://frog-game.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/" title="🏠 主页">
+                <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/posts" title="📚 文章">
+                <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/tags" title="🧩 标签">
+                <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/archives/" title="⏱ 时间轴">
+                <span>⏱ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/about" title="🙋🏻‍♂️ 关于">
+                <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/links" title="🤝 友链">
+                <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/read/">📕 阅读</a></div>
+            <h1 class="post-title">
+                [Lua5.4.4源码]表
+            </h1>
+            <div class="post-description">
+                lua源码表分析
+            </div>
+            <div class="post-meta">创建:&nbsp;<span title='2023-01-26 01:30:29 +0800 CST'>2023-01-26</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-26&nbsp;|&nbsp;字数:&nbsp;3942字&nbsp;|&nbsp;时长:&nbsp;8分钟&nbsp;|&nbsp;
+作者:&nbsp;frog
+
+
+
+                &nbsp;|&nbsp;标签: &nbsp;
+                <ul class="post-tags-meta">
+                    <a href="https://frog-game.github.io/tags/lua5.4.4%E6%BA%90%E7%A0%81/">Lua5.4.4源码</a>
+                </ul>
+
+                
+                <span id="busuanzi_container_page_pv">
+                &nbsp;| 访问: <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+</div>
+        </header> 
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4table/image-20230126210936840.png" alt="">
+        
+</figure>
+        <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#table%e7%9a%84%e7%bb%93%e6%9e%84" aria-label="Table的结构">Table的结构</a><ul>
+                        
+                <li>
+                    <a href="#%e5%93%88%e5%b8%8c%e8%a1%a8%e9%83%a8%e5%88%86" aria-label="哈希表部分">哈希表部分</a><ul>
+                        
+                <li>
+                    <a href="#hash%e8%a7%a3%e5%86%b3%e5%86%b2%e7%aa%81%e6%97%b6%e5%80%99%e7%9a%84%e4%b8%a4%e7%a7%8d%e6%96%b9%e6%b3%95" aria-label="hash解决冲突时候的两种方法">hash解决冲突时候的两种方法</a><ul>
+                        
+                <li>
+                    <a href="#%e9%97%ad%e6%95%a3%e5%88%97" aria-label="闭散列">闭散列</a></li>
+                <li>
+                    <a href="#%e5%bc%80%e6%95%a3%e5%88%97" aria-label="开散列">开散列</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%89%befree%e8%8a%82%e7%82%b9" aria-label="找free节点">找free节点</a></li>
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%bahash%e8%a1%a8" aria-label="创建hash表">创建hash表</a></li>
+                <li>
+                    <a href="#hash%e8%a1%a8%e7%9a%84%e6%8f%92%e5%85%a5" aria-label="hash表的插入">hash表的插入</a><ul>
+                        
+                <li>
+                    <a href="#%e4%b8%bb%e4%bd%8d%e7%bd%ae%e4%bd%8d%e7%a9%ba%e8%8a%82%e7%82%b9%e7%9a%84%e6%83%85%e5%86%b5" aria-label="主位置位空节点的情况">主位置位空节点的情况</a></li>
+                <li>
+                    <a href="#%e5%a6%82%e6%9e%9c%e4%b8%bb%e4%bd%8d%e7%bd%ae%e4%b8%8d%e6%98%af%e7%a9%ba%e9%82%a3%e4%b9%88%e5%b0%b1%e6%9c%89%e4%b8%a4%e7%a7%8d%e6%83%85%e5%86%b5" aria-label="如果主位置不是空,那么就有两种情况">如果主位置不是空,那么就有两种情况</a><ul>
+                        
+                <li>
+                    <a href="#%e5%a6%82%e6%9e%9c%e8%af%a5othern%e7%bb%93%e7%82%b9%e5%b0%b1%e6%98%af%e4%b8%bb%e4%bd%8d%e7%bd%ae%e7%bb%93%e7%82%b9" aria-label="如果该othern结点就是主位置结点">如果该<code>othern</code>结点就是主位置结点</a></li>
+                <li>
+                    <a href="#%e5%a6%82%e6%9e%9c%e8%af%a5othern%e7%bb%93%e7%82%b9%e4%b8%8d%e6%98%af%e4%b8%bb%e4%bd%8d%e7%bd%ae%e7%bb%93%e7%82%b9" aria-label="如果该othern结点不是主位置结点">如果该<code>othern</code>结点不是主位置结点</a></li></ul>
+                </li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%95%b0%e7%bb%84%e9%83%a8%e5%88%86" aria-label="数组部分">数组部分</a><ul>
+                        
+                <li>
+                    <a href="#%e8%ae%a1%e7%ae%97%e5%87%ba%e5%a4%a7%e4%ba%8e%e4%b8%94%e6%9c%80%e6%8e%a5%e8%bf%91alimit%e7%9a%842%e7%9a%84n%e6%ac%a1%e6%96%b9%e9%95%bf%e5%ba%a6" aria-label="计算出大于且最接近alimit的2的n次方长度">计算出大于且最接近<code>alimit</code>的<code>2</code>的<code>n</code>次方长度</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#table%e7%9a%84%e6%89%a9%e5%ae%b9" aria-label="Table的扩容">Table的扩容</a><ul>
+                        
+                <li>
+                    <a href="#%e8%ae%a1%e7%ae%97hash%e9%83%a8%e5%88%86key%e7%9a%84%e6%95%b0%e9%87%8f" aria-label="计算hash部分key的数量">计算<code>hash</code>部分<code>key</code>的数量</a></li>
+                <li>
+                    <a href="#%e6%a0%b9%e6%8d%ae%e6%95%b0%e7%bb%84%e5%88%a9%e7%94%a8%e7%8e%87%e9%9c%80%e8%a6%81%e8%be%be%e5%88%b050%e4%bb%a5%e4%b8%8a%e6%89%8d%e8%83%bd%e6%94%be%e5%88%b0%e6%95%b0%e7%bb%84%e9%83%a8%e5%88%86%e8%a7%84%e5%88%99%e4%bb%8e%e6%96%b0%e5%88%92%e5%88%86%e6%95%b0%e7%bb%84%e5%92%8chash%e9%83%a8%e5%88%86%e5%a4%a7%e5%b0%8f" aria-label="根据数组利用率需要达到50%以上才能放到数组部分规则,从新划分数组和hash部分大小">根据<code>数组</code>利用率需要达到<code>50%</code>以上才能放到<code>数组</code>部分规则,从新划分<code>数组</code>和<code>hash</code>部分大小</a></li>
+                <li>
+                    <a href="#%e8%b0%83%e7%94%a8luah_resize%e5%87%bd%e6%95%b0%e8%bf%9b%e8%a1%8ctable%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%e8%b0%83%e6%95%b4" aria-label="调用luaH_resize函数进行Table内存分布调整">调用<code>luaH_resize函数</code>进行<code>Table</code>内存分布调整</a></li></ul>
+                </li>
+                <li>
+                    <a href="#table%e7%9a%84%e8%bf%ad%e4%bb%a3%e8%ae%bf%e9%97%ae" aria-label="Table的迭代访问">Table的迭代访问</a></li>
+                <li>
+                    <a href="#%e6%b1%82%e9%95%bf%e5%ba%a6" aria-label="#求长度">#求长度</a></li>
+                <li>
+                    <a href="#luah_get%e5%87%bd%e6%95%b0%e6%b5%81%e7%a8%8b" aria-label="luaH_get函数流程">luaH_get函数流程</a></li>
+                <li>
+                    <a href="#luah_set%e5%87%bd%e6%95%b0%e6%b5%81%e7%a8%8b" aria-label="luaH_set函数流程">luaH_set函数流程</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e8%af%a6%e7%bb%86%e7%9a%84%e6%b3%a8%e9%87%8a%e8%af%b7%e5%8e%bb%e6%88%91%e7%9a%84github%e5%9c%b0%e5%9d%80" aria-label="更详细的注释请去我的GitHub地址">更详细的注释请去我的GitHub地址</a>
+                </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+            const id = encodeURI(element.getAttribute('id')).toLowerCase();
+            if (element === activeElement){
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+            } else {
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+            }
+        })
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        
+        <div class="post-content"><h2 id="table的结构"><span>Table的结构</span></h2>
+<p>首先上一张示意图</p>
+<p><img loading="lazy" src="image-20230125220035412.png" alt="image-20230125220035412"  />
+</p>
+<p>从上图中我们可以了解到<code>Table</code>是由<code>数组</code>和<code>hash</code>混合而成</p>
+<p><code>Table</code>的数组部分的<code>key</code>和<code>hash</code>部分的<code>key</code>都不能为<code>nil</code></p>
+<p><code>Table</code>的下标是从<code>1</code>开始</p>
+<p><code>数组部分</code>实际按<code>2</code>的指数增长</p>
+<p>不同<code>key</code>类型放<code>数组</code>段,还是<code>hash</code>段</p>
+<ul>
+<li>数字<code>key</code>一般放<code>数组</code>段</li>
+<li>没有初始化的<code>key</code>都为<code>nil</code>,所以哪个段都放不了</li>
+<li>在重新分配空间大小的时候,只有利用率超过<code>50%</code>的数组元素进入数组,否则进去<code>hash</code></li>
+<li><code>0</code>和<code>负数</code>放在<code>hash</code>段</li>
+</ul>
+<p>注意在使用长度操作符<code>#</code>对数组其长度时，数组不应该包含<code>nil</code>值，否则很容易出错。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>})  <span style="color:#75715e">--1  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>}) <span style="color:#75715e">--3  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>}) <span style="color:#75715e">--1  </span>
+</span></span></code></pre></div><ul>
+<li>尽量可以提前分配大小，明确知道<code>table</code>的内容或者知道大小的，可以先预先初始化。例如
+<ul>
+<li>不建议:<code>local tb = {}; tb[1] = 1; tb[2] = 2;  tb[3] = 3</code>因为这样会多次触发<code>rehash</code></li>
+<li>建议:<code>local tb = {nil, nil, nil}</code>或者<code>local tb = {1, 2, 3}</code>后面再作赋值操作</li>
+</ul>
+</li>
+</ul>
+<p>对应的源码数据结构表如下</p>
+<p><img loading="lazy" src="image-20230125220312418.png" alt="image-20230125220312418"  />
+</p>
+<h3 id="哈希表部分"><span>哈希表部分</span></h3>
+<p><img loading="lazy" src="image-20230125193549579.png" alt="image-20230125193549579"  />
+</p>
+<ul>
+<li>
+<p><code>hash</code>表中式通过<code>Node</code>结构来组成<code>闭散列</code>的数组</p>
+</li>
+<li>
+<p>用<code>lsizenode</code>字段来进行<code>hash</code>表的扩容</p>
+</li>
+<li>
+<p>用 <code>1 &lt;&lt; lsizenode</code>来求实际的<code>size,</code>比如现在是<code>2^3</code>这样的情况,那么<code>3</code>就是现在<code>lsizenode</code>的大小</p>
+</li>
+<li>
+<p>用 <code>int next</code>字段来把冲突的节点连起来,这样哈希表就会非常的紧凑,只需要一块连续的内存就可以了,如下图一样</p>
+<p><img loading="lazy" src="image-20230126094448682.png" alt="image-20230126094448682"  />
+</p>
+</li>
+</ul>
+<p>源码定义如下</p>
+<p><img loading="lazy" src="image-20230125223902202.png" alt="image-20230125223902202"  />
+</p>
+<p>假设<code>lua</code>代码是这样定义的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">local</span> t <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>t[<span style="color:#e6db74">&#34;xxx&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2222</span>;
+</span></span></code></pre></div><p>那么 上面例子中</p>
+<ul>
+<li>
+<p><code>NodeKey</code>的部分为<code>&quot;xxx&quot;</code></p>
+</li>
+<li>
+<p><code>lu_byte key_tt</code>是<code>短字符串类型</code></p>
+</li>
+<li>
+<p><code>Value key_val</code>是<code>&quot;xxx&quot;</code></p>
+</li>
+<li>
+<p><code>TValuefields-&gt; tt_</code>是<code>整型</code></p>
+</li>
+<li>
+<p><code>TValuefields-&gt; value_</code>是<code>2222</code></p>
+</li>
+<li>
+<p><code>TValue i_va</code>里面的<code>tt_</code>为<code>整型</code></p>
+</li>
+<li>
+<p><code>TValue i_val</code>里面的<code>value_</code>为<code>2222</code></p>
+</li>
+</ul>
+<p><code> TValue i_val</code>指向了<code>NodeKey</code>里面的<code>TValuefields</code>,这么做只是为了方便后面进行读取</p>
+<h4 id="hash解决冲突时候的两种方法"><span>hash解决冲突时候的两种方法</span></h4>
+<h5 id="闭散列"><span>闭散列</span></h5>
+<p><img loading="lazy" src="image-20230125224702575.png" alt="image-20230125224702575"  />
+</p>
+<p><strong>(即开放地址法):当发生哈希冲突时，如果该哈希表还没有被填满，那么就把该元素放到哈希表的下一个空闲的位置</strong></p>
+<p><code>优点</code>:简单 易懂,当<code>hash</code>表已经没有空格的时候，<code>lua</code>就会<code>resize</code>这个<code>hash</code>表。这样做的好处主要是不用动态申请内存空间，<code>hash</code>表初始化的时候有多少内存空间就用多少，不够就<code>resize</code>这个<code>hash</code>表。</p>
+<p><code>缺点</code>:一旦发生了哈希冲突，所有的冲突连接在一起，很容易产生数据<code>堆积</code>。即不同的数据占用可以利用的位置，就使得寻找其余数据的位置需要进行多次比较，就会导致查找的效率降低。</p>
+<p>通过前面的知识点学习,其实可以看出<code>lua中Table的hash部分</code>中用的就是这种闭散列的方式来解决冲突的</p>
+<h5 id="开散列"><span>开散列</span></h5>
+<p><img loading="lazy" src="image-20230125224930679.png" alt="image-20230125224930679"  />
+</p>
+<p><strong>开散列法(哈希桶):又名链地址法，先用哈希函数计算每个数据的散列地址，把具有相同地址的元素归于同一个集合之中，把该集合处理为一个链表，链表的头节点存储于哈希表之中。</strong></p>
+<p><code>优点</code>:解决了数据溢出的问题</p>
+<p><code>缺点</code>:需要增加链接的指针，增加存储开销</p>
+<p>通过前面的知识点学习,其实可以看出<code>lua的短字符串</code>中用的就是这种开散列的方式来解决冲突的</p>
+<h4 id="找free节点"><span>找free节点</span></h4>
+<p>主要是通过<code>getfreepos</code>来从后往前找第一个<code>free</code>的节点</p>
+<p><img loading="lazy" src="image-20230126153245421.png" alt="image-20230126153245421"  />
+</p>
+<h4 id="创建hash表"><span>创建hash表</span></h4>
+<p>主要是通过下面的<code>setnodevector</code>函数生成</p>
+<p><img loading="lazy" src="image-20230126123740126.png" alt="image-20230126123740126"  />
+</p>
+<ol>
+<li><code>setnodevector(L, t, 0)</code>会创建空表</li>
+</ol>
+<p><code>hash</code>表利用指向一个虚拟节点<code>dummynode</code>,并将<code>lastfree</code>指向<code>NULL</code>来代表这个<code>Table</code>的<code>hash</code>是个空表，图示如下</p>
+<p><img loading="lazy" src="image-20230125223400401.png" alt="image-20230125223400401"  />
+</p>
+<p>2.<code>setnodevector(L, t, 3)</code>会创建一个 <code>size</code>为<code>3</code>, <code>lsizenode</code>为<code>2</code>,<code>hash</code>表的大小为<code>1 &lt;&lt;lsizenode</code>为<code>2^2=4</code></p>
+<p><code>lsizenode</code> 在<code>setnodevector</code>函数示意图上的<img loading="lazy" src="image-20230125232448855.png" alt="image-20230125232448855"  />
+号位置通过<code>luaO_ceillog2</code>函数求出来等于<code>2</code></p>
+<p><img loading="lazy" src="image-20230125230922048.png" alt="image-20230125230922048"  />
+</p>
+<p><code>hash</code>表的<code>size</code>由<img loading="lazy" src="image-20230125232426420.png" alt="image-20230125232426420"  />
+位置求出也就是<code>1 &lt;&lt;lsizenode</code>为<code>2^2=4</code> <code>lastfree</code>指向<code>hash</code>表最大<code>size</code>位置(这不是一个合法位置)最后图示如下</p>
+<p><img loading="lazy" src="image-20230126124202888.png" alt="image-20230126124202888"  />
+</p>
+<h4 id="hash表的插入"><span>hash表的插入</span></h4>
+<p>hash表的插入主要通过<code>luaH_newkey</code> 实现,源码如下</p>
+<p><img loading="lazy" src="image-20230126130211015.png" alt="image-20230126130211015"  />
+</p>
+<p>从上面源码中我们可以看出将一个<code>key</code>插入哈希表有<code>3</code>中情况</p>
+<p>首先通过<code>key</code>计算出主位置,也就是这次通过<code>hashmod</code>我应该放入<code>hash</code>表的那个位置</p>
+<p><img loading="lazy" src="image-20230126131359539.png" alt="image-20230126131359539"  />
+</p>
+<p><img loading="lazy" src="image-20230126000756250.png" alt="image-20230126000756250"  />
+</p>
+<h5 id="主位置位空节点的情况"><span>主位置位空节点的情况</span></h5>
+<p><img loading="lazy" src="image-20230126131654506.png" alt="image-20230126131654506"  />
+</p>
+<p>假设初始情况如上图,这个时候要插入个<code>key:1</code> 通过以下2个宏求余也就是求得<code>hash</code>位置值为<code>1%4 = 1</code></p>
+<p><img loading="lazy" src="image-20230126131824655.png" alt="image-20230126131824655"  />
+</p>
+<p><img loading="lazy" src="image-20230126000756250.png" alt="image-20230126000756250"  />
+</p>
+<p>因为为空,这个时候只需要直接把<code>key:1</code>放入<code>hash</code>表就可以了</p>
+<p><img loading="lazy" src="image-20230126132026407.png" alt="image-20230126132026407"  />
+</p>
+<h5 id="如果主位置不是空那么就有两种情况"><span>如果主位置不是空,那么就有两种情况</span></h5>
+<p>这个时候就应该当前主位置上面的<code>key</code>是不是其他位置经过<code>hash</code>碰撞放到这里来的,我们通过</p>
+<p><img loading="lazy" src="image-20230126133855920.png" alt="image-20230126133855920"  />
+</p>
+<p>计算得到<code>othern</code>位置</p>
+<p><img loading="lazy" src="image-20230126134401768.png" alt="image-20230126134401768"  />
+</p>
+<p>比如说上图的<code>key:9</code> 按取余<code> 9%4=1</code>应该是<code>1</code>号位置,而不是现在<code>3</code>号下标位置,所以这个时候<code>othern</code>就是<code>1</code></p>
+<h6 id="如果该othern结点就是主位置结点"><span>如果该<code>othern</code>结点就是主位置结点</span></h6>
+<p>假设初始情况是这样</p>
+<p><img loading="lazy" src="image-20230126135514860.png" alt="image-20230126135514860"  />
+</p>
+<p>要插入新的节点<code>key:9</code> 通过计算得到下面数据</p>
+<ul>
+<li>
+<p><code>mp</code>:<code>9%4=1</code> 表示现在<code>key:9</code>应该放到<code>1</code>号位置</p>
+</li>
+<li>
+<p><code>othern</code>:因为现在<code>1</code>号位置上放的是<code>key:1</code>所以<code>1%4=1</code> 表示<code>othern</code>结点还是主位置结点</p>
+</li>
+</ul>
+<p>所以会执行如下源码</p>
+<p><img loading="lazy" src="image-20230126135908937.png" alt="image-20230126135908937"  />
+</p>
+<p>把<code>key:9</code>插入<code>1</code>号位置以后,会和<code>key:1</code>产生冲突,造成如下图所示的情况</p>
+<p><img loading="lazy" src="image-20230126001943361.png" alt="image-20230126001943361"  />
+</p>
+<p>做完这步以后在把<code>key:1</code>下标<code>Node</code>里面的<code>next</code>指向<code>key:9</code>的下标位置</p>
+<p><img loading="lazy" src="image-20230126002612261.png" alt="image-20230126002612261"  />
+</p>
+<p>,最后把前面找到<code>free</code>位置,设置成<code>key:9</code>如下图所示</p>
+<p><img loading="lazy" src="image-20230126210534065.png" alt="image-20230126210534065"  />
+</p>
+<h6 id="如果该othern结点不是主位置结点"><span>如果该<code>othern</code>结点不是主位置结点</span></h6>
+<p><img loading="lazy" src="image-20230126153142900.png" alt="image-20230126153142900"  />
+</p>
+<p>比如如图上面的情况</p>
+<ol>
+<li>
+<p>首先通过<code>getfreepos</code>找到了<code>free</code>位置</p>
+<p><code>free</code>位置:<code>2</code>号下标位置</p>
+</li>
+<li>
+<p>假如这个时候插入<code>key:11</code>,计算<code>key:11</code>的<code>mp</code>位置,通过求余<code>11%4</code>得到<code>3</code>号位置,也就是<code>key:9</code>的位置,产生冲突</p>
+<p><code>mp</code>:<code>11%4</code>=<code>3</code></p>
+</li>
+<li>
+<p>计算<code>key:9</code>的<code>othern</code>位置</p>
+<p><code>othern</code>:<code>9%4=1</code></p>
+</li>
+</ol>
+<p>通过上面的结果判断<code>othern!=mp</code>也就是该<code>othern</code>结点不是主位置结点,所以我们需要如下操作</p>
+<p>执行的源码如下</p>
+<p><img loading="lazy" src="image-20230126161922943.png" alt="image-20230126161922943"  />
+</p>
+<p><img loading="lazy" src="image-20230126161944981.png" alt="image-20230126161944981"  />
+</p>
+<ol>
+<li>
+<p>顺着<code>key:9</code>的<code>othern</code>的一路找到<code>mp</code>的前置节点</p>
+<p><img loading="lazy" src="image-20230126161707041.png" alt="image-20230126161707041"  />
+</p>
+<p><img loading="lazy" src="image-20230126154308252.png" alt="image-20230126154308252"  />
+</p>
+</li>
+<li>
+<p>本来前置节点指向的是<code>mp</code>的位置,现在改为指向新找的<code>空位free</code></p>
+<p><img loading="lazy" src="image-20230126161656664.png" alt="image-20230126161656664"  />
+</p>
+<p><img loading="lazy" src="image-20230126154624684.png" alt="image-20230126154624684"  />
+</p>
+</li>
+<li>
+<p>将<code>mp</code>存到<code>free</code></p>
+<p><img loading="lazy" src="image-20230126161624804.png" alt="image-20230126161624804"  />
+</p>
+<p><img loading="lazy" src="image-20230126154927807.png" alt="image-20230126154927807"  />
+</p>
+</li>
+<li>
+<p>处理<code>mp</code>的后继节点</p>
+<p><img loading="lazy" src="image-20230126155653626.png" alt="image-20230126155653626"  />
+</p>
+<p><img loading="lazy" src="image-20230126160818102.png" alt="image-20230126160818102"  />
+</p>
+<p><img loading="lazy" src="image-20230126161541615.png" alt="image-20230126161541615"  />
+</p>
+</li>
+<li>
+<p>将<code>mp</code>位置腾出来的,原本属于我的位置的<code>value</code>域填入<code>nil</code>值(擦除残留的值)</p>
+<p><img loading="lazy" src="image-20230126160244799.png" alt="image-20230126160244799"  />
+</p>
+<p><img loading="lazy" src="image-20230126160047401.png" alt="image-20230126160047401"  />
+</p>
+</li>
+<li>
+<p>把<code>key</code>的值复制给<code>mp</code>节点,并返回节点的指针</p>
+</li>
+</ol>
+<p><img loading="lazy" src="image-20230126160228783.png" alt="image-20230126160228783"  />
+</p>
+<p><img loading="lazy" src="image-20230126160204776.png" alt="image-20230126160204776"  />
+</p>
+<h3 id="数组部分"><span>数组部分</span></h3>
+<h4 id="计算出大于且最接近alimit的2的n次方长度"><span>计算出大于且最接近<code>alimit</code>的<code>2</code>的<code>n</code>次方长度</span></h4>
+<p>所以<code>数组部分</code>实际按<code>2</code>的指数增长</p>
+<p><img loading="lazy" src="image-20230126162442378.png" alt="image-20230126162442378"  />
+</p>
+<h2 id="table的扩容"><span>Table的扩容</span></h2>
+<p>当我们在一直插入值到<code>hash</code>表的时候,如果通过<code>getfreepos</code>函数找不到<code>free</code>节点了,那么这个时候我们就需要调用<code>rehash</code>函数进行扩容了</p>
+<p><img loading="lazy" src="image-20230126162852324.png" alt="image-20230126162852324"  />
+</p>
+<p>首先我们来看看<code>rehash</code>的源码实现</p>
+<p><img loading="lazy" src="image-20230126162951857.png" alt="image-20230126162951857"  />
+</p>
+<p>具体过程如下:</p>
+<p>计算<code>数组</code>部分<code>key</code>的数量</p>
+<ol>
+<li>
+<p>具体是通过<code>numusearray函数</code>进行统计的,<code>数组部分</code>实际按<code>2</code>的指数增长，新增部分为一个切片，按照<code>2^(i-1) &lt; k &lt;= 2^i </code>规则进行切片,例如<code>1，2，4，8</code>增长，切片分为<code>1~2</code>,<code>3~4</code>,<code>5~8</code>四片</p>
+</li>
+<li>
+<p>遍历每一个切片,统计每个不为<code>nil</code>的下标，直到统计次数大于<code>array</code>的长度(<code>2的n次方</code>)，同时记录每一个切片的不为空的数量,并把结果存到<code>nums</code>中,然后把数组部分的数量进行返回</p>
+</li>
+</ol>
+<p><img loading="lazy" src="image-20230126171849970.png" alt="image-20230126171849970"  />
+</p>
+<h3 id="计算hash部分key的数量"><span>计算<code>hash</code>部分<code>key</code>的数量</span></h3>
+<p>具体统计通过<code>numusehash</code>函数,这个函数具体通过两部实现统计</p>
+<ol>
+<li>统计<code>hash</code>部分非<code>nil</code>的<code>Key</code>值总数</li>
+<li>在遍历<code>hash</code>部分的时候,如果发现<code>key</code>的类型为整型,那么就把这个<code>key</code>值统计到<code>nums</code>中,做数组部分切片统计</li>
+</ol>
+<p><img loading="lazy" src="image-20230126173258166.png" alt="image-20230126173258166"  />
+</p>
+<h3 id="根据数组利用率需要达到50以上才能放到数组部分规则从新划分数组和hash部分大小"><span>根据<code>数组</code>利用率需要达到<code>50%</code>以上才能放到<code>数组</code>部分规则,从新划分<code>数组</code>和<code>hash</code>部分大小</span></h3>
+<p>这一部分是通过函数<code>computesizes</code>做到的.通过源码可以看到这里是通过遍历<code>nums</code>的没一个切片,统计下这个切片里面的数量是不是超过了<code>50%</code>,如果超过了,那么就认为可以放到数组部分,反之就应该放<code>hash</code>部分</p>
+<p><strong><img loading="lazy" src="image-20230126174611386.png" alt="image-20230126174611386"  />
+</strong></p>
+<p><img loading="lazy" src="image-20230126184524980.png" alt="image-20230126184524980"  />
+</p>
+<h3 id="调用luah_resize函数进行table内存分布调整"><span>调用<code>luaH_resize函数</code>进行<code>Table</code>内存分布调整</span></h3>
+<p>这部分很简单,主要做的事情就是根据第<code>3</code>步得到的数组大小和<code>hash</code>大小,进行扩容和伸缩,以及重新分配内存</p>
+<p><img loading="lazy" src="image-20230126174758888.png" alt="image-20230126174758888"  />
+</p>
+<h2 id="table的迭代访问"><span>Table的迭代访问</span></h2>
+<p>迭代访问是通过<code>luaH_next</code>实现的</p>
+<p><img loading="lazy" src="image-20230126185343441.png" alt="image-20230126185343441"  />
+</p>
+<ol>
+<li>从源码中可以看到如果<code>Table</code>里面有很多<code>value</code>的值为<code>nil</code>它并不会停下来直到找到下一个不为<code>nil</code>的元素位置</li>
+<li>可以看到<code>luaH_next</code>遍历的顺序是先遍历<code>数组</code>部分,在遍历<code>hash</code>部分</li>
+<li>从上面的特征可以看出如果一个<code>Table</code>前面有很多的<code>nil</code>值,而非<code>nil</code>的值在<code>Table</code>的最后几位,就会造成遍历效果非常慢,毕竟他是先先遍历<code>数组</code>部分,在遍历<code>hash</code>部分</li>
+</ol>
+<h2 id="求长度"><span>#求长度</span></h2>
+<p><img loading="lazy" src="image-20230126195255930.png" alt="image-20230126195255930"  />
+</p>
+<p><code>lua</code>中的<code>#</code>求长度其实就是用<code>luaH_getn</code>求得</p>
+<p>取长度操作符写作一元操作 <code>#</code>。 字符串的长度是它的字节数（就是以一个字符一个字节计算的字符串长度）</p>
+<p><code>table</code>的长度被定义成一个整数下标 <code>n</code> 。 它满足 <code>t[n]</code> 不是 <code>nil</code> 而 <code>t[n+1]</code> 为 <code>nil</code>, 此外，如果 <code>t[1]</code> 为 <code>nil</code> ，<code>n</code> 就可能是零。 对于常规的数组，里面从 <code>1</code> 到 <code>n</code> 放着一些非空的值的时候， 它的长度就精确的为 <code>n</code>，即最后一个值的下标。 如果数组有一个<code>空洞</code>（就是说，<code>nil</code> 值被夹在非空值之间）， 那么 <code>#t</code> 可能是指向任何一个是 <code>nil</code>值的前一个位置的下标 (就是说，任何一个<code>nil</code>值都有可能被当成数组的结束)</p>
+<p>为了提高查找效率，<code>lua</code>源码并没有进行遍历查找，而是通过二分查找</p>
+<ol>
+<li>
+<p>如果<code>table</code>数组部分的最后一个元素为<code>nil</code>，那么将在数组部分进行二分查找</p>
+</li>
+<li>
+<p>针对<code>table</code>的数组部分的，但若哈希部分的<code>key</code>为整数且刚好连着数组部分，则也会一并参与计算</p>
+</li>
+<li>
+<p>最后一种情况是数组部分中没有元素 或如果<code>table</code>数组部分的最后一个元素为<code>nil</code>，那么将在<code>hash</code>部分进行二分查找</p>
+</li>
+</ol>
+<p>所以注意在使用长度操作符<code>#</code>对数组其长度时，数组不应该包含<code>nil</code>值，否则很容易出错,这是个不确定的因素,不要有侥幸,<code>如果一个元素要删除，直接remove，不要用nil去代替</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>})  <span style="color:#75715e">--1  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>}) <span style="color:#75715e">--3  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>}) <span style="color:#75715e">--1  </span>
+</span></span></code></pre></div><h2 id="luah_get函数流程"><span>luaH_get函数流程</span></h2>
+<p><img loading="lazy" src="image-20230126204135818.png" alt="image-20230126204135818"  />
+</p>
+<h2 id="luah_set函数流程"><span>luaH_set函数流程</span></h2>
+<p><img loading="lazy" src="image-20230126210936840.png" alt="image-20230126210936840"  />
+</p>
+<h2 id="更详细的注释请去我的github地址"><span>更详细的注释请去我的GitHub地址</span></h2>
+<p>以下是我几乎每行都加了注释的<code>GitHub</code>地址</p>
+<ol>
+<li>
+<p><code>ltable.h</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/ltable.h">ltable.h注释</a></p>
+</li>
+<li>
+<p><code>ltable.c</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/ltable.c">ltable.c注释</a></p>
+</li>
+</ol>
+
+
+        </div>
+        <div class="post-reward">
+            <div style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; font-size:16px; text-align: center;">
+                <div id="QR" style="opacity: 0;">
+                    <div id="wechat" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="wechat_qr" src="https://frog-game.github.io/img/wechat_pay.png" alt="wechat_pay"></a>
+                        <p>微信</p>
+                    </div>
+                    <div id="alipay" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="alipay_qr" src="https://frog-game.github.io/img/alipay_pay.png" alt="alipay"></a>
+                        <p>支付宝</p>
+                    </div>
+                </div>
+                <button id="rewardButton"
+                        onclick="
+                    var qr = document.getElementById('QR');
+                    if (qr.style.opacity === '0') {
+                        qr.style.opacity='1';
+                    } else {
+                        qr.style.opacity='0'
+                    }"
+                >
+                    <span>🧧 鼓励</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>[Lua5.4.4源码]数据类型</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+
+
+
+<div>
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">💬评论</span>
+        <hr />
+    </div>
+
+    <div id="tcomment"></div>
+
+    <script src="https://cdn.staticfile.org/twikoo/1.6.7/twikoo.all.min.js">
+    </script>
+    
+
+    
+
+    <script>
+        twikoo.init({
+            envId: "https://www.frog-game.work/", 
+            el: "#tcomment",
+            lang: 'zh-CN',
+            region: "ap-beijing",
+            path: window.TWIKOO_MAGIC_PATH||window.location.pathname,
+            
+            
+            
+            
+            
+            
+            
+        });
+    </script>
+
+</div>
+</article>
+</main>
+
+
+<script async src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2020-2023 
+        <a href="https://frog-game.github.io/" style="color:#939393;">frog&#39;s Blog</a>
+         All Rights Reserved
+    </span>
+
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;">备案号</a>&nbsp;
+
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="https://frog-game.github.io/img/beian.png" style="float:left;margin: 0px 5px 0px 0px;"/>
+            公网安备
+        </a>
+    </span>
+
+    <span id="busuanzi_container">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        总访客数: <span id="busuanzi_value_site_uv"></span>
+        总访问量: <span id="busuanzi_value_site_pv"></span>
+    </span>
+    
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {
+            }
+            ;
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
