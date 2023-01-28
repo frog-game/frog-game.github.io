@@ -724,15 +724,15 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <ol>
 <li>
 <p>控制接收队列大小</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.core.netdev_max_backlog
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.core.netdev_max_backlog
 </span></span></code></pre></div></li>
 <li>
 <p>SYN_RCVD 状态连接的最大个数</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.ipv4.tcp_max_syn_backlog
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.ipv4.tcp_max_syn_backlog
 </span></span></code></pre></div></li>
 <li>
 <p>超出处理能力时候对于新的syn 直接发送RST 丢弃链接</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.ipv4.tcp_max_syn_backlog
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.ipv4.tcp_max_syn_backlog
 </span></span></code></pre></div><p>解决方法二</p>
 <p>首先是正常的3次握手流程</p>
 </li>
@@ -780,8 +780,8 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>2ML是客服端接受到FIN包以后发送ACK码开始计时的，如果在2ML时间内，服务器没有收到ACK确认码，重发了fin报文，那么这个时候客服端会重发ACK码并重新进入2ML计时</p>
 <h4 id="2ml一般多长"><span>2ML一般多长</span></h4>
 <p>linux 中一般设置为60s 也就是一个msl是30秒</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define TCP_TIMEWAIT_LEN (60*HZ) </span><span style="color:#75715e">/* how long to wait to destroy TIME-WAIT
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> state, about 60 seconds */</span><span style="color:#75715e">
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">#define TCP_TIMEWAIT_LEN (60*HZ) </span><span style="color:#000080">/* how long to wait to destroy TIME-WAIT
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"> state, about 60 seconds */</span><span style="color:#000080">
 </span></span></span></code></pre></div><h4 id="time_wait-相关"><span>time_wait 相关</span></h4>
 <h5 id="time_wait-过多原因"><span>time_wait 过多原因</span></h5>
 <ol>
@@ -838,10 +838,10 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <h5 id="close_wait--多的原因"><span>close_wait  多的原因</span></h5>
 <p>一般都是程序逻辑造成，在client发送fin过来的时候，这边进入了close_wait状态，但是因为程序逻辑问题，迟迟没有调用close()，或者shutdown函数进行关闭，导致close_wait超多</p>
 <h4 id="如果已经建了连接但是客户端突然出现故障了怎么办"><span>如果已经建⽴了连接，但是客户端突然出现故障了怎么办</span></h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.ipv4.tcp_keepalive_time<span style="color:#f92672">=</span><span style="color:#ae81ff">7200</span> <span style="color:#75715e">#表示保活时间是 7200 秒（2⼩时），也就 2 ⼩时内如果没有任何连接相关的活</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>net.ipv4.tcp_keepalive_time<span style="color:#39c">=</span><span style="color:#cd00cd">7200</span> <span style="color:#000080">#表示保活时间是 7200 秒（2⼩时），也就 2 ⼩时内如果没有任何连接相关的活</span>
 </span></span><span style="display:flex;"><span>动，则会启动保活机制
-</span></span><span style="display:flex;"><span>net.ipv4.tcp_keepalive_intvl<span style="color:#f92672">=</span><span style="color:#ae81ff">75</span> <span style="color:#75715e">#表示每次检测间隔 75 秒</span>
-</span></span><span style="display:flex;"><span>net.ipv4.tcp_keepalive_probes<span style="color:#f92672">=</span><span style="color:#ae81ff">9</span> <span style="color:#75715e">#表示检测 9 次⽆响应，认为对⽅是不可达的，从⽽中断本次的连接</span>
+</span></span><span style="display:flex;"><span>net.ipv4.tcp_keepalive_intvl<span style="color:#39c">=</span><span style="color:#cd00cd">75</span> <span style="color:#000080">#表示每次检测间隔 75 秒</span>
+</span></span><span style="display:flex;"><span>net.ipv4.tcp_keepalive_probes<span style="color:#39c">=</span><span style="color:#cd00cd">9</span> <span style="color:#000080">#表示检测 9 次⽆响应，认为对⽅是不可达的，从⽽中断本次的连接</span>
 </span></span></code></pre></div><p>主要是tcp的保活机制，如果在一段时间内，没有任何的连接相关的活动，tcp就会启动保活机制，每隔一段时间发送一个探测包，这个探测包数据量很小，如果连续几个探测包发过去都没有反应，那么就可以认为tcp连接已经死亡了</p>
 <p>开启了tcp保活机制以后，需要考虑一下几种情况</p>
 <ol>
@@ -1152,9 +1152,9 @@ UDP首部只有8个字节，并且是固定不变的，开销较小</p>
 <p>比如像HTTP这种直接在尾部加回车，换行来作为数据的边界，但是这种方法有个问题，就是如果特殊字符是内容，那么就需要对这个数据做特殊处理</p>
 <h3 id="自定义消息结构"><span>自定义消息结构</span></h3>
 <p>我们可以自己定义消息结构，由包头 + 数据组成 在包头里面有一个字段是用来表示数据包的大小的，如下:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> { 
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#cdcd00">struct</span> { 
 </span></span><span style="display:flex;"><span>    int32 message_length; 
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> message_data[]; 
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">char</span> message_data[]; 
 </span></span><span style="display:flex;"><span>} message;
 </span></span></code></pre></div><p>这样当客服端可以先解析包头里面消息的长度，然后在读满这个长度大小的数据，就可以认为收到了一个完整的包</p>
 <h2 id="rst-标识"><span>RST 标识</span></h2>

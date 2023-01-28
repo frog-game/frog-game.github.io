@@ -447,7 +447,7 @@ var _hmt = _hmt || [];
 </script>
         
         <div class="post-content"><h2 id="linux编译"><span>linux编译</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>make linux MALLOC_STATICLIB<span style="color:#f92672">=</span> SKYNET_DEFINES<span style="color:#f92672">=</span>-DNOUSE_JEMALLOC
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>make linux <span style="color:#00cdcd">MALLOC_STATICLIB</span><span style="color:#39c">=</span> <span style="color:#00cdcd">SKYNET_DEFINES</span><span style="color:#39c">=</span>-DNOUSE_JEMALLOC
 </span></span></code></pre></div><h2 id="网络流程图"><span>网络流程图</span></h2>
 <p><img loading="lazy" src="Typoraimage-20220228100347880.png" alt="Typoraimage-20220228100347880"  />
 </p>
@@ -630,177 +630,177 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 <h2 id="协程"><span>协程</span></h2>
 <p>coroutine 实现 详细代码见<code>lcorolib.c</code></p>
 <h3 id="派发消息"><span>派发消息</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>function skynet.<span style="color:#a6e22e">dispatch_message</span>(...)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>function skynet.dispatch_message(...)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>     <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">当前消息处理</span>
-</span></span><span style="display:flex;"><span>    local succ, err <span style="color:#f92672">=</span> <span style="color:#a6e22e">pcall</span>(raw_dispatch_message,...)
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> true <span style="color:#66d9ef">do</span>
-</span></span><span style="display:flex;"><span>     <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">顺序执行</span>skynet.fork <span style="color:#960050;background-color:#1e0010">创建的协程</span> 
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> fork_queue.h <span style="color:#f92672">&gt;</span> fork_queue.t then
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">--</span> queue is empty
-</span></span><span style="display:flex;"><span>            fork_queue.h <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span>            fork_queue.t <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#39c">--</span> <span style="">当前消息处理</span>
+</span></span><span style="display:flex;"><span>    local succ, err <span style="color:#39c">=</span> pcall(raw_dispatch_message,...)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">while</span> <span style="color:#cd00cd">true</span> <span style="color:#cdcd00">do</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#39c">--</span> <span style="">顺序执行</span>skynet.fork <span style="">创建的协程</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> fork_queue.h <span style="color:#39c">&gt;</span> fork_queue.t then
+</span></span><span style="display:flex;"><span>            <span style="color:#39c">--</span> queue is empty
+</span></span><span style="display:flex;"><span>            fork_queue.h <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
+</span></span><span style="display:flex;"><span>            fork_queue.t <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">break</span>
 </span></span><span style="display:flex;"><span>        end
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">--</span> pop queue
-</span></span><span style="display:flex;"><span>        local h <span style="color:#f92672">=</span> fork_queue.h
-</span></span><span style="display:flex;"><span>        local co <span style="color:#f92672">=</span> fork_queue[h]
-</span></span><span style="display:flex;"><span>        fork_queue[h] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>        fork_queue.h <span style="color:#f92672">=</span> h <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#39c">--</span> pop queue
+</span></span><span style="display:flex;"><span>        local h <span style="color:#39c">=</span> fork_queue.h
+</span></span><span style="display:flex;"><span>        local co <span style="color:#39c">=</span> fork_queue[h]
+</span></span><span style="display:flex;"><span>        fork_queue[h] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>        fork_queue.h <span style="color:#39c">=</span> h <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        local fork_succ, fork_err <span style="color:#f92672">=</span> <span style="color:#a6e22e">pcall</span>(suspend,co,<span style="color:#a6e22e">coroutine_resume</span>(co))
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> not fork_succ then
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> succ then
-</span></span><span style="display:flex;"><span>                succ <span style="color:#f92672">=</span> false
-</span></span><span style="display:flex;"><span>                err <span style="color:#f92672">=</span> <span style="color:#a6e22e">tostring</span>(fork_err)
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                err <span style="color:#f92672">=</span> <span style="color:#a6e22e">tostring</span>(err) .. <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> .. <span style="color:#a6e22e">tostring</span>(fork_err)
+</span></span><span style="display:flex;"><span>        local fork_succ, fork_err <span style="color:#39c">=</span> pcall(suspend,co,coroutine_resume(co))
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> not fork_succ then
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> succ then
+</span></span><span style="display:flex;"><span>                succ <span style="color:#39c">=</span> <span style="color:#cd00cd">false</span>
+</span></span><span style="display:flex;"><span>                err <span style="color:#39c">=</span> tostring(fork_err)
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>                err <span style="color:#39c">=</span> tostring(err) .. <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> .. tostring(fork_err)
 </span></span><span style="display:flex;"><span>            end
 </span></span><span style="display:flex;"><span>        end
 </span></span><span style="display:flex;"><span>    end
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">assert</span>(succ, <span style="color:#a6e22e">tostring</span>(err))
+</span></span><span style="display:flex;"><span>    assert(succ, tostring(err))
 </span></span><span style="display:flex;"><span>end
 </span></span></code></pre></div><h3 id="处理当前消息"><span>处理当前消息</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local function <span style="color:#a6e22e">raw_dispatch_message</span>(prototype, msg, sz, session, source)
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">--</span> skynet.PTYPE_RESPONSE <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>, read skynet.h
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> prototype <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> then <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">对回应类型的包处理</span>
-</span></span><span style="display:flex;"><span>        local co <span style="color:#f92672">=</span> session_id_coroutine[session]
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> co <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;BREAK&#34;</span> then
-</span></span><span style="display:flex;"><span>            session_id_coroutine[session] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>        elseif co <span style="color:#f92672">==</span> nil then
-</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">unknown_response</span>(session, source, msg, sz)
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>            local tag <span style="color:#f92672">=</span> session_coroutine_tracetag[co]
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> tag then c.<span style="color:#a6e22e">trace</span>(tag, <span style="color:#e6db74">&#34;resume&#34;</span>) end
-</span></span><span style="display:flex;"><span>            session_id_coroutine[session] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">suspend</span>(co, <span style="color:#a6e22e">coroutine_resume</span>(co, true, msg, sz, session))
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local function raw_dispatch_message(prototype, msg, sz, session, source)
+</span></span><span style="display:flex;"><span>    <span style="color:#39c">--</span> skynet.PTYPE_RESPONSE <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>, read skynet.h
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> prototype <span style="color:#39c">==</span> <span style="color:#cd00cd">1</span> then <span style="color:#39c">--</span> <span style="">对回应类型的包处理</span>
+</span></span><span style="display:flex;"><span>        local co <span style="color:#39c">=</span> session_id_coroutine[session]
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> co <span style="color:#39c">==</span> <span style="color:#cd0000">&#34;BREAK&#34;</span> then
+</span></span><span style="display:flex;"><span>            session_id_coroutine[session] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>        elseif co <span style="color:#39c">==</span> nil then
+</span></span><span style="display:flex;"><span>            unknown_response(session, source, msg, sz)
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>            local tag <span style="color:#39c">=</span> session_coroutine_tracetag[co]
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> tag then c.trace(tag, <span style="color:#cd0000">&#34;resume&#34;</span>) end
+</span></span><span style="display:flex;"><span>            session_id_coroutine[session] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>            suspend(co, coroutine_resume(co, <span style="color:#cd00cd">true</span>, msg, sz, session))
 </span></span><span style="display:flex;"><span>        end
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>        local p <span style="color:#f92672">=</span> proto[prototype] <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">找到对应的解析协议</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> p <span style="color:#f92672">==</span> nil then
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> prototype <span style="color:#f92672">==</span> skynet.PTYPE_TRACE then
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">--</span> trace next request
-</span></span><span style="display:flex;"><span>                trace_source[source] <span style="color:#f92672">=</span> c.<span style="color:#a6e22e">tostring</span>(msg,sz)
-</span></span><span style="display:flex;"><span>            elseif session <span style="color:#f92672">~=</span> <span style="color:#ae81ff">0</span> then
-</span></span><span style="display:flex;"><span>                c.<span style="color:#a6e22e">send</span>(source, skynet.PTYPE_ERROR, session, <span style="color:#e6db74">&#34;&#34;</span>)
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">unknown_request</span>(session, source, msg, sz, prototype)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>        local p <span style="color:#39c">=</span> proto[prototype] <span style="color:#39c">--</span> <span style="">找到对应的解析协议</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> p <span style="color:#39c">==</span> nil then
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> prototype <span style="color:#39c">==</span> skynet.PTYPE_TRACE then
+</span></span><span style="display:flex;"><span>                <span style="color:#39c">--</span> trace next request
+</span></span><span style="display:flex;"><span>                trace_source[source] <span style="color:#39c">=</span> c.tostring(msg,sz)
+</span></span><span style="display:flex;"><span>            elseif session <span style="color:#39c">~=</span> <span style="color:#cd00cd">0</span> then
+</span></span><span style="display:flex;"><span>                c.send(source, skynet.PTYPE_ERROR, session, <span style="color:#cd0000">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>                unknown_request(session, source, msg, sz, prototype)
 </span></span><span style="display:flex;"><span>            end
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">return</span>
 </span></span><span style="display:flex;"><span>        end
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        local f <span style="color:#f92672">=</span> p.dispatch <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">获取处理的函数</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> f then
-</span></span><span style="display:flex;"><span>            local co <span style="color:#f92672">=</span> <span style="color:#a6e22e">co_create</span>(f) <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">获取协程</span>
-</span></span><span style="display:flex;"><span>            session_coroutine_id[co] <span style="color:#f92672">=</span> session
-</span></span><span style="display:flex;"><span>            session_coroutine_address[co] <span style="color:#f92672">=</span> source
-</span></span><span style="display:flex;"><span>            local traceflag <span style="color:#f92672">=</span> p.trace
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> traceflag <span style="color:#f92672">==</span> false then
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">--</span> force off
-</span></span><span style="display:flex;"><span>                trace_source[source] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>                session_coroutine_tracetag[co] <span style="color:#f92672">=</span> false
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                local tag <span style="color:#f92672">=</span> trace_source[source]
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> tag then
-</span></span><span style="display:flex;"><span>                    trace_source[source] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>                    c.<span style="color:#a6e22e">trace</span>(tag, <span style="color:#e6db74">&#34;request&#34;</span>)
-</span></span><span style="display:flex;"><span>                    session_coroutine_tracetag[co] <span style="color:#f92672">=</span> tag
+</span></span><span style="display:flex;"><span>        local f <span style="color:#39c">=</span> p.dispatch <span style="color:#39c">--</span> <span style="">获取处理的函数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> f then
+</span></span><span style="display:flex;"><span>            local co <span style="color:#39c">=</span> co_create(f) <span style="color:#39c">--</span> <span style="">获取协程</span>
+</span></span><span style="display:flex;"><span>            session_coroutine_id[co] <span style="color:#39c">=</span> session
+</span></span><span style="display:flex;"><span>            session_coroutine_address[co] <span style="color:#39c">=</span> source
+</span></span><span style="display:flex;"><span>            local traceflag <span style="color:#39c">=</span> p.trace
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> traceflag <span style="color:#39c">==</span> <span style="color:#cd00cd">false</span> then
+</span></span><span style="display:flex;"><span>                <span style="color:#39c">--</span> force off
+</span></span><span style="display:flex;"><span>                trace_source[source] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>                session_coroutine_tracetag[co] <span style="color:#39c">=</span> <span style="color:#cd00cd">false</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>                local tag <span style="color:#39c">=</span> trace_source[source]
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> tag then
+</span></span><span style="display:flex;"><span>                    trace_source[source] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>                    c.trace(tag, <span style="color:#cd0000">&#34;request&#34;</span>)
+</span></span><span style="display:flex;"><span>                    session_coroutine_tracetag[co] <span style="color:#39c">=</span> tag
 </span></span><span style="display:flex;"><span>                elseif traceflag then
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">--</span> set running_thread <span style="color:#66d9ef">for</span> trace
-</span></span><span style="display:flex;"><span>                    running_thread <span style="color:#f92672">=</span> co
-</span></span><span style="display:flex;"><span>                    skynet.<span style="color:#a6e22e">trace</span>()
+</span></span><span style="display:flex;"><span>                    <span style="color:#39c">--</span> set running_thread <span style="color:#cdcd00">for</span> trace
+</span></span><span style="display:flex;"><span>                    running_thread <span style="color:#39c">=</span> co
+</span></span><span style="display:flex;"><span>                    skynet.trace()
 </span></span><span style="display:flex;"><span>                end
 </span></span><span style="display:flex;"><span>            end
-</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">suspend</span>(co, <span style="color:#a6e22e">coroutine_resume</span>(co, session,source, p.<span style="color:#a6e22e">unpack</span>(msg,sz)))
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>            trace_source[source] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> session <span style="color:#f92672">~=</span> <span style="color:#ae81ff">0</span> then
-</span></span><span style="display:flex;"><span>                c.<span style="color:#a6e22e">send</span>(source, skynet.PTYPE_ERROR, session, <span style="color:#e6db74">&#34;&#34;</span>)
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">unknown_request</span>(session, source, msg, sz, proto[prototype].name)
+</span></span><span style="display:flex;"><span>            suspend(co, coroutine_resume(co, session,source, p.unpack(msg,sz)))
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>            trace_source[source] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> session <span style="color:#39c">~=</span> <span style="color:#cd00cd">0</span> then
+</span></span><span style="display:flex;"><span>                c.send(source, skynet.PTYPE_ERROR, session, <span style="color:#cd0000">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>                unknown_request(session, source, msg, sz, proto[prototype].name)
 </span></span><span style="display:flex;"><span>            end
 </span></span><span style="display:flex;"><span>        end
 </span></span><span style="display:flex;"><span>    end
 </span></span><span style="display:flex;"><span>end
 </span></span></code></pre></div><h3 id="创建协程"><span>创建协程</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local function <span style="color:#a6e22e">co_create</span>(f)
-</span></span><span style="display:flex;"><span>    local co <span style="color:#f92672">=</span> <span style="color:#a6e22e">tremove</span>(coroutine_pool) <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">从协程池中获取协程</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> co <span style="color:#f92672">==</span> nil then <span style="color:#f92672">--</span><span style="color:#960050;background-color:#1e0010">如果没有了</span>
-</span></span><span style="display:flex;"><span>        co <span style="color:#f92672">=</span> <span style="color:#a6e22e">coroutine_create</span>(<span style="color:#a6e22e">function</span>(...) <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">创建新的</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">f</span>(...) <span style="color:#f92672">--</span><span style="color:#960050;background-color:#1e0010">执行回调函数，不会立马执行只会调用</span>coroutine.resume<span style="color:#960050;background-color:#1e0010">时候才会执行</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> true <span style="color:#66d9ef">do</span> <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">为了能够复用刚创建的协成，下面需要对协程进行初始化和回收</span>
-</span></span><span style="display:flex;"><span>                local session <span style="color:#f92672">=</span> session_coroutine_id[co]
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> session and session <span style="color:#f92672">~=</span> <span style="color:#ae81ff">0</span> then
-</span></span><span style="display:flex;"><span>                    local source <span style="color:#f92672">=</span> debug.<span style="color:#a6e22e">getinfo</span>(f,<span style="color:#e6db74">&#34;S&#34;</span>)
-</span></span><span style="display:flex;"><span>                    skynet.<span style="color:#a6e22e">error</span>(string.<span style="color:#a6e22e">format</span>(<span style="color:#e6db74">&#34;Maybe forgot response session %s from %s : %s:%d&#34;</span>,
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local function co_create(f)
+</span></span><span style="display:flex;"><span>    local co <span style="color:#39c">=</span> tremove(coroutine_pool) <span style="color:#39c">--</span> <span style="">从协程池中获取协程</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> co <span style="color:#39c">==</span> nil then <span style="color:#39c">--</span><span style="">如果没有了</span>
+</span></span><span style="display:flex;"><span>        co <span style="color:#39c">=</span> coroutine_create(function(...) <span style="color:#39c">--</span> <span style="">创建新的</span>
+</span></span><span style="display:flex;"><span>            f(...) <span style="color:#39c">--</span><span style="">执行回调函数，不会立马执行只会调用</span>coroutine.resume<span style="">时候才会执行</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">while</span> <span style="color:#cd00cd">true</span> <span style="color:#cdcd00">do</span> <span style="color:#39c">--</span> <span style="">为了能够复用刚创建的协成，下面需要对协程进行初始化和回收</span>
+</span></span><span style="display:flex;"><span>                local session <span style="color:#39c">=</span> session_coroutine_id[co]
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> session and session <span style="color:#39c">~=</span> <span style="color:#cd00cd">0</span> then
+</span></span><span style="display:flex;"><span>                    local source <span style="color:#39c">=</span> debug.getinfo(f,<span style="color:#cd0000">&#34;S&#34;</span>)
+</span></span><span style="display:flex;"><span>                    skynet.error(string.format(<span style="color:#cd0000">&#34;Maybe forgot response session %s from %s : %s:%d&#34;</span>,
 </span></span><span style="display:flex;"><span>                        session,
-</span></span><span style="display:flex;"><span>                        skynet.<span style="color:#a6e22e">address</span>(session_coroutine_address[co]),
+</span></span><span style="display:flex;"><span>                        skynet.address(session_coroutine_address[co]),
 </span></span><span style="display:flex;"><span>                        source.source, source.linedefined))
 </span></span><span style="display:flex;"><span>                end
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">--</span> coroutine exit
-</span></span><span style="display:flex;"><span>                local tag <span style="color:#f92672">=</span> session_coroutine_tracetag[co]
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> tag <span style="color:#f92672">~=</span> nil then
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> tag then c.<span style="color:#a6e22e">trace</span>(tag, <span style="color:#e6db74">&#34;end&#34;</span>) end
-</span></span><span style="display:flex;"><span>                    session_coroutine_tracetag[co] <span style="color:#f92672">=</span> nil
+</span></span><span style="display:flex;"><span>                <span style="color:#39c">--</span> coroutine exit
+</span></span><span style="display:flex;"><span>                local tag <span style="color:#39c">=</span> session_coroutine_tracetag[co]
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> tag <span style="color:#39c">~=</span> nil then
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">if</span> tag then c.trace(tag, <span style="color:#cd0000">&#34;end&#34;</span>) end
+</span></span><span style="display:flex;"><span>                    session_coroutine_tracetag[co] <span style="color:#39c">=</span> nil
 </span></span><span style="display:flex;"><span>                end
-</span></span><span style="display:flex;"><span>                local address <span style="color:#f92672">=</span> session_coroutine_address[co]
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> address then
-</span></span><span style="display:flex;"><span>                    session_coroutine_id[co] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>                    session_coroutine_address[co] <span style="color:#f92672">=</span> nil
+</span></span><span style="display:flex;"><span>                local address <span style="color:#39c">=</span> session_coroutine_address[co]
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> address then
+</span></span><span style="display:flex;"><span>                    session_coroutine_id[co] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>                    session_coroutine_address[co] <span style="color:#39c">=</span> nil
 </span></span><span style="display:flex;"><span>                end
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">--</span> recycle co into pool
-</span></span><span style="display:flex;"><span>                f <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>                coroutine_pool[<span style="color:#960050;background-color:#1e0010">#</span>coroutine_pool<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> co
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">--</span> recv new main function f
-</span></span><span style="display:flex;"><span>                f <span style="color:#f92672">=</span> coroutine_yield <span style="color:#e6db74">&#34;SUSPEND&#34;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">f</span>(<span style="color:#a6e22e">coroutine_yield</span>())
+</span></span><span style="display:flex;"><span>                <span style="color:#39c">--</span> recycle co into pool
+</span></span><span style="display:flex;"><span>                f <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>                coroutine_pool[<span style="">#</span>coroutine_pool<span style="color:#39c">+</span><span style="color:#cd00cd">1</span>] <span style="color:#39c">=</span> co
+</span></span><span style="display:flex;"><span>                <span style="color:#39c">--</span> recv new main function f
+</span></span><span style="display:flex;"><span>                f <span style="color:#39c">=</span> coroutine_yield <span style="color:#cd0000">&#34;SUSPEND&#34;</span>
+</span></span><span style="display:flex;"><span>                f(coroutine_yield())
 </span></span><span style="display:flex;"><span>            end
 </span></span><span style="display:flex;"><span>        end)
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">--</span> pass the main function f to coroutine, and restore running <span style="color:#66d9ef">thread</span>
-</span></span><span style="display:flex;"><span>        local running <span style="color:#f92672">=</span> running_thread
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">coroutine_resume</span>(co, f)
-</span></span><span style="display:flex;"><span>        running_thread <span style="color:#f92672">=</span> running
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#39c">--</span> pass the main function f to coroutine, and restore running <span style="color:#cdcd00">thread</span>
+</span></span><span style="display:flex;"><span>        local running <span style="color:#39c">=</span> running_thread
+</span></span><span style="display:flex;"><span>        coroutine_resume(co, f)
+</span></span><span style="display:flex;"><span>        running_thread <span style="color:#39c">=</span> running
 </span></span><span style="display:flex;"><span>    end
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> co
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">return</span> co
 </span></span><span style="display:flex;"><span>end
 </span></span></code></pre></div><h3 id="协程挂起"><span>协程挂起</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#f92672">--</span> suspend is local function
-</span></span><span style="display:flex;"><span>function <span style="color:#a6e22e">suspend</span>(co, result, command)
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> not result then <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">执行</span>co<span style="color:#960050;background-color:#1e0010">失败以后的处理</span>
-</span></span><span style="display:flex;"><span>        local session <span style="color:#f92672">=</span> session_coroutine_id[co]
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> session then <span style="color:#f92672">--</span> coroutine may fork by <span style="color:#a6e22e">others</span> (session is nil)
-</span></span><span style="display:flex;"><span>            local addr <span style="color:#f92672">=</span> session_coroutine_address[co]
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> session <span style="color:#f92672">~=</span> <span style="color:#ae81ff">0</span> then
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">--</span> only call response error
-</span></span><span style="display:flex;"><span>                local tag <span style="color:#f92672">=</span> session_coroutine_tracetag[co]
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> tag then c.<span style="color:#a6e22e">trace</span>(tag, <span style="color:#e6db74">&#34;error&#34;</span>) end
-</span></span><span style="display:flex;"><span>                c.<span style="color:#a6e22e">send</span>(addr, skynet.PTYPE_ERROR, session, <span style="color:#e6db74">&#34;&#34;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#39c">--</span> suspend is local function
+</span></span><span style="display:flex;"><span>function suspend(co, result, command)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> not result then <span style="color:#39c">--</span> <span style="">执行</span>co<span style="">失败以后的处理</span>
+</span></span><span style="display:flex;"><span>        local session <span style="color:#39c">=</span> session_coroutine_id[co]
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> session then <span style="color:#39c">--</span> coroutine may fork by others (session is nil)
+</span></span><span style="display:flex;"><span>            local addr <span style="color:#39c">=</span> session_coroutine_address[co]
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> session <span style="color:#39c">~=</span> <span style="color:#cd00cd">0</span> then
+</span></span><span style="display:flex;"><span>                <span style="color:#39c">--</span> only call response error
+</span></span><span style="display:flex;"><span>                local tag <span style="color:#39c">=</span> session_coroutine_tracetag[co]
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> tag then c.trace(tag, <span style="color:#cd0000">&#34;error&#34;</span>) end
+</span></span><span style="display:flex;"><span>                c.send(addr, skynet.PTYPE_ERROR, session, <span style="color:#cd0000">&#34;&#34;</span>)
 </span></span><span style="display:flex;"><span>            end
-</span></span><span style="display:flex;"><span>            session_coroutine_id[co] <span style="color:#f92672">=</span> nil
+</span></span><span style="display:flex;"><span>            session_coroutine_id[co] <span style="color:#39c">=</span> nil
 </span></span><span style="display:flex;"><span>        end
-</span></span><span style="display:flex;"><span>        session_coroutine_address[co] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>        session_coroutine_tracetag[co] <span style="color:#f92672">=</span> nil
-</span></span><span style="display:flex;"><span>        skynet.<span style="color:#a6e22e">fork</span>(<span style="color:#a6e22e">function</span>() end) <span style="color:#f92672">--</span> trigger command <span style="color:#e6db74">&#34;SUSPEND&#34;</span>
-</span></span><span style="display:flex;"><span>        local tb <span style="color:#f92672">=</span> <span style="color:#a6e22e">traceback</span>(co,<span style="color:#a6e22e">tostring</span>(command))
-</span></span><span style="display:flex;"><span>        coroutine.<span style="color:#a6e22e">close</span>(co)
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">error</span>(tb)
+</span></span><span style="display:flex;"><span>        session_coroutine_address[co] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>        session_coroutine_tracetag[co] <span style="color:#39c">=</span> nil
+</span></span><span style="display:flex;"><span>        skynet.fork(function() end) <span style="color:#39c">--</span> trigger command <span style="color:#cd0000">&#34;SUSPEND&#34;</span>
+</span></span><span style="display:flex;"><span>        local tb <span style="color:#39c">=</span> traceback(co,tostring(command))
+</span></span><span style="display:flex;"><span>        coroutine.close(co)
+</span></span><span style="display:flex;"><span>        error(tb)
 </span></span><span style="display:flex;"><span>    end
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> command <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;SUSPEND&#34;</span> then <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">挂起操作</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">dispatch_wakeup</span>() <span style="color:#f92672">--</span> <span style="color:#960050;background-color:#1e0010">如果有能够被唤醒的协程，就</span>wakeup
-</span></span><span style="display:flex;"><span>    elseif command <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;QUIT&#34;</span> then
-</span></span><span style="display:flex;"><span>        coroutine.<span style="color:#a6e22e">close</span>(co)
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">--</span> service exit
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>
-</span></span><span style="display:flex;"><span>    elseif command <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;USER&#34;</span> then
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">--</span> See skynet.coutine <span style="color:#66d9ef">for</span> detail
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;Call skynet.coroutine.yield out of skynet.coroutine.resume</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> .. <span style="color:#a6e22e">traceback</span>(co))
-</span></span><span style="display:flex;"><span>    elseif command <span style="color:#f92672">==</span> nil then
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">--</span> debug trace
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;Unknown command : &#34;</span> .. command .. <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> .. <span style="color:#a6e22e">traceback</span>(co))
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> command <span style="color:#39c">==</span> <span style="color:#cd0000">&#34;SUSPEND&#34;</span> then <span style="color:#39c">--</span> <span style="">挂起操作</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span> dispatch_wakeup() <span style="color:#39c">--</span> <span style="">如果有能够被唤醒的协程，就</span>wakeup
+</span></span><span style="display:flex;"><span>    elseif command <span style="color:#39c">==</span> <span style="color:#cd0000">&#34;QUIT&#34;</span> then
+</span></span><span style="display:flex;"><span>        coroutine.close(co)
+</span></span><span style="display:flex;"><span>        <span style="color:#39c">--</span> service exit
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>
+</span></span><span style="display:flex;"><span>    elseif command <span style="color:#39c">==</span> <span style="color:#cd0000">&#34;USER&#34;</span> then
+</span></span><span style="display:flex;"><span>        <span style="color:#39c">--</span> See skynet.coutine <span style="color:#cdcd00">for</span> detail
+</span></span><span style="display:flex;"><span>        error(<span style="color:#cd0000">&#34;Call skynet.coroutine.yield out of skynet.coroutine.resume</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> .. traceback(co))
+</span></span><span style="display:flex;"><span>    elseif command <span style="color:#39c">==</span> nil then
+</span></span><span style="display:flex;"><span>        <span style="color:#39c">--</span> debug trace
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>        error(<span style="color:#cd0000">&#34;Unknown command : &#34;</span> .. command .. <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> .. traceback(co))
 </span></span><span style="display:flex;"><span>    end
 </span></span><span style="display:flex;"><span>end				
 </span></span></code></pre></div><h3 id="协程销毁"><span>协程销毁</span></h3>
@@ -827,39 +827,39 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 </p>
 <h2 id="api-相关"><span>API 相关</span></h2>
 <h3 id="cluster"><span>cluster</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>cluster.call(node, address, ...) <span style="color:#75715e">--远程调用node中的addr</span>
-</span></span><span style="display:flex;"><span>cluster.send(node, address, ...) <span style="color:#75715e">--send调用远程node的addr</span>
-</span></span><span style="display:flex;"><span>cluster.open(port) <span style="color:#75715e">--本地打开(监听)一个cluster结点，使其能在cluster中的其他结点发现</span>
-</span></span><span style="display:flex;"><span>cluster.reload(config) <span style="color:#75715e">--重载远程结点配置表，表中的cluster结点都open过，则可以通讯</span>
-</span></span><span style="display:flex;"><span>cluster.proxy(node, name) <span style="color:#75715e">--设置远程结点的代理，使得可以像调用本地RPC一样调用远程结点</span>
-</span></span><span style="display:flex;"><span>cluster.snax(node, name, address) <span style="color:#75715e">--生成一个远程的snax服务对象</span>
-</span></span><span style="display:flex;"><span>cluster.register(name, addr) <span style="color:#75715e">--注册一个cluster结点</span>
-</span></span><span style="display:flex;"><span>cluster.query(node, name) <span style="color:#75715e">--查找远程结点中注册过的结点是否存在</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>cluster.call(node, address, ...) <span style="color:#000080">--远程调用node中的addr</span>
+</span></span><span style="display:flex;"><span>cluster.send(node, address, ...) <span style="color:#000080">--send调用远程node的addr</span>
+</span></span><span style="display:flex;"><span>cluster.open(port) <span style="color:#000080">--本地打开(监听)一个cluster结点，使其能在cluster中的其他结点发现</span>
+</span></span><span style="display:flex;"><span>cluster.reload(config) <span style="color:#000080">--重载远程结点配置表，表中的cluster结点都open过，则可以通讯</span>
+</span></span><span style="display:flex;"><span>cluster.proxy(node, name) <span style="color:#000080">--设置远程结点的代理，使得可以像调用本地RPC一样调用远程结点</span>
+</span></span><span style="display:flex;"><span>cluster.snax(node, name, address) <span style="color:#000080">--生成一个远程的snax服务对象</span>
+</span></span><span style="display:flex;"><span>cluster.register(name, addr) <span style="color:#000080">--注册一个cluster结点</span>
+</span></span><span style="display:flex;"><span>cluster.query(node, name) <span style="color:#000080">--查找远程结点中注册过的结点是否存在</span>
 </span></span></code></pre></div><h3 id="harbor"><span>harbor</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>harbor.link(id) <span style="color:#75715e">--用来监控一个 slave 是否断开。如果 harbor id 对应的 slave 正常，这个 api 将阻塞。当 slave 断开时，会立刻返回。</span>
-</span></span><span style="display:flex;"><span>harbor.linkmaster() <span style="color:#75715e">--用来在 slave 上监控和 master 的连接是否正常。这个 api 多用于异常时的安全退出（因为当 slave 和 master 断开后，没有手段可以恢复）。</span>
-</span></span><span style="display:flex;"><span>harbor.connect(id) <span style="color:#75715e">--和 harbor.link 相反。如果 harbor id 对应的 slave 没有连接，这个 api 将阻塞，一直到它连上来才返回。</span>
-</span></span><span style="display:flex;"><span>harbor.queryname(name) <span style="color:#75715e">--可以用来查询全局名字或本地名字对应的服务地址。它是一个阻塞调用。</span>
-</span></span><span style="display:flex;"><span>harbor.globalname(name, handle) <span style="color:#75715e">--注册一个全局名字。如果 handle 为空，则注册自己。skynet.name 和 skynet.register 是用其实现的。</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>harbor.link(id) <span style="color:#000080">--用来监控一个 slave 是否断开。如果 harbor id 对应的 slave 正常，这个 api 将阻塞。当 slave 断开时，会立刻返回。</span>
+</span></span><span style="display:flex;"><span>harbor.linkmaster() <span style="color:#000080">--用来在 slave 上监控和 master 的连接是否正常。这个 api 多用于异常时的安全退出（因为当 slave 和 master 断开后，没有手段可以恢复）。</span>
+</span></span><span style="display:flex;"><span>harbor.connect(id) <span style="color:#000080">--和 harbor.link 相反。如果 harbor id 对应的 slave 没有连接，这个 api 将阻塞，一直到它连上来才返回。</span>
+</span></span><span style="display:flex;"><span>harbor.queryname(name) <span style="color:#000080">--可以用来查询全局名字或本地名字对应的服务地址。它是一个阻塞调用。</span>
+</span></span><span style="display:flex;"><span>harbor.globalname(name, handle) <span style="color:#000080">--注册一个全局名字。如果 handle 为空，则注册自己。skynet.name 和 skynet.register 是用其实现的。</span>
 </span></span></code></pre></div><h3 id="构建服务的一些基础接口"><span>构建服务的一些基础接口</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.getenv(varName) <span style="color:#75715e">--conf配置信息已经写入到注册表中，通过该函数获取注册表的变量值</span>
-</span></span><span style="display:flex;"><span>skynet.setenv(varName, varValue) <span style="color:#75715e">--设置注册表信息，varValue一般是number或string，但是不能设置已经存在的varname</span>
-</span></span><span style="display:flex;"><span>skynet.error(...) <span style="color:#75715e">--打印函数</span>
-</span></span><span style="display:flex;"><span>skynet.start(func) <span style="color:#75715e">--用 func 函数初始化服务，并将消息处理函数注册到 C 层，让该服务可以工作。</span>
-</span></span><span style="display:flex;"><span>skynet.init(func) <span style="color:#75715e">--若服务尚未初始化完成，则注册一个函数等服务初始化阶段再执行；若服务已经初始化完成，则立刻运行该函数。</span>
-</span></span><span style="display:flex;"><span>skynet.exit() <span style="color:#75715e">--结束当前服务</span>
-</span></span><span style="display:flex;"><span>skynet.self() <span style="color:#75715e">--获取当前服务的句柄handler</span>
-</span></span><span style="display:flex;"><span>skynet.address(handler) <span style="color:#75715e">--将handle转换成字符串</span>
-</span></span><span style="display:flex;"><span>skynet.abort() <span style="color:#75715e">--退出skynet进程</span>
-</span></span><span style="display:flex;"><span>skynet.kill(address) <span style="color:#75715e">----强制杀死其他服务。可以用来强制关闭别的服务。但强烈不推荐这样做。因为对象会在任意一条消息处理完毕后，毫无征兆的退出。所以推荐的做法是，发送一条消息，让对方自己善后以及调用 skynet.exit 。注：skynet.kill(skynet.self()) 不完全等价于 skynet.exit() ，后者更安全。			</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.getenv(varName) <span style="color:#000080">--conf配置信息已经写入到注册表中，通过该函数获取注册表的变量值</span>
+</span></span><span style="display:flex;"><span>skynet.setenv(varName, varValue) <span style="color:#000080">--设置注册表信息，varValue一般是number或string，但是不能设置已经存在的varname</span>
+</span></span><span style="display:flex;"><span>skynet.error(...) <span style="color:#000080">--打印函数</span>
+</span></span><span style="display:flex;"><span>skynet.start(func) <span style="color:#000080">--用 func 函数初始化服务，并将消息处理函数注册到 C 层，让该服务可以工作。</span>
+</span></span><span style="display:flex;"><span>skynet.init(func) <span style="color:#000080">--若服务尚未初始化完成，则注册一个函数等服务初始化阶段再执行；若服务已经初始化完成，则立刻运行该函数。</span>
+</span></span><span style="display:flex;"><span>skynet.exit() <span style="color:#000080">--结束当前服务</span>
+</span></span><span style="display:flex;"><span>skynet.self() <span style="color:#000080">--获取当前服务的句柄handler</span>
+</span></span><span style="display:flex;"><span>skynet.address(handler) <span style="color:#000080">--将handle转换成字符串</span>
+</span></span><span style="display:flex;"><span>skynet.abort() <span style="color:#000080">--退出skynet进程</span>
+</span></span><span style="display:flex;"><span>skynet.kill(address) <span style="color:#000080">----强制杀死其他服务。可以用来强制关闭别的服务。但强烈不推荐这样做。因为对象会在任意一条消息处理完毕后，毫无征兆的退出。所以推荐的做法是，发送一条消息，让对方自己善后以及调用 skynet.exit 。注：skynet.kill(skynet.self()) 不完全等价于 skynet.exit() ，后者更安全。			</span>
 </span></span></code></pre></div><h3 id="普通服务"><span>普通服务</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.newservice(luaServerName, ...)		
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.newservice(luaServerName, ...)		
 </span></span></code></pre></div><h3 id="全局唯一服务"><span>全局唯一服务</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.uniqueservice(servicename, ...) <span style="color:#75715e">--当前的skynet节点全局唯一</span>
-</span></span><span style="display:flex;"><span>skynet.uniqueservice(<span style="color:#66d9ef">true</span>, servicename, ...) <span style="color:#75715e">--所有的节点全局唯一</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.uniqueservice(servicename, ...) <span style="color:#000080">--当前的skynet节点全局唯一</span>
+</span></span><span style="display:flex;"><span>skynet.uniqueservice(<span style="color:#cdcd00">true</span>, servicename, ...) <span style="color:#000080">--所有的节点全局唯一</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>skynet.queryservice(servicename, ...) <span style="color:#75715e">--当前的skynet节点中查找</span>
-</span></span><span style="display:flex;"><span>skynet.queryservice(<span style="color:#66d9ef">true</span>, servicename, ...) <span style="color:#75715e">--所有的节点中查找</span>
+</span></span><span style="display:flex;"><span>skynet.queryservice(servicename, ...) <span style="color:#000080">--当前的skynet节点中查找</span>
+</span></span><span style="display:flex;"><span>skynet.queryservice(<span style="color:#cdcd00">true</span>, servicename, ...) <span style="color:#000080">--所有的节点中查找</span>
 </span></span></code></pre></div><h3 id="别名"><span>别名</span></h3>
 <p>别名分两种：</p>
 <ol>
@@ -870,162 +870,162 @@ epoll_ctrl() 执行增加操作时候就是往interesting队列塞socket
 <p>全局别名 可以在所有的<code>skynet</code>中使用 全局别名不能以<code>.</code> 开头</p>
 </li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.register(aliasname) <span style="color:#75715e">--给当前服务定一个别名，可以是全局别名，也可以是本地别名</span>
-</span></span><span style="display:flex;"><span>skynet.name(aliasname, servicehandler) <span style="color:#75715e">--给指定servicehandler的服务定一个别名，可以是全局别名，也可以是本地别名</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.register(aliasname) <span style="color:#000080">--给当前服务定一个别名，可以是全局别名，也可以是本地别名</span>
+</span></span><span style="display:flex;"><span>skynet.name(aliasname, servicehandler) <span style="color:#000080">--给指定servicehandler的服务定一个别名，可以是全局别名，也可以是本地别名</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--[[
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">查询别名为aliasname的服务,可以是全局别名也可以是本地别名，
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">1、当查询本地别名时，返回servicehandler，不存在就返回nil
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">2、当查询全局别名时，返回servicehandler，不存在就阻塞等待到该服务初始化完成
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">]]</span><span style="color:#75715e">--</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--[[
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">查询别名为aliasname的服务,可以是全局别名也可以是本地别名，
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">1、当查询本地别名时，返回servicehandler，不存在就返回nil
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">2、当查询全局别名时，返回servicehandler，不存在就阻塞等待到该服务初始化完成
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">]]</span><span style="color:#000080">--</span>
 </span></span><span style="display:flex;"><span>skynet.harbor.queryname(aliasname)
-</span></span><span style="display:flex;"><span>skynet.localname(aliasname) <span style="color:#75715e">--查询本地别名为aliasname的服务，返回servicehandler，不存在就返回nil</span>
-</span></span><span style="display:flex;"><span>skynet.kill(handle) <span style="color:#75715e">--杀死带别名服务</span>
+</span></span><span style="display:flex;"><span>skynet.localname(aliasname) <span style="color:#000080">--查询本地别名为aliasname的服务，返回servicehandler，不存在就返回nil</span>
+</span></span><span style="display:flex;"><span>skynet.kill(handle) <span style="color:#000080">--杀死带别名服务</span>
 </span></span></code></pre></div><h3 id="服务调度"><span>服务调度</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.sleep(time) <span style="color:#75715e">--让当前的任务等待 time * 0.01s 。</span>
-</span></span><span style="display:flex;"><span>skynet.fork(func, ...) <span style="color:#75715e">--启动一个新的任务去执行函数 func , 其实就是开了一个协程，函数调用完成将返回线程句柄 虽然你也可以使用原生的coroutine.create来创建协程，但是会打乱skynet的工作流程</span>
-</span></span><span style="display:flex;"><span>skynet.yield() <span style="color:#75715e">--让出当前的任务执行流程，使本服务内其它任务有机会执行，随后会继续运行。</span>
-</span></span><span style="display:flex;"><span>skynet.wait() <span style="color:#75715e">--让出当前的任务执行流程，直到用 wakeup 唤醒它。</span>
-</span></span><span style="display:flex;"><span>skynet.wakeup(co) <span style="color:#75715e">--唤醒用 wait 或 sleep 处于等待状态的任务。    </span>
-</span></span><span style="display:flex;"><span>skynet.timeout(time, func) <span style="color:#75715e">--设定一个定时触发函数 func ，在 time * 0.01s 后触发。</span>
-</span></span><span style="display:flex;"><span>skynet.starttime() <span style="color:#75715e">--返回当前进程的启动 UTC 时间（秒）。</span>
-</span></span><span style="display:flex;"><span>skynet.now() <span style="color:#75715e">--返回当前进程启动后经过的时间 (0.01 秒) 。</span>
-</span></span><span style="display:flex;"><span>skynet.time() <span style="color:#75715e">--通过 starttime 和 now 计算出当前 UTC 时间（秒）。		</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.sleep(time) <span style="color:#000080">--让当前的任务等待 time * 0.01s 。</span>
+</span></span><span style="display:flex;"><span>skynet.fork(func, ...) <span style="color:#000080">--启动一个新的任务去执行函数 func , 其实就是开了一个协程，函数调用完成将返回线程句柄 虽然你也可以使用原生的coroutine.create来创建协程，但是会打乱skynet的工作流程</span>
+</span></span><span style="display:flex;"><span>skynet.yield() <span style="color:#000080">--让出当前的任务执行流程，使本服务内其它任务有机会执行，随后会继续运行。</span>
+</span></span><span style="display:flex;"><span>skynet.wait() <span style="color:#000080">--让出当前的任务执行流程，直到用 wakeup 唤醒它。</span>
+</span></span><span style="display:flex;"><span>skynet.wakeup(co) <span style="color:#000080">--唤醒用 wait 或 sleep 处于等待状态的任务。    </span>
+</span></span><span style="display:flex;"><span>skynet.timeout(time, func) <span style="color:#000080">--设定一个定时触发函数 func ，在 time * 0.01s 后触发。</span>
+</span></span><span style="display:flex;"><span>skynet.starttime() <span style="color:#000080">--返回当前进程的启动 UTC 时间（秒）。</span>
+</span></span><span style="display:flex;"><span>skynet.now() <span style="color:#000080">--返回当前进程启动后经过的时间 (0.01 秒) 。</span>
+</span></span><span style="display:flex;"><span>skynet.time() <span style="color:#000080">--通过 starttime 和 now 计算出当前 UTC 时间（秒）。		</span>
 </span></span></code></pre></div><h3 id="消息类型"><span>消息类型</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_TEXT 0        --文本
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_RESPONSE 1    --表示一个回应包
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_MULTICAST 2   --广播消息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_CLIENT 3      --用来处理网络客户端的请求消息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_SYSTEM 4      --系统消息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_HARBOR 5      --集群内其他的 skynet 节点发来的消息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_SOCKET 6    --套接字消息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_ERROR 7     --错误消息，一般服务退出的时候会发送error消息给关联的服务
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_QUEUE 8     --队列方式
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_DEBUG 9     --调试
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_LUA 10   --lua类型的消息，最常用
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_SNAX 11  --snax服务消息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_TAG_DONTCOPY 0x10000 --禁止拷贝
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define PTYPE_TAG_ALLOCSESSION 0x20000 --分配新的 session
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_TEXT 0        --文本
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_RESPONSE 1    --表示一个回应包
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_MULTICAST 2   --广播消息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_CLIENT 3      --用来处理网络客户端的请求消息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_SYSTEM 4      --系统消息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_HARBOR 5      --集群内其他的 skynet 节点发来的消息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_SOCKET 6    --套接字消息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_ERROR 7     --错误消息，一般服务退出的时候会发送error消息给关联的服务
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_QUEUE 8     --队列方式
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_DEBUG 9     --调试
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_LUA 10   --lua类型的消息，最常用
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_SNAX 11  --snax服务消息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_TAG_DONTCOPY 0x10000 --禁止拷贝
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#define PTYPE_TAG_ALLOCSESSION 0x20000 --分配新的 session
 </span></span></span></code></pre></div><h3 id="打包解包"><span>打包解包</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.pack(...) <span style="color:#75715e">--打包</span>
-</span></span><span style="display:flex;"><span>skynet.unpack(msg, sz) <span style="color:#75715e">--解包		</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.pack(...) <span style="color:#000080">--打包</span>
+</span></span><span style="display:flex;"><span>skynet.unpack(msg, sz) <span style="color:#000080">--解包		</span>
 </span></span></code></pre></div><h3 id="发送消息"><span>发送消息</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span> <span style="color:#75715e">-- 发送无需响应的消息</span>
-</span></span><span style="display:flex;"><span> skynet.send(addr, type, ...)  <span style="color:#75715e">--用 type 类型向 addr 发送未打包的消息。该函数会自动把...参数列表进行打包，默认情况下lua消息使用skynet.pack打包。addr可以是服务句柄也可以是别名。自动打包与解包。）</span>
-</span></span><span style="display:flex;"><span> skynet.rawsend(addr, type, msg, sz)  <span style="color:#75715e">--用 type 类型向 addr 发送一个打包好的消息。addr可以是服务句柄也可以是别名。（需要自己打包与解包）</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span> <span style="color:#000080">-- 发送无需响应的消息</span>
+</span></span><span style="display:flex;"><span> skynet.send(addr, type, ...)  <span style="color:#000080">--用 type 类型向 addr 发送未打包的消息。该函数会自动把...参数列表进行打包，默认情况下lua消息使用skynet.pack打包。addr可以是服务句柄也可以是别名。自动打包与解包。）</span>
+</span></span><span style="display:flex;"><span> skynet.rawsend(addr, type, msg, sz)  <span style="color:#000080">--用 type 类型向 addr 发送一个打包好的消息。addr可以是服务句柄也可以是别名。（需要自己打包与解包）</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span> <span style="color:#75715e">-- 发送必须响应的消息</span>
-</span></span><span style="display:flex;"><span>skynet.call(addr, type, ...)  <span style="color:#75715e">--用默认函数打包消息，向addr发送type类型的消息并等待返回响应，并对回应信息进行解包。（自动打包与解包。）</span>
-</span></span><span style="display:flex;"><span>skynet.rawcall(addr, type, msg, sz) <span style="color:#75715e">--直接向addr发送type类型的msg,sz并等待返回响应，不对回应信息解包。（需要自己打包与解包）</span>
+</span></span><span style="display:flex;"><span> <span style="color:#000080">-- 发送必须响应的消息</span>
+</span></span><span style="display:flex;"><span>skynet.call(addr, type, ...)  <span style="color:#000080">--用默认函数打包消息，向addr发送type类型的消息并等待返回响应，并对回应信息进行解包。（自动打包与解包。）</span>
+</span></span><span style="display:flex;"><span>skynet.rawcall(addr, type, msg, sz) <span style="color:#000080">--直接向addr发送type类型的msg,sz并等待返回响应，不对回应信息解包。（需要自己打包与解包）</span>
 </span></span></code></pre></div><h3 id="响应消息"><span>响应消息</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">-- 同一个协成处理</span>
-</span></span><span style="display:flex;"><span>skynet.ret() <span style="color:#75715e">--目标服务消息处理后需要通过该函数将结果返回</span>
-</span></span><span style="display:flex;"><span>skynet.retpack(...) <span style="color:#75715e">--将消息用skynet.pack 打包，并调用 ret 回应。</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#000080">-- 同一个协成处理</span>
+</span></span><span style="display:flex;"><span>skynet.ret() <span style="color:#000080">--目标服务消息处理后需要通过该函数将结果返回</span>
+</span></span><span style="display:flex;"><span>skynet.retpack(...) <span style="color:#000080">--将消息用skynet.pack 打包，并调用 ret 回应。</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--不在一个协成处理</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> response <span style="color:#f92672">=</span> skynet.response(pack)<span style="color:#75715e">--参数pack指定应答打包函数，不填默认使用skynet.pack, 必须根据接收到消息的打包函数一致 返回值是一个闭包函数</span>
-</span></span><span style="display:flex;"><span>response(ok, ...) <span style="color:#75715e">--参数ok的值可以是 &#34;test&#34;、true、false，为&#34;test&#34;时表示检查接收响应的服务是否存在，为true时表示发送应答PTYPE_RESPONSE，为false时表示发送PTYPE_ERROR错误消息。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--不在一个协成处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> response <span style="color:#39c">=</span> skynet.response(pack)<span style="color:#000080">--参数pack指定应答打包函数，不填默认使用skynet.pack, 必须根据接收到消息的打包函数一致 返回值是一个闭包函数</span>
+</span></span><span style="display:flex;"><span>response(ok, ...) <span style="color:#000080">--参数ok的值可以是 &#34;test&#34;、true、false，为&#34;test&#34;时表示检查接收响应的服务是否存在，为true时表示发送应答PTYPE_RESPONSE，为false时表示发送PTYPE_ERROR错误消息。</span>
 </span></span></code></pre></div><h3 id="消息冲入时序问题"><span>消息冲入时序问题</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.queue() <span style="color:#75715e">--帮助你回避这些服务重入或者伪并发引起的复杂性,但是明显降低了服务的并发处理能力，所以使用执行队列的时候尽量缩小临界区的颗粒度大小</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.queue() <span style="color:#000080">--帮助你回避这些服务重入或者伪并发引起的复杂性,但是明显降低了服务的并发处理能力，所以使用执行队列的时候尽量缩小临界区的颗粒度大小</span>
 </span></span></code></pre></div><h3 id="协议转换"><span>协议转换</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.forward_type() <span style="color:#75715e">--需要提供一张消息转换映射表forward_map, 其他的方法与skynet.start一样</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.forward_type() <span style="color:#000080">--需要提供一张消息转换映射表forward_map, 其他的方法与skynet.start一样</span>
 </span></span></code></pre></div><h3 id="伪造消息"><span>伪造消息</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.redirect(dest,source,typename, session, msg, sz) <span style="color:#75715e">--使用source服务地址，发送typename类型的消息给dest服务，不需要接收响应，（source，dest只能是服务ID）msg sz一般使用skynet.pack打包生成</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.redirect(dest,source,typename, session, msg, sz) <span style="color:#000080">--使用source服务地址，发送typename类型的消息给dest服务，不需要接收响应，（source，dest只能是服务ID）msg sz一般使用skynet.pack打包生成</span>
 </span></span></code></pre></div><h3 id="组播"><span>组播</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.multicast <span style="color:#75715e">-- 当组播的数据量较大时候可以节省内部的带宽</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.multicast <span style="color:#000080">-- 当组播的数据量较大时候可以节省内部的带宽</span>
 </span></span></code></pre></div><h3 id="socket"><span>socket</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#75715e">--建立一个 TCP 连接。返回一个数字 id 。</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#000080">--建立一个 TCP 连接。返回一个数字 id 。</span>
 </span></span><span style="display:flex;"><span>socket.open(address, port)      
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--关闭一个连接，这个 API 有可能阻塞住执行流。因为如果有其它 coroutine</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--正在阻塞读这个 id 对应的连接，会先驱使读操作结束，close 操作才返回。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--关闭一个连接，这个 API 有可能阻塞住执行流。因为如果有其它 coroutine</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--正在阻塞读这个 id 对应的连接，会先驱使读操作结束，close 操作才返回。</span>
 </span></span><span style="display:flex;"><span>socket.close(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--在极其罕见的情况下，需要粗暴的直接关闭某个连接，而避免 socket.close 的阻塞等待流程，可以使用它。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--在极其罕见的情况下，需要粗暴的直接关闭某个连接，而避免 socket.close 的阻塞等待流程，可以使用它。</span>
 </span></span><span style="display:flex;"><span>socket.close_fd(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--强行关闭一个连接。和 close 不同的是，它不会等待可能存在的其它 coroutine 的读操作。</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--一般不建议使用这个 API ，但如果你需要在 __gc 元方法中关闭连接的话，</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--shutdown 是一个比 close 更好的选择（因为在 gc 过程中无法切换 coroutine）。与close_fd类似</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--强行关闭一个连接。和 close 不同的是，它不会等待可能存在的其它 coroutine 的读操作。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--一般不建议使用这个 API ，但如果你需要在 __gc 元方法中关闭连接的话，</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--shutdown 是一个比 close 更好的选择（因为在 gc 过程中无法切换 coroutine）。与close_fd类似</span>
 </span></span><span style="display:flex;"><span>socket.shutdown(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--[[
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    从一个 socket 上读 sz 指定的字节数。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    如果读到了指定长度的字符串，它把这个字符串返回。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    如果连接断开导致字节数不够，将返回一个 false 加上读到的字符串。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    如果 sz 为 nil ，则返回尽可能多的字节数，但至少读一个字节（若无新数据，会阻塞）。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">--]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--[[
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    从一个 socket 上读 sz 指定的字节数。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    如果读到了指定长度的字符串，它把这个字符串返回。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    如果连接断开导致字节数不够，将返回一个 false 加上读到的字符串。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    如果 sz 为 nil ，则返回尽可能多的字节数，但至少读一个字节（若无新数据，会阻塞）。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">--]]</span>
 </span></span><span style="display:flex;"><span>socket.read(id, sz)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--从一个 socket 上读所有的数据，直到 socket 主动断开，或在其它 coroutine 用 socket.close 关闭它。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--从一个 socket 上读所有的数据，直到 socket 主动断开，或在其它 coroutine 用 socket.close 关闭它。</span>
 </span></span><span style="display:flex;"><span>socket.readall(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--从一个 socket 上读一行数据。sep 指行分割符。默认的 sep 为 &#34;\n&#34;。读到的字符串是不包含这个分割符的。</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--如果另外一端就关闭了，那么这个时候会返回一个nil，如果buffer中有未读数据则作为第二个返回值返回。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--从一个 socket 上读一行数据。sep 指行分割符。默认的 sep 为 &#34;\n&#34;。读到的字符串是不包含这个分割符的。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--如果另外一端就关闭了，那么这个时候会返回一个nil，如果buffer中有未读数据则作为第二个返回值返回。</span>
 </span></span><span style="display:flex;"><span>socket.readline(id, sep)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--等待一个 socket 可读。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--等待一个 socket 可读。</span>
 </span></span><span style="display:flex;"><span>socket.block(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--把一个字符串置入正常的写队列，skynet 框架会在 socket 可写时发送它。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--把一个字符串置入正常的写队列，skynet 框架会在 socket 可写时发送它。</span>
 </span></span><span style="display:flex;"><span>socket.write(id, str)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--把字符串写入低优先级队列。如果正常的写队列还有写操作未完成时，低优先级队列上的数据永远不会被发出。</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--只有在正常写队列为空时，才会处理低优先级队列。但是，每次写的字符串都可以看成原子操作。</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--不会只发送一半，然后转去发送正常写队列的数据。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--把字符串写入低优先级队列。如果正常的写队列还有写操作未完成时，低优先级队列上的数据永远不会被发出。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--只有在正常写队列为空时，才会处理低优先级队列。但是，每次写的字符串都可以看成原子操作。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--不会只发送一半，然后转去发送正常写队列的数据。</span>
 </span></span><span style="display:flex;"><span>socket.lwrite(id, str)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--监听一个端口，返回一个 id ，供 start 使用。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--监听一个端口，返回一个 id ，供 start 使用。</span>
 </span></span><span style="display:flex;"><span>socket.listen(address, port)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--[[
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    accept 是一个函数。每当一个监听的 id 对应的 socket 上有连接接入的时候，都会调用 accept 函数。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">这个函数会得到接入连接的 id 以及 ip 地址。你可以做后续操作。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    每当 accept 函数获得一个新的 socket id 后，并不会立即收到这个 socket 上的数据。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">这是因为，我们有时会希望把这个 socket 的操作权转让给别的服务去处理。accept(id, addr)
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">]]</span><span style="color:#75715e">--</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--[[
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    accept 是一个函数。每当一个监听的 id 对应的 socket 上有连接接入的时候，都会调用 accept 函数。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">这个函数会得到接入连接的 id 以及 ip 地址。你可以做后续操作。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    每当 accept 函数获得一个新的 socket id 后，并不会立即收到这个 socket 上的数据。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">这是因为，我们有时会希望把这个 socket 的操作权转让给别的服务去处理。accept(id, addr)
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">]]</span><span style="color:#000080">--</span>
 </span></span><span style="display:flex;"><span>socket.start(id , accept)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--[[
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    任何一个服务只有在调用 socket.start(id) 之后，才可以读到这个 socket 上的数据。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">向一个 socket id 写数据也需要先调用 start 。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    socket 的 id 对于整个 skynet 节点都是公开的。也就是说，你可以把 id 这个数字
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">通过消息发送给其它服务，其他服务也可以去操作它。skynet 框架是根据调用 start 这个
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">api 的位置来决定把对应 socket 上的数据转发到哪里去的。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">--]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--[[
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    任何一个服务只有在调用 socket.start(id) 之后，才可以读到这个 socket 上的数据。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">向一个 socket id 写数据也需要先调用 start 。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    socket 的 id 对于整个 skynet 节点都是公开的。也就是说，你可以把 id 这个数字
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">通过消息发送给其它服务，其他服务也可以去操作它。skynet 框架是根据调用 start 这个
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">api 的位置来决定把对应 socket 上的数据转发到哪里去的。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">--]]</span>
 </span></span><span style="display:flex;"><span>socket.start(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--清除 socket id 在本服务内的数据结构，但并不关闭这个 socket 。</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--这可以用于你把 id 发送给其它服务，以转交 socket 的控制权。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--清除 socket id 在本服务内的数据结构，但并不关闭这个 socket 。</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--这可以用于你把 id 发送给其它服务，以转交 socket 的控制权。</span>
 </span></span><span style="display:flex;"><span>socket.abandon(id)
-</span></span><span style="display:flex;"><span><span style="color:#75715e">--[[
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    当 id 对应的 socket 上待发的数据超过 1M 字节后，系统将回调 callback 以示警告。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">function callback(id, size) 回调函数接收两个参数 id 和 size ，size 的单位是 K 。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    如果你不设回调，那么将每增加 64K 利用 skynet.error 写一行错误信息。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">--]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">--[[
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    当 id 对应的 socket 上待发的数据超过 1M 字节后，系统将回调 callback 以示警告。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">function callback(id, size) 回调函数接收两个参数 id 和 size ，size 的单位是 K 。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">    如果你不设回调，那么将每增加 64K 利用 skynet.error 写一行错误信息。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">--]]</span>
 </span></span><span style="display:flex;"><span>socket.warning(id, callback)
 </span></span></code></pre></div><h3 id="socketchannel"><span>socketChannel</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">用来支持双向传输，异步非堵塞处理数据</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="">用来支持双向传输，异步非堵塞处理数据</span>
 </span></span></code></pre></div><h3 id="dns"><span>dns</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.dns <span style="color:#75715e">--调用了系统 api getaddrinfo ，有可能阻塞住整个 socket 线程 所以skynet封装了这个接口来解决dns查询时候造成的线程堵塞问题</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>skynet.dns <span style="color:#000080">--调用了系统 api getaddrinfo ，有可能阻塞住整个 socket 线程 所以skynet封装了这个接口来解决dns查询时候造成的线程堵塞问题</span>
 </span></span></code></pre></div><h2 id="skynet-的通信调试pack"><span>skynet 的通信调试pack</span></h2>
 <ol>
 <li>
 <p>客户端按大小端打包成二进制</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">local</span> result <span style="color:#f92672">=</span> string.pack(<span style="color:#e6db74">&#34;&gt;s2&#34;</span>,<span style="color:#e6db74">&#34;string2pack&#34;</span>)
-</span></span><span style="display:flex;"><span>pack <span style="color:#f92672">&gt;</span> <span style="color:#960050;background-color:#1e0010">表示按大端顺序。</span>s2 <span style="color:#960050;background-color:#1e0010">表示按照</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">个字节打包。</span>
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">我们知道</span>string<span style="color:#960050;background-color:#1e0010">由</span>char<span style="color:#960050;background-color:#1e0010">组成。</span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">个</span>char <span style="color:#960050;background-color:#1e0010">是</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">-</span><span style="color:#ae81ff">255</span> <span style="color:#960050;background-color:#1e0010">之间的数，</span><span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">8</span> ,<span style="color:#ae81ff">1</span>char<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>byte
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">需要注意的是，他除了被打包的部分之外，还会在前面加</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">个字节，表示长度。</span>
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">如果要打包一个数字则需要转换。由</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">种办法</span>
-</span></span><span style="display:flex;"><span>string.pack(<span style="color:#e6db74">&#34;I2&#34;</span>,number)<span style="color:#960050;background-color:#1e0010">，会在前面二进制加</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">位表示长度的东西。</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> result <span style="color:#39c">=</span> string.pack(<span style="color:#cd0000">&#34;&gt;s2&#34;</span>,<span style="color:#cd0000">&#34;string2pack&#34;</span>)
+</span></span><span style="display:flex;"><span>pack <span style="color:#39c">&gt;</span> <span style="">表示按大端顺序。</span>s2 <span style="">表示按照</span><span style="color:#cd00cd">2</span><span style="">个字节打包。</span>
+</span></span><span style="display:flex;"><span><span style="">我们知道</span>string<span style="">由</span>char<span style="">组成。</span><span style="color:#cd00cd">1</span><span style="">个</span>char <span style="">是</span> <span style="color:#cd00cd">0</span><span style="color:#39c">-</span><span style="color:#cd00cd">255</span> <span style="">之间的数，</span><span style="color:#cd00cd">2</span><span style="color:#39c">^</span><span style="color:#cd00cd">8</span> ,<span style="color:#cd00cd">1</span>char<span style="color:#39c">=</span><span style="color:#cd00cd">8</span>byte
+</span></span><span style="display:flex;"><span><span style="">需要注意的是，他除了被打包的部分之外，还会在前面加</span><span style="color:#cd00cd">2</span><span style="">个字节，表示长度。</span>
+</span></span><span style="display:flex;"><span><span style="">如果要打包一个数字则需要转换。由</span><span style="color:#cd00cd">2</span><span style="">种办法</span>
+</span></span><span style="display:flex;"><span>string.pack(<span style="color:#cd0000">&#34;I2&#34;</span>,number)<span style="">，会在前面二进制加</span><span style="color:#cd00cd">2</span><span style="">位表示长度的东西。</span>
 </span></span></code></pre></div></li>
 <li>
 <p>socket发送</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>socket.send
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>socket.send
 </span></span></code></pre></div></li>
 <li>
 <p>服务端接收</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>gateserver<span style="color:#960050;background-color:#1e0010">已经有接收的代码了。</span>
-</span></span><span style="display:flex;"><span> <span style="color:#960050;background-color:#1e0010">注意的是，</span>socket<span style="color:#960050;background-color:#1e0010">会自动按</span>pack<span style="color:#960050;background-color:#1e0010">的数据分段接收。也就是会根据</span>pack<span style="color:#960050;background-color:#1e0010">的前面</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">位得到</span>size<span style="color:#960050;background-color:#1e0010">。根据</span>size<span style="color:#960050;background-color:#1e0010">去接收后面的数据。然后向上传递一份</span>message<span style="color:#960050;background-color:#1e0010">。</span>
-</span></span><span style="display:flex;"><span> <span style="color:#960050;background-color:#1e0010">接收到的</span>message<span style="color:#960050;background-color:#1e0010">已经是去掉了前面</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">位的数据。</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>gateserver<span style="">已经有接收的代码了。</span>
+</span></span><span style="display:flex;"><span> <span style="">注意的是，</span>socket<span style="">会自动按</span>pack<span style="">的数据分段接收。也就是会根据</span>pack<span style="">的前面</span><span style="color:#cd00cd">2</span><span style="">位得到</span>size<span style="">。根据</span>size<span style="">去接收后面的数据。然后向上传递一份</span>message<span style="">。</span>
+</span></span><span style="display:flex;"><span> <span style="">接收到的</span>message<span style="">已经是去掉了前面</span><span style="color:#cd00cd">2</span><span style="">位的数据。</span>
 </span></span></code></pre></div></li>
 <li>
 <p>客户端接收</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">户端接收到的数据目前我是用</span>skynet<span style="color:#960050;background-color:#1e0010">提供的“</span>client.socket<span style="color:#960050;background-color:#1e0010">”</span>.<span style="color:#960050;background-color:#1e0010">没有</span>netpack<span style="color:#960050;background-color:#1e0010">可用。</span>
-</span></span><span style="display:flex;"><span> <span style="color:#960050;background-color:#1e0010">接收到的数据需要自行去除前面的</span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">个字节的数据（</span>string.pack<span style="color:#960050;background-color:#1e0010">产生的）。</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="">户端接收到的数据目前我是用</span>skynet<span style="">提供的“</span>client.socket<span style="">”</span>.<span style="">没有</span>netpack<span style="">可用。</span>
+</span></span><span style="display:flex;"><span> <span style="">接收到的数据需要自行去除前面的</span><span style="color:#cd00cd">2</span><span style="">个字节的数据（</span>string.pack<span style="">产生的）。</span>
 </span></span></code></pre></div></li>
 </ol>
 <h2 id="skynet-clientsocket-导致-ioread-无法正确工作的问题"><span>skynet clientsocket 导致 io.read 无法正确工作的问题</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#a6e22e">https</span><span style="color:#f92672">://</span><span style="color:#a6e22e">blog</span><span style="color:#f92672">.</span><span style="color:#a6e22e">csdn</span><span style="color:#f92672">.</span><span style="color:#a6e22e">net</span><span style="color:#f92672">/</span><span style="color:#a6e22e">gneveek</span><span style="color:#f92672">/</span><span style="color:#a6e22e">article</span><span style="color:#f92672">/</span><span style="color:#a6e22e">details</span><span style="color:#f92672">/</span><span style="color:#ae81ff">78940693</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span>https<span style="color:#39c">://</span>blog<span style="color:#39c">.</span>csdn<span style="color:#39c">.</span>net<span style="color:#39c">/</span>gneveek<span style="color:#39c">/</span>article<span style="color:#39c">/</span>details<span style="color:#39c">/</span><span style="color:#cd00cd">78940693</span>
 </span></span></code></pre></div>
 
         </div>

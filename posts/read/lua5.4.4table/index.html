@@ -408,9 +408,9 @@ var _hmt = _hmt || [];
 <li><code>0</code>和<code>负数</code>放在<code>hash</code>段</li>
 </ul>
 <p>注意在使用长度操作符<code>#</code>对数组其长度时，数组不应该包含<code>nil</code>值，否则很容易出错。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>})  <span style="color:#75715e">--1  </span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>}) <span style="color:#75715e">--3  </span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>}) <span style="color:#75715e">--1  </span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(<span style="color:#39c">#</span>{<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>})  <span style="color:#000080">--1  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#39c">#</span>{<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>,<span style="color:#cd00cd">1</span>}) <span style="color:#000080">--3  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#39c">#</span>{<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>,<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>}) <span style="color:#000080">--1  </span>
 </span></span></code></pre></div><ul>
 <li>尽量可以提前分配大小,明确知道<code>table</code>的内容或者知道大小的，可以先预先初始化. 例如
 <ul>
@@ -445,8 +445,8 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="image-20230125223902202.png" alt="image-20230125223902202"  />
 </p>
 <p>假设<code>lua</code>代码是这样定义的</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#66d9ef">local</span> t <span style="color:#f92672">=</span> {}
-</span></span><span style="display:flex;"><span>t[<span style="color:#e6db74">&#34;xxx&#34;</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">2222</span>;
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> t <span style="color:#39c">=</span> {}
+</span></span><span style="display:flex;"><span>t[<span style="color:#cd0000">&#34;xxx&#34;</span>] <span style="color:#39c">=</span> <span style="color:#cd00cd">2222</span>;
 </span></span></code></pre></div><p>那么 上面例子中</p>
 <ul>
 <li>
@@ -704,9 +704,9 @@ var _hmt = _hmt || [];
 </li>
 </ol>
 <p>所以注意在使用长度操作符<code>#</code>对数组其长度时，数组不应该包含<code>nil</code>值，否则很容易出错,这是个不确定的因素,不要有侥幸,<code>如果一个元素要删除，直接remove，不要用nil去代替</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>})  <span style="color:#75715e">--1  </span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>}) <span style="color:#75715e">--3  </span>
-</span></span><span style="display:flex;"><span>print(<span style="color:#f92672">#</span>{<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">nil</span>}) <span style="color:#75715e">--1  </span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>print(<span style="color:#39c">#</span>{<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>})  <span style="color:#000080">--1  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#39c">#</span>{<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>,<span style="color:#cd00cd">1</span>}) <span style="color:#000080">--3  </span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#39c">#</span>{<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>,<span style="color:#cd00cd">1</span>,<span style="color:#cdcd00">nil</span>}) <span style="color:#000080">--1  </span>
 </span></span></code></pre></div><h2 id="luah_get函数流程"><span>luaH_get函数流程</span></h2>
 <p><img loading="lazy" src="image-20230126204135818.png" alt="image-20230126204135818"  />
 </p>

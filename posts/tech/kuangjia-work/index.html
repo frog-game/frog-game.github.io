@@ -444,10 +444,10 @@ var _hmt = _hmt || [];
 <h2 id="lua的工程化强化-teal"><span>lua的工程化强化 Teal</span></h2>
 <p><code>Teal</code> 和 <code>Lua</code> 的关系就类似 <code>TypeScript</code> 和 <code>JavaScript</code> 的关系，支持给已有的库进行类型标记，最终是翻译为 <code>Lua</code> 去实际使用的。</p>
 <p>类型标记可以写在 <code>xx.d.tl</code> 文件中，比如</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local record os     exit: <span style="color:#a6e22e">function</span>(number) end  <span style="color:#66d9ef">return</span> os 
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local record os     exit: function(number) end  <span style="color:#cdcd00">return</span> os 
 </span></span></code></pre></div><p>在 <code>Teal</code> 中主要新增了 <code>record</code>、<code>array</code> 和 <code>map</code> 类型，更多的语言特性可以见文档 <a href="https://github.com/teal-language/tl/blob/master/docs/tutorial.md">https://github.com/teal-language/tl/blob/master/docs/tutorial.md</a></p>
 <p>代码样例</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#f92672">--</span> record <span style="color:#960050;background-color:#1e0010">类似其他语言中的结构体</span> local record <span style="color:#66d9ef">arg_t</span> 
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#39c">--</span> record <span style="">类似其他语言中的结构体</span> local record <span style="color:#00cd00">arg_t</span> 
 </span></span></code></pre></div><p><code>github</code>地址在下边</p>
 <p><a href="https://github.com/teal-language/tl">teal-language/tl: The compiler for Teal, a typed dialect of Lua (github.com)</a></p>
 <p>叫青语言，</p>
@@ -456,33 +456,33 @@ var _hmt = _hmt || [];
 <p>需要<code>mingw</code>（安装<code>gcc</code>），注意是<code>mingw</code>不是<code>mingw-w64</code>,这<code>tm</code>是完全不同的两个项目</p>
 <p>然后有什么用呢</p>
 <p>来看一段正常的<code>lua</code>代码</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">正常</span>lua<span style="color:#960050;background-color:#1e0010">代码</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#39c">//</span><span style="">正常</span>lua<span style="">代码</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">add</span>(a, b)
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> a <span style="color:#f92672">+</span> b
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> add(a, b)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">return</span> a <span style="color:#39c">+</span> b
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> s <span style="color:#f92672">=</span> add(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> s <span style="color:#39c">=</span> add(<span style="color:#cd00cd">1</span>, <span style="color:#cd00cd">2</span>)
 </span></span><span style="display:flex;"><span>print(s)
 </span></span></code></pre></div><p>这代码执行肯定返回3</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#f92672">//</span>bug lua<span style="color:#960050;background-color:#1e0010">代码</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#39c">//</span>bug lua<span style="">代码</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">add</span>(a, b)
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> a <span style="color:#f92672">+</span> b
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> add(a, b)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">return</span> a <span style="color:#39c">+</span> b
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> s <span style="color:#f92672">=</span> add(<span style="color:#e6db74">&#34;ni&#34;</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> s <span style="color:#39c">=</span> add(<span style="color:#cd0000">&#34;ni&#34;</span>, <span style="color:#cd00cd">2</span>)
 </span></span><span style="display:flex;"><span>print(s)
 </span></span></code></pre></div><p>然后来一段<code>bug</code>代码，这个<code>bug</code>代码 你用<code>luac</code> 肯定是没问题，等到执行期才会出问题，因为<code>lua</code>设计为一门动态语言，而且这从<code>vm</code>层次就决定了，这个情况有点像<code>js</code>，因为动态化，错误检查时机被拖到了运行时，不运行，无法发现问题（人眼除外）</p>
 <p>软件工程的实践中，代码静态检查能发现太多的问题（静态类型编程语言），<code>js</code>因为微软的<code>typescript</code>得到了极大的工程化加强。</p>
 <p>青语言就是对<code>lua</code>的类型化加强，和<code>ts</code>之于<code>js</code>是一样的概念。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#f92672">//</span><span style="color:#960050;background-color:#1e0010">青语言</span>bug<span style="color:#960050;background-color:#1e0010">代码</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#39c">//</span><span style="">青语言</span>bug<span style="">代码</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">add</span>(a: number, b: number): number
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> a <span style="color:#f92672">+</span> b
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> add(a: number, b: number): number
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">return</span> a <span style="color:#39c">+</span> b
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">local</span> s <span style="color:#f92672">=</span> add(<span style="color:#e6db74">&#34;a1&#34;</span>,<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> s <span style="color:#39c">=</span> add(<span style="color:#cd0000">&#34;a1&#34;</span>,<span style="color:#cd00cd">2</span>)
 </span></span><span style="display:flex;"><span>print(s)
 </span></span></code></pre></div><p>然后使用青语言，加上类型标注，标注的形式也像极了<code>typescript</code></p>
 <p><img loading="lazy" src="184642-20210125200039947-1055025742.png" alt="image"  />

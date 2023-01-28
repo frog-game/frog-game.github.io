@@ -365,137 +365,137 @@ var _hmt = _hmt || [];
 </script>
         
         <div class="post-content"><h2 id="在service_snluac-中增加此函数"><span>在service_snlua.c 中增加此函数</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addLuaState</span>(<span style="color:#66d9ef">struct</span> snlua <span style="color:#f92672">*</span>l,<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>debug_ip,<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> debug_port)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#00cd00">void</span> addLuaState(<span style="color:#cdcd00">struct</span> snlua <span style="color:#39c">*</span>l,<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>debug_ip,<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span> debug_port)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> debug_ip)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> (<span style="color:#cd00cd">NULL</span> <span style="color:#39c">==</span> debug_ip)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> debug_port)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> (<span style="color:#cd00cd">NULL</span> <span style="color:#39c">==</span> debug_port)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> port <span style="color:#f92672">=</span> <span style="color:#a6e22e">strtol</span>(debug_port, NULL, <span style="color:#ae81ff">10</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>lua_dofunction <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;function snlua_addLuaState()</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;local dbg = require(&#39;frog_debug&#39;)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;dbg.startDebugServer(&#39;%s&#39;, %d)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;dbg.addLuaState()</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;end&#34;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">int</span> port <span style="color:#39c">=</span> strtol(debug_port, <span style="color:#cd00cd">NULL</span>, <span style="color:#cd00cd">10</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>lua_dofunction <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;function snlua_addLuaState()</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#34;local dbg = require(&#39;frog_debug&#39;)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#34;dbg.startDebugServer(&#39;%s&#39;, %d)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#34;dbg.addLuaState()</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#34;end&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#34;&#34;</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> loadstr[<span style="color:#ae81ff">200</span>];
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">sprintf</span>(loadstr, lua_dofunction,
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">char</span> loadstr[<span style="color:#cd00cd">200</span>];
+</span></span><span style="display:flex;"><span>    sprintf(loadstr, lua_dofunction,
 </span></span><span style="display:flex;"><span>            debug_ip, port);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> oldn <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_gettop</span>(l<span style="color:#f92672">-&gt;</span>L);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> status <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_dostring</span>(l<span style="color:#f92672">-&gt;</span>L, loadstr);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">int</span> oldn <span style="color:#39c">=</span> lua_gettop(l<span style="color:#39c">-&gt;</span>L);
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">int</span> status <span style="color:#39c">=</span> luaL_dostring(l<span style="color:#39c">-&gt;</span>L, loadstr);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> (status <span style="color:#39c">!=</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(l<span style="color:#f92672">-&gt;</span>L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">lua_settop</span>(l<span style="color:#f92672">-&gt;</span>L, oldn);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">skynet_error</span>(l<span style="color:#f92672">-&gt;</span>ctx, <span style="color:#e6db74">&#34;[ERROR] addLuaState lua_tostring error!! err:%s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>ret <span style="color:#39c">=</span> lua_tostring(l<span style="color:#39c">-&gt;</span>L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>        lua_settop(l<span style="color:#39c">-&gt;</span>L, oldn);
+</span></span><span style="display:flex;"><span>        skynet_error(l<span style="color:#39c">-&gt;</span>ctx, <span style="color:#cd0000">&#34;[ERROR] addLuaState lua_tostring error!! err:%s&#34;</span>,
 </span></span><span style="display:flex;"><span>                ret);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">lua_getglobal</span>(l<span style="color:#f92672">-&gt;</span>L, <span style="color:#e6db74">&#34;snlua_addLuaState&#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">lua_isfunction</span>(l<span style="color:#f92672">-&gt;</span>L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>    lua_getglobal(l<span style="color:#39c">-&gt;</span>L, <span style="color:#cd0000">&#34;snlua_addLuaState&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>lua_isfunction(l<span style="color:#39c">-&gt;</span>L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>))
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(l<span style="color:#f92672">-&gt;</span>L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">lua_settop</span>(l<span style="color:#f92672">-&gt;</span>L, oldn);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">skynet_error</span>(
-</span></span><span style="display:flex;"><span>                l<span style="color:#f92672">-&gt;</span>ctx,
-</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;[ERROR] addLuaState lua_getglobal addLuaState error!! err:%s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>ret <span style="color:#39c">=</span> lua_tostring(l<span style="color:#39c">-&gt;</span>L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>        lua_settop(l<span style="color:#39c">-&gt;</span>L, oldn);
+</span></span><span style="display:flex;"><span>        skynet_error(
+</span></span><span style="display:flex;"><span>                l<span style="color:#39c">-&gt;</span>ctx,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd0000">&#34;[ERROR] addLuaState lua_getglobal addLuaState error!! err:%s&#34;</span>,
 </span></span><span style="display:flex;"><span>                ret);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    status <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_pcall</span>(l<span style="color:#f92672">-&gt;</span>L, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    status <span style="color:#39c">=</span> lua_pcall(l<span style="color:#39c">-&gt;</span>L, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">if</span> (status <span style="color:#39c">!=</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(l<span style="color:#f92672">-&gt;</span>L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">lua_settop</span>(l<span style="color:#f92672">-&gt;</span>L, oldn);
-</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">skynet_error</span>(l<span style="color:#f92672">-&gt;</span>ctx,
-</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;[ERROR] addLuaState lua_pcall addLuaState error!! err:%s&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>ret <span style="color:#39c">=</span> lua_tostring(l<span style="color:#39c">-&gt;</span>L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>        lua_settop(l<span style="color:#39c">-&gt;</span>L, oldn);
+</span></span><span style="display:flex;"><span>        skynet_error(l<span style="color:#39c">-&gt;</span>ctx,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd0000">&#34;[ERROR] addLuaState lua_pcall addLuaState error!! err:%s&#34;</span>,
 </span></span><span style="display:flex;"><span>                ret);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="将addluastate函数插入到service_snluac对应位置"><span>将addLuaState函数插入到service_snlua.c对应位置</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span>
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">init_cb</span>(<span style="color:#66d9ef">struct</span> snlua <span style="color:#f92672">*</span>l, <span style="color:#66d9ef">struct</span> skynet_context <span style="color:#f92672">*</span>ctx, <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> args, <span style="color:#66d9ef">size_t</span> sz) {
-</span></span><span style="display:flex;"><span>	lua_State <span style="color:#f92672">*</span>L <span style="color:#f92672">=</span> l<span style="color:#f92672">-&gt;</span>L;
-</span></span><span style="display:flex;"><span>	l<span style="color:#f92672">-&gt;</span>ctx <span style="color:#f92672">=</span> ctx;
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_gc</span>(L, LUA_GCSTOP, <span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushboolean</span>(L, <span style="color:#ae81ff">1</span>);  <span style="color:#75715e">/* signal for libraries to ignore env. vars. */</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setfield</span>(L, LUA_REGISTRYINDEX, <span style="color:#e6db74">&#34;LUA_NOENV&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_openlibs</span>(L);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_requiref</span>(L, <span style="color:#e6db74">&#34;skynet.profile&#34;</span>, init_profile, <span style="color:#ae81ff">0</span>);
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">int</span>
+</span></span><span style="display:flex;"><span>init_cb(<span style="color:#cdcd00">struct</span> snlua <span style="color:#39c">*</span>l, <span style="color:#cdcd00">struct</span> skynet_context <span style="color:#39c">*</span>ctx, <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span> args, <span style="color:#00cd00">size_t</span> sz) {
+</span></span><span style="display:flex;"><span>	lua_State <span style="color:#39c">*</span>L <span style="color:#39c">=</span> l<span style="color:#39c">-&gt;</span>L;
+</span></span><span style="display:flex;"><span>	l<span style="color:#39c">-&gt;</span>ctx <span style="color:#39c">=</span> ctx;
+</span></span><span style="display:flex;"><span>	lua_gc(L, LUA_GCSTOP, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>	lua_pushboolean(L, <span style="color:#cd00cd">1</span>);  <span style="color:#000080">/* signal for libraries to ignore env. vars. */</span>
+</span></span><span style="display:flex;"><span>	lua_setfield(L, LUA_REGISTRYINDEX, <span style="color:#cd0000">&#34;LUA_NOENV&#34;</span>);
+</span></span><span style="display:flex;"><span>	luaL_openlibs(L);
+</span></span><span style="display:flex;"><span>	luaL_requiref(L, <span style="color:#cd0000">&#34;skynet.profile&#34;</span>, init_profile, <span style="color:#cd00cd">0</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> profile_lib <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_gettop</span>(L);
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// replace coroutine.resume / coroutine.wrap
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lua_getglobal</span>(L, <span style="color:#e6db74">&#34;coroutine&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_getfield</span>(L, profile_lib, <span style="color:#e6db74">&#34;resume&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setfield</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;resume&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_getfield</span>(L, profile_lib, <span style="color:#e6db74">&#34;wrap&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setfield</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#34;wrap&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">int</span> profile_lib <span style="color:#39c">=</span> lua_gettop(L);
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// replace coroutine.resume / coroutine.wrap
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	lua_getglobal(L, <span style="color:#cd0000">&#34;coroutine&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_getfield(L, profile_lib, <span style="color:#cd0000">&#34;resume&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_setfield(L, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>, <span style="color:#cd0000">&#34;resume&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_getfield(L, profile_lib, <span style="color:#cd0000">&#34;wrap&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_setfield(L, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>, <span style="color:#cd0000">&#34;wrap&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_settop</span>(L, profile_lib<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	lua_settop(L, profile_lib<span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushlightuserdata</span>(L, ctx);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setfield</span>(L, LUA_REGISTRYINDEX, <span style="color:#e6db74">&#34;skynet_context&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">luaL_requiref</span>(L, <span style="color:#e6db74">&#34;skynet.codecache&#34;</span>, codecache , <span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pop</span>(L,<span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	lua_pushlightuserdata(L, ctx);
+</span></span><span style="display:flex;"><span>	lua_setfield(L, LUA_REGISTRYINDEX, <span style="color:#cd0000">&#34;skynet_context&#34;</span>);
+</span></span><span style="display:flex;"><span>	luaL_requiref(L, <span style="color:#cd0000">&#34;skynet.codecache&#34;</span>, codecache , <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>	lua_pop(L,<span style="color:#cd00cd">1</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_gc</span>(L, LUA_GCGEN, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	lua_gc(L, LUA_GCGEN, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>path <span style="color:#f92672">=</span> <span style="color:#a6e22e">optstring</span>(ctx, <span style="color:#e6db74">&#34;lua_path&#34;</span>,<span style="color:#e6db74">&#34;./lualib/?.lua;./lualib/?/init.lua&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushstring</span>(L, path);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setglobal</span>(L, <span style="color:#e6db74">&#34;LUA_PATH&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>cpath <span style="color:#f92672">=</span> <span style="color:#a6e22e">optstring</span>(ctx, <span style="color:#e6db74">&#34;lua_cpath&#34;</span>,<span style="color:#e6db74">&#34;./luaclib/?.so&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushstring</span>(L, cpath);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setglobal</span>(L, <span style="color:#e6db74">&#34;LUA_CPATH&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>service <span style="color:#f92672">=</span> <span style="color:#a6e22e">optstring</span>(ctx, <span style="color:#e6db74">&#34;luaservice&#34;</span>, <span style="color:#e6db74">&#34;./service/?.lua&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushstring</span>(L, service);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setglobal</span>(L, <span style="color:#e6db74">&#34;LUA_SERVICE&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>preload <span style="color:#f92672">=</span> <span style="color:#a6e22e">skynet_command</span>(ctx, <span style="color:#e6db74">&#34;GETENV&#34;</span>, <span style="color:#e6db74">&#34;preload&#34;</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushstring</span>(L, preload);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_setglobal</span>(L, <span style="color:#e6db74">&#34;LUA_PRELOAD&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>path <span style="color:#39c">=</span> optstring(ctx, <span style="color:#cd0000">&#34;lua_path&#34;</span>,<span style="color:#cd0000">&#34;./lualib/?.lua;./lualib/?/init.lua&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pushstring(L, path);
+</span></span><span style="display:flex;"><span>	lua_setglobal(L, <span style="color:#cd0000">&#34;LUA_PATH&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>cpath <span style="color:#39c">=</span> optstring(ctx, <span style="color:#cd0000">&#34;lua_cpath&#34;</span>,<span style="color:#cd0000">&#34;./luaclib/?.so&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pushstring(L, cpath);
+</span></span><span style="display:flex;"><span>	lua_setglobal(L, <span style="color:#cd0000">&#34;LUA_CPATH&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>service <span style="color:#39c">=</span> optstring(ctx, <span style="color:#cd0000">&#34;luaservice&#34;</span>, <span style="color:#cd0000">&#34;./service/?.lua&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pushstring(L, service);
+</span></span><span style="display:flex;"><span>	lua_setglobal(L, <span style="color:#cd0000">&#34;LUA_SERVICE&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>preload <span style="color:#39c">=</span> skynet_command(ctx, <span style="color:#cd0000">&#34;GETENV&#34;</span>, <span style="color:#cd0000">&#34;preload&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pushstring(L, preload);
+</span></span><span style="display:flex;"><span>	lua_setglobal(L, <span style="color:#cd0000">&#34;LUA_PRELOAD&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushcfunction</span>(L, traceback);
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">assert</span>(<span style="color:#a6e22e">lua_gettop</span>(L) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	lua_pushcfunction(L, traceback);
+</span></span><span style="display:flex;"><span>	assert(lua_gettop(L) <span style="color:#39c">==</span> <span style="color:#cd00cd">1</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> loader <span style="color:#f92672">=</span> <span style="color:#a6e22e">optstring</span>(ctx, <span style="color:#e6db74">&#34;lualoader&#34;</span>, <span style="color:#e6db74">&#34;./lualib/loader.lua&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span> loader <span style="color:#39c">=</span> optstring(ctx, <span style="color:#cd0000">&#34;lualoader&#34;</span>, <span style="color:#cd0000">&#34;./lualib/loader.lua&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_loadfile</span>(L,loader);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (r <span style="color:#f92672">!=</span> LUA_OK) {
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">skynet_error</span>(ctx, <span style="color:#e6db74">&#34;Can&#39;t load %s : %s&#34;</span>, loader, <span style="color:#a6e22e">lua_tostring</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>));
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">report_launcher_error</span>(ctx);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">int</span> r <span style="color:#39c">=</span> luaL_loadfile(L,loader);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (r <span style="color:#39c">!=</span> LUA_OK) {
+</span></span><span style="display:flex;"><span>		skynet_error(ctx, <span style="color:#cd0000">&#34;Can&#39;t load %s : %s&#34;</span>, loader, lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>));
+</span></span><span style="display:flex;"><span>		report_launcher_error(ctx);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pushlstring</span>(L, args, sz);
-</span></span><span style="display:flex;"><span>	r <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_pcall</span>(L,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (r <span style="color:#f92672">!=</span> LUA_OK) {
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">skynet_error</span>(ctx, <span style="color:#e6db74">&#34;lua loader error : %s&#34;</span>, <span style="color:#a6e22e">lua_tostring</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>));
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">report_launcher_error</span>(ctx);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	lua_pushlstring(L, args, sz);
+</span></span><span style="display:flex;"><span>	r <span style="color:#39c">=</span> lua_pcall(L,<span style="color:#cd00cd">1</span>,<span style="color:#cd00cd">0</span>,<span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (r <span style="color:#39c">!=</span> LUA_OK) {
+</span></span><span style="display:flex;"><span>		skynet_error(ctx, <span style="color:#cd0000">&#34;lua loader error : %s&#34;</span>, lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>));
+</span></span><span style="display:flex;"><span>		report_launcher_error(ctx);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_settop</span>(L,<span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">lua_getfield</span>(L, LUA_REGISTRYINDEX, <span style="color:#e6db74">&#34;memlimit&#34;</span>) <span style="color:#f92672">==</span> LUA_TNUMBER) {
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">size_t</span> limit <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tointeger</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>		l<span style="color:#f92672">-&gt;</span>mem_limit <span style="color:#f92672">=</span> limit;
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">skynet_error</span>(ctx, <span style="color:#e6db74">&#34;Set memory limit to %.2f M&#34;</span>, (<span style="color:#66d9ef">float</span>)limit <span style="color:#f92672">/</span> (<span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span>));
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_pushnil</span>(L);
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_setfield</span>(L, LUA_REGISTRYINDEX, <span style="color:#e6db74">&#34;memlimit&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_settop(L,<span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (lua_getfield(L, LUA_REGISTRYINDEX, <span style="color:#cd0000">&#34;memlimit&#34;</span>) <span style="color:#39c">==</span> LUA_TNUMBER) {
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">size_t</span> limit <span style="color:#39c">=</span> lua_tointeger(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>		l<span style="color:#39c">-&gt;</span>mem_limit <span style="color:#39c">=</span> limit;
+</span></span><span style="display:flex;"><span>		skynet_error(ctx, <span style="color:#cd0000">&#34;Set memory limit to %.2f M&#34;</span>, (<span style="color:#00cd00">float</span>)limit <span style="color:#39c">/</span> (<span style="color:#cd00cd">1024</span> <span style="color:#39c">*</span> <span style="color:#cd00cd">1024</span>));
+</span></span><span style="display:flex;"><span>		lua_pushnil(L);
+</span></span><span style="display:flex;"><span>		lua_setfield(L, LUA_REGISTRYINDEX, <span style="color:#cd0000">&#34;memlimit&#34;</span>);
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">lua_pop</span>(L, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>	lua_pop(L, <span style="color:#cd00cd">1</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">addLuaState</span>(l, <span style="color:#a6e22e">optstring</span>(ctx, <span style="color:#e6db74">&#34;debug_ip&#34;</span>, NULL), <span style="color:#a6e22e">optstring</span>(ctx, <span style="color:#e6db74">&#34;debug_port&#34;</span>, NULL));<span style="color:#75715e">//调用函数放到这里
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lua_gc</span>(L, LUA_GCRESTART, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	addLuaState(l, optstring(ctx, <span style="color:#cd0000">&#34;debug_ip&#34;</span>, <span style="color:#cd00cd">NULL</span>), optstring(ctx, <span style="color:#cd0000">&#34;debug_port&#34;</span>, <span style="color:#cd00cd">NULL</span>));<span style="color:#000080">//调用函数放到这里
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	lua_gc(L, LUA_GCRESTART, <span style="color:#cd00cd">0</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="去vscode插件商场下载此插件并安装"><span>去vscode插件商场下载此插件并安装</span></h2>
 <p><img loading="lazy" src="image-20221105210016638.png" alt="image-20221105210016638"  />
@@ -508,37 +508,37 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="image-20221104185615852.png" alt="image-20221104185615852"  />
 </p>
 <h3 id="在config里面加上两个字段"><span>在config里面加上两个字段</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>debug_ip <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>
-</span></span><span style="display:flex;"><span>debug_port <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;9966&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#00cdcd">debug_ip</span> <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;127.0.0.1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">debug_port</span> <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;9966&#34;</span>
 </span></span></code></pre></div><p><img loading="lazy" src="image-20221105012732137.png" alt="image-20221105012732137"  />
 </p>
 <h3 id="重编skynet代码"><span>重编skynet代码</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>cd skynet
-</span></span><span style="display:flex;"><span>make linux MALLOC_STATICLIB<span style="color:#f92672">=</span> SKYNET_DEFINES<span style="color:#f92672">=</span>-DNOUSE_JEMALLOC 
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#cd00cd">cd</span> skynet
+</span></span><span style="display:flex;"><span>make linux <span style="color:#00cdcd">MALLOC_STATICLIB</span><span style="color:#39c">=</span> <span style="color:#00cdcd">SKYNET_DEFINES</span><span style="color:#39c">=</span>-DNOUSE_JEMALLOC 
 </span></span></code></pre></div><h3 id="在vscode上按如下填写"><span>在vscode上按如下填写</span></h3>
 <p><img loading="lazy" src="image-20221111223442496.png" alt="image-20221111223442496"  />
 </p>
 <h3 id="创建launchjson文件"><span>创建launch.json文件</span></h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用 IntelliSense 了解相关属性。 
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 悬停以查看现有属性的描述。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;version&#34;</span>: <span style="color:#e6db74">&#34;0.2.0&#34;</span>,
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;configurations&#34;</span>: [
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">// 使用 IntelliSense 了解相关属性。 
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#000080">// 悬停以查看现有属性的描述。
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#000080">// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    &#34;version&#34;: <span style="color:#cd0000">&#34;0.2.0&#34;</span>,
+</span></span><span style="display:flex;"><span>    &#34;configurations&#34;: [
 </span></span><span style="display:flex;"><span>        
 </span></span><span style="display:flex;"><span>        
 </span></span><span style="display:flex;"><span>        {
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;lua_remote&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;request&#34;</span>: <span style="color:#e6db74">&#34;launch&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;远程调试&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;host&#34;</span>: <span style="color:#e6db74">&#34;localhost&#34;</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;port&#34;</span>: <span style="color:#ae81ff">9966</span>,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;ext&#34;</span>: [
-</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;.lua&#34;</span>,
-</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;.lua.txt&#34;</span>,
-</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;.lua.bytes&#34;</span>
+</span></span><span style="display:flex;"><span>            &#34;type&#34;: <span style="color:#cd0000">&#34;lua_remote&#34;</span>,
+</span></span><span style="display:flex;"><span>            &#34;request&#34;: <span style="color:#cd0000">&#34;launch&#34;</span>,
+</span></span><span style="display:flex;"><span>            &#34;name&#34;: <span style="color:#cd0000">&#34;远程调试&#34;</span>,
+</span></span><span style="display:flex;"><span>            &#34;host&#34;: <span style="color:#cd0000">&#34;localhost&#34;</span>,
+</span></span><span style="display:flex;"><span>            &#34;port&#34;: <span style="color:#cd00cd">9966</span>,
+</span></span><span style="display:flex;"><span>            &#34;ext&#34;: [
+</span></span><span style="display:flex;"><span>                <span style="color:#cd0000">&#34;.lua&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd0000">&#34;.lua.txt&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#cd0000">&#34;.lua.bytes&#34;</span>
 </span></span><span style="display:flex;"><span>            ],
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;ideConnectDebugger&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>            &#34;ideConnectDebugger&#34;: <span style="color:#cdcd00">true</span>
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    ]
 </span></span><span style="display:flex;"><span>}

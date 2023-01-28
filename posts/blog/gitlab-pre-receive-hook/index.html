@@ -398,35 +398,35 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="image-20220915083506927.png" alt="image-20220915083506927"  />
 </p>
 <p>修改文件权限：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>chmod +777 pre-receive
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;开始提交信息检查...&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>chmod +777 pre-receive
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#000080">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">echo</span> <span style="color:#cd0000">&#34;开始提交信息检查...&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 从标准输入获取本次提交的commit id及分支的信息</span>
-</span></span><span style="display:flex;"><span>read normalInput
-</span></span><span style="display:flex;"><span>ARR<span style="color:#f92672">=(</span>$normalInput<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>parentCommitId<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>ARR[0]<span style="color:#e6db74">}</span>
-</span></span><span style="display:flex;"><span>currentCommitId<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>ARR[1]<span style="color:#e6db74">}</span>
-</span></span><span style="display:flex;"><span>branch<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>ARR[2]<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080"># 从标准输入获取本次提交的commit id及分支的信息</span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">read</span> normalInput
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">ARR</span><span style="color:#39c">=(</span><span style="color:#00cdcd">$normalInput</span><span style="color:#39c">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">parentCommitId</span><span style="color:#39c">=</span><span style="color:#cd0000">${</span><span style="color:#00cdcd">ARR</span>[0]<span style="color:#cd0000">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">currentCommitId</span><span style="color:#39c">=</span><span style="color:#cd0000">${</span><span style="color:#00cdcd">ARR</span>[1]<span style="color:#cd0000">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">branch</span><span style="color:#39c">=</span><span style="color:#cd0000">${</span><span style="color:#00cdcd">ARR</span>[2]<span style="color:#cd0000">}</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;您提交的分支为：</span>$branch<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">echo</span> <span style="color:#cd0000">&#34;您提交的分支为：</span><span style="color:#00cdcd">$branch</span><span style="color:#cd0000">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取coomit的信息，用户，邮箱，msg等</span>
-</span></span><span style="display:flex;"><span>user<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>git log --pretty<span style="color:#f92672">=</span>format:<span style="color:#e6db74">&#34;%an&#34;</span> $currentCommitId -1<span style="color:#66d9ef">)</span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;提交者为：</span>$user<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080"># 获取coomit的信息，用户，邮箱，msg等</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">user</span><span style="color:#39c">=</span><span style="color:#cdcd00">$(</span>git log --pretty<span style="color:#39c">=</span>format:<span style="color:#cd0000">&#34;%an&#34;</span> <span style="color:#00cdcd">$currentCommitId</span> -1<span style="color:#cdcd00">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">echo</span> <span style="color:#cd0000">&#34;提交者为：</span><span style="color:#00cdcd">$user</span><span style="color:#cd0000">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>commitDate<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>git log --pretty<span style="color:#f92672">=</span>format:<span style="color:#e6db74">&#34;%cd&#34;</span> $currentCommitId -1<span style="color:#66d9ef">)</span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;提交日期为：</span>$commitDate<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">commitDate</span><span style="color:#39c">=</span><span style="color:#cdcd00">$(</span>git log --pretty<span style="color:#39c">=</span>format:<span style="color:#cd0000">&#34;%cd&#34;</span> <span style="color:#00cdcd">$currentCommitId</span> -1<span style="color:#cdcd00">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">echo</span> <span style="color:#cd0000">&#34;提交日期为：</span><span style="color:#00cdcd">$commitDate</span><span style="color:#cd0000">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>msg<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>git log --pretty<span style="color:#f92672">=</span>format:<span style="color:#e6db74">&#34;%s&#34;</span> $currentCommitId -1<span style="color:#66d9ef">)</span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;提交的注释为：</span>$msg<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">msg</span><span style="color:#39c">=</span><span style="color:#cdcd00">$(</span>git log --pretty<span style="color:#39c">=</span>format:<span style="color:#cd0000">&#34;%s&#34;</span> <span style="color:#00cdcd">$currentCommitId</span> -1<span style="color:#cdcd00">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">echo</span> <span style="color:#cd0000">&#34;提交的注释为：</span><span style="color:#00cdcd">$msg</span><span style="color:#cd0000">&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>flag<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>echo $msg | grep -E <span style="color:#e6db74">&#34;fix.*|add.*|del.*|update.*|temp.*|test.*|revert.*|Merge.*&#34;</span><span style="color:#66d9ef">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span>$flag<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;[ERROR]提交信息校验未通过，需以 fix|add|del|update|temp|test|revert 开头&#34;</span>
-</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cdcd">flag</span><span style="color:#39c">=</span><span style="color:#cdcd00">$(</span><span style="color:#cd00cd">echo</span> <span style="color:#00cdcd">$msg</span> | grep -E <span style="color:#cd0000">&#34;fix.*|add.*|del.*|update.*|temp.*|test.*|revert.*|Merge.*&#34;</span><span style="color:#cdcd00">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">if</span> <span style="color:#39c">[</span> -z <span style="color:#cd0000">&#34;</span><span style="color:#00cdcd">$flag</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">]</span>; <span style="color:#cdcd00">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cd00cd">echo</span> <span style="color:#cd0000">&#34;[ERROR]提交信息校验未通过，需以 fix|add|del|update|temp|test|revert 开头&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cd00cd">exit</span> <span style="color:#cd00cd">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">fi</span>
 </span></span></code></pre></div><p>第四步，在本地尝试推送，推送显示如下，如果不符合规范则无法提交成功。</p>
 <p><img loading="lazy" src="9790e7b83877d054175b6154bc52240b.png" alt="image.png"  />
 </p>
@@ -434,319 +434,319 @@ var _hmt = _hmt || [];
 <img loading="lazy" src="af5300e51bf9c7cc3679b8d277dce49c.png" alt="image.png"  />
 </p>
 <h2 id="pre-receivepy主要做了代码化风格检查luacheck"><span>pre-receive.py[主要做了代码化风格检查+luacheck]</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/python</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># coding=utf-8</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> shutil
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> tempfile
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> subprocess
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> emoji
-</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> rich.panel <span style="color:#f92672">import</span> Panel
-</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> rich <span style="color:#f92672">import</span> box
-</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> rich.console <span style="color:#f92672">import</span> Console
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#000080">#!/usr/bin/python</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080"># coding=utf-8</span>
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> shutil
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> tempfile
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> subprocess
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">import</span> emoji
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">from</span> rich.panel <span style="color:#cd00cd">import</span> Panel
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">from</span> rich <span style="color:#cd00cd">import</span> box
+</span></span><span style="display:flex;"><span><span style="color:#cd00cd">from</span> rich.console <span style="color:#cd00cd">import</span> Console
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Trigger</span>(object):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#39;&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        初始化提交者，提交id， 提交者msg信息,当前操作的分支
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pushAuthor <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pushCommit <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pushMsg <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pushCount <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pushFile <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>console <span style="color:#f92672">=</span> Console()
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>astyle_lint_dir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/var/opt/gitlab/gitlab_cicd/format_check/linux&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">class</span> <span style="color:#00cdcd">Trigger</span>(<span style="color:#cd00cd">object</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd0000">        初始化提交者，提交id， 提交者msg信息,当前操作的分支
+</span></span></span><span style="display:flex;"><span><span style="color:#cd0000">        &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>pushAuthor <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>pushCommit <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>pushMsg <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>pushCount <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>pushFile <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>console <span style="color:#39c">=</span> Console()
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>astyle_lint_dir <span style="color:#39c">=</span> <span style="color:#cd0000">&#39;/var/opt/gitlab/gitlab_cicd/format_check/linux&#39;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__getGitInfo</span>(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#39;&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>oldObject, self<span style="color:#f92672">.</span>newObject, self<span style="color:#f92672">.</span>ref <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>stdin<span style="color:#f92672">.</span>readline()<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> __getGitInfo(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd0000">        &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>oldObject, self<span style="color:#39c">.</span>newObject, self<span style="color:#39c">.</span>ref <span style="color:#39c">=</span> sys<span style="color:#39c">.</span>stdin<span style="color:#39c">.</span>readline()<span style="color:#39c">.</span>strip()<span style="color:#39c">.</span>split(<span style="color:#cd0000">&#39; &#39;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__getPushInfo</span>(self):
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#39;&#39;&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        git show命令获取push作者，时间，以及文件列表
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        文件的路径为相对于版本库根目录的一个相对路径
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">        &#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>        rev <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(
-</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;git rev-list &#39;</span> <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>newObject, shell<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
-</span></span><span style="display:flex;"><span>        revList <span style="color:#f92672">=</span> rev<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>readlines()
-</span></span><span style="display:flex;"><span>        revList <span style="color:#f92672">=</span> [x<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> revList]
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># print(revList)</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 查找从上次提交self.oldObject之后还有多少次提交</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 主要是为了获取提交的文件列表</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;0000000000000000000000000000000000000000&#34;</span> <span style="color:#f92672">==</span> self<span style="color:#f92672">.</span>oldObject:
-</span></span><span style="display:flex;"><span>            exit(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> __getPushInfo(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#cd0000">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#cd0000">        git show命令获取push作者，时间，以及文件列表
+</span></span></span><span style="display:flex;"><span><span style="color:#cd0000">        文件的路径为相对于版本库根目录的一个相对路径
+</span></span></span><span style="display:flex;"><span><span style="color:#cd0000">        &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>        rev <span style="color:#39c">=</span> subprocess<span style="color:#39c">.</span>Popen(
+</span></span><span style="display:flex;"><span>            <span style="color:#cd0000">&#39;git rev-list &#39;</span> <span style="color:#39c">+</span> self<span style="color:#39c">.</span>newObject, shell<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>, stdout<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE)
+</span></span><span style="display:flex;"><span>        revList <span style="color:#39c">=</span> rev<span style="color:#39c">.</span>stdout<span style="color:#39c">.</span>readlines()
+</span></span><span style="display:flex;"><span>        revList <span style="color:#39c">=</span> [x<span style="color:#39c">.</span>decode(<span style="color:#cd0000">&#39;utf-8&#39;</span>)<span style="color:#39c">.</span>strip() <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> revList]
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># print(revList)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># 查找从上次提交self.oldObject之后还有多少次提交</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># 主要是为了获取提交的文件列表</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> <span style="color:#cd0000">&#34;0000000000000000000000000000000000000000&#34;</span> <span style="color:#39c">==</span> self<span style="color:#39c">.</span>oldObject:
+</span></span><span style="display:flex;"><span>            exit(<span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        indexOld <span style="color:#f92672">=</span> revList<span style="color:#f92672">.</span>index(self<span style="color:#f92672">.</span>oldObject)
-</span></span><span style="display:flex;"><span>        pushList <span style="color:#f92672">=</span> revList[:indexOld]
-</span></span><span style="display:flex;"><span>        pushList<span style="color:#f92672">.</span>reverse()
-</span></span><span style="display:flex;"><span>        getFlag <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># print(pushList)</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># temp file</span>
-</span></span><span style="display:flex;"><span>        c_cpp_tempdir <span style="color:#f92672">=</span> tempfile<span style="color:#f92672">.</span>mkdtemp(<span style="color:#e6db74">&#39;git_c_cpp_hook&#39;</span>)
-</span></span><span style="display:flex;"><span>        lua_tempdir <span style="color:#f92672">=</span> tempfile<span style="color:#f92672">.</span>mkdtemp(<span style="color:#e6db74">&#39;git_lua_hook&#39;</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># print(lua_tempdir)</span>
-</span></span><span style="display:flex;"><span>        c_cpp_temp_file_path <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>        lua_temp_file_path <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 循环获取每次提交的文件列表</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> pObject <span style="color:#f92672">in</span> pushList:
-</span></span><span style="display:flex;"><span>            p <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(<span style="color:#e6db74">&#39;git show &#39;</span> <span style="color:#f92672">+</span> pObject,
-</span></span><span style="display:flex;"><span>                                 shell<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
-</span></span><span style="display:flex;"><span>            pipe <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>readlines()
-</span></span><span style="display:flex;"><span>            pipe <span style="color:#f92672">=</span> [x<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)<span style="color:#f92672">.</span>strip() <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pipe]
-</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>pushMsg<span style="color:#f92672">.</span>append(pipe[<span style="color:#ae81ff">4</span>]<span style="color:#f92672">.</span>strip() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
-</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>pushCommit<span style="color:#f92672">.</span>append(pipe[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>strip(<span style="color:#e6db74">&#34;commit&#34;</span>)<span style="color:#f92672">.</span>strip())
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> getFlag:
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>pushAuthor <span style="color:#f92672">=</span> pipe[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>strip(
-</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;Author&#34;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;:&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)<span style="color:#f92672">.</span>strip()
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>pushCount <span style="color:#f92672">=</span> len(pushList)
-</span></span><span style="display:flex;"><span>                getFlag <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        indexOld <span style="color:#39c">=</span> revList<span style="color:#39c">.</span>index(self<span style="color:#39c">.</span>oldObject)
+</span></span><span style="display:flex;"><span>        pushList <span style="color:#39c">=</span> revList[:indexOld]
+</span></span><span style="display:flex;"><span>        pushList<span style="color:#39c">.</span>reverse()
+</span></span><span style="display:flex;"><span>        getFlag <span style="color:#39c">=</span> <span style="color:#cdcd00">False</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># print(pushList)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># temp file</span>
+</span></span><span style="display:flex;"><span>        c_cpp_tempdir <span style="color:#39c">=</span> tempfile<span style="color:#39c">.</span>mkdtemp(<span style="color:#cd0000">&#39;git_c_cpp_hook&#39;</span>)
+</span></span><span style="display:flex;"><span>        lua_tempdir <span style="color:#39c">=</span> tempfile<span style="color:#39c">.</span>mkdtemp(<span style="color:#cd0000">&#39;git_lua_hook&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># print(lua_tempdir)</span>
+</span></span><span style="display:flex;"><span>        c_cpp_temp_file_path <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>        lua_temp_file_path <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># 循环获取每次提交的文件列表</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">for</span> pObject <span style="color:#cdcd00">in</span> pushList:
+</span></span><span style="display:flex;"><span>            p <span style="color:#39c">=</span> subprocess<span style="color:#39c">.</span>Popen(<span style="color:#cd0000">&#39;git show &#39;</span> <span style="color:#39c">+</span> pObject,
+</span></span><span style="display:flex;"><span>                                 shell<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>, stdout<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE)
+</span></span><span style="display:flex;"><span>            pipe <span style="color:#39c">=</span> p<span style="color:#39c">.</span>stdout<span style="color:#39c">.</span>readlines()
+</span></span><span style="display:flex;"><span>            pipe <span style="color:#39c">=</span> [x<span style="color:#39c">.</span>decode(<span style="color:#cd0000">&#39;utf-8&#39;</span>)<span style="color:#39c">.</span>strip() <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> pipe]
+</span></span><span style="display:flex;"><span>            self<span style="color:#39c">.</span>pushMsg<span style="color:#39c">.</span>append(pipe[<span style="color:#cd00cd">4</span>]<span style="color:#39c">.</span>strip() <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#39;</span>)
+</span></span><span style="display:flex;"><span>            self<span style="color:#39c">.</span>pushCommit<span style="color:#39c">.</span>append(pipe[<span style="color:#cd00cd">0</span>]<span style="color:#39c">.</span>strip(<span style="color:#cd0000">&#34;commit&#34;</span>)<span style="color:#39c">.</span>strip())
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> <span style="color:#cdcd00">not</span> getFlag:
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>pushAuthor <span style="color:#39c">=</span> pipe[<span style="color:#cd00cd">1</span>]<span style="color:#39c">.</span>strip(
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd0000">&#34;Author&#34;</span>)<span style="color:#39c">.</span>replace(<span style="color:#cd0000">&#39;:&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>)<span style="color:#39c">.</span>strip()
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>pushCount <span style="color:#39c">=</span> <span style="color:#cd00cd">len</span>(pushList)
+</span></span><span style="display:flex;"><span>                getFlag <span style="color:#39c">=</span> <span style="color:#cdcd00">True</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(pipe)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 验证是否c,c++,lua文件</span>
-</span></span><span style="display:flex;"><span>            fileList <span style="color:#f92672">=</span> [x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pipe <span style="color:#66d9ef">if</span> x<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;diff --git&#34;</span>)]
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(&#34;===&gt;&#34;, fileList)</span>
-</span></span><span style="display:flex;"><span>            indexList <span style="color:#f92672">=</span> [x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pipe <span style="color:#66d9ef">if</span> x<span style="color:#f92672">.</span>startswith(
-</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;index &#34;</span>) <span style="color:#f92672">or</span> x<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;similarity index 100%&#34;</span>)]
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(&#34;===&gt;&#34;, indexList)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># fiList = dict(zip(fileList, indexList))</span>
-</span></span><span style="display:flex;"><span>            fiList <span style="color:#f92672">=</span> {fileList[i]: indexList[i]
-</span></span><span style="display:flex;"><span>                      <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(fileList))}
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(&#34;===&gt;&#34;, fiList)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> file <span style="color:#f92672">in</span> fiList:
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> fiList[file]<span style="color:#f92672">.</span>strip()<span style="color:#f92672">.</span>startswith(<span style="color:#e6db74">&#34;similarity index 100%&#34;</span>):
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(pipe)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># 验证是否c,c++,lua文件</span>
+</span></span><span style="display:flex;"><span>            fileList <span style="color:#39c">=</span> [x <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> pipe <span style="color:#cdcd00">if</span> x<span style="color:#39c">.</span>startswith(<span style="color:#cd0000">&#34;diff --git&#34;</span>)]
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(&#34;===&gt;&#34;, fileList)</span>
+</span></span><span style="display:flex;"><span>            indexList <span style="color:#39c">=</span> [x <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> pipe <span style="color:#cdcd00">if</span> x<span style="color:#39c">.</span>startswith(
+</span></span><span style="display:flex;"><span>                <span style="color:#cd0000">&#34;index &#34;</span>) <span style="color:#cdcd00">or</span> x<span style="color:#39c">.</span>startswith(<span style="color:#cd0000">&#34;similarity index 100%&#34;</span>)]
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(&#34;===&gt;&#34;, indexList)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># fiList = dict(zip(fileList, indexList))</span>
+</span></span><span style="display:flex;"><span>            fiList <span style="color:#39c">=</span> {fileList[i]: indexList[i]
+</span></span><span style="display:flex;"><span>                      <span style="color:#cdcd00">for</span> i <span style="color:#cdcd00">in</span> <span style="color:#cd00cd">range</span>(<span style="color:#cd00cd">len</span>(fileList))}
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(&#34;===&gt;&#34;, fiList)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">for</span> file <span style="color:#cdcd00">in</span> fiList:
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> fiList[file]<span style="color:#39c">.</span>strip()<span style="color:#39c">.</span>startswith(<span style="color:#cd0000">&#34;similarity index 100%&#34;</span>):
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">continue</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> (file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.cpp&#39;</span>) <span style="color:#f92672">or</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.h&#39;</span>) <span style="color:#f92672">or</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.c&#39;</span>) <span style="color:#f92672">or</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.lua&#39;</span>)):
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> <span style="color:#cdcd00">not</span> (file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.cpp&#39;</span>) <span style="color:#cdcd00">or</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.h&#39;</span>) <span style="color:#cdcd00">or</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.c&#39;</span>) <span style="color:#cdcd00">or</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.lua&#39;</span>)):
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">continue</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                filename <span style="color:#f92672">=</span> file<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(filename)</span>
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>pushFile<span style="color:#f92672">.</span>append(filename)
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># git get Tree</span>
-</span></span><span style="display:flex;"><span>                content_hash <span style="color:#f92672">=</span> fiList[file]<span style="color:#f92672">.</span>strip()[<span style="color:#ae81ff">15</span>:<span style="color:#ae81ff">22</span>]
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(content_hash)</span>
-</span></span><span style="display:flex;"><span>                content_p <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(
-</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#39;git cat-file -p &#39;</span><span style="color:#f92672">+</span>content_hash, shell<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
-</span></span><span style="display:flex;"><span>                cpipe <span style="color:#f92672">=</span> content_p<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>readlines()
-</span></span><span style="display:flex;"><span>                cpipeList <span style="color:#f92672">=</span> [x<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> cpipe]
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(cpipeList)</span>
+</span></span><span style="display:flex;"><span>                filename <span style="color:#39c">=</span> file<span style="color:#39c">.</span>split(<span style="color:#cd0000">&#39;/&#39;</span>)[<span style="color:#39c">-</span><span style="color:#cd00cd">1</span>]
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(filename)</span>
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>pushFile<span style="color:#39c">.</span>append(filename)
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># git get Tree</span>
+</span></span><span style="display:flex;"><span>                content_hash <span style="color:#39c">=</span> fiList[file]<span style="color:#39c">.</span>strip()[<span style="color:#cd00cd">15</span>:<span style="color:#cd00cd">22</span>]
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(content_hash)</span>
+</span></span><span style="display:flex;"><span>                content_p <span style="color:#39c">=</span> subprocess<span style="color:#39c">.</span>Popen(
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd0000">&#39;git cat-file -p &#39;</span><span style="color:#39c">+</span>content_hash, shell<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>, stdout<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE)
+</span></span><span style="display:flex;"><span>                cpipe <span style="color:#39c">=</span> content_p<span style="color:#39c">.</span>stdout<span style="color:#39c">.</span>readlines()
+</span></span><span style="display:flex;"><span>                cpipeList <span style="color:#39c">=</span> [x<span style="color:#39c">.</span>decode(<span style="color:#cd0000">&#39;utf-8&#39;</span>) <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> cpipe]
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(cpipeList)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.cpp&#39;</span>) <span style="color:#f92672">or</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.h&#39;</span>) <span style="color:#f92672">or</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.c&#39;</span>):
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># print(filename)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># print(content_hash)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># print(file)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e"># print(cpipeList)</span>
-</span></span><span style="display:flex;"><span>                    file_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(c_cpp_tempdir, filename)
-</span></span><span style="display:flex;"><span>                    c_cpp_temp_file_path<span style="color:#f92672">.</span>append(file_path <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">with</span> open(file_path, <span style="color:#e6db74">&#39;w+&#39;</span>) <span style="color:#66d9ef">as</span> fp:
-</span></span><span style="display:flex;"><span>                        fp<span style="color:#f92672">.</span>writelines(cpipeList)
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.cpp&#39;</span>) <span style="color:#cdcd00">or</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.h&#39;</span>) <span style="color:#cdcd00">or</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.c&#39;</span>):
+</span></span><span style="display:flex;"><span>                    <span style="color:#000080"># print(filename)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000080"># print(content_hash)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000080"># print(file)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#000080"># print(cpipeList)</span>
+</span></span><span style="display:flex;"><span>                    file_path <span style="color:#39c">=</span> os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>join(c_cpp_tempdir, filename)
+</span></span><span style="display:flex;"><span>                    c_cpp_temp_file_path<span style="color:#39c">.</span>append(file_path <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#39;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">with</span> <span style="color:#cd00cd">open</span>(file_path, <span style="color:#cd0000">&#39;w+&#39;</span>) <span style="color:#cdcd00">as</span> fp:
+</span></span><span style="display:flex;"><span>                        fp<span style="color:#39c">.</span>writelines(cpipeList)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> file<span style="color:#f92672">.</span>lower()<span style="color:#f92672">.</span>endswith(<span style="color:#e6db74">&#39;.lua&#39;</span>):
-</span></span><span style="display:flex;"><span>                    file_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(lua_tempdir, filename)
-</span></span><span style="display:flex;"><span>                    lua_temp_file_path<span style="color:#f92672">.</span>append(file_path <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">with</span> open(file_path, <span style="color:#e6db74">&#39;w+&#39;</span>) <span style="color:#66d9ef">as</span> fp:
-</span></span><span style="display:flex;"><span>                        fp<span style="color:#f92672">.</span>writelines(cpipeList)
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> file<span style="color:#39c">.</span>lower()<span style="color:#39c">.</span>endswith(<span style="color:#cd0000">&#39;.lua&#39;</span>):
+</span></span><span style="display:flex;"><span>                    file_path <span style="color:#39c">=</span> os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>join(lua_tempdir, filename)
+</span></span><span style="display:flex;"><span>                    lua_temp_file_path<span style="color:#39c">.</span>append(file_path <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#39;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">with</span> <span style="color:#cd00cd">open</span>(file_path, <span style="color:#cd0000">&#39;w+&#39;</span>) <span style="color:#cdcd00">as</span> fp:
+</span></span><span style="display:flex;"><span>                        fp<span style="color:#39c">.</span>writelines(cpipeList)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        fc <span style="color:#f92672">=</span> open(self<span style="color:#f92672">.</span>astyle_lint_dir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/.clang-format&#39;</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># print(fc.read())</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> open(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(c_cpp_tempdir, <span style="color:#e6db74">&#39;.clang-format&#39;</span>), <span style="color:#e6db74">&#39;w+&#39;</span>) <span style="color:#66d9ef">as</span> fp:
-</span></span><span style="display:flex;"><span>            fp<span style="color:#f92672">.</span>writelines(fc<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>        fc <span style="color:#39c">=</span> <span style="color:#cd00cd">open</span>(self<span style="color:#39c">.</span>astyle_lint_dir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/.clang-format&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># print(fc.read())</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">with</span> <span style="color:#cd00cd">open</span>(os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>join(c_cpp_tempdir, <span style="color:#cd0000">&#39;.clang-format&#39;</span>), <span style="color:#cd0000">&#39;w+&#39;</span>) <span style="color:#cdcd00">as</span> fp:
+</span></span><span style="display:flex;"><span>            fp<span style="color:#39c">.</span>writelines(fc<span style="color:#39c">.</span>read())
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        fc<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>        fc<span style="color:#39c">.</span>close()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        fe <span style="color:#f92672">=</span> open(self<span style="color:#f92672">.</span>astyle_lint_dir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/.editorconfig&#39;</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># print(fe.read())</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> open(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(lua_tempdir, <span style="color:#e6db74">&#39;.editorconfig&#39;</span>), <span style="color:#e6db74">&#39;w+&#39;</span>) <span style="color:#66d9ef">as</span> fp:
-</span></span><span style="display:flex;"><span>            fp<span style="color:#f92672">.</span>writelines(fe<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>        fe <span style="color:#39c">=</span> <span style="color:#cd00cd">open</span>(self<span style="color:#39c">.</span>astyle_lint_dir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/.editorconfig&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># print(fe.read())</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">with</span> <span style="color:#cd00cd">open</span>(os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>join(lua_tempdir, <span style="color:#cd0000">&#39;.editorconfig&#39;</span>), <span style="color:#cd0000">&#39;w+&#39;</span>) <span style="color:#cdcd00">as</span> fp:
+</span></span><span style="display:flex;"><span>            fp<span style="color:#39c">.</span>writelines(fe<span style="color:#39c">.</span>read())
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        fe<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>        fe<span style="color:#39c">.</span>close()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># checkstyle</span>
-</span></span><span style="display:flex;"><span>        exitflag <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>        exitflag <span style="color:#f92672">|=</span> self<span style="color:#f92672">.</span>check_commit_msg()
-</span></span><span style="display:flex;"><span>        exitflag <span style="color:#f92672">|=</span> self<span style="color:#f92672">.</span>c_cpp_handler_checkstyle(
+</span></span><span style="display:flex;"><span>    <span style="color:#000080"># checkstyle</span>
+</span></span><span style="display:flex;"><span>        exitflag <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>
+</span></span><span style="display:flex;"><span>        exitflag <span style="color:#39c">|=</span> self<span style="color:#39c">.</span>check_commit_msg()
+</span></span><span style="display:flex;"><span>        exitflag <span style="color:#39c">|=</span> self<span style="color:#39c">.</span>c_cpp_handler_checkstyle(
 </span></span><span style="display:flex;"><span>            c_cpp_tempdir, c_cpp_temp_file_path)
-</span></span><span style="display:flex;"><span>        exitflag <span style="color:#f92672">|=</span> self<span style="color:#f92672">.</span>lua_handler_checkstyle(
+</span></span><span style="display:flex;"><span>        exitflag <span style="color:#39c">|=</span> self<span style="color:#39c">.</span>lua_handler_checkstyle(
 </span></span><span style="display:flex;"><span>            lua_tempdir, lua_temp_file_path)
-</span></span><span style="display:flex;"><span>        exitflag <span style="color:#f92672">|=</span> self<span style="color:#f92672">.</span>lua_handler_checkdiagnosis(
+</span></span><span style="display:flex;"><span>        exitflag <span style="color:#39c">|=</span> self<span style="color:#39c">.</span>lua_handler_checkdiagnosis(
 </span></span><span style="display:flex;"><span>            lua_tempdir, lua_temp_file_path)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> exitflag:
-</span></span><span style="display:flex;"><span>            exit(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">1</span> <span style="color:#39c">==</span> exitflag:
+</span></span><span style="display:flex;"><span>            exit(<span style="color:#cd00cd">1</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 处理c,cpp文件</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">c_cpp_handler_checkstyle</span>(self, c_cpp_tempdir, c_cpp_temp_file_path):
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
-</span></span><span style="display:flex;"><span>            blag <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>            finalpipe <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>            c_cpp_temp_name <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> path <span style="color:#f92672">in</span> c_cpp_temp_file_path:
-</span></span><span style="display:flex;"><span>                cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;python &#39;</span> <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>astyle_lint_dir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/../run-clang-format.py&#34;</span> <span style="color:#f92672">+</span> \
-</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#39; --clang-format-executable clang-format -r &#39;</span> <span style="color:#f92672">+</span> path
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(cmd)</span>
-</span></span><span style="display:flex;"><span>                result <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(
-</span></span><span style="display:flex;"><span>                    cmd, shell<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE, stderr<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
-</span></span><span style="display:flex;"><span>                rpipe <span style="color:#f92672">=</span> result<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>readlines()
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(rpipe)</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> len(rpipe) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
-</span></span><span style="display:flex;"><span>                    rpipeList <span style="color:#f92672">=</span> [
-</span></span><span style="display:flex;"><span>                        x<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)<span style="color:#f92672">.</span>replace(c_cpp_tempdir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> rpipe]
-</span></span><span style="display:flex;"><span>                    finalpipe<span style="color:#f92672">.</span>append(<span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(rpipeList))
-</span></span><span style="display:flex;"><span>                    (filepath, tempfilename) <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>split(path)
-</span></span><span style="display:flex;"><span>                    c_cpp_temp_name<span style="color:#f92672">.</span>append(tempfilename)
-</span></span><span style="display:flex;"><span>                    blag <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000080"># 处理c,cpp文件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> c_cpp_handler_checkstyle(self, c_cpp_tempdir, c_cpp_temp_file_path):
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">try</span>:
+</span></span><span style="display:flex;"><span>            blag <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>
+</span></span><span style="display:flex;"><span>            finalpipe <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>            c_cpp_temp_name <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">for</span> path <span style="color:#cdcd00">in</span> c_cpp_temp_file_path:
+</span></span><span style="display:flex;"><span>                cmd <span style="color:#39c">=</span> <span style="color:#cd0000">r</span><span style="color:#cd0000">&#39;python &#39;</span> <span style="color:#39c">+</span> self<span style="color:#39c">.</span>astyle_lint_dir <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;/../run-clang-format.py&#34;</span> <span style="color:#39c">+</span> \
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd0000">&#39; --clang-format-executable clang-format -r &#39;</span> <span style="color:#39c">+</span> path
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(cmd)</span>
+</span></span><span style="display:flex;"><span>                result <span style="color:#39c">=</span> subprocess<span style="color:#39c">.</span>Popen(
+</span></span><span style="display:flex;"><span>                    cmd, shell<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>, stdout<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE, stderr<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE)
+</span></span><span style="display:flex;"><span>                rpipe <span style="color:#39c">=</span> result<span style="color:#39c">.</span>stdout<span style="color:#39c">.</span>readlines()
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(rpipe)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">len</span>(rpipe) <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>:
+</span></span><span style="display:flex;"><span>                    rpipeList <span style="color:#39c">=</span> [
+</span></span><span style="display:flex;"><span>                        x<span style="color:#39c">.</span>decode(<span style="color:#cd0000">&#39;utf-8&#39;</span>)<span style="color:#39c">.</span>replace(c_cpp_tempdir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>) <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> rpipe]
+</span></span><span style="display:flex;"><span>                    finalpipe<span style="color:#39c">.</span>append(<span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(rpipeList))
+</span></span><span style="display:flex;"><span>                    (filepath, tempfilename) <span style="color:#39c">=</span> os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>split(path)
+</span></span><span style="display:flex;"><span>                    c_cpp_temp_name<span style="color:#39c">.</span>append(tempfilename)
+</span></span><span style="display:flex;"><span>                    blag <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(finalpipe)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(finalpipe) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>console<span style="color:#f92672">.</span>print(
-</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#e6db74">&#39;[blue]&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;                 [ERROR]处理c,cpp文件代码规范未通过</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 需要用vscode clang-format 插件进行代码格式化</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 或者去tools\gitlab_cicd</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 下找到install.bat进行自动格式化&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;===&gt;有问题的c,cpp文件&lt;===:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(c_cpp_temp_name) <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">===&gt;错误提示&lt;===:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x1b</span><span style="color:#e6db74">.*?m&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(finalpipe)) <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#39;[/]&#39;</span>, box<span style="color:#f92672">=</span>box<span style="color:#f92672">.</span>DOUBLE))
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(finalpipe)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">len</span>(finalpipe) <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>:
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>console<span style="color:#39c">.</span>print(
+</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#cd0000">&#39;[blue]&#39;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;                 [ERROR]处理c,cpp文件代码规范未通过</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 需要用vscode clang-format 插件进行代码格式化</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 或者去tools\gitlab_cicd</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 下找到install.bat进行自动格式化&#34;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#39;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;===&gt;有问题的c,cpp文件&lt;===:</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(c_cpp_temp_name) <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">===&gt;错误提示&lt;===:</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          re<span style="color:#39c">.</span>sub(<span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\x1b</span><span style="color:#cd0000">.*?m&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>, <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(finalpipe)) <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#39;[/]&#39;</span>, box<span style="color:#39c">=</span>box<span style="color:#39c">.</span>DOUBLE))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> blag
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">finally</span>:
-</span></span><span style="display:flex;"><span>            shutil<span style="color:#f92672">.</span>rmtree(c_cpp_tempdir)
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># pass</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">return</span> blag
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">finally</span>:
+</span></span><span style="display:flex;"><span>            shutil<span style="color:#39c">.</span>rmtree(c_cpp_tempdir)
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># pass</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 处理lua文件风格</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lua_handler_checkstyle</span>(self, lua_tempdir, lua_temp_file_path):
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
-</span></span><span style="display:flex;"><span>            blag <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>            finalpipe <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>            lua_error_temp_name <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> path <span style="color:#f92672">in</span> lua_temp_file_path:
-</span></span><span style="display:flex;"><span>                cmd <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>astyle_lint_dir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/codeformat check -f &#39;</span> <span style="color:#f92672">+</span> path <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39; -DAE&#39;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(cmd)</span>
-</span></span><span style="display:flex;"><span>                result <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(
-</span></span><span style="display:flex;"><span>                    cmd, shell<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE, stderr<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
-</span></span><span style="display:flex;"><span>                rpipe <span style="color:#f92672">=</span> result<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>readlines()
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(rpipe)</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> len(rpipe) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
-</span></span><span style="display:flex;"><span>                    rpipeList <span style="color:#f92672">=</span> [x<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)<span style="color:#f92672">.</span>replace(lua_tempdir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>)
-</span></span><span style="display:flex;"><span>                                 <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> rpipe]
-</span></span><span style="display:flex;"><span>                    rpipestr <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(rpipeList)
-</span></span><span style="display:flex;"><span>                    (filepath, tempfilename) <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>split(path)
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span>(<span style="color:#f92672">not</span> re<span style="color:#f92672">.</span>search(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^Check.*?OK$&#39;</span>, rpipestr)):
-</span></span><span style="display:flex;"><span>                        finalpipe<span style="color:#f92672">.</span>append(rpipestr)
-</span></span><span style="display:flex;"><span>                        lua_error_temp_name<span style="color:#f92672">.</span>append(tempfilename)
-</span></span><span style="display:flex;"><span>                        blag <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#000080"># 处理lua文件风格</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> lua_handler_checkstyle(self, lua_tempdir, lua_temp_file_path):
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">try</span>:
+</span></span><span style="display:flex;"><span>            blag <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>
+</span></span><span style="display:flex;"><span>            finalpipe <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>            lua_error_temp_name <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">for</span> path <span style="color:#cdcd00">in</span> lua_temp_file_path:
+</span></span><span style="display:flex;"><span>                cmd <span style="color:#39c">=</span> self<span style="color:#39c">.</span>astyle_lint_dir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/codeformat check -f &#39;</span> <span style="color:#39c">+</span> path <span style="color:#39c">+</span> <span style="color:#cd0000">&#39; -DAE&#39;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(cmd)</span>
+</span></span><span style="display:flex;"><span>                result <span style="color:#39c">=</span> subprocess<span style="color:#39c">.</span>Popen(
+</span></span><span style="display:flex;"><span>                    cmd, shell<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>, stdout<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE, stderr<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE)
+</span></span><span style="display:flex;"><span>                rpipe <span style="color:#39c">=</span> result<span style="color:#39c">.</span>stdout<span style="color:#39c">.</span>readlines()
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(rpipe)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">len</span>(rpipe) <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>:
+</span></span><span style="display:flex;"><span>                    rpipeList <span style="color:#39c">=</span> [x<span style="color:#39c">.</span>decode(<span style="color:#cd0000">&#39;utf-8&#39;</span>)<span style="color:#39c">.</span>replace(lua_tempdir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>                                 <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> rpipe]
+</span></span><span style="display:flex;"><span>                    rpipestr <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(rpipeList)
+</span></span><span style="display:flex;"><span>                    (filepath, tempfilename) <span style="color:#39c">=</span> os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>split(path)
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">if</span>(<span style="color:#cdcd00">not</span> re<span style="color:#39c">.</span>search(<span style="color:#cd0000">r</span><span style="color:#cd0000">&#39;^Check.*?OK$&#39;</span>, rpipestr)):
+</span></span><span style="display:flex;"><span>                        finalpipe<span style="color:#39c">.</span>append(rpipestr)
+</span></span><span style="display:flex;"><span>                        lua_error_temp_name<span style="color:#39c">.</span>append(tempfilename)
+</span></span><span style="display:flex;"><span>                        blag <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(lua_error_temp_name)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> blag:
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>console<span style="color:#f92672">.</span>print(
-</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#e6db74">&#39;[blue]&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;                 [ERROR]处理lua文件代码规范未通过</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 需要用vscode EmmyLuaCodeStyle 插件进行代码格式化</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 或者去tools\gitlab_cicd</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 下找到install.bat进行自动格式化&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;===&gt;有问题的lua文件&lt;===:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(lua_error_temp_name) <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">===&gt;错误提示&lt;===:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x1b</span><span style="color:#e6db74">.*?m&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(finalpipe)) <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#39;[/]&#39;</span>, box<span style="color:#f92672">=</span>box<span style="color:#f92672">.</span>DOUBLE))
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(lua_error_temp_name)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">1</span> <span style="color:#39c">==</span> blag:
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>console<span style="color:#39c">.</span>print(
+</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#cd0000">&#39;[blue]&#39;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;                 [ERROR]处理lua文件代码规范未通过</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 需要用vscode EmmyLuaCodeStyle 插件进行代码格式化</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 或者去tools\gitlab_cicd</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 下找到install.bat进行自动格式化&#34;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#39;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;===&gt;有问题的lua文件&lt;===:</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(lua_error_temp_name) <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">===&gt;错误提示&lt;===:</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          re<span style="color:#39c">.</span>sub(<span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\x1b</span><span style="color:#cd0000">.*?m&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>, <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(finalpipe)) <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#39;[/]&#39;</span>, box<span style="color:#39c">=</span>box<span style="color:#39c">.</span>DOUBLE))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> blag
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">finally</span>:
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># shutil.rmtree(lua_tempdir)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">return</span> blag
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">finally</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># shutil.rmtree(lua_tempdir)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">pass</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lua_handler_checkdiagnosis</span>(self, lua_tempdir, lua_temp_file_path):
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span>:
-</span></span><span style="display:flex;"><span>            blag <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</span></span><span style="display:flex;"><span>            finalpipe <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>            lua_error_temp_name <span style="color:#f92672">=</span> []
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> path <span style="color:#f92672">in</span> lua_temp_file_path:
-</span></span><span style="display:flex;"><span>                cmd <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>astyle_lint_dir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/luacheck &#39;</span> <span style="color:#f92672">+</span> path <span style="color:#f92672">+</span> \
-</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#39; --no-config --no-default-config --codes -q --exclude-files **/config.lua --ignore 311&#39;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(cmd)</span>
-</span></span><span style="display:flex;"><span>                result <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(
-</span></span><span style="display:flex;"><span>                    cmd, shell<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE, stderr<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
-</span></span><span style="display:flex;"><span>                rpipe <span style="color:#f92672">=</span> result<span style="color:#f92672">.</span>stdout<span style="color:#f92672">.</span>readlines()
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># print(rpipe)</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> len(rpipe) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
-</span></span><span style="display:flex;"><span>                    rpipeList <span style="color:#f92672">=</span> [
-</span></span><span style="display:flex;"><span>                        x<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)<span style="color:#f92672">.</span>replace(lua_tempdir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> rpipe]
-</span></span><span style="display:flex;"><span>                    rpipestr <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(rpipeList)
-</span></span><span style="display:flex;"><span>                    (filepath, tempfilename) <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>split(path)
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span>(re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^Check.*?error&#39;</span>, rpipestr)):
-</span></span><span style="display:flex;"><span>                        finalpipe<span style="color:#f92672">.</span>append(rpipestr)
-</span></span><span style="display:flex;"><span>                        lua_error_temp_name<span style="color:#f92672">.</span>append(tempfilename)
-</span></span><span style="display:flex;"><span>                        blag <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> lua_handler_checkdiagnosis(self, lua_tempdir, lua_temp_file_path):
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">try</span>:
+</span></span><span style="display:flex;"><span>            blag <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>
+</span></span><span style="display:flex;"><span>            finalpipe <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>            lua_error_temp_name <span style="color:#39c">=</span> []
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">for</span> path <span style="color:#cdcd00">in</span> lua_temp_file_path:
+</span></span><span style="display:flex;"><span>                cmd <span style="color:#39c">=</span> self<span style="color:#39c">.</span>astyle_lint_dir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/luacheck &#39;</span> <span style="color:#39c">+</span> path <span style="color:#39c">+</span> \
+</span></span><span style="display:flex;"><span>                    <span style="color:#cd0000">&#39; --no-config --no-default-config --codes -q --exclude-files **/config.lua --ignore 311&#39;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(cmd)</span>
+</span></span><span style="display:flex;"><span>                result <span style="color:#39c">=</span> subprocess<span style="color:#39c">.</span>Popen(
+</span></span><span style="display:flex;"><span>                    cmd, shell<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>, stdout<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE, stderr<span style="color:#39c">=</span>subprocess<span style="color:#39c">.</span>PIPE)
+</span></span><span style="display:flex;"><span>                rpipe <span style="color:#39c">=</span> result<span style="color:#39c">.</span>stdout<span style="color:#39c">.</span>readlines()
+</span></span><span style="display:flex;"><span>                <span style="color:#000080"># print(rpipe)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">len</span>(rpipe) <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>:
+</span></span><span style="display:flex;"><span>                    rpipeList <span style="color:#39c">=</span> [
+</span></span><span style="display:flex;"><span>                        x<span style="color:#39c">.</span>decode(<span style="color:#cd0000">&#39;utf-8&#39;</span>)<span style="color:#39c">.</span>replace(lua_tempdir <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;/&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>) <span style="color:#cdcd00">for</span> x <span style="color:#cdcd00">in</span> rpipe]
+</span></span><span style="display:flex;"><span>                    rpipestr <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(rpipeList)
+</span></span><span style="display:flex;"><span>                    (filepath, tempfilename) <span style="color:#39c">=</span> os<span style="color:#39c">.</span>path<span style="color:#39c">.</span>split(path)
+</span></span><span style="display:flex;"><span>                    <span style="color:#cdcd00">if</span>(re<span style="color:#39c">.</span>findall(<span style="color:#cd0000">r</span><span style="color:#cd0000">&#39;^Check.*?error&#39;</span>, rpipestr)):
+</span></span><span style="display:flex;"><span>                        finalpipe<span style="color:#39c">.</span>append(rpipestr)
+</span></span><span style="display:flex;"><span>                        lua_error_temp_name<span style="color:#39c">.</span>append(tempfilename)
+</span></span><span style="display:flex;"><span>                        blag <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># print(finalpipe)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">==</span> blag:
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>console<span style="color:#f92672">.</span>print(
-</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#e6db74">&#39;[blue]&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;                 [ERROR]处理lua文件代码语法未通过</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                                     <span style="color:#e6db74">&#34;                 请手动修改并提交, 直到所有代码都符合规范为止...&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;===&gt;有问题的lua文件&lt;===:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(lua_error_temp_name) <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;             </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">===&gt;错误提示&lt;===:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\x1b</span><span style="color:#e6db74">.*?m&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>, <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">.</span>join(finalpipe)) <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#39;[/]&#39;</span>, box<span style="color:#f92672">=</span>box<span style="color:#f92672">.</span>DOUBLE, expand<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>))
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># print(finalpipe)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">1</span> <span style="color:#39c">==</span> blag:
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>console<span style="color:#39c">.</span>print(
+</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#cd0000">&#39;[blue]&#39;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;                 [ERROR]处理lua文件代码语法未通过</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                                     <span style="color:#cd0000">&#34;                 请手动修改并提交, 直到所有代码都符合规范为止...&#34;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#39;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;===&gt;有问题的lua文件&lt;===:</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(lua_error_temp_name) <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;             </span><span style="color:#cd0000">\n</span><span style="color:#cd0000">===&gt;错误提示&lt;===:</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          re<span style="color:#39c">.</span>sub(<span style="color:#cd0000">&#39;</span><span style="color:#cd0000">\x1b</span><span style="color:#cd0000">.*?m&#39;</span>, <span style="color:#cd0000">&#39;&#39;</span>, <span style="color:#cd0000">&#34;&#34;</span><span style="color:#39c">.</span>join(finalpipe)) <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#39;[/]&#39;</span>, box<span style="color:#39c">=</span>box<span style="color:#39c">.</span>DOUBLE, expand<span style="color:#39c">=</span><span style="color:#cdcd00">True</span>))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> blag
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">finally</span>:
-</span></span><span style="display:flex;"><span>            shutil<span style="color:#f92672">.</span>rmtree(lua_tempdir)
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># pass</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">return</span> blag
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">finally</span>:
+</span></span><span style="display:flex;"><span>            shutil<span style="color:#39c">.</span>rmtree(lua_tempdir)
+</span></span><span style="display:flex;"><span>            <span style="color:#000080"># pass</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_commit_msg</span>(self):
-</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;开始提交信息检查...&#34;</span>)
-</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;提交者为:&#34;</span>, self<span style="color:#f92672">.</span>pushAuthor)
-</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;当前提交总次数:&#34;</span>, self<span style="color:#f92672">.</span>pushCount)
-</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;当前提交注释消息:&#34;</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> msg <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>pushMsg:
-</span></span><span style="display:flex;"><span>            print(msg, end<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> check_commit_msg(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">print</span>(<span style="color:#cd0000">&#34;开始提交信息检查...&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">print</span>(<span style="color:#cd0000">&#34;提交者为:&#34;</span>, self<span style="color:#39c">.</span>pushAuthor)
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">print</span>(<span style="color:#cd0000">&#34;当前提交总次数:&#34;</span>, self<span style="color:#39c">.</span>pushCount)
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">print</span>(<span style="color:#cd0000">&#34;当前提交注释消息:&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">for</span> msg <span style="color:#cdcd00">in</span> self<span style="color:#39c">.</span>pushMsg:
+</span></span><span style="display:flex;"><span>            <span style="color:#cd00cd">print</span>(msg, end<span style="color:#39c">=</span><span style="color:#cd0000">&#34;&#34;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> msg <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>pushMsg:
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(msg) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>:
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>console<span style="color:#f92672">.</span>print(
-</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#e6db74">&#39;[blue]&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;[ERROR]提交信息校验未通过</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>                                     <span style="color:#e6db74">&#34;msg长度必须大于10&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;[/]&#39;</span>, box<span style="color:#f92672">=</span>box<span style="color:#f92672">.</span>DOUBLE))
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">for</span> msg <span style="color:#cdcd00">in</span> self<span style="color:#39c">.</span>pushMsg:
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> <span style="color:#cd00cd">len</span>(msg) <span style="color:#39c">&lt;</span> <span style="color:#cd00cd">10</span>:
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>console<span style="color:#39c">.</span>print(
+</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#cd0000">&#39;[blue]&#39;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;[ERROR]提交信息校验未通过</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>                                     <span style="color:#cd0000">&#34;msg长度必须大于10&#34;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#39;[/]&#39;</span>, box<span style="color:#39c">=</span>box<span style="color:#39c">.</span>DOUBLE))
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">return</span> <span style="color:#cd00cd">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            msgList <span style="color:#f92672">=</span> msg<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34; &#34;</span>, <span style="color:#ae81ff">1</span>)
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> (len(msgList) <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> emoji<span style="color:#f92672">.</span>is_emoji(msgList[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">and</span> re<span style="color:#f92672">.</span>search(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;^[init|feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert](.*):[\s]</span><span style="color:#e6db74">{1}</span><span style="color:#e6db74">[\S]{1,20}\n&#39;</span>, msgList[<span style="color:#ae81ff">1</span>]), re<span style="color:#f92672">.</span>S):
-</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>console<span style="color:#f92672">.</span>print(
-</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#e6db74">&#39;[blue]&#39;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;                 [ERROR]提交信息校验未通过,内容不符合规范</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;                 请去vscode下载git-commit-plugin进行规范提交</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🎉 init(影响范围模块): 项目初始化</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:✨ feat(影响范围模块): 新增某某功能</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🐞 fix(影响范围模块): 修复某某bug</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:📃 docs(影响范围模块): 新增某某说明文档</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🌈 style(影响范围模块): 仅仅修改了空格,缩进,逗号等等</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🦄 refactor(影响范围模块): 重构某某功能</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🎈 perf(影响范围模块): 优化了提高某某模块性能</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🧪 test(影响范围模块): 测试模块功能</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🔧 build(影响范围模块): 构建了那个版本</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🐎 ci(影响范围模块): 对某某ci文件的修改</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:🐳 chore(影响范围模块): 改变了某某构建流程</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#34;e.g.:↩  revert(影响范围模块): 回退某个版本</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#e6db74">&#39;[/]&#39;</span>, box<span style="color:#f92672">=</span>box<span style="color:#f92672">.</span>DOUBLE))
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>            msgList <span style="color:#39c">=</span> msg<span style="color:#39c">.</span>split(<span style="color:#cd0000">&#34; &#34;</span>, <span style="color:#cd00cd">1</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#cdcd00">if</span> <span style="color:#cdcd00">not</span> (<span style="color:#cd00cd">len</span>(msgList) <span style="color:#39c">==</span> <span style="color:#cd00cd">2</span> <span style="color:#cdcd00">and</span> emoji<span style="color:#39c">.</span>is_emoji(msgList[<span style="color:#cd00cd">0</span>]) <span style="color:#cdcd00">and</span> re<span style="color:#39c">.</span>search(<span style="color:#cd0000">r</span><span style="color:#cd0000">&#39;^[init|feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert](.*):[\s]</span><span style="color:#cd0000">{1}</span><span style="color:#cd0000">[\S]{1,20}\n&#39;</span>, msgList[<span style="color:#cd00cd">1</span>]), re<span style="color:#39c">.</span>S):
+</span></span><span style="display:flex;"><span>                self<span style="color:#39c">.</span>console<span style="color:#39c">.</span>print(
+</span></span><span style="display:flex;"><span>                    Panel(<span style="color:#cd0000">&#39;[blue]&#39;</span> <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;                 [ERROR]提交信息校验未通过,内容不符合规范</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;                 请去vscode下载git-commit-plugin进行规范提交</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;════════════════════════════════════════════════════════════════════════════</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🎉 init(影响范围模块): 项目初始化</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:✨ feat(影响范围模块): 新增某某功能</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🐞 fix(影响范围模块): 修复某某bug</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:📃 docs(影响范围模块): 新增某某说明文档</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🌈 style(影响范围模块): 仅仅修改了空格,缩进,逗号等等</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🦄 refactor(影响范围模块): 重构某某功能</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🎈 perf(影响范围模块): 优化了提高某某模块性能</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🧪 test(影响范围模块): 测试模块功能</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🔧 build(影响范围模块): 构建了那个版本</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🐎 ci(影响范围模块): 对某某ci文件的修改</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:🐳 chore(影响范围模块): 改变了某某构建流程</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#34;e.g.:↩  revert(影响范围模块): 回退某个版本</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>                          <span style="color:#cd0000">&#39;[/]&#39;</span>, box<span style="color:#39c">=</span>box<span style="color:#39c">.</span>DOUBLE))
+</span></span><span style="display:flex;"><span>                <span style="color:#cdcd00">return</span> <span style="color:#cd00cd">1</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getGitPushInfo</span>(self):
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>__getGitInfo()
-</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>__getPushInfo()
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">def</span> getGitPushInfo(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>__getGitInfo()
+</span></span><span style="display:flex;"><span>        self<span style="color:#39c">.</span>__getPushInfo()
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
-</span></span><span style="display:flex;"><span>    t <span style="color:#f92672">=</span> Trigger()
-</span></span><span style="display:flex;"><span>    t<span style="color:#f92672">.</span>getGitPushInfo()
-</span></span><span style="display:flex;"><span>    exit(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">if</span> __name__ <span style="color:#39c">==</span> <span style="color:#cd0000">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    t <span style="color:#39c">=</span> Trigger()
+</span></span><span style="display:flex;"><span>    t<span style="color:#39c">.</span>getGitPushInfo()
+</span></span><span style="display:flex;"><span>    exit(<span style="color:#cd00cd">0</span>)
 </span></span></code></pre></div>
 
         </div>

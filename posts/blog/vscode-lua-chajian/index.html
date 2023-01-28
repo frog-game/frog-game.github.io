@@ -365,7 +365,7 @@ var _hmt = _hmt || [];
         <div class="post-content"><h2 id="luadebug-实现多虚拟机原理"><span>luadebug 实现多虚拟机原理</span></h2>
 <p>先从luahook原理说起</p>
 <p>在lua.h 当中我们有 lua_sethook函数来给们设置钩子</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>LUA_API <span style="color:#a6e22e">void</span> (lua_sethook) (lua_State <span style="color:#f92672">*</span>L, lua_Hook func, <span style="color:#66d9ef">int</span> mask, <span style="color:#66d9ef">int</span> count);
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>LUA_API void (lua_sethook) (lua_State <span style="color:#39c">*</span>L, lua_Hook func, <span style="color:#00cd00">int</span> mask, <span style="color:#00cd00">int</span> count);
 </span></span></code></pre></div><blockquote>
 <ul>
 <li>
@@ -376,7 +376,7 @@ var _hmt = _hmt || [];
 </li>
 <li>
 <p>mask: 状态掩码可以组合操作</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>LUA_MASKCALL : 调用函数时回调
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>LUA_MASKCALL : 调用函数时回调
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>LUA_MASKRET :函数返回时回调
 </span></span><span style="display:flex;"><span>
@@ -407,8 +407,8 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="202201211215165.png" alt="202201211215165"  />
 </p>
 <p>回到我们第**2 **个参数</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">/* Functions to be called by the debugger in specific events */</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#a6e22e">void</span>(<span style="color:#f92672">*</span>lua_Hook) (lua_State <span style="color:#f92672">*</span>L, lua_Debug <span style="color:#f92672">*</span>ar);
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">/* Functions to be called by the debugger in specific events */</span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">typedef</span> void(<span style="color:#39c">*</span>lua_Hook) (lua_State <span style="color:#39c">*</span>L, lua_Debug <span style="color:#39c">*</span>ar);
 </span></span></code></pre></div><p>可以看到返回了一个<code>lua_Debug </code>结构体 我们进入这个结构体</p>
 <p><img loading="lazy" src="202201211242014-16530988621344.png" alt="202201211242014"  />
 </p>
@@ -508,166 +508,166 @@ var _hmt = _hmt || [];
 </p>
 <p>服务器接收到请求逻辑核心逻辑如下</p>
 <p>第一步: 将此lua定义check 用luaL_dostring 进行load执行</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> loadstr <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;function dlua_setvarvalue (name, frame, val, level)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    local found</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    -- try local variables</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    local i = 1</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    while true do</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        local n, v = debug.getlocal(frame + level, i)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        if not n then</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;            break</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        if n == name then</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;            debug.setlocal(frame + level, i, val)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;            found = true</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        i = i + 1</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    if found then</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        return true</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    -- try upvalues</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    local func = debug.getinfo(frame + level).func</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    i = 1</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    while true do</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        local n, v = debug.getupvalue(func, i)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        if not n then</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;            break</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        if n == name then</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;            debug.setupvalue(func, i, val)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;            return true</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;        i = i + 1</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;    return false</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;end&#34;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span><span style="color:#39c">*</span> loadstr <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;function dlua_setvarvalue (name, frame, val, level)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    local found</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    -- try local variables</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    local i = 1</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    while true do</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        local n, v = debug.getlocal(frame + level, i)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        if not n then</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;            break</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        if n == name then</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;            debug.setlocal(frame + level, i, val)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;            found = true</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        i = i + 1</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    if found then</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        return true</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    -- try upvalues</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    local func = debug.getinfo(frame + level).func</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    i = 1</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    while true do</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        local n, v = debug.getupvalue(func, i)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        if not n then</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;            break</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        if n == name then</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;            debug.setupvalue(func, i, val)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;            return true</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;        i = i + 1</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;    return false</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;end&#34;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cd0000">&#34;&#34;</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">luaL_dostring</span>(L, loadstr);
+</span></span><span style="display:flex;"><span>		luaL_dostring(L, loadstr);
 </span></span></code></pre></div><p>如果是set a=1类型</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>string loadstr <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;if not dlua_setvarvalue(</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> val <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">,&#34;</span> <span style="color:#f92672">+</span> std<span style="color:#f92672">::</span><span style="color:#a6e22e">to_string</span>(currentFrameId) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#f92672">+</span> input <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, 3&#34;</span> <span style="color:#f92672">+</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;) then</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
-</span></span><span style="display:flex;"><span>	loadstr <span style="color:#f92672">+=</span> val <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;=&#34;</span> <span style="color:#f92672">+</span> input <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
-</span></span><span style="display:flex;"><span>	loadstr <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> status <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_dostring</span>(L, loadstr.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>	std<span style="color:#39c">::</span>string loadstr <span style="color:#39c">=</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#cd0000">&#34;if not dlua_setvarvalue(</span><span style="color:#cd0000">\&#34;</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span> val <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\&#34;</span><span style="color:#cd0000">,&#34;</span> <span style="color:#39c">+</span> std<span style="color:#39c">::</span>to_string(currentFrameId) <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;,&#34;</span> <span style="color:#39c">+</span> input <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;, 3&#34;</span> <span style="color:#39c">+</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#cd0000">&#34;) then</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>;
+</span></span><span style="display:flex;"><span>	loadstr <span style="color:#39c">+=</span> val <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;=&#34;</span> <span style="color:#39c">+</span> input <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>;
+</span></span><span style="display:flex;"><span>	loadstr <span style="color:#39c">+=</span> <span style="color:#cd0000">&#34;end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">int</span> status <span style="color:#39c">=</span> luaL_dostring(L, loadstr.c_str());
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (status <span style="color:#39c">!=</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		std<span style="color:#f92672">::</span>string ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_settop</span>(L, oldn);
-</span></span><span style="display:flex;"><span>		EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, ret.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>		std<span style="color:#39c">::</span>string ret <span style="color:#39c">=</span> lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>		lua_settop(L, oldn);
+</span></span><span style="display:flex;"><span>		EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, ret.c_str());
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>	}
 </span></span></code></pre></div><p>如果是set [t1] t1.a=1 类型</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>string loadstr <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;function dlua_set_val(&#34;</span>;
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">auto</span> it <span style="color:#f92672">=</span> inputval.<span style="color:#a6e22e">begin</span>(); it <span style="color:#f92672">!=</span> inputval.<span style="color:#a6e22e">end</span>();)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>	std<span style="color:#39c">::</span>string loadstr <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;function dlua_set_val(&#34;</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">for</span> (<span style="color:#cdcd00">auto</span> it <span style="color:#39c">=</span> inputval.begin(); it <span style="color:#39c">!=</span> inputval.end();)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> it<span style="color:#f92672">-&gt;</span>first;
-</span></span><span style="display:flex;"><span>			it<span style="color:#f92672">++</span>;
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (it <span style="color:#f92672">!=</span> inputval.<span style="color:#a6e22e">end</span>())
+</span></span><span style="display:flex;"><span>			loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> it<span style="color:#39c">-&gt;</span>first;
+</span></span><span style="display:flex;"><span>			it<span style="color:#39c">++</span>;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (it <span style="color:#39c">!=</span> inputval.end())
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span>;
+</span></span><span style="display:flex;"><span>				loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;,&#34;</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> val <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;=&#34;</span> <span style="color:#f92672">+</span> input <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
-</span></span><span style="display:flex;"><span>		loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;return &#34;</span>;
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">auto</span> it <span style="color:#f92672">=</span> inputval.<span style="color:#a6e22e">begin</span>(); it <span style="color:#f92672">!=</span> inputval.<span style="color:#a6e22e">end</span>();)
+</span></span><span style="display:flex;"><span>		loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span> <span style="color:#39c">+</span> val <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;=&#34;</span> <span style="color:#39c">+</span> input <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>;
+</span></span><span style="display:flex;"><span>		loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;return &#34;</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">for</span> (<span style="color:#cdcd00">auto</span> it <span style="color:#39c">=</span> inputval.begin(); it <span style="color:#39c">!=</span> inputval.end();)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> it<span style="color:#f92672">-&gt;</span>first;
-</span></span><span style="display:flex;"><span>			it<span style="color:#f92672">++</span>;
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (it <span style="color:#f92672">!=</span> inputval.<span style="color:#a6e22e">end</span>())
+</span></span><span style="display:flex;"><span>			loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> it<span style="color:#39c">-&gt;</span>first;
+</span></span><span style="display:flex;"><span>			it<span style="color:#39c">++</span>;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (it <span style="color:#39c">!=</span> inputval.end())
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;,&#34;</span>;
+</span></span><span style="display:flex;"><span>				loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;,&#34;</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		loadstr <span style="color:#f92672">=</span> loadstr <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
+</span></span><span style="display:flex;"><span>		loadstr <span style="color:#39c">=</span> loadstr <span style="color:#39c">+</span> <span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\n</span><span style="color:#cd0000"> end</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">int</span> status <span style="color:#f92672">=</span> <span style="color:#a6e22e">luaL_dostring</span>(L, loadstr.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (status <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">int</span> status <span style="color:#39c">=</span> luaL_dostring(L, loadstr.c_str());
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">if</span> (status <span style="color:#39c">!=</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			std<span style="color:#f92672">::</span>string ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_settop</span>(L, oldn);
+</span></span><span style="display:flex;"><span>			std<span style="color:#39c">::</span>string ret <span style="color:#39c">=</span> lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>			lua_settop(L, oldn);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, ret.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, ret.c_str());
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_settop</span>(L, oldn);
+</span></span><span style="display:flex;"><span>		lua_settop(L, oldn);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">lua_getglobal</span>(L, <span style="color:#e6db74">&#34;dlua_set_val&#34;</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">lua_isfunction</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>		lua_getglobal(L, <span style="color:#cd0000">&#34;dlua_set_val&#34;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>lua_isfunction(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>))
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_settop</span>(L, oldn);
-</span></span><span style="display:flex;"><span>			EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, <span style="color:#e6db74">&#34;get dlua_set_val fail&#34;</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			lua_settop(L, oldn);
+</span></span><span style="display:flex;"><span>			EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, <span style="color:#cd0000">&#34;get dlua_set_val fail&#34;</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">auto</span> it <span style="color:#f92672">=</span> inputval.<span style="color:#a6e22e">begin</span>(); it <span style="color:#f92672">!=</span> inputval.<span style="color:#a6e22e">end</span>(); it<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">for</span> (<span style="color:#cdcd00">auto</span> it <span style="color:#39c">=</span> inputval.begin(); it <span style="color:#39c">!=</span> inputval.end(); it<span style="color:#39c">++</span>)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">FindAndPushVal</span>(L, it<span style="color:#f92672">-&gt;</span>first, currentFrameId))
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>FindAndPushVal(L, it<span style="color:#39c">-&gt;</span>first, currentFrameId))
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">lua_settop</span>(L, oldn);
-</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, (std<span style="color:#f92672">::</span><span style="color:#a6e22e">string</span>(<span style="color:#e6db74">&#34;can not find val &#34;</span>) <span style="color:#f92672">+</span> it<span style="color:#f92672">-&gt;</span>first).<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>				lua_settop(L, oldn);
+</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, (std<span style="color:#39c">::</span>string(<span style="color:#cd0000">&#34;can not find val &#34;</span>) <span style="color:#39c">+</span> it<span style="color:#39c">-&gt;</span>first).c_str());
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">int</span> ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_pcall</span>(L, inputval.<span style="color:#a6e22e">size</span>(), inputval.<span style="color:#a6e22e">size</span>(), <span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (ret <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">int</span> ret <span style="color:#39c">=</span> lua_pcall(L, inputval.size(), inputval.size(), <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">if</span> (ret <span style="color:#39c">!=</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			std<span style="color:#f92672">::</span>string ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_settop</span>(L, oldn);
-</span></span><span style="display:flex;"><span>			EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, ret.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			std<span style="color:#39c">::</span>string ret <span style="color:#39c">=</span> lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>			lua_settop(L, oldn);
+</span></span><span style="display:flex;"><span>			EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, ret.c_str());
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>inputval.<span style="color:#a6e22e">size</span>();
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">auto</span> it <span style="color:#f92672">=</span> inputval.<span style="color:#a6e22e">begin</span>(); it <span style="color:#f92672">!=</span> inputval.<span style="color:#a6e22e">end</span>(); it<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">int</span> index <span style="color:#39c">=</span> <span style="color:#39c">-</span>inputval.size();
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">for</span> (<span style="color:#cdcd00">auto</span> it <span style="color:#39c">=</span> inputval.begin(); it <span style="color:#39c">!=</span> inputval.end(); it<span style="color:#39c">++</span>)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			std<span style="color:#f92672">::</span>string name <span style="color:#f92672">=</span> it<span style="color:#f92672">-&gt;</span>first;
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">int</span> curoldn <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_gettop</span>(L);
+</span></span><span style="display:flex;"><span>			std<span style="color:#39c">::</span>string name <span style="color:#39c">=</span> it<span style="color:#39c">-&gt;</span>first;
+</span></span><span style="display:flex;"><span>			<span style="color:#00cd00">int</span> curoldn <span style="color:#39c">=</span> lua_gettop(L);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_getglobal</span>(L, <span style="color:#e6db74">&#34;dlua_setvarvalue&#34;</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">lua_isfunction</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>			lua_getglobal(L, <span style="color:#cd0000">&#34;dlua_setvarvalue&#34;</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>lua_isfunction(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>))
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">lua_settop</span>(L, oldn);
-</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, <span style="color:#e6db74">&#34;get dlua_setvarvalue fail&#34;</span>);
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>				lua_settop(L, oldn);
+</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, <span style="color:#cd0000">&#34;get dlua_setvarvalue fail&#34;</span>);
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_pushstring</span>(L, name.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_pushinteger</span>(L,currentFrameId);
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_pushnil</span>(L);
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_pushinteger</span>(L, <span style="color:#ae81ff">2</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_copy</span>(L, index <span style="color:#f92672">-</span> <span style="color:#ae81ff">5</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>			lua_pushstring(L, name.c_str());
+</span></span><span style="display:flex;"><span>			lua_pushinteger(L,currentFrameId);
+</span></span><span style="display:flex;"><span>			lua_pushnil(L);
+</span></span><span style="display:flex;"><span>			lua_pushinteger(L, <span style="color:#cd00cd">2</span>);
+</span></span><span style="display:flex;"><span>			lua_copy(L, index <span style="color:#39c">-</span> <span style="color:#cd00cd">5</span>, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_pcall</span>(L, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (ret <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>			ret <span style="color:#39c">=</span> lua_pcall(L, <span style="color:#cd00cd">4</span>, <span style="color:#cd00cd">1</span>, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (ret <span style="color:#39c">!=</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				std<span style="color:#f92672">::</span>string ret <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_tostring</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">lua_settop</span>(L, oldn);
+</span></span><span style="display:flex;"><span>				std<span style="color:#39c">::</span>string ret <span style="color:#39c">=</span> lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>				lua_settop(L, oldn);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, ret.<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, ret.c_str());
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">bool</span> suc <span style="color:#f92672">=</span> <span style="color:#a6e22e">lua_toboolean</span>(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>suc)
+</span></span><span style="display:flex;"><span>			<span style="color:#00cd00">bool</span> suc <span style="color:#39c">=</span> lua_toboolean(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>suc)
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#a6e22e">lua_settop</span>(L, oldn);
-</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#f92672">::</span><span style="color:#a6e22e">Get</span>().<span style="color:#a6e22e">SendLog</span>(LogType<span style="color:#f92672">::</span>Error, (std<span style="color:#f92672">::</span><span style="color:#a6e22e">string</span>(<span style="color:#e6db74">&#34;dlua_setvarvalue set &#34;</span>) <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; fail&#34;</span>).<span style="color:#a6e22e">c_str</span>());
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>				lua_settop(L, oldn);
+</span></span><span style="display:flex;"><span>				EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Error, (std<span style="color:#39c">::</span>string(<span style="color:#cd0000">&#34;dlua_setvarvalue set &#34;</span>) <span style="color:#39c">+</span> name <span style="color:#39c">+</span> <span style="color:#cd0000">&#34; fail&#34;</span>).c_str());
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">return</span> <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">lua_settop</span>(L, curoldn);
-</span></span><span style="display:flex;"><span>			index<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>			lua_settop(L, curoldn);
+</span></span><span style="display:flex;"><span>			index<span style="color:#39c">++</span>;
 </span></span><span style="display:flex;"><span>		}
 </span></span></code></pre></div><h3 id="图片效果"><span>图片效果</span></h3>
 <p><img loading="lazy" src="imgeimage-20220124163841008.png" alt="imgeimage-20220124163841008"  />
@@ -691,447 +691,447 @@ var _hmt = _hmt || [];
 </p>
 <p>首先需要在此结构中定义3个变量用于处理3中类型，然后通过vscode设置条件端点类型</p>
 <p>部分核心代码</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> Debugger<span style="color:#f92672">::</span>ProcessBreakPoint(std<span style="color:#f92672">::</span>shared_ptr<span style="color:#f92672">&lt;</span>BreakPoint<span style="color:#f92672">&gt;</span> bp)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00cd00">bool</span> Debugger<span style="color:#39c">::</span>ProcessBreakPoint(std<span style="color:#39c">::</span>shared_ptr<span style="color:#39c">&lt;</span>BreakPoint<span style="color:#39c">&gt;</span> bp)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>bp<span style="color:#f92672">-&gt;</span>condition.empty())
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>bp<span style="color:#39c">-&gt;</span>condition.empty())
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">auto</span> ctx <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_shared<span style="color:#f92672">&lt;</span>EvalContext<span style="color:#f92672">&gt;</span>();
-</span></span><span style="display:flex;"><span>		ctx<span style="color:#f92672">-&gt;</span>expr <span style="color:#f92672">=</span> bp<span style="color:#f92672">-&gt;</span>condition;
-</span></span><span style="display:flex;"><span>		ctx<span style="color:#f92672">-&gt;</span>depth <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">bool</span> suc <span style="color:#f92672">=</span> DoEval(ctx);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> suc <span style="color:#f92672">&amp;&amp;</span> ctx<span style="color:#f92672">-&gt;</span>result<span style="color:#f92672">-&gt;</span>valueType <span style="color:#f92672">==</span> LUA_TBOOLEAN <span style="color:#f92672">&amp;&amp;</span> ctx<span style="color:#f92672">-&gt;</span>result<span style="color:#f92672">-&gt;</span>value <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;true&#34;</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">auto</span> ctx <span style="color:#39c">=</span> std<span style="color:#39c">::</span>make_shared<span style="color:#39c">&lt;</span>EvalContext<span style="color:#39c">&gt;</span>();
+</span></span><span style="display:flex;"><span>		ctx<span style="color:#39c">-&gt;</span>expr <span style="color:#39c">=</span> bp<span style="color:#39c">-&gt;</span>condition;
+</span></span><span style="display:flex;"><span>		ctx<span style="color:#39c">-&gt;</span>depth <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">bool</span> suc <span style="color:#39c">=</span> DoEval(ctx);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> suc <span style="color:#39c">&amp;&amp;</span> ctx<span style="color:#39c">-&gt;</span>result<span style="color:#39c">-&gt;</span>valueType <span style="color:#39c">==</span> LUA_TBOOLEAN <span style="color:#39c">&amp;&amp;</span> ctx<span style="color:#39c">-&gt;</span>result<span style="color:#39c">-&gt;</span>value <span style="color:#39c">==</span> <span style="color:#cd0000">&#34;true&#34;</span>;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>bp<span style="color:#f92672">-&gt;</span>logMessage.empty())
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>bp<span style="color:#39c">-&gt;</span>logMessage.empty())
 </span></span><span style="display:flex;"><span>	{
 </span></span><span style="display:flex;"><span>		DoLogMessage(bp);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>bp<span style="color:#f92672">-&gt;</span>hitCondition.empty())
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>bp<span style="color:#39c">-&gt;</span>hitCondition.empty())
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		bp<span style="color:#f92672">-&gt;</span>hitCount<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>		bp<span style="color:#39c">-&gt;</span>hitCount<span style="color:#39c">++</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">DoHitCondition</span>(bp);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> DoHitCondition(bp);
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">true</span>;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> Debugger<span style="color:#f92672">::</span>DoEval(std<span style="color:#f92672">::</span>shared_ptr<span style="color:#f92672">&lt;</span>EvalContext<span style="color:#f92672">&gt;</span> evalContext)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00cd00">bool</span> Debugger<span style="color:#39c">::</span>DoEval(std<span style="color:#39c">::</span>shared_ptr<span style="color:#39c">&lt;</span>EvalContext<span style="color:#39c">&gt;</span> evalContext)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>currentL <span style="color:#f92672">||</span> <span style="color:#f92672">!</span>evalContext)
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>currentL <span style="color:#39c">||</span> <span style="color:#39c">!</span>evalContext)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">auto</span> L <span style="color:#f92672">=</span> currentL;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">auto</span> L <span style="color:#39c">=</span> currentL;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//auto* const L = L;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// From &#34;cacheId&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (evalContext<span style="color:#f92672">-&gt;</span>cacheId <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">//auto* const L = L;
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#000080">// From &#34;cacheId&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#cdcd00">if</span> (evalContext<span style="color:#39c">-&gt;</span>cacheId <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		lua_getfield(L, LUA_REGISTRYINDEX, CACHE_TABLE_NAME); <span style="color:#75715e">// 1: cacheTable|nil
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> (lua_type(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">==</span> LUA_TTABLE)
+</span></span><span style="display:flex;"><span>		lua_getfield(L, LUA_REGISTRYINDEX, CACHE_TABLE_NAME); <span style="color:#000080">// 1: cacheTable|nil
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		<span style="color:#cdcd00">if</span> (lua_type(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>) <span style="color:#39c">==</span> LUA_TTABLE)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			lua_getfield(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, std<span style="color:#f92672">::</span>to_string(evalContext<span style="color:#f92672">-&gt;</span>cacheId).c_str()); <span style="color:#75715e">// 1: cacheTable, 2: value
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			GetVariable(evalContext<span style="color:#f92672">-&gt;</span>result, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, evalContext<span style="color:#f92672">-&gt;</span>depth);
-</span></span><span style="display:flex;"><span>			lua_pop(L, <span style="color:#ae81ff">2</span>);
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>			lua_getfield(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>, std<span style="color:#39c">::</span>to_string(evalContext<span style="color:#39c">-&gt;</span>cacheId).c_str()); <span style="color:#000080">// 1: cacheTable, 2: value
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>			GetVariable(evalContext<span style="color:#39c">-&gt;</span>result, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>, evalContext<span style="color:#39c">-&gt;</span>depth);
+</span></span><span style="display:flex;"><span>			lua_pop(L, <span style="color:#cd00cd">2</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">true</span>;
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		lua_pop(L, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>		lua_pop(L, <span style="color:#cd00cd">1</span>);
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// LOAD AS &#34;return expr&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	std<span style="color:#f92672">::</span>string statement <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;return &#34;</span>;
-</span></span><span style="display:flex;"><span>	statement.append(evalContext<span style="color:#f92672">-&gt;</span>expr);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> luaL_loadstring(L, statement.c_str());
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (r <span style="color:#f92672">==</span> LUA_ERRSYNTAX)
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// LOAD AS &#34;return expr&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	std<span style="color:#39c">::</span>string statement <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;return &#34;</span>;
+</span></span><span style="display:flex;"><span>	statement.append(evalContext<span style="color:#39c">-&gt;</span>expr);
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">int</span> r <span style="color:#39c">=</span> luaL_loadstring(L, statement.c_str());
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (r <span style="color:#39c">==</span> LUA_ERRSYNTAX)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		evalContext<span style="color:#f92672">-&gt;</span>error <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;syntax err: &#34;</span>;
-</span></span><span style="display:flex;"><span>		evalContext<span style="color:#f92672">-&gt;</span>error.append(evalContext<span style="color:#f92672">-&gt;</span>expr);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>		evalContext<span style="color:#39c">-&gt;</span>error <span style="color:#39c">=</span> <span style="color:#cd0000">&#34;syntax err: &#34;</span>;
+</span></span><span style="display:flex;"><span>		evalContext<span style="color:#39c">-&gt;</span>error.append(evalContext<span style="color:#39c">-&gt;</span>expr);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// call
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> fIdx <span style="color:#f92672">=</span> lua_gettop(L);
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// create env
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>CreateEnv(evalContext<span style="color:#f92672">-&gt;</span>stackLevel))
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> false;
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// setup env
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#ifndef EMMY_USE_LUA_SOURCE
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	lua_setfenv(L, fIdx);
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#elif defined(EMMY_LUA_51) || defined(EMMY_LUA_JIT)
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lua_setfenv(L, fIdx);
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#else </span><span style="color:#75715e">//52 &amp; 53
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lua_setupvalue(L, fIdx, <span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	assert(lua_gettop(L) <span style="color:#f92672">==</span> fIdx);
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// call function() return expr end
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	r <span style="color:#f92672">=</span> lua_pcall(L, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (r <span style="color:#f92672">==</span> LUA_OK)
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// call
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#cdcd00">const</span> <span style="color:#00cd00">int</span> fIdx <span style="color:#39c">=</span> lua_gettop(L);
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// create env
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#cdcd00">if</span> (<span style="color:#39c">!</span>CreateEnv(evalContext<span style="color:#39c">-&gt;</span>stackLevel))
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// setup env
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#000080">#ifndef EMMY_USE_LUA_SOURCE
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	lua_setfenv(L, fIdx);
+</span></span><span style="display:flex;"><span><span style="color:#000080">#elif defined(EMMY_LUA_51) || defined(EMMY_LUA_JIT)
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    lua_setfenv(L, fIdx);
+</span></span><span style="display:flex;"><span><span style="color:#000080">#else </span><span style="color:#000080">//52 &amp; 53
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    lua_setupvalue(L, fIdx, <span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#000080">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	assert(lua_gettop(L) <span style="color:#39c">==</span> fIdx);
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// call function() return expr end
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	r <span style="color:#39c">=</span> lua_pcall(L, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">1</span>, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (r <span style="color:#39c">==</span> LUA_OK)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		evalContext<span style="color:#f92672">-&gt;</span>result<span style="color:#f92672">-&gt;</span>name <span style="color:#f92672">=</span> evalContext<span style="color:#f92672">-&gt;</span>expr;
-</span></span><span style="display:flex;"><span>		GetVariable(evalContext<span style="color:#f92672">-&gt;</span>result, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, evalContext<span style="color:#f92672">-&gt;</span>depth);
-</span></span><span style="display:flex;"><span>		lua_pop(L, <span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>		evalContext<span style="color:#39c">-&gt;</span>result<span style="color:#39c">-&gt;</span>name <span style="color:#39c">=</span> evalContext<span style="color:#39c">-&gt;</span>expr;
+</span></span><span style="display:flex;"><span>		GetVariable(evalContext<span style="color:#39c">-&gt;</span>result, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>, evalContext<span style="color:#39c">-&gt;</span>depth);
+</span></span><span style="display:flex;"><span>		lua_pop(L, <span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">true</span>;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (r <span style="color:#f92672">==</span> LUA_ERRRUN)
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (r <span style="color:#39c">==</span> LUA_ERRRUN)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		evalContext<span style="color:#f92672">-&gt;</span>error <span style="color:#f92672">=</span> lua_tostring(L, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span>		evalContext<span style="color:#39c">-&gt;</span>error <span style="color:#39c">=</span> lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Debugger<span style="color:#f92672">::</span>DoLogMessage(std<span style="color:#f92672">::</span>shared_ptr<span style="color:#f92672">&lt;</span>BreakPoint<span style="color:#f92672">&gt;</span> bp)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00cd00">void</span> Debugger<span style="color:#39c">::</span>DoLogMessage(std<span style="color:#39c">::</span>shared_ptr<span style="color:#39c">&lt;</span>BreakPoint<span style="color:#39c">&gt;</span> bp)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>string<span style="color:#f92672">&amp;</span> logMessage <span style="color:#f92672">=</span> bp<span style="color:#f92672">-&gt;</span>logMessage;
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 为什么不用regex?
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// 因为gcc 4.8 regex还是空实现
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#75715e">// 而且后续版本的gcc中正则表达式行为似乎也不太正常
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParseState</span>
+</span></span><span style="display:flex;"><span>	std<span style="color:#39c">::</span>string<span style="color:#39c">&amp;</span> logMessage <span style="color:#39c">=</span> bp<span style="color:#39c">-&gt;</span>logMessage;
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// 为什么不用regex?
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#000080">// 因为gcc 4.8 regex还是空实现
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#000080">// 而且后续版本的gcc中正则表达式行为似乎也不太正常
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#cdcd00">enum</span> <span style="color:#cdcd00">class</span> <span style="color:#00cdcd">ParseState</span>
 </span></span><span style="display:flex;"><span>	{
 </span></span><span style="display:flex;"><span>		Normal,
 </span></span><span style="display:flex;"><span>		LeftBrace,
 </span></span><span style="display:flex;"><span>		RightBrace
-</span></span><span style="display:flex;"><span>	} state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Normal;
+</span></span><span style="display:flex;"><span>	} state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Normal;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>LogMessageReplaceExpress<span style="color:#f92672">&gt;</span> replaceExpresses;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>size_t leftBraceBegin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>size_t rightBraceBegin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 如果在表达式中出现左大括号
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	std<span style="color:#f92672">::</span>size_t exprLeftCount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	std<span style="color:#39c">::</span>vector<span style="color:#39c">&lt;</span>LogMessageReplaceExpress<span style="color:#39c">&gt;</span> replaceExpresses;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> (std<span style="color:#f92672">::</span>size_t index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; index <span style="color:#f92672">!=</span> logMessage.size(); index<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	std<span style="color:#39c">::</span>size_t leftBraceBegin <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	std<span style="color:#39c">::</span>size_t rightBraceBegin <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">// 如果在表达式中出现左大括号
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	std<span style="color:#39c">::</span>size_t exprLeftCount <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">for</span> (std<span style="color:#39c">::</span>size_t index <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>; index <span style="color:#39c">!=</span> logMessage.size(); index<span style="color:#39c">++</span>)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">char</span> ch <span style="color:#f92672">=</span> logMessage[index];
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">char</span> ch <span style="color:#39c">=</span> logMessage[index];
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">switch</span> (state)
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">switch</span> (state)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>Normal:
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>Normal:
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;{&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;{&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>LeftBrace;
-</span></span><span style="display:flex;"><span>					leftBraceBegin <span style="color:#f92672">=</span> index;
-</span></span><span style="display:flex;"><span>					exprLeftCount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>LeftBrace;
+</span></span><span style="display:flex;"><span>					leftBraceBegin <span style="color:#39c">=</span> index;
+</span></span><span style="display:flex;"><span>					exprLeftCount <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;}&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;}&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>RightBrace;
-</span></span><span style="display:flex;"><span>					rightBraceBegin <span style="color:#f92672">=</span> index;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>RightBrace;
+</span></span><span style="display:flex;"><span>					rightBraceBegin <span style="color:#39c">=</span> index;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
 </span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>LeftBrace:
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>LeftBrace:
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;{&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;{&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#75715e">// 认为是左双大括号转义为可见的&#39;{&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>					<span style="color:#66d9ef">if</span> (index <span style="color:#f92672">==</span> leftBraceBegin <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#000080">// 认为是左双大括号转义为可见的&#39;{&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>					<span style="color:#cdcd00">if</span> (index <span style="color:#39c">==</span> leftBraceBegin <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>)
 </span></span><span style="display:flex;"><span>					{
-</span></span><span style="display:flex;"><span>						replaceExpresses.emplace_back(<span style="color:#e6db74">&#34;{&#34;</span>, leftBraceBegin, index, false);
-</span></span><span style="display:flex;"><span>						state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Normal;
+</span></span><span style="display:flex;"><span>						replaceExpresses.emplace_back(<span style="color:#cd0000">&#34;{&#34;</span>, leftBraceBegin, index, <span style="color:#cd00cd">false</span>);
+</span></span><span style="display:flex;"><span>						state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Normal;
 </span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>					{
-</span></span><span style="display:flex;"><span>						exprLeftCount<span style="color:#f92672">++</span>;
+</span></span><span style="display:flex;"><span>						exprLeftCount<span style="color:#39c">++</span>;
 </span></span><span style="display:flex;"><span>					}
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;}&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;}&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#75715e">// 认为是表达式内的大括号
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>					<span style="color:#66d9ef">if</span> (exprLeftCount <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>					<span style="color:#000080">// 认为是表达式内的大括号
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>					<span style="color:#cdcd00">if</span> (exprLeftCount <span style="color:#39c">&gt;</span> <span style="color:#cd00cd">0</span>)
 </span></span><span style="display:flex;"><span>					{
-</span></span><span style="display:flex;"><span>						exprLeftCount<span style="color:#f92672">--</span>;
-</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>						exprLeftCount<span style="color:#39c">--</span>;
+</span></span><span style="display:flex;"><span>						<span style="color:#cdcd00">continue</span>;
 </span></span><span style="display:flex;"><span>					}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>					replaceExpresses.emplace_back(logMessage.substr(leftBraceBegin <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, index <span style="color:#f92672">-</span> leftBraceBegin <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>),
-</span></span><span style="display:flex;"><span>					                              leftBraceBegin, index, true);
+</span></span><span style="display:flex;"><span>					replaceExpresses.emplace_back(logMessage.substr(leftBraceBegin <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>, index <span style="color:#39c">-</span> leftBraceBegin <span style="color:#39c">-</span> <span style="color:#cd00cd">1</span>),
+</span></span><span style="display:flex;"><span>					                              leftBraceBegin, index, <span style="color:#cd00cd">true</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Normal;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Normal;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
 </span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>RightBrace:
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>RightBrace:
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;}&#39;</span> <span style="color:#f92672">&amp;&amp;</span> (index <span style="color:#f92672">==</span> rightBraceBegin <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;}&#39;</span> <span style="color:#39c">&amp;&amp;</span> (index <span style="color:#39c">==</span> rightBraceBegin <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>))
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					replaceExpresses.emplace_back(<span style="color:#e6db74">&#34;}&#34;</span>, rightBraceBegin, index, false);
+</span></span><span style="display:flex;"><span>					replaceExpresses.emplace_back(<span style="color:#cd0000">&#34;}&#34;</span>, rightBraceBegin, index, <span style="color:#cd00cd">false</span>);
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#75715e">//认为左右大括号失配，之前的不做处理，退格一位回去重新判断
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>					index<span style="color:#f92672">--</span>;
+</span></span><span style="display:flex;"><span>					<span style="color:#000080">//认为左右大括号失配，之前的不做处理，退格一位回去重新判断
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>					index<span style="color:#39c">--</span>;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Normal;
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>				state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Normal;
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>stringstream message;
+</span></span><span style="display:flex;"><span>	std<span style="color:#39c">::</span>stringstream message;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (replaceExpresses.empty())
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (replaceExpresses.empty())
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		message <span style="color:#f92672">&lt;&lt;</span> logMessage;
+</span></span><span style="display:flex;"><span>		message <span style="color:#39c">&lt;&lt;</span> logMessage;
 </span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 拼接字符串
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#75715e">// 怎么replace 函数都没有啊
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>		std<span style="color:#f92672">::</span>size_t start <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (std<span style="color:#f92672">::</span>size_t index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; index <span style="color:#f92672">!=</span> replaceExpresses.size(); index<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 拼接字符串
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		<span style="color:#000080">// 怎么replace 函数都没有啊
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>		std<span style="color:#39c">::</span>size_t start <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">for</span> (std<span style="color:#39c">::</span>size_t index <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>; index <span style="color:#39c">!=</span> replaceExpresses.size(); index<span style="color:#39c">++</span>)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> replaceExpress <span style="color:#f92672">=</span> replaceExpresses[index];
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (start <span style="color:#f92672">&lt;</span> replaceExpress.StartIndex)
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">auto</span><span style="color:#39c">&amp;</span> replaceExpress <span style="color:#39c">=</span> replaceExpresses[index];
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (start <span style="color:#39c">&lt;</span> replaceExpress.StartIndex)
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">auto</span> fragment <span style="color:#f92672">=</span> logMessage.substr(start, replaceExpress.StartIndex <span style="color:#f92672">-</span> start);
-</span></span><span style="display:flex;"><span>				message <span style="color:#f92672">&lt;&lt;</span> fragment;
-</span></span><span style="display:flex;"><span>				start <span style="color:#f92672">=</span> replaceExpress.StartIndex;
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">auto</span> fragment <span style="color:#39c">=</span> logMessage.substr(start, replaceExpress.StartIndex <span style="color:#39c">-</span> start);
+</span></span><span style="display:flex;"><span>				message <span style="color:#39c">&lt;&lt;</span> fragment;
+</span></span><span style="display:flex;"><span>				start <span style="color:#39c">=</span> replaceExpress.StartIndex;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (replaceExpress.NeedEval)
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">if</span> (replaceExpress.NeedEval)
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">auto</span> ctx <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>make_shared<span style="color:#f92672">&lt;</span>EvalContext<span style="color:#f92672">&gt;</span>();
-</span></span><span style="display:flex;"><span>				ctx<span style="color:#f92672">-&gt;</span>expr <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>move(replaceExpress.Expr);
-</span></span><span style="display:flex;"><span>				ctx<span style="color:#f92672">-&gt;</span>depth <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">bool</span> succeed <span style="color:#f92672">=</span> DoEval(ctx);
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (succeed)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">auto</span> ctx <span style="color:#39c">=</span> std<span style="color:#39c">::</span>make_shared<span style="color:#39c">&lt;</span>EvalContext<span style="color:#39c">&gt;</span>();
+</span></span><span style="display:flex;"><span>				ctx<span style="color:#39c">-&gt;</span>expr <span style="color:#39c">=</span> std<span style="color:#39c">::</span>move(replaceExpress.Expr);
+</span></span><span style="display:flex;"><span>				ctx<span style="color:#39c">-&gt;</span>depth <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#00cd00">bool</span> succeed <span style="color:#39c">=</span> DoEval(ctx);
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (succeed)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					message <span style="color:#f92672">&lt;&lt;</span> ctx<span style="color:#f92672">-&gt;</span>result<span style="color:#f92672">-&gt;</span>value;
+</span></span><span style="display:flex;"><span>					message <span style="color:#39c">&lt;&lt;</span> ctx<span style="color:#39c">-&gt;</span>result<span style="color:#39c">-&gt;</span>value;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					message <span style="color:#f92672">&lt;&lt;</span> ctx<span style="color:#f92672">-&gt;</span>error;
+</span></span><span style="display:flex;"><span>					message <span style="color:#39c">&lt;&lt;</span> ctx<span style="color:#39c">-&gt;</span>error;
 </span></span><span style="display:flex;"><span>				}
 </span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				message <span style="color:#f92672">&lt;&lt;</span> replaceExpress.Expr;
+</span></span><span style="display:flex;"><span>				message <span style="color:#39c">&lt;&lt;</span> replaceExpress.Expr;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>			start <span style="color:#f92672">=</span> replaceExpress.EndIndex <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			start <span style="color:#39c">=</span> replaceExpress.EndIndex <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (start <span style="color:#f92672">&lt;</span> logMessage.size())
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">if</span> (start <span style="color:#39c">&lt;</span> logMessage.size())
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">auto</span> fragment <span style="color:#f92672">=</span> logMessage.substr(start, logMessage.size() <span style="color:#f92672">-</span> start);
-</span></span><span style="display:flex;"><span>			message <span style="color:#f92672">&lt;&lt;</span> fragment;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">auto</span> fragment <span style="color:#39c">=</span> logMessage.substr(start, logMessage.size() <span style="color:#39c">-</span> start);
+</span></span><span style="display:flex;"><span>			message <span style="color:#39c">&lt;&lt;</span> fragment;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	std<span style="color:#f92672">::</span>string baseName <span style="color:#f92672">=</span> BaseName(bp<span style="color:#f92672">-&gt;</span>file);
+</span></span><span style="display:flex;"><span>	std<span style="color:#39c">::</span>string baseName <span style="color:#39c">=</span> BaseName(bp<span style="color:#39c">-&gt;</span>file);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	EmmyFacade<span style="color:#f92672">::</span>Get().SendLog(LogType<span style="color:#f92672">::</span>Info, <span style="color:#e6db74">&#34;[%s:%d] %s&#34;</span>, baseName.c_str(), bp<span style="color:#f92672">-&gt;</span>line, message.str().c_str());
+</span></span><span style="display:flex;"><span>	EmmyFacade<span style="color:#39c">::</span>Get().SendLog(LogType<span style="color:#39c">::</span>Info, <span style="color:#cd0000">&#34;[%s:%d] %s&#34;</span>, baseName.c_str(), bp<span style="color:#39c">-&gt;</span>line, message.str().c_str());
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> Debugger<span style="color:#f92672">::</span>DoHitCondition(std<span style="color:#f92672">::</span>shared_ptr<span style="color:#f92672">&lt;</span>BreakPoint<span style="color:#f92672">&gt;</span> bp)
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#00cd00">bool</span> Debugger<span style="color:#39c">::</span>DoHitCondition(std<span style="color:#39c">::</span>shared_ptr<span style="color:#39c">&lt;</span>BreakPoint<span style="color:#39c">&gt;</span> bp)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> hitCondition <span style="color:#f92672">=</span> bp<span style="color:#f92672">-&gt;</span>hitCondition;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">auto</span><span style="color:#39c">&amp;</span> hitCondition <span style="color:#39c">=</span> bp<span style="color:#39c">-&gt;</span>hitCondition;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParseState</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">enum</span> <span style="color:#cdcd00">class</span> <span style="color:#00cdcd">ParseState</span>
 </span></span><span style="display:flex;"><span>	{
 </span></span><span style="display:flex;"><span>		ExpectedOperator,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 大于
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Gt,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 小于
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Le,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 单等号 
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Eq,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 大于
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		Gt,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 小于
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		Le,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 单等号 
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		Eq,
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>		ExpectedHitTimes,
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>		ParseDigit,
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>		ParseFinish
-</span></span><span style="display:flex;"><span>	} state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ExpectedOperator;
+</span></span><span style="display:flex;"><span>	} state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ExpectedOperator;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">enum</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Operator</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">enum</span> <span style="color:#cdcd00">class</span> <span style="color:#00cdcd">Operator</span>
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 大于
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Gt,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 小于
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Le,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 小于等于
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		LeEq,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 大于等于
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		GtEq,
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 双等号
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		EqEq,
-</span></span><span style="display:flex;"><span>	} evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>EqEq;
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 大于
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		Gt,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 小于
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		Le,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 小于等于
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		LeEq,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 大于等于
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		GtEq,
+</span></span><span style="display:flex;"><span>		<span style="color:#000080">// 双等号
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>		EqEq,
+</span></span><span style="display:flex;"><span>	} evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>EqEq;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> hitTimes <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">unsigned</span> <span style="color:#00cd00">long</span> <span style="color:#00cd00">long</span> hitTimes <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> (std<span style="color:#f92672">::</span>size_t index <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; index <span style="color:#f92672">!=</span> hitCondition.size(); index<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">for</span> (std<span style="color:#39c">::</span>size_t index <span style="color:#39c">=</span> <span style="color:#cd00cd">0</span>; index <span style="color:#39c">!=</span> hitCondition.size(); index<span style="color:#39c">++</span>)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">char</span> ch <span style="color:#f92672">=</span> hitCondition[index];
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">char</span> ch <span style="color:#39c">=</span> hitCondition[index];
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">switch</span> (state)
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">switch</span> (state)
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>ExpectedOperator:
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>ExpectedOperator:
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39; &#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">continue</span>;
 </span></span><span style="display:flex;"><span>				}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;=&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;=&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Eq;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Eq;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;&lt;&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;&lt;&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Le;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Le;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;&gt;&#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;&gt;&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>Gt;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>Gt;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>Eq:
-</span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;=&#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>EqEq;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ExpectedHitTimes;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>Gt:
-</span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;=&#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>GtEq;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ExpectedHitTimes;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (isdigit(ch))
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>Gt;
-</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#f92672">=</span> ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ParseDigit;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>Gt;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ExpectedHitTimes;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>Le:
-</span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;=&#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>LeEq;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ExpectedHitTimes;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (isdigit(ch))
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>Le;
-</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#f92672">=</span> ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ParseDigit;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#f92672">=</span> Operator<span style="color:#f92672">::</span>Gt;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ExpectedHitTimes;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>ExpectedHitTimes:
-</span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">continue</span>;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (isdigit(ch))
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#f92672">=</span> ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>;
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ParseDigit;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>ParseDigit:
-</span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (isdigit(ch))
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#f92672">=</span> hitTimes <span style="color:#f92672">*</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> (ch <span style="color:#f92672">-</span> <span style="color:#e6db74">&#39;0&#39;</span>);
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>)
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					state <span style="color:#f92672">=</span> ParseState<span style="color:#f92672">::</span>ParseFinish;
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>				}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
 </span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> ParseState<span style="color:#f92672">::</span>ParseFinish:
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>Eq:
 </span></span><span style="display:flex;"><span>			{
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (ch <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;=&#39;</span>)
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>EqEq;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ExpectedHitTimes;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
 </span></span><span style="display:flex;"><span>				{
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>Gt:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;=&#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>GtEq;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ExpectedHitTimes;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (isdigit(ch))
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>Gt;
+</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#39c">=</span> ch <span style="color:#39c">-</span> <span style="color:#cd0000">&#39;0&#39;</span>;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ParseDigit;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>Gt;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ExpectedHitTimes;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>Le:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39;=&#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>LeEq;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ExpectedHitTimes;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (isdigit(ch))
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>Le;
+</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#39c">=</span> ch <span style="color:#39c">-</span> <span style="color:#cd0000">&#39;0&#39;</span>;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ParseDigit;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					evalOperator <span style="color:#39c">=</span> Operator<span style="color:#39c">::</span>Gt;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ExpectedHitTimes;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>ExpectedHitTimes:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">continue</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (isdigit(ch))
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#39c">=</span> ch <span style="color:#39c">-</span> <span style="color:#cd0000">&#39;0&#39;</span>;
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ParseDigit;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>ParseDigit:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (isdigit(ch))
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					hitTimes <span style="color:#39c">=</span> hitTimes <span style="color:#39c">*</span> <span style="color:#cd00cd">10</span> <span style="color:#39c">+</span> (ch <span style="color:#39c">-</span> <span style="color:#cd0000">&#39;0&#39;</span>);
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span> if (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					state <span style="color:#39c">=</span> ParseState<span style="color:#39c">::</span>ParseFinish;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">case</span> ParseState<span style="color:#39c">::</span>ParseFinish:
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">if</span> (ch <span style="color:#39c">==</span> <span style="color:#cd0000">&#39; &#39;</span>)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">break</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">else</span>
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>				<span style="color:#cdcd00">break</span>;
 </span></span><span style="display:flex;"><span>			}
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">switch</span> (evalOperator)
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">switch</span> (evalOperator)
 </span></span><span style="display:flex;"><span>	{
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> Operator<span style="color:#f92672">::</span>EqEq:
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">case</span> Operator<span style="color:#39c">::</span>EqEq:
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> bp<span style="color:#f92672">-&gt;</span>hitCount <span style="color:#f92672">==</span> hitTimes;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> bp<span style="color:#39c">-&gt;</span>hitCount <span style="color:#39c">==</span> hitTimes;
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> Operator<span style="color:#f92672">::</span>Gt:
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">case</span> Operator<span style="color:#39c">::</span>Gt:
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> bp<span style="color:#f92672">-&gt;</span>hitCount <span style="color:#f92672">&gt;</span> hitTimes;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> bp<span style="color:#39c">-&gt;</span>hitCount <span style="color:#39c">&gt;</span> hitTimes;
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> Operator<span style="color:#f92672">::</span>GtEq:
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">case</span> Operator<span style="color:#39c">::</span>GtEq:
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> bp<span style="color:#f92672">-&gt;</span>hitCount <span style="color:#f92672">&gt;=</span> hitTimes;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> bp<span style="color:#39c">-&gt;</span>hitCount <span style="color:#39c">&gt;=</span> hitTimes;
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> Operator<span style="color:#f92672">::</span>Le:
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">case</span> Operator<span style="color:#39c">::</span>Le:
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> bp<span style="color:#f92672">-&gt;</span>hitCount <span style="color:#f92672">&lt;</span> hitTimes;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> bp<span style="color:#39c">-&gt;</span>hitCount <span style="color:#39c">&lt;</span> hitTimes;
 </span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> Operator<span style="color:#f92672">::</span>LeEq:
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">case</span> Operator<span style="color:#39c">::</span>LeEq:
 </span></span><span style="display:flex;"><span>		{
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> bp<span style="color:#f92672">-&gt;</span>hitCount <span style="color:#f92672">&lt;=</span> hitTimes;
+</span></span><span style="display:flex;"><span>			<span style="color:#cdcd00">return</span> bp<span style="color:#39c">-&gt;</span>hitCount <span style="color:#39c">&lt;=</span> hitTimes;
 </span></span><span style="display:flex;"><span>		}
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">false</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="视频效果展示"><span>视频效果展示</span></h3>
 <h4 id="多虚拟机测试"><span>多虚拟机测试</span></h4>

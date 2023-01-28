@@ -451,16 +451,16 @@ var _hmt = _hmt || [];
 <h4 id="模拟一下jit的过程"><span>模拟一下JIT的过程</span></h4>
 <p>JIT这么好，那它是如何实现既生成新代码，又能运行新代码的呢？</p>
 <p>首先我们要知道生成的所谓机器码到底是神马东西。一行看上去只是处理几个数字的代码，蕴含着的就是机器码。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span>[] macCode <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8b</span>, <span style="color:#ae81ff">0x07</span>};
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#00cd00">unsigned</span> <span style="color:#00cd00">char</span>[] macCode <span style="color:#39c">=</span> {<span style="color:#cd00cd">0x48</span>, <span style="color:#cd00cd">0x8b</span>, <span style="color:#cd00cd">0x07</span>};
 </span></span></code></pre></div><p>macCode对应的汇编指令就是：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>mov  (<span style="color:#f92672">%</span>rdi),<span style="color:#f92672">%</span>rax
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>mov  (<span style="color:#39c">%</span>rdi),<span style="color:#39c">%</span>rax
 </span></span></code></pre></div><p>其实可以看出机器码就是比特流，所以将它加载进内存并不困难。而问题是应该如何执行。</p>
 <p>好啦。下面我们就模拟一下执行新生成的机器码的过程。假设JIT已经为我们编译出了新的机器码，是一个求和函数的机器码：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">//求和函数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">long</span> num) {   <span style="color:#66d9ef">return</span> num <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; }  
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#000080">//求和函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#00cd00">long</span> add(<span style="color:#00cd00">long</span> num) {   <span style="color:#cdcd00">return</span> num <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>; }  
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//对应的机器码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xc0</span>, <span style="color:#ae81ff">0x01</span>, <span style="color:#ae81ff">0xc3</span> 
+</span></span><span style="display:flex;"><span><span style="color:#000080">//对应的机器码
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#cd00cd">0x48</span>, <span style="color:#cd00cd">0x83</span>, <span style="color:#cd00cd">0xc0</span>, <span style="color:#cd00cd">0x01</span>, <span style="color:#cd00cd">0xc3</span> 
 </span></span></code></pre></div><p>首先，动态的在内存上创建函数之前，我们需要在内存上分配空间。具体到模拟动态创建函数，其实就是将对应的机器码映射到内存空间中。这里我们使用c语言做实验，利用 <strong>mmap函数</strong> 来实现这一点。</p>
 <blockquote>
 <p><strong>头文件：</strong>
@@ -477,77 +477,77 @@ mmap()用来将某个文件内容映射到内存中，对该内存区域的存�
 <li>PROT_READ 映射区域可被读取；</li>
 <li>PROT_WRITE 映射区域可被写入；</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;stdio.h&gt;                                                                                            </span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/mman.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//分配内存
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">create_space</span>(size_t size) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> ptr <span style="color:#f92672">=</span> mmap(<span style="color:#ae81ff">0</span>, size,
-</span></span><span style="display:flex;"><span>            PROT_READ <span style="color:#f92672">|</span> PROT_WRITE <span style="color:#f92672">|</span> PROT_EXEC,
-</span></span><span style="display:flex;"><span>            MAP_PRIVATE <span style="color:#f92672">|</span> MAP_ANON,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>);   
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ptr;
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#000080">#include</span><span style="color:#000080">&lt;stdio.h&gt;                                                                                            </span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;stdlib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;string.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;unistd.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;sys/mman.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">//分配内存
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#00cd00">void</span><span style="color:#39c">*</span> create_space(size_t size) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">void</span><span style="color:#39c">*</span> ptr <span style="color:#39c">=</span> mmap(<span style="color:#cd00cd">0</span>, size,
+</span></span><span style="display:flex;"><span>            PROT_READ <span style="color:#39c">|</span> PROT_WRITE <span style="color:#39c">|</span> PROT_EXEC,
+</span></span><span style="display:flex;"><span>            MAP_PRIVATE <span style="color:#39c">|</span> MAP_ANON,
+</span></span><span style="display:flex;"><span>            <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>, <span style="color:#cd00cd">0</span>);   
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">return</span> ptr;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>这样我们就获得了一块分配给我们存放代码的空间。下一步就是实现一个方法将机器码，也就是比特流拷贝到分配给我们的那块空间上去。使用 <strong>memcpy</strong> 即可。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">//在内存中创建函数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">copy_code_2_space</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> m) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> macCode[] <span style="color:#f92672">=</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xc0</span>, <span style="color:#ae81ff">0x01</span>,
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#000080">//在内存中创建函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#00cd00">void</span> copy_code_2_space(<span style="color:#00cd00">unsigned</span> <span style="color:#00cd00">char</span><span style="color:#39c">*</span> m) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">unsigned</span> <span style="color:#00cd00">char</span> macCode[] <span style="color:#39c">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">0x48</span>, <span style="color:#cd00cd">0x83</span>, <span style="color:#cd00cd">0xc0</span>, <span style="color:#cd00cd">0x01</span>,
 </span></span><span style="display:flex;"><span>        c3 
 </span></span><span style="display:flex;"><span>    };
-</span></span><span style="display:flex;"><span>    memcpy(m, macCode, <span style="color:#66d9ef">sizeof</span>(macCode));
+</span></span><span style="display:flex;"><span>    memcpy(m, macCode, <span style="color:#cdcd00">sizeof</span>(macCode));
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>然后我们在写一个main函数来处理整个逻辑：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;stdio.h&gt;                                                                                            </span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;sys/mman.h&gt;</span><span style="color:#75715e">
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//分配内存
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">create_space</span>(size_t size) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> ptr <span style="color:#f92672">=</span> mmap(<span style="color:#ae81ff">0</span>, size,
-</span></span><span style="display:flex;"><span>            PROT_READ <span style="color:#f92672">|</span> PROT_WRITE <span style="color:#f92672">|</span> PROT_EXEC,
-</span></span><span style="display:flex;"><span>            MAP_PRIVATE <span style="color:#f92672">|</span> MAP_ANON,
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>);   
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ptr;
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#000080">#include</span><span style="color:#000080">&lt;stdio.h&gt;                                                                                            </span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;stdlib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;string.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;unistd.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;sys/mman.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">//分配内存
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#00cd00">void</span><span style="color:#39c">*</span> create_space(size_t size) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">void</span><span style="color:#39c">*</span> ptr <span style="color:#39c">=</span> mmap(<span style="color:#cd00cd">0</span>, size,
+</span></span><span style="display:flex;"><span>            PROT_READ <span style="color:#39c">|</span> PROT_WRITE <span style="color:#39c">|</span> PROT_EXEC,
+</span></span><span style="display:flex;"><span>            MAP_PRIVATE <span style="color:#39c">|</span> MAP_ANON,
+</span></span><span style="display:flex;"><span>            <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>, <span style="color:#cd00cd">0</span>);   
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">return</span> ptr;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//在内存中创建函数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">copy_code_2_space</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> addr) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> macCode[] <span style="color:#f92672">=</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xc0</span>, <span style="color:#ae81ff">0x01</span>,
-</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0xc3</span> 
+</span></span><span style="display:flex;"><span><span style="color:#000080">//在内存中创建函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#00cd00">void</span> copy_code_2_space(<span style="color:#00cd00">unsigned</span> <span style="color:#00cd00">char</span><span style="color:#39c">*</span> addr) {
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">unsigned</span> <span style="color:#00cd00">char</span> macCode[] <span style="color:#39c">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">0x48</span>, <span style="color:#cd00cd">0x83</span>, <span style="color:#cd00cd">0xc0</span>, <span style="color:#cd00cd">0x01</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#cd00cd">0xc3</span> 
 </span></span><span style="display:flex;"><span>    };
-</span></span><span style="display:flex;"><span>    memcpy(addr, macCode, <span style="color:#66d9ef">sizeof</span>(macCode));
+</span></span><span style="display:flex;"><span>    memcpy(addr, macCode, <span style="color:#cdcd00">sizeof</span>(macCode));
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">//main 声明一个函数指针TestFun用来指向我们的求和函数在内存中的地址
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">**</span> argv) {                                                                                              
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> size_t SIZE <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024</span>;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">long</span> (<span style="color:#f92672">*</span>TestFun)(<span style="color:#66d9ef">long</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> addr <span style="color:#f92672">=</span> create_space(SIZE);
+</span></span><span style="display:flex;"><span><span style="color:#000080">//main 声明一个函数指针TestFun用来指向我们的求和函数在内存中的地址
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#00cd00">int</span> main(<span style="color:#00cd00">int</span> argc, <span style="color:#00cd00">char</span><span style="color:#39c">**</span> argv) {                                                                                              
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> size_t SIZE <span style="color:#39c">=</span> <span style="color:#cd00cd">1024</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">typedef</span> <span style="color:#00cd00">long</span> (<span style="color:#39c">*</span>TestFun)(<span style="color:#00cd00">long</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">void</span><span style="color:#39c">*</span> addr <span style="color:#39c">=</span> create_space(SIZE);
 </span></span><span style="display:flex;"><span>    copy_code_2_space(addr);
-</span></span><span style="display:flex;"><span>    TestFun test <span style="color:#f92672">=</span> addr;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result <span style="color:#f92672">=</span> test(<span style="color:#ae81ff">1</span>);
-</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;result = %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, result); 
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    TestFun test <span style="color:#39c">=</span> addr;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">int</span> result <span style="color:#39c">=</span> test(<span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd0000">&#34;result = %d</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, result); 
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>编译运行一下看下结果：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>//编译
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>//编译
 </span></span><span style="display:flex;"><span>gcc testFun.c
 </span></span><span style="display:flex;"><span>//运行
-</span></span><span style="display:flex;"><span>./a.out <span style="color:#ae81ff">1</span> 
+</span></span><span style="display:flex;"><span>./a.out <span style="color:#cd00cd">1</span> 
 </span></span></code></pre></div><p><img loading="lazy" src="image-20221223164852766.png" alt="image-20221223164852766"  />
 </p>
 <p><strong>为什么iOS不能使用JIT？</strong></p>
 <p>OK，到此为止。这个例子模拟了动态代码在内存上的生成，和之后的运行。似乎没有什么问题呀？可不知道各位是否忽略了一个前提？那就是我们为这块区域设置的保护模式可是：可读，可写，可执行的啊！如果没有内存可读写可执行的权限，我们的实验还能成功吗？</p>
 <p>让我们把create_space函数中的“可执行”PROT_EXEC权限去掉，看看结果会是怎样的一番景象。</p>
 <p>修改代码，同时将刚才生成的可执行文件a.out删除重新生成运行。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>rm a.out vim testFun.c gcc testFun.c .<span style="color:#f92672">/</span>a.out <span style="color:#ae81ff">1</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span>rm a.out vim testFun.c gcc testFun.c .<span style="color:#39c">/</span>a.out <span style="color:#cd00cd">1</span>
 </span></span></code></pre></div><p>结果。。。报错了！</p>
 <p><img loading="lazy" src="image-20221223164937377.png" alt="image-20221223164937377"  />
 </p>
@@ -602,15 +602,15 @@ mmap()用来将某个文件内容映射到内存中，对该内存区域的存�
 <h2 id="基于栈的指令集和基于寄存器指令集区别"><span>基于栈的指令集和基于寄存器指令集区别</span></h2>
 <p>如对数字2-1的操作，基于栈和基于寄存器的区别</p>
 <p>基于栈的指令</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>iconst_1 <span style="color:#75715e">//将减数1压入栈顶
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>iconst_2 <span style="color:#75715e">//将被减数2压入栈顶
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>isub <span style="color:#75715e">//将栈中最上面的两个元素（2和1）弹出来，执行2-1的操作，将2-1的结果1压入栈顶
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>istore_0 <span style="color:#75715e">//将1放入局部变量表的第0个位置上。
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>iconst_1 <span style="color:#000080">//将减数1压入栈顶
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>iconst_2 <span style="color:#000080">//将被减数2压入栈顶
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>isub <span style="color:#000080">//将栈中最上面的两个元素（2和1）弹出来，执行2-1的操作，将2-1的结果1压入栈顶
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>istore_0 <span style="color:#000080">//将1放入局部变量表的第0个位置上。
 </span></span></span></code></pre></div><p><img loading="lazy" src="image-20221227162525137.png" alt="image-20221227162525137"  />
 </p>
 <p>基于寄存器</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax,<span style="color:#ae81ff">2</span> <span style="color:#75715e">//将2放入寄存器，
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>sub eax,<span style="color:#ae81ff">1</span><span style="color:#75715e">//后面跟一个参数1，在现有的寄存器上减去1，在把结果放回寄存器。
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax,<span style="color:#cd00cd">2</span> <span style="color:#000080">//将2放入寄存器，
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>sub eax,<span style="color:#cd00cd">1</span><span style="color:#000080">//后面跟一个参数1，在现有的寄存器上减去1，在把结果放回寄存器。
 </span></span></span></code></pre></div><h2 id="hybridclr的原理"><span>Hybridclr的原理</span></h2>
 <p>dll不过是元数据和代码的集合,aot与 热更新dll的区别只不过一个函数以aot代码方式执行，一个以解释方式执行,最后都会直接在虚拟机层面将aot和热更新dll统一对待</p>
 <p>为什么Hybridclr能做到如此统一和彻底，因为元数据不过是数据，不管aot还是热更新是没有本质区别的</p>
@@ -656,33 +656,33 @@ mmap()用来将某个文件内容映射到内存中，对该内存区域的存�
 </li>
 <li>
 <p><code>Il2CppImage</code> 这个结构体是程序集镜像,可以通过它来获取命名空间,class,方法,函数指针地址等等</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Il2CppImage</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#cdcd00">typedef</span> <span style="color:#cdcd00">struct</span> <span style="color:#00cdcd">Il2CppImage</span>
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> name;<span style="color:#75715e">//名字
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>nameNoExt;<span style="color:#75715e">//扩展名字
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Il2CppAssembly<span style="color:#f92672">*</span> assembly;<span style="color:#75715e">//程序集指针
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    TypeDefinitionIndex typeStart;<span style="color:#75715e">//方法类型偏移位置开始
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint32_t</span> typeCount;<span style="color:#75715e">//方法总数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    TypeDefinitionIndex exportedTypeStart;<span style="color:#75715e">//导出类型偏移位置开始
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint32_t</span> exportedTypeCount;<span style="color:#75715e">//导出类型总数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    CustomAttributeIndex customAttributeStart;<span style="color:#75715e">//自定义属性偏移位置开始
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint32_t</span> customAttributeCount;<span style="color:#75715e">//自定义属性总数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    MethodIndex entryPointIndex;<span style="color:#75715e">//方法入口点索引
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#ifdef __cplusplus
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">mutable</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Il2CppNameToTypeDefinitionIndexHashTable <span style="color:#f92672">*</span> nameToClassHashTable;<span style="color:#75715e">//name对应的class的hashTable
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> Il2CppCodeGenModule<span style="color:#f92672">*</span> codeGenModule;<span style="color:#75715e">//Module指针
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> token;<span style="color:#75715e">//通过他可以得到函数指针地址
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint8_t</span> dynamic;<span style="color:#75715e">//没看到使用,估计是用来验证是不是动态lib使用的
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} Il2CppImage;
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span><span style="color:#39c">*</span> name;<span style="color:#000080">//名字
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span> <span style="color:#39c">*</span>nameNoExt;<span style="color:#000080">//扩展名字
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    Il2CppAssembly<span style="color:#39c">*</span> assembly;<span style="color:#000080">//程序集指针
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    TypeDefinitionIndex typeStart;<span style="color:#000080">//方法类型偏移位置开始
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#00cd00">uint32_t</span> typeCount;<span style="color:#000080">//方法总数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    TypeDefinitionIndex exportedTypeStart;<span style="color:#000080">//导出类型偏移位置开始
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#00cd00">uint32_t</span> exportedTypeCount;<span style="color:#000080">//导出类型总数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    CustomAttributeIndex customAttributeStart;<span style="color:#000080">//自定义属性偏移位置开始
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#00cd00">uint32_t</span> customAttributeCount;<span style="color:#000080">//自定义属性总数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    MethodIndex entryPointIndex;<span style="color:#000080">//方法入口点索引
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">#ifdef __cplusplus
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#cdcd00">mutable</span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    Il2CppNameToTypeDefinitionIndexHashTable <span style="color:#39c">*</span> nameToClassHashTable;<span style="color:#000080">//name对应的class的hashTable
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> Il2CppCodeGenModule<span style="color:#39c">*</span> codeGenModule;<span style="color:#000080">//Module指针
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint32_t</span> token;<span style="color:#000080">//通过他可以得到函数指针地址
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#00cd00">uint8_t</span> dynamic;<span style="color:#000080">//没看到使用,估计是用来验证是不是动态lib使用的
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>} Il2CppImage;
 </span></span></code></pre></div></li>
 <li>
 <p>所有的<code>metadata</code> 解析都是遵循的下面规范<a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-335/">ECMA-335 - Ecma International (ecma-international.org)</a></p>
@@ -696,104 +696,104 @@ mmap()用来将某个文件内容映射到内存中，对该内存区域的存�
 </li>
 <li>
 <p>原始 MethodInfo</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">MethodInfo</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#cdcd00">typedef</span> <span style="color:#cdcd00">struct</span> <span style="color:#00cdcd">MethodInfo</span>
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    Il2CppMethodPointer methodPointer;<span style="color:#75715e">//指向普通执行函数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    InvokerMethod invoker_method;<span style="color:#75715e">//指向反射执行函数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> name;<span style="color:#75715e">//名字
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Il2CppClass <span style="color:#f92672">*</span>klass;<span style="color:#75715e">//函数所属类指针
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> Il2CppType <span style="color:#f92672">*</span>return_type;<span style="color:#75715e">//返回值类型
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> ParameterInfo<span style="color:#f92672">*</span> parameters;<span style="color:#75715e">//参数信息
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span><span style="color:#960050;background-color:#1e0010">//</span><span style="color:#a6e22e">generic</span> instance method 
+</span></span><span style="display:flex;"><span>    Il2CppMethodPointer methodPointer;<span style="color:#000080">//指向普通执行函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    InvokerMethod invoker_method;<span style="color:#000080">//指向反射执行函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span><span style="color:#39c">*</span> name;<span style="color:#000080">//名字
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    Il2CppClass <span style="color:#39c">*</span>klass;<span style="color:#000080">//函数所属类指针
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#cdcd00">const</span> Il2CppType <span style="color:#39c">*</span>return_type;<span style="color:#000080">//返回值类型
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    <span style="color:#cdcd00">const</span> ParameterInfo<span style="color:#39c">*</span> parameters;<span style="color:#000080">//参数信息
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">union</span><span style="">//</span><span style="color:#00cdcd">generic</span> instance method 
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppRGCTXData<span style="color:#f92672">*</span> rgctx_data; <span style="color:#75715e">/* is_inflated is true and is_generic is false, i.e. a generic instance method */</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppMethodDefinition<span style="color:#f92672">*</span> methodDefinition;<span style="color:#75715e">//方法定义
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    };
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppRGCTXData<span style="color:#39c">*</span> rgctx_data; <span style="color:#000080">/* is_inflated is true and is_generic is false, i.e. a generic instance method */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppMethodDefinition<span style="color:#39c">*</span> methodDefinition;<span style="color:#000080">//方法定义
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>    };
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span><span style="color:#960050;background-color:#1e0010">//</span><span style="color:#a6e22e">uninflated</span> generic method 
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">union</span><span style="">//</span><span style="color:#00cdcd">uninflated</span> generic method 
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppGenericMethod<span style="color:#f92672">*</span> genericMethod; <span style="color:#75715e">/* is_inflated is true */</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppGenericContainer<span style="color:#f92672">*</span> genericContainer; <span style="color:#75715e">/* is_inflated is false and is_generic is true */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppGenericMethod<span style="color:#39c">*</span> genericMethod; <span style="color:#000080">/* is_inflated is true */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppGenericContainer<span style="color:#39c">*</span> genericContainer; <span style="color:#000080">/* is_inflated is false and is_generic is true */</span>
 </span></span><span style="display:flex;"><span>    };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> token;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> flags;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> iflags;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> slot;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> parameters_count;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> is_generic : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* true if method is a generic method definition */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> is_inflated : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* true if declaring_type is a generic instance or if method is a generic instance*/</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> wrapper_type : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* always zero (MONO_WRAPPER_NONE) needed for the debugger */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> is_marshaled_from_native : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* a fake MethodInfo wrapping a native function pointer */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint32_t</span> token;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint16_t</span> flags;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint16_t</span> iflags;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint16_t</span> slot;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> parameters_count;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> is_generic : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* true if method is a generic method definition */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> is_inflated : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* true if declaring_type is a generic instance or if method is a generic instance*/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> wrapper_type : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* always zero (MONO_WRAPPER_NONE) needed for the debugger */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> is_marshaled_from_native : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* a fake MethodInfo wrapping a native function pointer */</span>
 </span></span><span style="display:flex;"><span>} MethodInfo;
 </span></span></code></pre></div></li>
 <li>
 <p>改写后的MethodInfo</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">MethodInfo</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#cdcd00">typedef</span> <span style="color:#cdcd00">struct</span> <span style="color:#00cdcd">MethodInfo</span>
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    Il2CppMethodPointer methodPointer;
 </span></span><span style="display:flex;"><span>    InvokerMethod invoker_method;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> name;
-</span></span><span style="display:flex;"><span>    Il2CppClass <span style="color:#f92672">*</span>klass;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> Il2CppType <span style="color:#f92672">*</span>return_type;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> ParameterInfo<span style="color:#f92672">*</span> parameters;
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> <span style="color:#00cd00">char</span><span style="color:#39c">*</span> name;
+</span></span><span style="display:flex;"><span>    Il2CppClass <span style="color:#39c">*</span>klass;
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> Il2CppType <span style="color:#39c">*</span>return_type;
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">const</span> ParameterInfo<span style="color:#39c">*</span> parameters;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">union</span>
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppRGCTXData<span style="color:#f92672">*</span> rgctx_data; <span style="color:#75715e">/* is_inflated is true and is_generic is false, i.e. a generic instance method */</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppMethodDefinition<span style="color:#f92672">*</span> methodDefinition;
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppMethodDefinition<span style="color:#f92672">*</span> methodMetadataHandle;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppRGCTXData<span style="color:#39c">*</span> rgctx_data; <span style="color:#000080">/* is_inflated is true and is_generic is false, i.e. a generic instance method */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppMethodDefinition<span style="color:#39c">*</span> methodDefinition;
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppMethodDefinition<span style="color:#39c">*</span> methodMetadataHandle;
 </span></span><span style="display:flex;"><span>    };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* note, when is_generic == true and is_inflated == true the method represents an uninflated generic method on an inflated type. */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">union</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/* note, when is_generic == true and is_inflated == true the method represents an uninflated generic method on an inflated type. */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">union</span>
 </span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppGenericMethod<span style="color:#f92672">*</span> genericMethod; <span style="color:#75715e">/* is_inflated is true */</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">const</span> Il2CppGenericContainer<span style="color:#f92672">*</span> genericContainer; <span style="color:#75715e">/* is_inflated is false and is_generic is true */</span>
-</span></span><span style="display:flex;"><span>        Il2CppMetadataGenericContainerHandle genericContainerHandle; <span style="color:#75715e">/* is_inflated is false and is_generic is true */</span>
-</span></span><span style="display:flex;"><span>        Il2CppMethodPointer nativeFunction; <span style="color:#75715e">/* if is_marshaled_from_native is true */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppGenericMethod<span style="color:#39c">*</span> genericMethod; <span style="color:#000080">/* is_inflated is true */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">const</span> Il2CppGenericContainer<span style="color:#39c">*</span> genericContainer; <span style="color:#000080">/* is_inflated is false and is_generic is true */</span>
+</span></span><span style="display:flex;"><span>        Il2CppMetadataGenericContainerHandle genericContainerHandle; <span style="color:#000080">/* is_inflated is false and is_generic is true */</span>
+</span></span><span style="display:flex;"><span>        Il2CppMethodPointer nativeFunction; <span style="color:#000080">/* if is_marshaled_from_native is true */</span>
 </span></span><span style="display:flex;"><span>    };
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> token;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> flags;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> iflags;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint16_t</span> slot;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> parameters_count;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> is_generic : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* true if method is a generic method definition */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> is_inflated : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* true if declaring_type is a generic instance or if method is a generic instance*/</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> wrapper_type : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* always zero (MONO_WRAPPER_NONE) needed for the debugger */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint8_t</span> is_marshaled_from_native : <span style="color:#ae81ff">1</span>; <span style="color:#75715e">/* a fake MethodInfo wrapping a native function pointer */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint32_t</span> token;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint16_t</span> flags;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint16_t</span> iflags;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint16_t</span> slot;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> parameters_count;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> is_generic : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* true if method is a generic method definition */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> is_inflated : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* true if declaring_type is a generic instance or if method is a generic instance*/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> wrapper_type : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* always zero (MONO_WRAPPER_NONE) needed for the debugger */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">uint8_t</span> is_marshaled_from_native : <span style="color:#cd00cd">1</span>; <span style="color:#000080">/* a fake MethodInfo wrapping a native function pointer */</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span><span style="color:#f92672">*</span> interpData;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">void</span><span style="color:#39c">*</span> interpData;
 </span></span><span style="display:flex;"><span>    Il2CppMethodPointer methodPointerCallByInterp;
 </span></span><span style="display:flex;"><span>    Il2CppMethodPointer virtualMethodPointerCallByInterp;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> initInterpCallMethodPointer;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> isInterpterImpl;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">bool</span> initInterpCallMethodPointer;
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">bool</span> isInterpterImpl;
 </span></span><span style="display:flex;"><span>} MethodInfo;
 </span></span></code></pre></div></li>
 <li>
 <p><code>实例方法</code>（instance method）和 <code>静态方法</code>（static method）</p>
 <p>被static修饰的方法为<code>静态方法</code>，之外的方法为<code>实例方法</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> staticMethodTest(){
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//直接调用静态方法</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c#" data-lang="c#"><span style="display:flex;"><span><span style="color:#cdcd00">void</span> staticMethodTest(){
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">//直接调用静态方法</span>
 </span></span><span style="display:flex;"><span>    Boss.work();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//创建实例</span>
-</span></span><span style="display:flex;"><span>    Boss boss = <span style="color:#66d9ef">new</span> Boss();
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//调用实例方法</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">//创建实例</span>
+</span></span><span style="display:flex;"><span>    Boss boss = <span style="color:#cdcd00">new</span> Boss();
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">//调用实例方法</span>
 </span></span><span style="display:flex;"><span>    boss.programming();
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boss</span> {
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">class</span> <span style="color:#00cdcd">Boss</span> {
 </span></span><span style="display:flex;"><span>    String name;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> programming(){
-</span></span><span style="display:flex;"><span>        System.<span style="color:#66d9ef">out</span>.println(<span style="color:#e6db74">&#34;I am programming.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">public</span> <span style="color:#cdcd00">void</span> programming(){
+</span></span><span style="display:flex;"><span>        System.<span style="color:#cdcd00">out</span>.println(<span style="color:#cd0000">&#34;I am programming.&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> work(){
-</span></span><span style="display:flex;"><span>        System.<span style="color:#66d9ef">out</span>.println(<span style="color:#e6db74">&#34;I am working.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">public</span> <span style="color:#cdcd00">static</span> <span style="color:#cdcd00">void</span> work(){
+</span></span><span style="display:flex;"><span>        System.<span style="color:#cdcd00">out</span>.println(<span style="color:#cd0000">&#34;I am working.&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div></li>
@@ -823,19 +823,19 @@ mmap()用来将某个文件内容映射到内存中，对该内存区域的存�
 <ul>
 <li>下面是我正在阅读的Hybridclr作者初始源码版本</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone  https://gitee.com/focus-creative-games/hybridclr.git  -b main
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone  https://gitee.com/focus-creative-games/hybridclr.git  -b main
 </span></span><span style="display:flex;"><span>git reset --hard 0540b31aa739fd275d8cfcd861cb41568d4a982c
 </span></span></code></pre></div><p><code>执行上面的命令就能下载到我正在阅读的指定的分支,指定的commit版本</code></p>
 <ul>
 <li>下面是我加上的对应的注释版本</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/frog-game/hybridclr-0540b31aa739fd275d8cfcd861cb41568d4a982c.git
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone https://github.com/frog-game/hybridclr-0540b31aa739fd275d8cfcd861cb41568d4a982c.git
 </span></span></code></pre></div><p><code>执行上面的命令就能下载到我加上的对应的注释版本</code></p>
 <h3 id="il2cpp_plus工程"><span>il2cpp_plus工程</span></h3>
 <ul>
 <li>下面是我正在阅读的il2cpp_plus作者初始源码版本</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone -b v2019-1.0.0-rc --depth<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> https://github.com/focus-creative-games/il2cpp_plus.git
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>git clone -b v2019-1.0.0-rc --depth<span style="color:#39c">=</span><span style="color:#cd00cd">1</span> https://github.com/focus-creative-games/il2cpp_plus.git
 </span></span></code></pre></div><p><code>执行上面的命令就能下载到我正在阅读的指定的tag版本</code></p>
 <h2 id="ios热更演示"><span>IOS热更演示</span></h2>
 <iframe src="//player.bilibili.com/player.html?aid=606504489&bvid=BV1q84y147Xn&cid=930771458&page=1"allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>

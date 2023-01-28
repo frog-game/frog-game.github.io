@@ -343,57 +343,57 @@ var _hmt = _hmt || [];
 </p>
 <p><img loading="lazy" src="image-20221111195238770.png" alt="image-20221111195238770"  />
 </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>C1        <span style="color:#960050;background-color:#1e0010">客户端发送请求的时间</span>
-</span></span><span style="display:flex;"><span>S2        <span style="color:#960050;background-color:#1e0010">服务器接收请求的时间</span>
-</span></span><span style="display:flex;"><span>S3        <span style="color:#960050;background-color:#1e0010">包离开场景时候的时间</span>
-</span></span><span style="display:flex;"><span>C4        <span style="color:#960050;background-color:#1e0010">客户端接到返回包时间</span>
-</span></span><span style="display:flex;"><span>m_nNetDelay <span style="color:#960050;background-color:#1e0010">网络延时</span> d <span style="color:#f92672">=</span> (S2 <span style="color:#f92672">-</span> C1) <span style="color:#f92672">+</span> (C4 <span style="color:#f92672">-</span> S3)
-</span></span><span style="display:flex;"><span>m_nDiftime <span style="color:#960050;background-color:#1e0010">服务器与客户端的时差</span> T <span style="color:#f92672">=</span> [(S2 <span style="color:#f92672">-</span> C1) <span style="color:#f92672">+</span> (S3 <span style="color:#f92672">-</span> C4)] <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>
-</span></span><span style="display:flex;"><span>m_nNetDelay <span style="color:#960050;background-color:#1e0010">其实就是</span>RTT <span style="color:#960050;background-color:#1e0010">也就是往返时间</span> <span style="color:#960050;background-color:#1e0010">也可以这么求</span>  C4 <span style="color:#f92672">-</span> C1 <span style="color:#f92672">-</span> (S3 <span style="color:#f92672">-</span> S2)
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>C1        <span style="">客户端发送请求的时间</span>
+</span></span><span style="display:flex;"><span>S2        <span style="">服务器接收请求的时间</span>
+</span></span><span style="display:flex;"><span>S3        <span style="">包离开场景时候的时间</span>
+</span></span><span style="display:flex;"><span>C4        <span style="">客户端接到返回包时间</span>
+</span></span><span style="display:flex;"><span>m_nNetDelay <span style="">网络延时</span> d <span style="color:#39c">=</span> (S2 <span style="color:#39c">-</span> C1) <span style="color:#39c">+</span> (C4 <span style="color:#39c">-</span> S3)
+</span></span><span style="display:flex;"><span>m_nDiftime <span style="">服务器与客户端的时差</span> T <span style="color:#39c">=</span> [(S2 <span style="color:#39c">-</span> C1) <span style="color:#39c">+</span> (S3 <span style="color:#39c">-</span> C4)] <span style="color:#39c">/</span> <span style="color:#cd00cd">2</span>
+</span></span><span style="display:flex;"><span>m_nNetDelay <span style="">其实就是</span>RTT <span style="">也就是往返时间</span> <span style="">也可以这么求</span>  C4 <span style="color:#39c">-</span> C1 <span style="color:#39c">-</span> (S3 <span style="color:#39c">-</span> S2)
 </span></span></code></pre></div><h2 id="protobuff包定义"><span>protobuff包定义</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>message SceneClocksyncRequest
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>message SceneClocksyncRequest
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	int64	originate_timestamp <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">客户端发送请求的时间</span>C1
+</span></span><span style="display:flex;"><span>	int64	originate_timestamp <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>;<span style="">客户端发送请求的时间</span>C1
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>message SceneClocksyncRet
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    int64   originate_timestamp <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;<span style="color:#960050;background-color:#1e0010">客户端发送请求的时间</span> C1
-</span></span><span style="display:flex;"><span>    int64   receive_timestamp   <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;<span style="color:#960050;background-color:#1e0010">服务器接收请求的时间</span> S2
-</span></span><span style="display:flex;"><span>    int64   scene_timestamp     <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;<span style="color:#960050;background-color:#1e0010">场景同步时间戳【不参与</span>NPT<span style="color:#960050;background-color:#1e0010">计算】</span>
-</span></span><span style="display:flex;"><span>    int64   transmit_timestamp  <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;<span style="color:#960050;background-color:#1e0010">包离开场景时候的时间</span> S3
+</span></span><span style="display:flex;"><span>    int64   originate_timestamp <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>;<span style="">客户端发送请求的时间</span> C1
+</span></span><span style="display:flex;"><span>    int64   receive_timestamp   <span style="color:#39c">=</span> <span style="color:#cd00cd">2</span>;<span style="">服务器接收请求的时间</span> S2
+</span></span><span style="display:flex;"><span>    int64   scene_timestamp     <span style="color:#39c">=</span> <span style="color:#cd00cd">3</span>;<span style="">场景同步时间戳【不参与</span>NPT<span style="">计算】</span>
+</span></span><span style="display:flex;"><span>    int64   transmit_timestamp  <span style="color:#39c">=</span> <span style="color:#cd00cd">4</span>;<span style="">包离开场景时候的时间</span> S3
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h2 id="具体代码实现"><span>具体代码实现</span></h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>    <span style="color:#75715e">-- 同步请求</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">local</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">SendClockSyncReqMsg</span>()
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">local</span> sceneClocksyncRequest <span style="color:#f92672">=</span>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>    <span style="color:#000080">-- 同步请求</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> SendClockSyncReqMsg()
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">local</span> sceneClocksyncRequest <span style="color:#39c">=</span>
 </span></span><span style="display:flex;"><span>     {
-</span></span><span style="display:flex;"><span>        originate_timestamp <span style="color:#f92672">=</span> serviceCore.getClockRealtime()
+</span></span><span style="display:flex;"><span>        originate_timestamp <span style="color:#39c">=</span> serviceCore.getClockRealtime()
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    serviceCore.send(m_channelID,<span style="color:#e6db74">&#34;SceneClocksyncRequest&#34;</span>,sceneClocksyncRequest)
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>    serviceCore.send(m_channelID,<span style="color:#cd0000">&#34;SceneClocksyncRequest&#34;</span>,sceneClocksyncRequest)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">-- 同步反馈</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">robotStateMachine</span>.<span style="color:#a6e22e">SceneClocksyncRet</span>(proto)
-</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">--proto.originate_timestamp      C1        客户端发送请求的时间</span>
-</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">--proto.receive_timestamp        S2        服务器接收请求的时间</span>
-</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">--proto.transmit_timestamp       S3        包离开场景时候的时间</span>
-</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">--destination_timestamp          C4        客户端接到返回包时间</span>
-</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">--m_nNetDelay 网络延时 d = (S2 - C1) + (C4 - S3)</span>
-</span></span><span style="display:flex;"><span>	    <span style="color:#75715e">--m_nDiftime 服务器与客户端的时差 T = [(S2 - C1) + (S3 - C4)] / 2</span>
-</span></span><span style="display:flex;"><span>    	<span style="color:#75715e">--m_nNetDelay 其实就是RTT也就是往返时间 也可以这么求  C4 - C1 - (S3 - S2)</span>
-</span></span><span style="display:flex;"><span>	    <span style="color:#66d9ef">local</span> destination_timestamp <span style="color:#f92672">=</span> serviceCore.getClockRealtime()
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">-- 同步反馈</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">function</span> <span style="color:#00cdcd">robotStateMachine</span>.SceneClocksyncRet(proto)
+</span></span><span style="display:flex;"><span>	    <span style="color:#000080">--proto.originate_timestamp      C1        客户端发送请求的时间</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#000080">--proto.receive_timestamp        S2        服务器接收请求的时间</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#000080">--proto.transmit_timestamp       S3        包离开场景时候的时间</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#000080">--destination_timestamp          C4        客户端接到返回包时间</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#000080">--m_nNetDelay 网络延时 d = (S2 - C1) + (C4 - S3)</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#000080">--m_nDiftime 服务器与客户端的时差 T = [(S2 - C1) + (S3 - C4)] / 2</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#000080">--m_nNetDelay 其实就是RTT也就是往返时间 也可以这么求  C4 - C1 - (S3 - S2)</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#00cd00">local</span> destination_timestamp <span style="color:#39c">=</span> serviceCore.getClockRealtime()
 </span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	    m_nNetDelay <span style="color:#f92672">=</span> (proto.receive_timestamp <span style="color:#f92672">-</span> proto.originate_timestamp) <span style="color:#f92672">+</span> ((destination_timestamp <span style="color:#f92672">-</span> proto.transmit_timestamp))
-</span></span><span style="display:flex;"><span>	    m_nDiftime <span style="color:#f92672">=</span> ((proto.receive_timestamp <span style="color:#f92672">-</span> proto.originate_timestamp) <span style="color:#f92672">+</span> (proto.transmit_timestamp <span style="color:#f92672">-</span> destination_timestamp) <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>)
-</span></span><span style="display:flex;"><span>      RTT <span style="color:#f92672">=</span> destination_timestamp <span style="color:#f92672">-</span> proto.originate_timestamp <span style="color:#f92672">-</span> (proto.transmit_timestamp <span style="color:#f92672">-</span> proto.receive_timestamp);
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	    m_nNetDelay <span style="color:#39c">=</span> (proto.receive_timestamp <span style="color:#39c">-</span> proto.originate_timestamp) <span style="color:#39c">+</span> ((destination_timestamp <span style="color:#39c">-</span> proto.transmit_timestamp))
+</span></span><span style="display:flex;"><span>	    m_nDiftime <span style="color:#39c">=</span> ((proto.receive_timestamp <span style="color:#39c">-</span> proto.originate_timestamp) <span style="color:#39c">+</span> (proto.transmit_timestamp <span style="color:#39c">-</span> destination_timestamp) <span style="color:#39c">/</span> <span style="color:#cd00cd">2</span>)
+</span></span><span style="display:flex;"><span>      RTT <span style="color:#39c">=</span> destination_timestamp <span style="color:#39c">-</span> proto.originate_timestamp <span style="color:#39c">-</span> (proto.transmit_timestamp <span style="color:#39c">-</span> proto.receive_timestamp);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
 </span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">-- 真正算出来的同步时间</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">GetServerTime</span>()
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> serviceCore.getClockRealtime() <span style="color:#f92672">+</span> m_nNetDelay <span style="color:#f92672">+</span> m_nDiftime
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">-- 真正算出来的同步时间</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">function</span> GetServerTime()
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> serviceCore.getClockRealtime() <span style="color:#39c">+</span> m_nNetDelay <span style="color:#39c">+</span> m_nDiftime
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
 </span></span></code></pre></div>
 
         </div>
