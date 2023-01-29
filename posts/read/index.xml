@@ -35,6 +35,15 @@
     </item>
     
     <item>
+      <title>[Lua5.4.4源码]函数</title>
+      <link>https://frog-game.github.io/posts/read/lua5.4.4function/</link>
+      <pubDate>Sun, 22 Jan 2023 01:30:29 +0800</pubDate>
+      
+      <guid>https://frog-game.github.io/posts/read/lua5.4.4function/</guid>
+      <description>lua源码函数分析</description>
+    </item>
+    
+    <item>
       <title>[Lua5.4.4源码]结构分析</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/</link>
       <pubDate>Sun, 22 Jan 2023 01:30:29 +0800</pubDate>
