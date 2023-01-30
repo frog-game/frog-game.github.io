@@ -71,12 +71,12 @@ var _hmt = _hmt || [];
 <meta property="og:description" content="lua源码函数分析" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4function/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4function/image-20230127000327061.png" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-01-22T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2023-01-22T01:30:29&#43;08:00" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4function/image-20230129232157578.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-29T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2023-01-29T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4function/image-20230127000327061.png" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4function/image-20230129232157578.png" />
 <meta name="twitter:title" content="[Lua5.4.4源码]函数"/>
 <meta name="twitter:description" content="lua源码函数分析"/>
 
@@ -117,11 +117,11 @@ var _hmt = _hmt || [];
   "keywords": [
     ""
   ],
-  "articleBody": "函数原型 上面proto的大部分参数来源是lcode.c ,ldump.c,llex.c,lparser.c,lundumpc这几个文件赋予的\nlocvars在这里并不指实际的局部变量,实际的局部变量存在数据栈中,存的只是也写解析lua文件以后的一些数据\nupvalues 也不是指upvalues变量,而实际存储他们的位置在CClosure-\u003eupvalue和LClosure-\u003eupvals中\nnumparams表示函数有几个参数，is_vararg表示参数是否为可变参数列表,例如这个函数声明\nfunction f1(a1, a2, ...) ...... end 三个点…表示这是一个可变参数的函数。f1()在这里的numparams为2，并且is_vararg的值为1。\nmaxstacksize字段 编译过程计算得到代表本proto需用到的局部变量数量的最大值,从第一个型参开始计算(不包含不定参数...因为哪个没法知道确切的数量 实际调用时传给不定参数...的实参在L-\u003efunc----\u003eL-\u003ebase之间,数量在OP_VARARG指令中已给出计算公式\n变量 局部变量,全局变量,上值其实在编译期就知道结果了主要是通过下面singlevar和singlevaraux两个函数确定 总结:\n局部变量存在数据栈中 上值存在CClosure-\u003eupvalue和LClosure-\u003eupvals中 全局变量存在_ENV中 在Lua中，函数参数也是局部变量 lua函数种类 从lua的源码中我们可以看出lua一共分为3种\n宏 类型 注解 LUA_VLCL Lua闭包 用lua脚本写的函数。有上值，运行时需要闭包LClosure，函数原型Proto LUA_VLCF C函数指针 用C写，没有上值。运行时不须要闭包，函数原型lua_CFunction LUA_VCCL C语言闭包 用C写，有上值。运行时需要闭包CClosure，函数原型lua_CFunction 闭包 C闭包 Lua在执行到fucntion ... end表达式或者c层调用lua_pushcclosure\n会创建一个函数对象,内存布局如下\nlua闭包 lua闭包和C闭包不太一样它的动态内容里面不是Tvalue类型而是UpVal类型,为啥要这样类型呢,主要还是因为Lua层的代码需要更多的信息处理,比如不同函数层次的调用,函数return之后上值的处理,UpVal还提供还原函数和子函数之间共享数据的方法\n内存布局如下\nupvalue 提供一种闭包之间共享数据的方法\nUpVal有两种状态open状态 和close状态\nopen状态:还在lua函数的block中,所以是open状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向数据栈数据的位置 close状态:退出lua函数的block后,变成了close状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向TValue value成员,也就是存放close值得地方 ",
-  "wordCount" : "1187",
+  "articleBody": "函数原型 上面proto的大部分参数来源是lcode.c ,ldump.c,llex.c,lparser.c,lundumpc这几个文件赋予的\nlocvars在这里并不指实际的局部变量,实际的局部变量存在数据栈中,存的只是也写解析lua文件以后的一些数据\nupvalues 也不是指upvalues变量,而实际存储他们的位置在CClosure-\u003eupvalue和LClosure-\u003eupvals中\nnumparams表示函数有几个参数,is_vararg表示参数是否为可变参数列表,例如这个函数声明\nfunction f1(a1, a2, ...) ...... end 三个点…表示这是一个可变参数的函数.f1()在这里的numparams为2,并且is_vararg的值为1.\nmaxstacksize字段 编译过程计算得到代表本proto需用到的局部变量数量的最大值,从第一个型参开始计算(不包含不定参数...因为哪个没法知道确切的数量 实际调用时传给不定参数...的实参在L-\u003efunc----\u003eL-\u003ebase之间,数量在OP_VARARG指令中已给出计算公式\n变量的查找 局部变量,全局变量,上值其实在编译期就知道结果了主要是通过下面singlevar和singlevaraux两个函数确定 我们可以通过这两个函数的分析,可以看出,在查找变量的方式如下\n总结\n局部变量存在数据栈中 上值存在CClosure-\u003eupvalue和LClosure-\u003eupvals中 全局变量存在_ENV中 在Lua中,函数参数也是局部变量 尾调用 function f() … return g() end 因为调用g()后,f()中不再执行任何代码,所以不需要保留f()的调用栈信息,Lua做了这样的优化,称为尾调用消除,g()返回后,控制点直接返回到调用f()的地方,有点类似c语言的goto语句,这样做也能减少栈的空间\nlua函数种类 从lua的源码中我们可以看出lua一共分为3种\n宏 类型 注解 LUA_VLCL Lua闭包 用lua脚本写的函数.有上值,运行时需要闭包LClosure,函数原型Proto LUA_VLCF 轻量C函数 用C写,没有上值.运行时不须要闭包,函数原型lua_CFunction LUA_VCCL C语言闭包 用C写,有上值.运行时需要闭包CClosure,函数原型lua_CFunction 闭包 C闭包 Lua在执行到fucntion ... end表达式或者c层调用lua_pushcclosure\n会创建一个函数对象,内存布局如下\nlua闭包 lua闭包和C闭包不太一样它的动态内容里面不是Tvalue类型而是UpVal类型,为啥要这样类型呢,主要还是因为Lua层的代码需要更多的信息处理,比如不同函数层次的调用,函数return之后上值的处理,UpVal还提供还原函数和子函数之间共享数据的方法\n内存布局如下\nupvalue 提供一种闭包之间共享数据的方法\nUpVal有两种状态open状态 和close状态\nopen状态:还在lua函数的block中,所以是open状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向数据栈数据的位置 close状态:退出lua函数的block后,变成了close状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向TValue value成员,也就是存放close值得地方 闭包的创建 从上我们可以看出当虚拟机执行OP_CLOSURE指令的时候,就进入luaF_newLclosure函数创建一个lua闭包,并根据proto-\u003esizeupvalues数量对上值进行填充,这里有个注意点,就是上值的填充会根据instack标识来判断是直接从上值列表进行赋值,还是需要通过luaF_findupval来从L-\u003eopenupval列表中查找上值,找不到创建一个新的upval挂载入虚拟机openupval\ninstack指明这个upvalue会存在哪里,有两种情况要考虑：\nuv如果是上一层函数的局部变量,且这个上层函数还在活动中,那么该局部变量一定还在上层函数的栈中.此时,instack为1,表明它在栈中,idx指定在栈中的索引相对于上层函数的栈基址.\nuv如果是上一层函数之外的局部变量,就像下面代码这样：\nlocal x = 1 local function func() local function innerfunc() return x + 1 end end x在上两层函数之外声明,Lua是这样解决这个问题的：首先func会把x当成upvalue记录下来,然后innerfunc再从func的upvalue数组寻找.所以这种情况下,instack为0,则idx表示上层函数uv列表的索引.\n闭包的关闭 当函数执行完毕会调用luaF_close\n其实这里可以发现函数没有关闭时,引用的内存还是openupval上,关闭后就重新赋值了一份,这个时候upval就不是共享的了,每个闭包一份了\n因为有upval的存在这个也是因为lua比较难正确性热更新的其中一个原因\nupvalue的3中情况 upvalue不共享情况 function　f1(n) --　函数参数也是局部变量 local　function　f2() print(n)　--　引用外包函数的局部变量 end return　f2 end g1　=　f1(1979) g1()　--　打印出1979 g2　=　f1(500) g2()　--　打印出500 这种情况其实就是因为f1在退出自己的block的时候重新赋值了一份,这个时候upval就不是共享的了,而是单独存在了一份,这也说明了一个问题,当你在次调用f1的时候,它因为不是共享所以不会在利用前一次调用f1时候生成的upval\n一个函数创建的闭包共享一份upvalue function　Create(n) local　function　foo1() print(n) end local　function　foo2() n　=　n　+　10 end return　foo1,foo2 end f1,f2　=　Create(1979)--创建闭包 f1()　--　打印1979 f2() f1()　--　打印1989 f2() f1()　--　打印1999 f1,f2闭包共享create函数的局部变量n\n同一闭包创建的其他的闭包共享一份upvalue function　Test(n) local　function　foo() local　function　inner1() print(n) end local　function　inner2() n　=　n　+　10 end return　inner1,inner2 end return　foo end t　=　Test(1979)--创建闭包（共享一份upvalue） f1,f2　=　t()--创建闭包 f1()　--　打印1979 f2() f1()　--　打印1989 g1,g2　=　t() g1()　--　打印1989 g2() g1()　--　打印1999 f1()　--　打印1999 g1和g2与f1和f2共享同一个upvalue.因为g1和g2与f1和f2都是同一个闭包t 创建的,所以它们引用的upvalue (变量n)实际也是同一个变量,而它们的upvalue引用都会指向同一个地方\n更详细的注释请去我的GitHub地址 以下是我几乎每行都加了注释的GitHub地址\nlfunc.h注释地址\nlfunch注释\nlfunc.c注释地址\nlfunc.c注释\n",
+  "wordCount" : "2583",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/read/lua5.4.4function/image-20230127000327061.png","datePublished": "2023-01-22T01:30:29+08:00",
-  "dateModified": "2023-01-22T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4function/image-20230129232157578.png","datePublished": "2023-01-29T01:30:29+08:00",
+  "dateModified": "2023-01-29T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -238,7 +238,7 @@ var _hmt = _hmt || [];
             <div class="post-description">
                 lua源码函数分析
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2023-01-22 01:30:29 +0800 CST'>2023-01-22</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-22&nbsp;|&nbsp;字数:&nbsp;1187字&nbsp;|&nbsp;时长:&nbsp;3分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2023-01-29 01:30:29 +0800 CST'>2023-01-29</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-29&nbsp;|&nbsp;字数:&nbsp;2583字&nbsp;|&nbsp;时长:&nbsp;6分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4function/image-20230127000327061.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4function/image-20230129232157578.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
@@ -269,7 +269,9 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#%e5%87%bd%e6%95%b0%e5%8e%9f%e5%9e%8b" aria-label="函数原型">函数原型</a></li>
                 <li>
-                    <a href="#%e5%8f%98%e9%87%8f" aria-label="变量">变量</a></li>
+                    <a href="#%e5%8f%98%e9%87%8f%e7%9a%84%e6%9f%a5%e6%89%be" aria-label="变量的查找">变量的查找</a></li>
+                <li>
+                    <a href="#%e5%b0%be%e8%b0%83%e7%94%a8" aria-label="尾调用">尾调用</a></li>
                 <li>
                     <a href="#lua%e5%87%bd%e6%95%b0%e7%a7%8d%e7%b1%bb" aria-label="lua函数种类">lua函数种类</a></li>
                 <li>
@@ -278,10 +280,25 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#c%e9%97%ad%e5%8c%85" aria-label="C闭包">C闭包</a></li>
                 <li>
-                    <a href="#lua%e9%97%ad%e5%8c%85" aria-label="lua闭包">lua闭包</a>
+                    <a href="#lua%e9%97%ad%e5%8c%85" aria-label="lua闭包">lua闭包</a></li>
+                <li>
+                    <a href="#%e9%97%ad%e5%8c%85%e7%9a%84%e5%88%9b%e5%bb%ba" aria-label="闭包的创建">闭包的创建</a></li>
+                <li>
+                    <a href="#%e9%97%ad%e5%8c%85%e7%9a%84%e5%85%b3%e9%97%ad" aria-label="闭包的关闭">闭包的关闭</a></li>
+                <li>
+                    <a href="#upvalue%e7%9a%843%e4%b8%ad%e6%83%85%e5%86%b5" aria-label="upvalue的3中情况">upvalue的3中情况</a><ul>
+                        
+                <li>
+                    <a href="#upvalue%e4%b8%8d%e5%85%b1%e4%ba%ab%e6%83%85%e5%86%b5" aria-label="upvalue不共享情况">upvalue不共享情况</a></li>
+                <li>
+                    <a href="#%e4%b8%80%e4%b8%aa%e5%87%bd%e6%95%b0%e5%88%9b%e5%bb%ba%e7%9a%84%e9%97%ad%e5%8c%85%e5%85%b1%e4%ba%ab%e4%b8%80%e4%bb%bdupvalue" aria-label="一个函数创建的闭包共享一份upvalue">一个函数创建的闭包共享一份upvalue</a></li></ul>
                 </li>
-            </ul>
-            </li>
+                <li>
+                    <a href="#%e5%90%8c%e4%b8%80%e9%97%ad%e5%8c%85%e5%88%9b%e5%bb%ba%e7%9a%84%e5%85%b6%e4%bb%96%e7%9a%84%e9%97%ad%e5%8c%85%e5%85%b1%e4%ba%ab%e4%b8%80%e4%bb%bdupvalue" aria-label="同一闭包创建的其他的闭包共享一份upvalue">同一闭包创建的其他的闭包共享一份upvalue</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%9b%b4%e8%af%a6%e7%bb%86%e7%9a%84%e6%b3%a8%e9%87%8a%e8%af%b7%e5%8e%bb%e6%88%91%e7%9a%84github%e5%9c%b0%e5%9d%80" aria-label="更详细的注释请去我的GitHub地址">更详细的注释请去我的GitHub地址</a>
+                </li>
             </ul>
         </div>
         </details>
@@ -361,31 +378,40 @@ var _hmt = _hmt || [];
 <p><code>upvalues</code> 也不是指<code>upvalues</code>变量,而实际存储他们的位置在<code>CClosure-&gt;upvalue和LClosure-&gt;upvals</code>中</p>
 </li>
 <li>
-<p><code>numparams</code>表示函数有几个参数，<code>is_vararg</code>表示参数是否为可变参数列表,例如这个函数声明</p>
+<p><code>numparams</code>表示函数有几个参数,<code>is_vararg</code>表示参数是否为可变参数列表,例如这个函数声明</p>
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span> f1(a1, a2, ...)
 </span></span><span style="display:flex;"><span>    ......
 </span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
-</span></span></code></pre></div><p>三个点<code>…</code>表示这是一个可变参数的函数。<code>f1()</code>在这里的<code>numparams</code>为2，并且<code>is_vararg</code>的值为1。</p>
+</span></span></code></pre></div><p>三个点<code>…</code>表示这是一个可变参数的函数.<code>f1()</code>在这里的<code>numparams</code>为2,并且<code>is_vararg</code>的值为1.</p>
 </li>
 <li>
 <p><code>maxstacksize</code>字段 编译过程计算得到代表本<code>proto</code>需用到的局部变量数量的最大值,从第一个型参开始计算(不包含不定参数<code>...</code>因为哪个没法知道确切的数量
 实际调用时传给<code>不定参数...</code>的实参在<code>L-&gt;func----&gt;L-&gt;base</code>之间,数量在<code>OP_VARARG</code>指令中已给出计算公式</p>
 </li>
 </ol>
-<h2 id="变量"><span>变量</span></h2>
+<h2 id="变量的查找"><span>变量的查找</span></h2>
 <p><img loading="lazy" src="image-20230129142633161.png" alt="image-20230129142633161"  />
 </p>
 <p>局部变量,全局变量,上值其实在编译期就知道结果了主要是通过下面<code>singlevar</code>和<code>singlevaraux</code>两个函数确定<img loading="lazy" src="image-20230129173503802.png" alt="image-20230129173503802"  />
 </p>
 <p><img loading="lazy" src="image-20230129173523202.png" alt="image-20230129173523202"  />
 </p>
-<p>总结:</p>
+<p>我们可以通过这两个函数的分析,可以看出,在查找变量的方式如下</p>
+<p><img loading="lazy" src="image-20230130114114516.png" alt="image-20230130114114516"  />
+</p>
+<p><strong>总结</strong></p>
 <ol>
 <li><code>局部变量</code>存在数据栈中</li>
 <li><code>上值</code>存在<code>CClosure-&gt;upvalue和LClosure-&gt;upvals</code>中</li>
 <li><code>全局变量</code>存在<code>_ENV</code>中</li>
-<li>在<code>Lua</code>中，函数参数也是局部变量</li>
+<li>在<code>Lua</code>中,函数参数也是局部变量</li>
 </ol>
+<h2 id="尾调用"><span>尾调用</span></h2>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span> f()
+</span></span><span style="display:flex;"><span><span style="">…</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> g()
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span></code></pre></div><p>因为调用<code>g()</code>后,<code>f()</code>中不再执行任何代码,所以不需要保留<code>f()</code>的调用栈信息,<code>Lua</code>做了这样的优化,称为<code>尾调用消除</code>,<code>g()</code>返回后,控制点直接返回到调用<code>f()</code>的地方,有点类似<code>c</code>语言的<code>goto</code>语句,这样做也能减少栈的空间</p>
 <h2 id="lua函数种类"><span>lua函数种类</span></h2>
 <p><img loading="lazy" src="image-20230126235822005.png" alt="image-20230126235822005"  />
 </p>
@@ -402,17 +428,17 @@ var _hmt = _hmt || [];
 <tr>
 <td><code>LUA_VLCL</code></td>
 <td><code>Lua</code>闭包</td>
-<td>用<code>lua</code>脚本写的函数。有<code>上值</code>，运行时需要闭包<code>LClosure</code>，函数原型<code>Proto</code></td>
+<td>用<code>lua</code>脚本写的函数.有<code>上值</code>,运行时需要闭包<code>LClosure</code>,函数原型<code>Proto</code></td>
 </tr>
 <tr>
 <td><code>LUA_VLCF</code></td>
-<td><code>C</code>函数指针</td>
-<td>用<code>C</code>写，没有<code>上值</code>。运行时不须要闭包，函数原型<code>lua_CFunction</code></td>
+<td>轻量<code>C</code>函数</td>
+<td>用<code>C</code>写,没有<code>上值</code>.运行时不须要闭包,函数原型<code>lua_CFunction</code></td>
 </tr>
 <tr>
 <td><code>LUA_VCCL</code></td>
 <td><code>C</code>语言闭包</td>
-<td>用<code>C</code>写，有<code>上值</code>。运行时需要闭包<code>CClosure</code>，函数原型<code>lua_CFunction</code></td>
+<td>用<code>C</code>写,有<code>上值</code>.运行时需要闭包<code>CClosure</code>,函数原型<code>lua_CFunction</code></td>
 </tr>
 </tbody>
 </table>
@@ -440,6 +466,112 @@ var _hmt = _hmt || [];
 <ol>
 <li><code>open</code>状态:还在<code>lua</code>函数的<code>block</code>中,所以是<code>open</code>状态,并且放入<code>L-&gt;openupval</code>链表当中,同时<code>TValue *v</code>指针指向数据栈数据的位置</li>
 <li><code>close</code>状态:退出<code>lua</code>函数的<code>block</code>后,变成了<code>close</code>状态,并且放入<code>L-&gt;openupval</code>链表当中,同时<code>TValue *v</code>指针指向<code>TValue value</code>成员,也就是存放<code>close</code>值得地方</li>
+</ol>
+<h3 id="闭包的创建"><span>闭包的创建</span></h3>
+<p><img loading="lazy" src="image-20230130101922887.png" alt="image-20230130101922887"  />
+</p>
+<p><img loading="lazy" src="image-20230130102000582.png" alt="image-20230130102000582"  />
+</p>
+<p>从上我们可以看出当虚拟机执行<code>OP_CLOSURE</code>指令的时候,就进入<code>luaF_newLclosure</code>函数创建一个<code>lua</code>闭包,并根据<code>proto-&gt;sizeupvalues</code>数量对上值进行填充,这里有个注意点,就是上值的填充会根据<code>instack</code>标识来判断是直接从上值列表进行赋值,还是需要通过<code>luaF_findupval</code>来从<code>L-&gt;openupval</code>列表中查找上值,找不到创建一个新的<code>upval</code>挂载入虚拟机<code>openupval</code></p>
+<ul>
+<li>
+<p><code> instack</code>指明这个<code>upvalue</code>会存在哪里,有两种情况要考虑：</p>
+<p><code>uv</code>如果是上一层函数的局部变量,且这个上层函数还在活动中,那么该局部变量一定还在上层函数的栈中.此时,<code>instack</code>为<code>1</code>,表明它在栈中,<code>idx</code>指定在栈中的索引相对于上层函数的栈基址.</p>
+<p><code>uv</code>如果是上一层函数之外的局部变量,就像下面代码这样：</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> x <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> func()
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> innerfunc()
+</span></span><span style="display:flex;"><span>  		<span style="color:#cdcd00">return</span> x <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span> <span style="color:#cdcd00">end</span>
+</span></span></code></pre></div><p><code>x</code>在上两层函数之外声明,<code>Lua</code>是这样解决这个问题的：首先<code>func</code>会把<code>x</code>当成<code>upvalue</code>记录下来,然后<code>innerfunc</code>再从<code>func</code>的<code>upvalue</code>数组寻找.所以这种情况下,<code>instack</code>为<code>0</code>,则<code>idx</code>表示上层函数<code>uv</code>列表的索引.</p>
+</li>
+</ul>
+<h3 id="闭包的关闭"><span>闭包的关闭</span></h3>
+<p>当函数执行完毕会调用<code>luaF_close</code></p>
+<p><img loading="lazy" src="image-20230130103233925.png" alt="image-20230130103233925"  />
+</p>
+<p><img loading="lazy" src="image-20230130103251596.png" alt="image-20230130103251596"  />
+</p>
+<p>其实这里可以发现函数没有关闭时,引用的内存还是<code>openupval</code>上,关闭后就重新赋值了一份,这个时候<code>upval</code>就不是共享的了,每个闭包一份了</p>
+<p>因为有<code>upval</code>的存在这个也是因为<code>lua</code>比较难正确性热更新的其中一个原因</p>
+<h3 id="upvalue的3中情况"><span>upvalue的3中情况</span></h3>
+<h4 id="upvalue不共享情况"><span>upvalue不共享情况</span></h4>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span><span style="">　</span>f1(n)
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">--　函数参数也是局部变量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">local</span><span style="">　</span><span style="color:#cdcd00">function</span><span style="">　</span>f2()
+</span></span><span style="display:flex;"><span>		print(n)<span style="">　</span><span style="color:#000080">--　引用外包函数的局部变量</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span><span style="">　</span>f2
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>g1<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>f1(<span style="color:#cd00cd">1979</span>)
+</span></span><span style="display:flex;"><span>g1()<span style="">　</span><span style="color:#000080">--　打印出1979</span>
+</span></span><span style="display:flex;"><span>g2<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>f1(<span style="color:#cd00cd">500</span>)
+</span></span><span style="display:flex;"><span>g2()<span style="">　</span><span style="color:#000080">--　打印出500</span>
+</span></span></code></pre></div><p>这种情况其实就是因为<code>f1</code>在退出自己的<code>block</code>的时候重新赋值了一份,这个时候<code>upval</code>就不是共享的了,而是单独存在了一份,这也说明了一个问题,当你在次调用<code>f1</code>的时候,它因为不是共享所以不会在利用前一次调用<code>f1</code>时候生成的<code>upval</code></p>
+<p><img loading="lazy" src="image-20230130121608992.png" alt="image-20230130121608992"  />
+</p>
+<h4 id="一个函数创建的闭包共享一份upvalue"><span>一个函数创建的闭包共享一份upvalue</span></h4>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span><span style="">　</span>Create(n)
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">local</span><span style="">　</span><span style="color:#cdcd00">function</span><span style="">　</span>foo1()
+</span></span><span style="display:flex;"><span>		print(n)
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">local</span><span style="">　</span><span style="color:#cdcd00">function</span><span style="">　</span>foo2()
+</span></span><span style="display:flex;"><span>		n<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>n<span style="">　</span><span style="color:#39c">+</span><span style="">　</span><span style="color:#cd00cd">10</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span><span style="">　</span>foo1,foo2
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>f1,f2<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>Create(<span style="color:#cd00cd">1979</span>)<span style="color:#000080">--创建闭包</span>
+</span></span><span style="display:flex;"><span>f1()<span style="">　</span><span style="color:#000080">--　打印1979</span>
+</span></span><span style="display:flex;"><span>f2()
+</span></span><span style="display:flex;"><span>f1()<span style="">　</span><span style="color:#000080">--　打印1989</span>
+</span></span><span style="display:flex;"><span>f2()
+</span></span><span style="display:flex;"><span>f1()<span style="">　</span><span style="color:#000080">--　打印1999</span>
+</span></span></code></pre></div><p><code>f1</code>,<code>f2</code>闭包共享<code>create</code>函数的局部变量<code>n</code></p>
+<p><img loading="lazy" src="image-20230130122442696.png" alt="image-20230130122442696"  />
+</p>
+<h3 id="同一闭包创建的其他的闭包共享一份upvalue"><span>同一闭包创建的其他的闭包共享一份upvalue</span></h3>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span><span style="">　</span>Test(n)
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">local</span><span style="">　</span><span style="color:#cdcd00">function</span><span style="">　</span>foo()
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">local</span><span style="">　</span><span style="color:#cdcd00">function</span><span style="">　</span>inner1()
+</span></span><span style="display:flex;"><span>			print(n)
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>		<span style="color:#00cd00">local</span><span style="">　</span><span style="color:#cdcd00">function</span><span style="">　</span>inner2()
+</span></span><span style="display:flex;"><span>			n<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>n<span style="">　</span><span style="color:#39c">+</span><span style="">　</span><span style="color:#cd00cd">10</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span><span style="">　</span>inner1,inner2
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span><span style="">　</span>foo
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>t<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>Test(<span style="color:#cd00cd">1979</span>)<span style="color:#000080">--创建闭包（共享一份upvalue）</span>
+</span></span><span style="display:flex;"><span>f1,f2<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>t()<span style="color:#000080">--创建闭包</span>
+</span></span><span style="display:flex;"><span>f1()<span style="">　　　　　　　　</span><span style="color:#000080">--　打印1979</span>
+</span></span><span style="display:flex;"><span>f2()
+</span></span><span style="display:flex;"><span>f1()<span style="">　　　　　　　　</span><span style="color:#000080">--　打印1989</span>
+</span></span><span style="display:flex;"><span>g1,g2<span style="">　</span><span style="color:#39c">=</span><span style="">　</span>t()
+</span></span><span style="display:flex;"><span>g1()<span style="">　　　　　　　　</span><span style="color:#000080">--　打印1989</span>
+</span></span><span style="display:flex;"><span>g2()
+</span></span><span style="display:flex;"><span>g1()<span style="">　　　　　　　　</span><span style="color:#000080">--　打印1999</span>
+</span></span><span style="display:flex;"><span>f1()<span style="">　　　　　　　　</span><span style="color:#000080">--　打印1999</span>
+</span></span></code></pre></div><p><code> g1</code>和<code>g2</code>与<code>f1</code>和<code>f2</code>共享同一个<code>upvalue</code>.因为<code>g1</code>和<code>g2</code>与<code>f1</code>和<code>f2</code>都是同一个闭包<code>t</code> 创建的,所以它们引用的<code>upvalue</code>  (变量<code>n</code>)实际也是同一个变量,而它们的<code>upvalue</code>引用都会指向同一个地方</p>
+<p><img loading="lazy" src="image-20230130123239902.png" alt="image-20230130123239902"  />
+</p>
+<h2 id="更详细的注释请去我的github地址"><span>更详细的注释请去我的GitHub地址</span></h2>
+<p>以下是我几乎每行都加了注释的<code>GitHub</code>地址</p>
+<ol>
+<li>
+<p><code>lfunc.h</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/lfunc.h">lfunch注释</a></p>
+</li>
+<li>
+<p><code>lfunc.c</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/lfunc.c">lfunc.c注释</a></p>
+</li>
 </ol>
 
 
@@ -475,15 +607,15 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/">
+  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4stack/">
     <span class="title">« 上一页</span>
     <br>
-    <span>[Lua5.4.4源码]字符串</span>
+    <span>[Lua5.4.4源码]栈</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/">
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4table/">
     <span class="title">下一页 »</span>
     <br>
-    <span>[Lua5.4.4源码]结构分析</span>
+    <span>[Lua5.4.4源码]表</span>
   </a>
 </nav>
 
