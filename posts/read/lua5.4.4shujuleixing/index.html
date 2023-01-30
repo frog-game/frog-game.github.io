@@ -457,7 +457,7 @@ var _hmt = _hmt || [];
 </tbody>
 </table>
 <p>具体区别其实我们在<code>lua</code>源码中也能找到区别</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123103128853.png" alt="image-20230123103128853"  />
+<p><img loading="lazy" src="image-20230123103128853.png" alt="image-20230123103128853"  />
 </p>
 <p>我们在源码中找到了这段代码可以看到这里根据类型返回了<code>1</code>和<code>2</code>两个不同的地址</p>
 <p>首先我们来说<code>LUA_TUSERDATA</code></p>
@@ -471,7 +471,7 @@ var _hmt = _hmt || [];
 </span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
 </span></span><span style="display:flex;"><span><span style="color:#000080">#define getudatamem(u)	(cast_charp(u) + udatamemoffset((u)-&gt;nuvalue)) </span><span style="color:#000080">//返回内存块的地址
 </span></span></span></code></pre></div><p>从下图中我们也能看到<code>LUA_TUSERDATA</code>里面有 独立元表</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123103834850.png" alt="image-20230123103834850"  />
+<p><img loading="lazy" src="image-20230123103834850.png" alt="image-20230123103834850"  />
 </p>
 <h4 id="lua_tuserdata实现例子"><span>LUA_TUSERDATA实现例子</span></h4>
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">//c文件
@@ -619,13 +619,13 @@ var _hmt = _hmt || [];
 <p><code>2</code>处我们返回的也是个宏</p>
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">#define pvalue(o)	check_exp(ttislightuserdata(o), val_(o).p) </span><span style="color:#000080">//获取light userdata的指针
 </span></span></span></code></pre></div><p>进一步追踪我们可以看到<code>p</code>指针指向的是这个结构体,里面并没有元表相关的实现,所以后面元表相关的处理都得我们自己处理</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123104539735.png" alt="image-20230123104539735"  />
+<p><img loading="lazy" src="image-20230123104539735.png" alt="image-20230123104539735"  />
 </p>
 <h4 id="体外话为什么有时候用cjson去反序列化的时候能看到打印table里面的值居然是null"><span>体外话为什么有时候用<code>CJSON</code>去反序列化的时候能看到打印<code>table</code>里面的值居然是<code>null</code></span></h4>
 <p>比如这样的结果</p>
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>{<span style="color:#cd0000">&#34;key1&#34;</span><span style="color:#39c">:</span><span style="color:#cd0000">&#34;value&#34;</span>,<span style="color:#cd0000">&#34;key&#34;</span><span style="color:#39c">:</span>null,<span style="color:#cd0000">&#34;key2&#34;</span><span style="color:#39c">:</span><span style="color:#cd0000">&#34;value2&#34;</span>}
 </span></span></code></pre></div><p>首先看看<code>lua_pushlightuserdata</code>实现</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123111513660.png" alt="image-20230123111513660"  />
+<p><img loading="lazy" src="image-20230123111513660.png" alt="image-20230123111513660"  />
 </p>
 <p>在看看<code>cjson.so</code>的实现</p>
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>lua_newtable(L);
@@ -732,7 +732,7 @@ var _hmt = _hmt || [];
 <li><code>LUA_VNUMFLT</code> 浮点类型 其实就是c中的<code>double</code>,占用<code>8</code>个字节</li>
 </ul>
 <p>对应的源码如下</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123112120451.png" alt="image-20230123112120451"  />
+<p><img loading="lazy" src="image-20230123112120451.png" alt="image-20230123112120451"  />
 </p>
 <h2 id="lua_tstring"><span>LUA_TSTRING</span></h2>
 <p><code>lua5.4</code>将<code>string</code>分为了两种</p>
@@ -747,14 +747,14 @@ var _hmt = _hmt || [];
 <li>真正需要它的hash值时，才会手动调用<code>luaS_hashlongstr</code>函数生成该值,<code>lua</code>内部现在只有在把长串作为<code>table</code>的<code>key</code>时，才会去计算它</li>
 </ul>
 <h3 id="字符串结构"><span><strong>字符串结构</strong></span></h3>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123132740554.png" alt="image-20230123132740554"  />
+<p><img loading="lazy" src="image-20230123132740554.png" alt="image-20230123132740554"  />
 </p>
 <h3 id="存储位置"><span>存储位置</span></h3>
 <h4 id="短字符串"><span>短字符串</span></h4>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123134046523.png" alt="image-20230123134046523"  />
+<p><img loading="lazy" src="image-20230123134046523.png" alt="image-20230123134046523"  />
 </p>
 <p>相同<code>hash</code>字符串存储在 <code>stringtable strt</code> 链表结构上 一般<code>短字符串</code>会使用这种方式存储</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123162130402.png" alt="image-20230123162130402"  />
+<p><img loading="lazy" src="image-20230123162130402.png" alt="image-20230123162130402"  />
 </p>
 <h4 id="长字符串"><span>长字符串</span></h4>
 <p>因为长字符串是惰性生成的，只有在需要<code>hash</code>值得时候才会去创建,所以不会想短字符串一样存在<code>global_State-&gt;strt</code>里面的,而是真正生成一片<code>Tstring</code>内存空间,所以相同的长字符串会有不同的内存空间副本存储,这点需要特别注意</p>
@@ -763,18 +763,18 @@ var _hmt = _hmt || [];
 <p>下图中<code>N</code>是数组行，<code>M</code>是数组列</p>
 <p><code>i</code>的下标值通过<code>unsigned int i = point2uint(str) % STRCACHE_N</code>求得</p>
 <p><code>j</code>的最大值固定就是下面的宏函数 <code>STRCACHE_M 2</code></p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/Typoraimage-20220405133449863.png" alt="Typoraimage-20220405133449863"  />
+<p><img loading="lazy" src="Typoraimage-20220405133449863.png" alt="Typoraimage-20220405133449863"  />
 </p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123163118382.png" alt="image-20230123163118382"  />
+<p><img loading="lazy" src="image-20230123163118382.png" alt="image-20230123163118382"  />
 </p>
 <p>鉴于篇幅长度,后面会专门出一篇文章详细的讲解<code>lua</code>的<code>string</code>里里外外</p>
 <h2 id="lua_ttable-表"><span>LUA_TTABLE 表</span></h2>
 <p><code>lua</code> 的<code>table</code>是个很神奇的结构,他是<code>hash</code>,数组的混合体,通过<code>table</code>可以很方便的实现模块,元表,环境,面向对象,<code>stl</code>,等等功能</p>
 <p><code>table</code>的源码结构</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230123170655933.png" alt="image-20230123170655933"  />
+<p><img loading="lazy" src="image-20230123170655933.png" alt="image-20230123170655933"  />
 </p>
 <p>结构示意图</p>
-<p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230125220102216.png" alt="image-20230125220102216"  />
+<p><img loading="lazy" src="image-20230125220102216.png" alt="image-20230125220102216"  />
 </p>
 <p>详细解释,会在单独出一篇文章</p>
 <h2 id="lua_tthread"><span>LUA_TTHREAD</span></h2>
@@ -899,7 +899,7 @@ var _hmt = _hmt || [];
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">#define TValuefields    Value value_; int tt_
 </span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>Value<span style="">：存储具体数据的值</span>
 </span></span><span style="display:flex;"><span>tt_<span style="">：表示这个值的类型，即所有的基础数据类型</span>
-</span></span></code></pre></div><p><img loading="lazy" src="[lua5.4.4]shujuleixing.assets/image-20230124234606435.png" alt="image-20230124234606435"  />
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230124234606435.png" alt="image-20230124234606435"  />
 </p>
 
 
