@@ -117,8 +117,8 @@ var _hmt = _hmt || [];
   "keywords": [
     ""
   ],
-  "articleBody": "调用栈,数据栈 数据栈数据结构 /// @brief 数据栈指针结构 typedef union StackValue { TValue val; struct { TValuefields; unsigned short delta;//相邻 tbc 变量在栈中的距离 } tbclist;//此堆栈中所有活动的将要关闭的变量的列表 } StackValue; //栈指针 typedef StackValue *StkId; struct lua_State { ... StkId top; /* first free slot in the stack *///指向栈的顶部，压入数据，都通过移动栈顶指针来实现 StkId stack_last; /* end of stack (last element + 1) *///最后可用的位置数据栈 正常的栈操作在[stack, stack_last]之间 StkId stack; /* stack base *///栈的起始地址 StkId tbclist; /* list of to-be-closed variables *///记录着最后一个tbc节点,栈缩容时会判断节点是否在缩容空间内,如果在那么就根据这个节点调用缩容空间内所有tbc变量的 __close() 元方法 }; //数据栈大小 #define stacksize(th)\tcast_int((th)-\u003estack_last - (th)-\u003estack) 调用栈数据结构 调用栈,数据栈初始化 这两个栈的初始化通过stack_init函数初始化\n大概示意图如下\n一开始线程创建一个大小为BASIC_STACK_SIZE + EXTRA_STACK的StackValue数组\n数据栈stack指针,tbclist指针,top指针都指向这个数组的首地址\n数据栈stack_last指针,指向数据栈的末尾,也就是stack + BASIC_STACK_SIZE的位置\n并且我们还注意到数据栈的top指针进行了L1-\u003etop++处理,为什么要这样呢,通过这些源码的分析,看样子是为了0号位置给当前执行的函数使用的\n首先1号代码位置执行了ci-\u003efunc = L1-\u003etop指向了当空间的0号位置\n然后2号代码位置执行了L1-\u003eci = ci,让L1虚拟栈中的CallInfo *ci指向了L1虚拟栈中CallInfo base_ci\n这样当调用这个函数的时候,就等价于0号位置是给当前执行的函数使用的\n未完待续\n",
-  "wordCount" : "694",
+  "articleBody": "调用栈,数据栈 数据栈数据结构 /// @brief 数据栈指针结构 typedef union StackValue { TValue val; struct { TValuefields; unsigned short delta;//相邻 tbc 变量在栈中的距离 } tbclist;//此堆栈中所有活动的将要关闭的变量的列表 } StackValue; //栈指针 typedef StackValue *StkId; struct lua_State { ... StkId top; /* first free slot in the stack *///指向栈的顶部，压入数据，都通过移动栈顶指针来实现 StkId stack_last; /* end of stack (last element + 1) *///最后可用的位置数据栈 正常的栈操作在[stack, stack_last]之间 StkId stack; /* stack base *///栈的起始地址 StkId tbclist; /* list of to-be-closed variables *///记录着最后一个tbc节点,栈缩容时会判断节点是否在缩容空间内,如果在那么就根据这个节点调用缩容空间内所有tbc变量的 __close() 元方法 }; //数据栈大小 #define stacksize(th)\tcast_int((th)-\u003estack_last - (th)-\u003estack) 调用栈数据结构 调用栈,数据栈初始化 这两个栈的初始化通过stack_init函数初始化\n大概示意图如下\n一开始线程创建一个大小为BASIC_STACK_SIZE + EXTRA_STACK的StackValue数组 数据栈stack指针,tbclist指针,top指针都指向这个数组的首地址 数据栈stack_last指针,指向数据栈的末尾,也就是stack + BASIC_STACK_SIZE的位置 未完待续\n",
+  "wordCount" : "482",
   "inLanguage": "en",
   "image":"https://frog-game.github.io/posts/read/lua5.4.4stack/image-20230128162747397.png","datePublished": "2023-01-30T01:30:29+08:00",
   "dateModified": "2023-01-30T01:30:29+08:00",
@@ -238,7 +238,7 @@ var _hmt = _hmt || [];
             <div class="post-description">
                 lua源码栈分析
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2023-01-30 01:30:29 +0800 CST'>2023-01-30</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-30&nbsp;|&nbsp;字数:&nbsp;694字&nbsp;|&nbsp;时长:&nbsp;2分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2023-01-30 01:30:29 +0800 CST'>2023-01-30</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-30&nbsp;|&nbsp;字数:&nbsp;482字&nbsp;|&nbsp;时长:&nbsp;1分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -379,25 +379,9 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="image-20230128162747397.png" alt="image-20230128162747397"  />
 </p>
 <ol>
-<li>
-<p>一开始线程创建一个大小为<code>BASIC_STACK_SIZE + EXTRA_STACK</code>的<code>StackValue</code>数组</p>
-</li>
-<li>
-<p>数据栈<code>stack指针</code>,<code>tbclist指针</code>,<code>top指针</code>都指向这个数组的首地址</p>
-</li>
-<li>
-<p>数据栈<code>stack_last指针</code>,指向数据栈的末尾,也就是<code>stack + BASIC_STACK_SIZE</code>的位置</p>
-</li>
-<li>
-<p>并且我们还注意到数据栈的<code>top指针</code>进行了<code>L1-&gt;top++</code>处理,为什么要这样呢,通过这些源码的分析,看样子是为了<code>0号位置</code>给当前执行的函数使用的</p>
-<p><img loading="lazy" src="image-20230128163937808.png" alt="image-20230128163937808"  />
-</p>
-<p>首先<code>1</code>号代码位置执行了<code>ci-&gt;func = L1-&gt;top</code>指向了当空间的<code>0号</code>位置</p>
-<p>然后<code>2</code>号代码位置执行了<code>L1-&gt;ci = ci</code>,让<code>L1</code>虚拟栈中的<code>CallInfo *ci</code>指向了<code>L1</code>虚拟栈中<code>CallInfo base_ci</code></p>
-<p>这样当调用这个函数的时候,就等价于<code>0号位置</code>是给当前执行的函数使用的</p>
-<p><img loading="lazy" src="image-20230128164530063.png" alt="image-20230128164530063"  />
-</p>
-</li>
+<li>一开始线程创建一个大小为<code>BASIC_STACK_SIZE + EXTRA_STACK</code>的<code>StackValue</code>数组</li>
+<li>数据栈<code>stack指针</code>,<code>tbclist指针</code>,<code>top指针</code>都指向这个数组的首地址</li>
+<li>数据栈<code>stack_last指针</code>,指向数据栈的末尾,也就是<code>stack + BASIC_STACK_SIZE</code>的位置</li>
 </ol>
 <p>未完待续</p>
 
