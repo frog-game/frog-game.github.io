@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[Lua5.4.4源码]协程 | frog&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="lua源码协程分析">
+<meta name="author" content="
+作者:&nbsp;frog">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8b75bf56d6fb0c429b5f3ce03bce19c9ef1e90cc024b64bd12ec321c68cca894.css" integrity="sha256-i3W/Vtb7DEKbXzzgO84Zye8ekMwCS2S9EuwyHGjMqJQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+        onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="16x16" href="https://frog-game.github.io/img/Q.gif">
+<link rel="icon" type="image/png" sizes="32x32" href="https://frog-game.github.io/img/Q.gif">
+<link rel="apple-touch-icon" href="https://frog-game.github.io/img/Q.gif">
+<link rel="mask-icon" href="https://frog-game.github.io/img/Q.gif">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = ""; 
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<meta property="og:title" content="[Lua5.4.4源码]协程" />
+<meta property="og:description" content="lua源码协程分析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/image-20230131144029855-167516444524221.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-03T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2023-02-03T01:30:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/image-20230131144029855-167516444524221.png" />
+<meta name="twitter:title" content="[Lua5.4.4源码]协程"/>
+<meta name="twitter:description" content="lua源码协程分析"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "📚文章",
+      "item": "https://frog-game.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "📕 阅读",
+      "item": "https://frog-game.github.io/posts/read/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "[Lua5.4.4源码]协程",
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4.coroutine/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Lua5.4.4源码]协程",
+  "name": "[Lua5.4.4源码]协程",
+  "description": "lua源码协程分析",
+  "keywords": [
+    ""
+  ],
+  "articleBody": "thread即为线程,但是在lua中是没有线程的概念的,这个线程并不是真正意义上操作系统的线程,而更多的是一个能储存运行状态的数据结构,这个结构更多的是给协程**coroutine**使用的\n线程和协程的区别 线程消耗操作系统资源,协程可以靠编译语言实现,因此称为用户态线程量级更轻 线程并行,协程并发 线程同步,协程异步 线程抢占式,协程非抢占式,需要手动切换 线程上千,协程上万 线程切换需要上下文切换,协程切换不需要上下文切换,只在用户态进行切换 文字太枯燥,我们下面用几张图示来区别下进程,线程,协程的区别\n内存布局 从上面3张图,我们可以分析出\n进程拥有自己单独的虚拟内存,堆区,栈区,相互不影响,是资源分配的最小单位 线程可以拥有不同栈区,相互独立,堆区共享,是CPU分配的最小单位 而因为线程CPU上下文的切换,耗费的时间很多,所以牛B的工程师又在此基础上创造了协程,所以我们可以看出协程是用户态的,不需要进行CPU的切换,只是在CPU上模拟了线程的操作逻辑,大大的提高了效率 存储协程数据的数据结构 协程的四中状态 协程库对外接口 下面我们通过一个例子来解释这些接口的含义 创建协程 相同点\ncoroutine.create(f)和coroutine.wrap(f)都是用来创建协同程序的 不同点\n不同的是coroutine.wrap(f)返回的是一个线程号(一个协同程序就是一个线程),并且创建的协同程序处于suspend状态,必须用resume唤醒协同程序执行,执行完之后协同程序也就处于dead状态.\n而coroutine.wrap(f)则是返回一个函数,一但调用这个函数就进入coroutine状态.不需要resume唤醒,直接调用返回的函数就行\ncoroutine.create(f) 首先我们创建一个lua代码来进行讲解\nlocal co = coroutine.create( function(a, b) print(\"a + b =\", a + b) end ) print(co); print(coroutine.status(co)) 运行结果如下:\n我们从print(co)能看出来在使用 coroutine.create的时候其实返回的是一个线程id,这个id就是协程栈的id 从print(coroutine.status(co))上能看出刚create出来的协程状态是suspended状态的 接下来我们来追踪源码,一共四步,现在我把每步的栈空间情况画出来分析\n执行1号位置代码的时候堆栈情况\n执行2号位置代码的时候堆栈情况,全局栈顶部会push一个新创建出来的协程,新的协程栈这个时候什么都没有\n执行3号位置代码的时候堆栈情况,这个时候会把L-\u003eci-\u003efunc +1指向的位置放到全局栈栈顶\n执行4号位置代码的时候堆栈情况,这个时候全局栈的栈顶元素ff会移动到协程栈的顶部\n至此一个协程就创建出来了\ncoroutine.wrap(f) lua测试代码\nlocal ff = function(a, b) print(\"a + b =\", a + b) return a + b; end func = coroutine.wrap(ff) print(func) local ret = func(10 ,20)--不需要调用 coroutine.resume接口直接就可以运行 print(ret) 从上图中我们可以看出\n返回一个函数, 不需要resume唤醒,直接调用返回的函数就行 我们在看一下源码解释\n从中我们可以看到,原来wrap只是包装了一层,然后把新创建的协程当做luaB_auxwrap的一个upvalue,进行返回,其他的操作和coroutine.create(f)类似\n启动协程 coroutine.resume(co, …) 没有yield的协程的resume local co = coroutine.create( function(a, b) return a,b end ) local ret, a ,b = coroutine.resume(co,3) print(ret, a ,b) 可以看到首先没有yield的协程的resume,返回的就是create里面的函数return的a,b值 来源是resume后面的不定参数,传啥就对应啥,如果不传就默认是nil\n有yield的协程的resume local co = coroutine.create( function(a, b) local c = a +b print(\"start yield\") local x,y, z= coroutine.yield(c) print(\"restart co\", x,y,z) return x + y + z + c end ) local ret, a = coroutine.resume(co,3,4) print(ret, a) local ret, a = coroutine.resume(co,30,40,50) print(ret, a) local ret, a = coroutine.resume(co,300,400,500) print(ret, a) 首先我们利用了coroutine.resume创建了一个协程,但是这个协程因为返回的是协程id所以不可能想coroutine.wrap一样直接调用就行,只能通过coroutine.resume来启动\n根据上图我们可以分析出\n首先在1号位置第一次调用了coroutine.resume把3和4传给了函数的a,b,然后再函数里面遇到了coroutine.yield(c)挂起了函数,并把结果c通过yield形参传给了resume,然后直接下面就print出了true,7\n接着来到了2号位置第二次调用了coroutine.resume把30和40,50通过yield的返回值返回给了x,y,z,通过打印print(\"restart co\", x,y,z)也能看出的确是这样的结果\n接着来到3号位置,第三次调用了coroutine.resume,这个时候发现print直接输出了false和cannot resume dead coroutine,传递啥参数也不起作用,主要原因是因为当协程完成的时候,或者有错误的时候就会报这个cannot resume dead coroutine错误提示\n具体参数传递,大家可以顺着下图线的颜色捋\n说了这么多,我们从头开始撸,为了方便讲解好画流程图我把create里面的函数用ff进行了保存\n当我们调用\nlocal ff = function(a, b) local c = a +b print(\"start yield\") local x,y, z= coroutine.yield(c) print(\"restart co\", x,y,z) return x + y + z + c end local co = coroutine.create( ff ) 的时候这个时候堆栈情况是\n当我们继续调用的时候\nlocal ret, a = coroutine.resume(co,3,4) 我们追踪源码这个时候主要起作用的核心是luaB_coresume函数里面调用的auxresume函数\n进入auxresume函数以后我们看到主要起作用的是这3个位置\n当我们在调用1号位置lua_xmove函数之前我们堆栈情况是这样的\n调用lua_xmove函数之后堆栈情况\n当做完这些准备的时候,我们来到了2号代码位置,尝试用lua_resume来真正唤醒启动一根协程来处理逻辑\n可以看到这有3个关键点,\n1号位置代表当函数执行完成以后,或者发送错误的时候,你这个时候在去调用coroutine.resume,这个时候发现直接输出了false和cannot resume dead coroutine\n2号位置也很重要这是执行回调函数的关键,里面会利用lua_longjmp和setjmp来进行当前环境变量的执行,还有异常抛出\nluaD_rawrunprotected执行逻辑整体流程如下\n函数最开始定义一个lua_longjmp结构体,用于保存当前执行环境,状态值设置为LUA_OK\n然后调用LUAI_TRY函数,该函数实际是一个宏定义,将当前执行环境setjmp,并执行回调函数\n如果回调函数执行内部,发生异常情况,则通过luaD_throw将异常抛出\n异常抛出函数,会执行 LUAI_THROW函数,该函数是longjmp的宏定义,并且将返回值设置为1\n由于执行了longjmp,则C语言内部方法会回到跳转点setjmp\nLUAI_TRY函数判断setjmp的返回值,之前是0,现在由于longjmp设置了值为1,所以不会继续执行回调函数,回调函数被中断\n当luaD_rawrunprotected函数的执行真的抛出异常的时候,这个时候就会调用precover函数进行恢复,这样我们不需要担心调用一个协程后会因为协程内部的错误导致外部的主程序崩溃\n第3号位置,我们可以看到函数的返回值的情况,其实就是对应了这张图的逻辑处理\n最后我们得到了从lua_resume的到的status状态和nres返回值个数的信息以后通过如下代码送到了原始协程\n​\t具体堆栈图示情况如下,到此我们的 resume流程就结束了\n​\t挂起协程 coroutine.yield(…) 挂起协程源码如下\n从中我们可以看出主要是lua_yieldk函数在起作用\n从1号位置我们可以看出\n主栈不能yield\ncoroutine.resume –\u003e cfunc –\u003e luafunction–\u003e coroutine.yield —–\u003e 报错\n从2号位置我们可以看出当yield的时候状态会被置成LUA_YIELD\n从3号位置我们可以看出这里报错了延续函数的上下文,和延续函数,主要是为了解决2号位置发生的报错信息\n延续函数 为什么我们需要延续函数呢,主要原因还是因为如下流程\ncoroutine.resume --\u003e cfunc --\u003e luafunction--\u003e coroutine.yield -----\u003e 报错 当我们从cfunc调用luafunction,然后luafunction调用yield的时候,和协程相关的状态信息都会被保存lua_state中,但是c函数不会因为调用了coroutine.yield而挂起,而是会继续执行下去,c函数执行完成以后也就全部销毁了,也无法保存恢复现场,这样就会导致c层的调用和lua层的调用不一致,lua层挂起,c层执行,这样逻辑代码也会发生错误\n比如下面的报错版本\n//c层代码 替换main函数的那个文件就行 #include extern \"C\" { #include #include #include #include } static void traceback(lua_State* L, int n) { lua_Debug ar; if (lua_getstack(L, n, \u0026ar)) { lua_getinfo(L, \"Sln\", \u0026ar); if (ar.name) { printf(\"\\tstack[%d] -\u003e line %d : %s()[%s]\\n\", n, ar.currentline, ar.name, ar.short_src); } else { printf(\"\\tstack[%d] -\u003e line %d : unknown[%s]\\n\", n, ar.currentline, ar.short_src); } traceback(L, n + 1); } } static int TraceBack(lua_State* L) { printf(\"STACK TRACEBACK: %s\\n\", lua_tostring(L, -1)); traceback(L, 0); return 0; } static int Cfunction(lua_State* L) { printf(\"Cfunction enter!\\n\"); lua_pushcfunction(L, TraceBack); lua_getglobal(L, \"Luafunction\"); lua_pcall(L, 0, 0, -2); printf(\"Cfunction leave!\\n\");//报错版本这里直接往下执行了,并未和lua层一起挂起,导致了和lua层行为不一致 return 0; } int main() { lua_State* L; int status; L = luaL_newstate(); luaL_openlibs(L); lua_pushcfunction(L, Cfunction); lua_setglobal(L, \"Cfunction\"); status = luaL_loadfile(L, \"helloworld.lua\"); if (status) { printf(\"loadfile error!(%s)\\n\", lua_tostring(L, -1)); lua_settop(L, 0); return 0; } status = lua_pcall(L, 0, 0, -2); if (status) { lua_settop(L, 0); return 0; } return 1; } --lua文件 function Luafunction() print(\"Luafunction yield enter!\") coroutine.yield() print(\"Luafunction yield leave!\") end local co = coroutine.create( function() print(\"Luafunction coroutine resume!\") Cfunction() end ) coroutine.resume(co) 运行结果\n在现在这个版本,通过lua_callk, lua_pcallk, lua_yieldk这些API函数传递了延续函数,然后再调用coroutine.resume的时候能够保证和lua一起保持同步调用,这样就不会报错了\n下面我们来看看加了延续函数版本\n//c层代码 替换main函数的那个文件就行 #include extern \"C\" { #include #include #include #include } static void traceback(lua_State* L, int n) { lua_Debug ar; if (lua_getstack(L, n, \u0026ar)) { lua_getinfo(L, \"Sln\", \u0026ar); if (ar.name) { printf(\"\\tstack[%d] -\u003e line %d : %s()[%s]\\n\", n, ar.currentline, ar.name, ar.short_src); } else { printf(\"\\tstack[%d] -\u003e line %d : unknown[%s]\\n\", n, ar.currentline, ar.short_src); } traceback(L, n + 1); } } static int TraceBack(lua_State* L) { printf(\"STACK TRACEBACK: %s\\n\", lua_tostring(L, -1)); traceback(L, 0); return 0; } //延续函数 static int cfunctionContinuation(lua_State* L, int status, lua_KContext ctx) { printf(\"Cfunction leave!\\n\"); return 0; } static int Cfunction(lua_State* L) { printf(\"Cfunction enter!\\n\"); lua_pushcfunction(L, TraceBack); lua_getglobal(L, \"Luafunction\"); //lua_pcall(L, 0, 0, -2); lua_pcallk(L, 0, 0, -2, 0, cfunctionContinuation);//这里加了延续函数 return 0; } int main() { lua_State* L; int status; L = luaL_newstate(); luaL_openlibs(L); lua_pushcfunction(L, Cfunction); lua_setglobal(L, \"Cfunction\"); status = luaL_loadfile(L, \"helloworld.lua\"); if (status) { printf(\"loadfile error!(%s)\\n\", lua_tostring(L, -1)); lua_settop(L, 0); return 0; } status = lua_pcall(L, 0, 0, -2); if (status) { lua_settop(L, 0); return 0; } return 1; } 没有第二次调用coroutine.resume唤醒挂起协程的情况\nfunction Luafunction() print(\"Luafunction yield enter!\") coroutine.yield() print(\"Luafunction yield leave!\") end local co = coroutine.create( function() print(\"Luafunction coroutine resume!\") Cfunction() end ) coroutine.resume(co) 第二次调用coroutine.resume唤醒挂起协程的情况\nfunction Luafunction() print(\"Luafunction yield enter!\") coroutine.yield() print(\"Luafunction yield leave!\") end local co = coroutine.create( function() print(\"Luafunction coroutine resume!\") Cfunction() end ) coroutine.resume(co) coroutine.resume(co)--第二次调coroutine.resume 具体源码核心代码主要是这几个地方\n关闭协程 coroutine.close(co) 关闭协程 co,并关闭它所有等待 to-be-closed 的变量,并将协程状态设为 dead\n具体源码如下\n返回协程 coroutine.running() 返回当前正在运行的协程加一个布尔量. 如果当前运行的协程是主线程,其为真.\n获取协程状态 coroutine.status(co) 以字符串形式返回协程 co 的状态.\n具体情况4中\n状态 解释 running 运行 dead 死亡 suspended 挂起 normal 正常 协程是否可以让出 coroutine.isyieldable(co) 如果协程 co 可以让出，则返回真。co 默认为正在运行的协程。\n主要是靠这个宏来判断\n",
+  "wordCount" : "4259",
+  "inLanguage": "en",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4.coroutine/image-20230131144029855-167516444524221.png","datePublished": "2023-02-03T01:30:29+08:00",
+  "dateModified": "2023-02-03T01:30:29+08:00",
+  "author":[{
+    "@type": "Person",
+    "name": "frog"
+  }],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4.coroutine/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "frog's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://frog-game.github.io/img/Q.gif"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://frog-game.github.io/" accesskey="h" title="frog&#39;s Blog (Alt + H)">
+            <img src="https://frog-game.github.io/img/Q.gif" alt="logo" aria-label="logo"
+                 height="35">frog&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://frog-game.github.io/search" title="🔍 搜索 (Alt &#43; /)" accesskey=/>
+                <span>🔍 搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/" title="🏠 主页">
+                <span>🏠 主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/posts" title="📚 文章">
+                <span>📚 文章</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/tags" title="🧩 标签">
+                <span>🧩 标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/archives/" title="⏱ 时间轴">
+                <span>⏱ 时间轴</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/about" title="🙋🏻‍♂️ 关于">
+                <span>🙋🏻‍♂️ 关于</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://frog-game.github.io/links" title="🤝 友链">
+                <span>🤝 友链</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main page">
+<article class="post-single">
+    <div id="single-content">
+        <header class="post-header">
+            <div class="breadcrumbs"><a href="https://frog-game.github.io/">主页</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/">📚文章</a>&nbsp;»&nbsp;<a href="https://frog-game.github.io/posts/read/">📕 阅读</a></div>
+            <h1 class="post-title">
+                [Lua5.4.4源码]协程
+            </h1>
+            <div class="post-description">
+                lua源码协程分析
+            </div>
+            <div class="post-meta">创建:&nbsp;<span title='2023-02-03 01:30:29 +0800 CST'>2023-02-03</span>&nbsp;|&nbsp;更新:&nbsp;2023-02-03&nbsp;|&nbsp;字数:&nbsp;4259字&nbsp;|&nbsp;时长:&nbsp;9分钟&nbsp;|&nbsp;
+作者:&nbsp;frog
+
+
+
+                &nbsp;|&nbsp;标签: &nbsp;
+                <ul class="post-tags-meta">
+                    <a href="https://frog-game.github.io/tags/lua5.4.4%E6%BA%90%E7%A0%81/">Lua5.4.4源码</a>
+                </ul>
+
+                
+                <span id="busuanzi_container_page_pv">
+                &nbsp;| 访问: <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+</div>
+        </header> 
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/image-20230131144029855-167516444524221.png" alt="">
+        
+</figure>
+        <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">文章目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e7%ba%bf%e7%a8%8b%e5%92%8c%e5%8d%8f%e7%a8%8b%e7%9a%84%e5%8c%ba%e5%88%ab" aria-label="线程和协程的区别">线程和协程的区别</a><ul>
+                        
+                <li>
+                    <a href="#%e5%86%85%e5%ad%98%e5%b8%83%e5%b1%80" aria-label="内存布局">内存布局</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%ad%98%e5%82%a8%e5%8d%8f%e7%a8%8b%e6%95%b0%e6%8d%ae%e7%9a%84%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" aria-label="存储协程数据的数据结构">存储协程数据的数据结构</a></li>
+                <li>
+                    <a href="#%e5%8d%8f%e7%a8%8b%e7%9a%84%e5%9b%9b%e4%b8%ad%e7%8a%b6%e6%80%81" aria-label="协程的四中状态">协程的四中状态</a></li>
+                <li>
+                    <a href="#%e5%8d%8f%e7%a8%8b%e5%ba%93%e5%af%b9%e5%a4%96%e6%8e%a5%e5%8f%a3" aria-label="协程库对外接口">协程库对外接口</a></li>
+                <li>
+                    <a href="#%e4%b8%8b%e9%9d%a2%e6%88%91%e4%bb%ac%e9%80%9a%e8%bf%87%e4%b8%80%e4%b8%aa%e4%be%8b%e5%ad%90%e6%9d%a5%e8%a7%a3%e9%87%8a%e8%bf%99%e4%ba%9b%e6%8e%a5%e5%8f%a3%e7%9a%84%e5%90%ab%e4%b9%89" aria-label="下面我们通过一个例子来解释这些接口的含义">下面我们通过一个例子来解释这些接口的含义</a><ul>
+                        
+                <li>
+                    <a href="#%e5%88%9b%e5%bb%ba%e5%8d%8f%e7%a8%8b" aria-label="创建协程">创建协程</a><ul>
+                        
+                <li>
+                    <a href="#coroutinecreatef" aria-label="coroutine.create(f)">coroutine.create(f)</a></li>
+                <li>
+                    <a href="#coroutinewrapf" aria-label="coroutine.wrap(f)">coroutine.wrap(f)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%90%af%e5%8a%a8%e5%8d%8f%e7%a8%8b" aria-label="启动协程">启动协程</a><ul>
+                        
+                <li>
+                    <a href="#coroutineresumeco-" aria-label="coroutine.resume(co, &amp;hellip;)">coroutine.resume(co, &hellip;)</a></li>
+                <li>
+                    <a href="#%e6%b2%a1%e6%9c%89yield%e7%9a%84%e5%8d%8f%e7%a8%8b%e7%9a%84resume" aria-label="没有yield的协程的resume">没有<code>yield</code>的协程的<code>resume</code></a></li>
+                <li>
+                    <a href="#%e6%9c%89yield%e7%9a%84%e5%8d%8f%e7%a8%8b%e7%9a%84resume" aria-label="有yield的协程的resume">有<code>yield</code>的协程的<code>resume</code></a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%8c%82%e8%b5%b7%e5%8d%8f%e7%a8%8b" aria-label="挂起协程">挂起协程</a><ul>
+                        
+                <li>
+                    <a href="#coroutineyield" aria-label="coroutine.yield(&amp;hellip;)">coroutine.yield(&hellip;)</a></li>
+                <li>
+                    <a href="#%e5%bb%b6%e7%bb%ad%e5%87%bd%e6%95%b0" aria-label="延续函数">延续函数</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%85%b3%e9%97%ad%e5%8d%8f%e7%a8%8b" aria-label="关闭协程">关闭协程</a><ul>
+                        
+                <li>
+                    <a href="#coroutinecloseco" aria-label="coroutine.close(co)">coroutine.close(co)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%bf%94%e5%9b%9e%e5%8d%8f%e7%a8%8b" aria-label="返回协程">返回协程</a><ul>
+                        
+                <li>
+                    <a href="#coroutinerunning" aria-label="coroutine.running()">coroutine.running()</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%8e%b7%e5%8f%96%e5%8d%8f%e7%a8%8b%e7%8a%b6%e6%80%81" aria-label="获取协程状态">获取协程状态</a><ul>
+                        
+                <li>
+                    <a href="#coroutinestatusco" aria-label="coroutine.status(co)">coroutine.status(co)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%8d%8f%e7%a8%8b%e6%98%af%e5%90%a6%e5%8f%af%e4%bb%a5%e8%ae%a9%e5%87%ba" aria-label="协程是否可以让出">协程是否可以让出</a><ul>
+                        
+                <li>
+                    <a href="#coroutineisyieldableco" aria-label="coroutine.isyieldable(co)">coroutine.isyieldable(co)</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+        
+        activeElement = elements[0];
+        const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+        document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+    }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 &&
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+            const id = encodeURI(element.getAttribute('id')).toLowerCase();
+            if (element === activeElement){
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+            } else {
+                document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+            }
+        })
+    }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;
+    }
+</script>
+        
+        <div class="post-content"><p><code>thread</code>即为线程,但是在<code>lua</code>中是没有线程的概念的,这个线程并不是真正意义上操作系统的线程,而更多的是一个能储存运行状态的数据结构,这个结构更多的是给协程**<code>coroutine</code>**使用的</p>
+<h2 id="线程和协程的区别"><span>线程和协程的区别</span></h2>
+<ol>
+<li>线程消耗操作系统资源,协程可以靠编译语言实现,因此称为用户态线程量级更轻</li>
+<li>线程并行,协程并发</li>
+<li>线程同步,协程异步</li>
+<li>线程抢占式,协程非抢占式,需要手动切换</li>
+<li>线程上千,协程上万</li>
+<li>线程切换需要上下文切换,协程切换不需要上下文切换,只在用户态进行切换</li>
+</ol>
+<p>文字太枯燥,我们下面用几张图示来区别下进程,线程,协程的区别</p>
+<h3 id="内存布局"><span>内存布局</span></h3>
+<p><img loading="lazy" src="image-20230131144006884.png" alt="image-20230131144006884"  />
+</p>
+<p><img loading="lazy" src="image-20230131144019896-167516444126020.png" alt="image-20230131144019896"  />
+</p>
+<p><img loading="lazy" src="image-20230131144029855-167516444524221.png" alt="image-20230131144029855"  />
+</p>
+<p>从上面<code>3</code>张图,我们可以分析出</p>
+<ol>
+<li>进程拥有自己单独的虚拟内存,堆区,栈区,相互不影响,是资源分配的最小单位</li>
+<li>线程可以拥有不同栈区,相互独立,堆区共享,是<code>CPU</code>分配的最小单位</li>
+<li>而因为线程<code>CPU</code>上下文的切换,耗费的时间很多,所以<code>牛B</code>的工程师又在此基础上创造了协程,所以我们可以看出协程是用户态的,不需要进行<code>CPU</code>的切换,只是在<code>CPU</code>上模拟了线程的操作逻辑,大大的提高了效率</li>
+</ol>
+<h2 id="存储协程数据的数据结构"><span>存储协程数据的数据结构</span></h2>
+<p><img loading="lazy" src="image-20230201150915615.png" alt="image-20230201150915615"  />
+</p>
+<h2 id="协程的四中状态"><span>协程的四中状态</span></h2>
+<p><img loading="lazy" src="image-20230201151917885.png" alt="image-20230201151917885"  />
+</p>
+<h2 id="协程库对外接口"><span>协程库对外接口</span></h2>
+<p><img loading="lazy" src="image-20230201152756182.png" alt="image-20230201152756182"  />
+</p>
+<h2 id="下面我们通过一个例子来解释这些接口的含义"><span>下面我们通过一个例子来解释这些接口的含义</span></h2>
+<h3 id="创建协程"><span>创建协程</span></h3>
+<p>相同点</p>
+<ol>
+<li><code>coroutine.create(f)</code>和<code>coroutine.wrap(f)</code>都是用来创建协同程序的</li>
+</ol>
+<p>不同点</p>
+<ol>
+<li>
+<p>不同的是<code>coroutine.wrap(f)</code>返回的是一个线程号(一个协同程序就是一个线程),并且创建的协同程序处于<code>suspend</code>状态,必须用<code>resume</code>唤醒协同程序执行,执行完之后协同程序也就处于<code>dead</code>状态.</p>
+</li>
+<li>
+<p>而<code>coroutine.wrap(f)</code>则是返回一个函数,一但调用这个函数就进入<code>coroutine</code>状态.不需要<code>resume</code>唤醒,直接调用返回的函数就行</p>
+</li>
+</ol>
+<h4 id="coroutinecreatef"><span>coroutine.create(f)</span></h4>
+<p>首先我们创建一个<code>lua</code>代码来进行讲解</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">function</span>(a, b) 
+</span></span><span style="display:flex;"><span>        print(<span style="color:#cd0000">&#34;a + b =&#34;</span>, a <span style="color:#39c">+</span> b) 
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(co);
+</span></span><span style="display:flex;"><span>print(coroutine.status(co))
+</span></span></code></pre></div><p><strong>运行结果如下:</strong></p>
+<p><img loading="lazy" src="image-20230201210436823.png" alt="image-20230201210436823"  />
+</p>
+<ol>
+<li>我们从<code>print(co)</code>能看出来在使用<code> coroutine.create</code>的时候其实返回的是一个线程<code>id</code>,这个<code>id</code>就是协程栈的<code>id</code></li>
+<li>从<code>print(coroutine.status(co))</code>上能看出刚<code>create</code>出来的协程状态是<code>suspended</code>状态的</li>
+</ol>
+<p>接下来我们来追踪源码,一共四步,现在我把每步的栈空间情况画出来分析</p>
+<p><img loading="lazy" src="image-20230201210737833.png" alt="image-20230201210737833"  />
+</p>
+<p>执行<code>1</code>号位置代码的时候堆栈情况</p>
+<p><img loading="lazy" src="image-20230203155814290.png" alt="image-20230203155814290"  />
+</p>
+<p>执行<code>2</code>号位置代码的时候堆栈情况,全局栈顶部会<code>push</code>一个新创建出来的协程,新的协程栈这个时候什么都没有</p>
+<p><img loading="lazy" src="image-20230203155753389.png" alt="image-20230203155753389"  />
+</p>
+<p>执行<code>3</code>号位置代码的时候堆栈情况,这个时候会把<code>L-&gt;ci-&gt;func +1</code>指向的位置放到全局栈栈顶</p>
+<p><img loading="lazy" src="image-20230203155709632.png" alt="image-20230203155709632"  />
+</p>
+<p>执行<code>4</code>号位置代码的时候堆栈情况,这个时候全局栈的栈顶元素<code>ff</code>会移动到协程栈的顶部</p>
+<p><img loading="lazy" src="image-20230203155638980.png" alt="image-20230203155638980"  />
+</p>
+<p>至此一个协程就创建出来了</p>
+<h4 id="coroutinewrapf"><span>coroutine.wrap(f)</span></h4>
+<p><code>lua</code>测试代码</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> ff <span style="color:#39c">=</span> <span style="color:#cdcd00">function</span>(a, b) 
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;a + b =&#34;</span>, a <span style="color:#39c">+</span> b) 
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> a <span style="color:#39c">+</span> b;
+</span></span><span style="display:flex;"><span> <span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func <span style="color:#39c">=</span> coroutine.wrap(ff)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(func)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> ret <span style="color:#39c">=</span> func(<span style="color:#cd00cd">10</span> ,<span style="color:#cd00cd">20</span>)<span style="color:#000080">--不需要调用 coroutine.resume接口直接就可以运行</span>
+</span></span><span style="display:flex;"><span>print(ret)
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230202164453193.png" alt="image-20230202164453193"  />
+</p>
+<p>从上图中我们可以看出</p>
+<ol>
+<li>返回一个函数,</li>
+<li>不需要<code>resume</code>唤醒,直接调用返回的函数就行</li>
+</ol>
+<p>我们在看一下源码解释</p>
+<p><img loading="lazy" src="image-20230202164943102.png" alt="image-20230202164943102"  />
+</p>
+<p><img loading="lazy" src="image-20230202165220312.png" alt="image-20230202165220312"  />
+</p>
+<p>从中我们可以看到,原来<code>wrap</code>只是包装了一层,然后把新创建的协程当做<code>luaB_auxwrap</code>的一个<code>upvalue</code>,进行返回,其他的操作和<code>coroutine.create(f)</code>类似</p>
+<h3 id="启动协程"><span>启动协程</span></h3>
+<h4 id="coroutineresumeco-"><span>coroutine.resume(co, &hellip;)</span></h4>
+<h4 id="没有yield的协程的resume"><span>没有<code>yield</code>的协程的<code>resume</code></span></h4>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">function</span>(a, b) 
+</span></span><span style="display:flex;"><span>        <span style="color:#cdcd00">return</span> a,b
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> ret, a ,b <span style="color:#39c">=</span> coroutine.resume(co,<span style="color:#cd00cd">3</span>)
+</span></span><span style="display:flex;"><span>print(ret, a ,b)
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230202172727418.png" alt="image-20230202172727418"  />
+</p>
+<p>可以看到首先没有<code>yield</code>的协程的<code>resume</code>,返回的就是<code>create</code>里面的函数<code>return</code>的<code>a</code>,<code>b</code>值 来源是<code>resume</code>后面的不定参数,传啥就对应啥,如果不传就默认是<code>nil</code></p>
+<p><img loading="lazy" src="image-20230202200759011.png" alt="image-20230202200759011"  />
+</p>
+<h4 id="有yield的协程的resume"><span>有<code>yield</code>的协程的<code>resume</code></span></h4>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">function</span>(a, b) 
+</span></span><span style="display:flex;"><span>       <span style="color:#00cd00">local</span> c <span style="color:#39c">=</span> a <span style="color:#39c">+</span>b
+</span></span><span style="display:flex;"><span>        print(<span style="color:#cd0000">&#34;start yield&#34;</span>)
+</span></span><span style="display:flex;"><span>       <span style="color:#00cd00">local</span> x,y, z<span style="color:#39c">=</span> coroutine.yield(c)
+</span></span><span style="display:flex;"><span>       print(<span style="color:#cd0000">&#34;restart co&#34;</span>,  x,y,z)
+</span></span><span style="display:flex;"><span>       <span style="color:#cdcd00">return</span> x <span style="color:#39c">+</span> y <span style="color:#39c">+</span> z <span style="color:#39c">+</span> c
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> ret, a <span style="color:#39c">=</span> coroutine.resume(co,<span style="color:#cd00cd">3</span>,<span style="color:#cd00cd">4</span>)
+</span></span><span style="display:flex;"><span>print(ret, a)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> ret, a  <span style="color:#39c">=</span> coroutine.resume(co,<span style="color:#cd00cd">30</span>,<span style="color:#cd00cd">40</span>,<span style="color:#cd00cd">50</span>)
+</span></span><span style="display:flex;"><span>print(ret, a)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> ret, a  <span style="color:#39c">=</span> coroutine.resume(co,<span style="color:#cd00cd">300</span>,<span style="color:#cd00cd">400</span>,<span style="color:#cd00cd">500</span>)
+</span></span><span style="display:flex;"><span>print(ret, a)
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230202192316977.png" alt="image-20230202192316977"  />
+</p>
+<p><img loading="lazy" src="image-20230202192012984.png" alt="image-20230202192012984"  />
+</p>
+<p>首先我们利用了<code>coroutine.resume</code>创建了一个协程,但是这个协程因为返回的是协程id所以不可能想<code>coroutine.wrap</code>一样直接调用就行,只能通过<code>coroutine.resume</code>来启动</p>
+<p>根据上图我们可以分析出</p>
+<p>首先在<code>1</code>号位置第一次调用了<code>coroutine.resume</code>把3和4传给了函数的a,b,然后再函数里面遇到了<code>coroutine.yield(c)</code>挂起了函数,并把结果<code>c</code>通过<code>yield</code>形参传给了<code>resume</code>,然后直接下面就<code>print</code>出了<code>true</code>,<code>7</code></p>
+<p>接着来到了<code>2</code>号位置第二次调用了<code>coroutine.resume</code>把<code>30</code>和<code>40</code>,<code>50</code>通过<code>yield</code>的返回值返回给了<code>x</code>,<code>y</code>,<code>z,</code>通过打印<code>print(&quot;restart co&quot;,  x,y,z)</code>也能看出的确是这样的结果</p>
+<p>接着来到<code>3</code>号位置,第三次调用了<code>coroutine.resume</code>,这个时候发现<code>print</code>直接输出了<code>false</code>和<code>cannot resume dead coroutine</code>,传递啥参数也不起作用,主要原因是因为当协程完成的时候,或者有错误的时候就会报这个<code>cannot resume dead coroutine</code>错误提示</p>
+<p>具体参数传递,大家可以顺着下图线的颜色捋</p>
+<p><img loading="lazy" src="image-20230202210842671.png" alt="image-20230202210842671"  />
+</p>
+<p><img loading="lazy" src="image-20230202212751458.png" alt="image-20230202212751458"  />
+</p>
+<p>说了这么多,我们从头开始撸,为了方便讲解好画流程图我把<code>create</code>里面的函数用<code>ff</code>进行了保存</p>
+<p>当我们调用</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> ff <span style="color:#39c">=</span> <span style="color:#cdcd00">function</span>(a, b) 
+</span></span><span style="display:flex;"><span>       <span style="color:#00cd00">local</span> c <span style="color:#39c">=</span> a <span style="color:#39c">+</span>b
+</span></span><span style="display:flex;"><span>        print(<span style="color:#cd0000">&#34;start yield&#34;</span>)
+</span></span><span style="display:flex;"><span>       <span style="color:#00cd00">local</span> x,y, z<span style="color:#39c">=</span> coroutine.yield(c)
+</span></span><span style="display:flex;"><span>       print(<span style="color:#cd0000">&#34;restart co&#34;</span>,  x,y,z)
+</span></span><span style="display:flex;"><span>       <span style="color:#cdcd00">return</span> x <span style="color:#39c">+</span> y <span style="color:#39c">+</span> z <span style="color:#39c">+</span> c
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span>    ff
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>的时候这个时候堆栈情况是</p>
+<p><img loading="lazy" src="image-20230203155534670.png" alt="image-20230203155534670"  />
+</p>
+<p>当我们继续调用的时候</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> ret, a <span style="color:#39c">=</span> coroutine.resume(co,<span style="color:#cd00cd">3</span>,<span style="color:#cd00cd">4</span>)
+</span></span></code></pre></div><p>我们追踪源码这个时候主要起作用的核心是<code>luaB_coresume</code>函数里面调用的<code>auxresume</code>函数</p>
+<p><img loading="lazy" src="image-20230202230740857.png" alt="image-20230202230740857"  />
+</p>
+<p>进入<code>auxresume</code>函数以后我们看到主要起作用的是这<code>3</code>个位置</p>
+<p><img loading="lazy" src="image-20230202230943702.png" alt="image-20230202230943702"  />
+</p>
+<p>当我们在调用<code>1</code>号位置<code>lua_xmove</code>函数之前我们堆栈情况是这样的</p>
+<p><img loading="lazy" src="image-20230203155500474.png" alt="image-20230203155500474"  />
+</p>
+<p>调用<code>lua_xmove</code>函数之后堆栈情况</p>
+<p><img loading="lazy" src="image-20230203155429248.png" alt="image-20230203155429248"  />
+</p>
+<p>当做完这些准备的时候,我们来到了<code>2</code>号代码位置,尝试用<code>lua_resume</code>来真正唤醒启动一根协程来处理逻辑</p>
+<p><img loading="lazy" src="image-20230202235738123.png" alt="image-20230202235738123"  />
+</p>
+<p>可以看到这有<code>3</code>个关键点,</p>
+<ol>
+<li>
+<p><code>1</code>号位置代表当函数执行完成以后,或者发送错误的时候,你这个时候在去调用<code>coroutine.resume</code>,这个时候发现直接输出了<code>false</code>和<code>cannot resume dead coroutine</code></p>
+</li>
+<li>
+<p><code>2</code>号位置也很重要这是执行回调函数的关键,里面会利用<code>lua_longjmp</code>和<code>setjmp</code>来进行当前环境变量的执行,还有异常抛出</p>
+<p><img loading="lazy" src="image-20230203000053971.png" alt="image-20230203000053971"  />
+</p>
+<p><code>luaD_rawrunprotected</code>执行逻辑整体流程如下</p>
+<ol>
+<li>
+<p>函数最开始定义一个<code>lua_longjmp</code>结构体,用于保存当前执行环境,状态值设置为<code>LUA_OK</code></p>
+</li>
+<li>
+<p>然后调用<code>LUAI_TRY</code>函数,该函数实际是一个宏定义,将当前执行环境<code>setjmp</code>,并执行回调函数</p>
+</li>
+<li>
+<p>如果回调函数执行内部,发生异常情况,则通过<code>luaD_throw</code>将异常抛出</p>
+</li>
+<li>
+<p>异常抛出函数,会执行 <code>LUAI_THROW</code>函数,该函数是<code>longjmp</code>的宏定义,并且将返回值设置为<code>1</code></p>
+</li>
+<li>
+<p>由于执行了<code>longjmp</code>,则<code>C</code>语言内部方法会回到跳转点<code>setjmp</code></p>
+</li>
+<li>
+<p><code>LUAI_TRY</code>函数判断<code>setjmp</code>的返回值,之前是<code>0</code>,现在由于<code>longjmp</code>设置了值为<code>1</code>,所以不会继续执行回调函数,回调函数被中断</p>
+</li>
+</ol>
+<p>当<code>luaD_rawrunprotected</code>函数的执行真的抛出异常的时候,这个时候就会调用<code>precover</code>函数进行恢复,这样我们不需要担心调用一个协程后会因为协程内部的错误导致外部的主程序崩溃</p>
+</li>
+<li>
+<p>第<code>3</code>号位置,我们可以看到函数的返回值的情况,其实就是对应了这张图的逻辑处理</p>
+<p><img loading="lazy" src="image-20230202212751458.png" alt="image-20230202212751458"  />
+</p>
+<p>最后我们得到了从<code>lua_resume</code>的到的<code>status</code>状态和<code>nres</code>返回值个数的信息以后通过如下代码送到了原始协程</p>
+<p><img loading="lazy" src="image-20230203000918640.png" alt="image-20230203000918640"  />
+</p>
+</li>
+</ol>
+<p>​	具体堆栈图示情况如下,到此我们的<code> resume</code>流程就结束了</p>
+<p>​	<img loading="lazy" src="image-20230203155356494.png" alt="image-20230203155356494"  />
+</p>
+<h3 id="挂起协程"><span>挂起协程</span></h3>
+<h4 id="coroutineyield"><span>coroutine.yield(&hellip;)</span></h4>
+<p>挂起协程源码如下</p>
+<p><img loading="lazy" src="image-20230203153638905.png" alt="image-20230203153638905"  />
+</p>
+<p>从中我们可以看出主要是<code>lua_yieldk</code>函数在起作用</p>
+<p><img loading="lazy" src="image-20230203160646041.png" alt="image-20230203160646041"  />
+</p>
+<p>从<code>1</code>号位置我们可以看出</p>
+<ol>
+<li>
+<p>主栈不能<code>yield</code></p>
+</li>
+<li>
+<p><code>coroutine.resume</code> &ndash;&gt; <code>cfunc</code> &ndash;&gt; <code>luafunction</code>&ndash;&gt; <code>coroutine.yield</code> &mdash;&ndash;&gt; <code>报错</code></p>
+<p><img loading="lazy" src="image-20230203161432819.png" alt="image-20230203161432819"  />
+</p>
+</li>
+</ol>
+<p>从<code>2</code>号位置我们可以看出当<code>yield</code>的时候状态会被置成<code>LUA_YIELD</code></p>
+<p>从<code>3</code>号位置我们可以看出这里报错了延续函数的上下文,和延续函数,主要是为了解决<code>2</code>号位置发生的报错信息</p>
+<h4 id="延续函数"><span>延续函数</span></h4>
+<p>为什么我们需要延续函数呢,主要原因还是因为如下流程</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span>coroutine.resume <span style="color:#000080">--&gt; cfunc --&gt; luafunction--&gt; coroutine.yield -----&gt; 报错</span>
+</span></span></code></pre></div><p>当我们从<code>cfunc</code>调用<code>luafunction,</code>然后<code>luafunction</code>调用<code>yield</code>的时候,和协程相关的状态信息都会被保存<code>lua_state</code>中,但是<code>c</code>函数不会因为调用了<code>coroutine.yield</code>而挂起,而是会继续执行下去<code>,c</code>函数执行完成以后也就全部销毁了,也无法保存恢复现场,这样就会导致<code>c</code>层的调用和<code>lua</code>层的调用不一致<code>,lua</code>层挂起<code>,c</code>层执行,这样逻辑代码也会发生错误</p>
+<p>比如下面的报错版本</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">//c层代码 替换main函数的那个文件就行
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;stdio.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#cdcd00">extern</span> <span style="color:#cd0000">&#34;C&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lua.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lualib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lauxlib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span><span style="color:#000080">&lt;lstate.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">void</span> traceback(lua_State<span style="color:#39c">*</span> L, <span style="color:#00cd00">int</span> n) {
+</span></span><span style="display:flex;"><span>	lua_Debug ar;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (lua_getstack(L, n, <span style="color:#39c">&amp;</span>ar)) {
+</span></span><span style="display:flex;"><span>		lua_getinfo(L, <span style="color:#cd0000">&#34;Sln&#34;</span>, <span style="color:#39c">&amp;</span>ar);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">if</span> (ar.name) {
+</span></span><span style="display:flex;"><span>			printf(<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\t</span><span style="color:#cd0000">stack[%d] -&gt; line %d : %s()[%s]</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, n, ar.currentline, ar.name, ar.short_src);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">else</span> {
+</span></span><span style="display:flex;"><span>			printf(<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\t</span><span style="color:#cd0000">stack[%d] -&gt; line %d : unknown[%s]</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, n, ar.currentline, ar.short_src);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		traceback(L, n <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">int</span> TraceBack(lua_State<span style="color:#39c">*</span> L) {
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#cd0000">&#34;STACK TRACEBACK: %s</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>));
+</span></span><span style="display:flex;"><span>	traceback(L, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">int</span> Cfunction(lua_State<span style="color:#39c">*</span> L) {
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#cd0000">&#34;Cfunction enter!</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pushcfunction(L, TraceBack);
+</span></span><span style="display:flex;"><span>	lua_getglobal(L, <span style="color:#cd0000">&#34;Luafunction&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pcall(L, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#cd0000">&#34;Cfunction leave!</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>);<span style="color:#000080">//报错版本这里直接往下执行了,并未和lua层一起挂起,导致了和lua层行为不一致
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">int</span> main() {
+</span></span><span style="display:flex;"><span>	lua_State<span style="color:#39c">*</span> L;
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">int</span> status;
+</span></span><span style="display:flex;"><span>	L <span style="color:#39c">=</span> luaL_newstate();
+</span></span><span style="display:flex;"><span>	luaL_openlibs(L);
+</span></span><span style="display:flex;"><span>	lua_pushcfunction(L, Cfunction);
+</span></span><span style="display:flex;"><span>	lua_setglobal(L, <span style="color:#cd0000">&#34;Cfunction&#34;</span>);
+</span></span><span style="display:flex;"><span>	status <span style="color:#39c">=</span> luaL_loadfile(L, <span style="color:#cd0000">&#34;helloworld.lua&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (status) {
+</span></span><span style="display:flex;"><span>		printf(<span style="color:#cd0000">&#34;loadfile error!(%s)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>));
+</span></span><span style="display:flex;"><span>		lua_settop(L, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	status <span style="color:#39c">=</span> lua_pcall(L, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (status) {
+</span></span><span style="display:flex;"><span>		lua_settop(L, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#000080">--lua文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">function</span> Luafunction()
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;Luafunction yield enter!&#34;</span>)
+</span></span><span style="display:flex;"><span>	coroutine.yield()
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;Luafunction yield leave!&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">function</span>()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#cd0000">&#34;Luafunction coroutine resume!&#34;</span>)
+</span></span><span style="display:flex;"><span>    Cfunction()
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>coroutine.resume(co)
+</span></span></code></pre></div><p>运行结果</p>
+<p><img loading="lazy" src="image-20230203171635049.png" alt="image-20230203171635049"  />
+</p>
+<p>在现在这个版本,通过<code>lua_callk</code>, <code>lua_pcallk</code>, <code>lua_yieldk</code>这些<code>API</code>函数传递了延续函数,然后再调用<code>coroutine.resume</code>的时候能够保证和<code>lua</code>一起保持同步调用,这样就不会报错了</p>
+<p>下面我们来看看加了延续函数版本</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">//c层代码 替换main函数的那个文件就行
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;stdio.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#cdcd00">extern</span> <span style="color:#cd0000">&#34;C&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lua.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lualib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lauxlib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span><span style="color:#000080">&lt;lstate.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">void</span> traceback(lua_State<span style="color:#39c">*</span> L, <span style="color:#00cd00">int</span> n) {
+</span></span><span style="display:flex;"><span>	lua_Debug ar;
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (lua_getstack(L, n, <span style="color:#39c">&amp;</span>ar)) {
+</span></span><span style="display:flex;"><span>		lua_getinfo(L, <span style="color:#cd0000">&#34;Sln&#34;</span>, <span style="color:#39c">&amp;</span>ar);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">if</span> (ar.name) {
+</span></span><span style="display:flex;"><span>			printf(<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\t</span><span style="color:#cd0000">stack[%d] -&gt; line %d : %s()[%s]</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, n, ar.currentline, ar.name, ar.short_src);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">else</span> {
+</span></span><span style="display:flex;"><span>			printf(<span style="color:#cd0000">&#34;</span><span style="color:#cd0000">\t</span><span style="color:#cd0000">stack[%d] -&gt; line %d : unknown[%s]</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, n, ar.currentline, ar.short_src);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		traceback(L, n <span style="color:#39c">+</span> <span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">int</span> TraceBack(lua_State<span style="color:#39c">*</span> L) {
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#cd0000">&#34;STACK TRACEBACK: %s</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>));
+</span></span><span style="display:flex;"><span>	traceback(L, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#000080">//延续函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">int</span> cfunctionContinuation(lua_State<span style="color:#39c">*</span> L, <span style="color:#00cd00">int</span> status, lua_KContext ctx)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#cd0000">&#34;Cfunction leave!</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">static</span> <span style="color:#00cd00">int</span> Cfunction(lua_State<span style="color:#39c">*</span> L) {
+</span></span><span style="display:flex;"><span>	printf(<span style="color:#cd0000">&#34;Cfunction enter!</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>);
+</span></span><span style="display:flex;"><span>	lua_pushcfunction(L, TraceBack);
+</span></span><span style="display:flex;"><span>	lua_getglobal(L, <span style="color:#cd0000">&#34;Luafunction&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">//lua_pcall(L, 0, 0, -2);
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	lua_pcallk(L, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>, <span style="color:#cd00cd">0</span>, cfunctionContinuation);<span style="color:#000080">//这里加了延续函数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">int</span> main() {
+</span></span><span style="display:flex;"><span>	lua_State<span style="color:#39c">*</span> L;
+</span></span><span style="display:flex;"><span>	<span style="color:#00cd00">int</span> status;
+</span></span><span style="display:flex;"><span>	L <span style="color:#39c">=</span> luaL_newstate();
+</span></span><span style="display:flex;"><span>	luaL_openlibs(L);
+</span></span><span style="display:flex;"><span>	lua_pushcfunction(L, Cfunction);
+</span></span><span style="display:flex;"><span>	lua_setglobal(L, <span style="color:#cd0000">&#34;Cfunction&#34;</span>);
+</span></span><span style="display:flex;"><span>	status <span style="color:#39c">=</span> luaL_loadfile(L, <span style="color:#cd0000">&#34;helloworld.lua&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (status) {
+</span></span><span style="display:flex;"><span>		printf(<span style="color:#cd0000">&#34;loadfile error!(%s)</span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, lua_tostring(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>));
+</span></span><span style="display:flex;"><span>		lua_settop(L, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	status <span style="color:#39c">=</span> lua_pcall(L, <span style="color:#cd00cd">0</span>, <span style="color:#cd00cd">0</span>, <span style="color:#39c">-</span><span style="color:#cd00cd">2</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">if</span> (status) {
+</span></span><span style="display:flex;"><span>		lua_settop(L, <span style="color:#cd00cd">0</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">1</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>没有第二次调用<code>coroutine.resume</code>唤醒挂起协程的情况</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span> Luafunction()
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;Luafunction yield enter!&#34;</span>)
+</span></span><span style="display:flex;"><span>	coroutine.yield()
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;Luafunction yield leave!&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">function</span>()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#cd0000">&#34;Luafunction coroutine resume!&#34;</span>)
+</span></span><span style="display:flex;"><span>    Cfunction()
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>coroutine.resume(co)
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230203174417780.png" alt="image-20230203174417780"  />
+</p>
+<p>第二次调用<code>coroutine.resume</code>唤醒挂起协程的情况</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span> Luafunction()
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;Luafunction yield enter!&#34;</span>)
+</span></span><span style="display:flex;"><span>	coroutine.yield()
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#34;Luafunction yield leave!&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">function</span>()
+</span></span><span style="display:flex;"><span>    print(<span style="color:#cd0000">&#34;Luafunction coroutine resume!&#34;</span>)
+</span></span><span style="display:flex;"><span>    Cfunction()
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>coroutine.resume(co)
+</span></span><span style="display:flex;"><span>coroutine.resume(co)<span style="color:#000080">--第二次调coroutine.resume</span>
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230203174253144.png" alt="image-20230203174253144"  />
+</p>
+<p>具体源码核心代码主要是这几个地方</p>
+<p><img loading="lazy" src="image-20230203175238375.png" alt="image-20230203175238375"  />
+</p>
+<p><img loading="lazy" src="image-20230203175253250.png" alt="image-20230203175253250"  />
+</p>
+<h3 id="关闭协程"><span>关闭协程</span></h3>
+<h4 id="coroutinecloseco"><span>coroutine.close(co)</span></h4>
+<p>关闭协程 <code>co</code>,并关闭它所有等待 <code>to-be-closed</code> 的变量,并将协程状态设为 <code>dead</code></p>
+<p>具体源码如下</p>
+<p><img loading="lazy" src="image-20230203175935259.png" alt="image-20230203175935259"  />
+</p>
+<p><img loading="lazy" src="image-20230203175945175.png" alt="image-20230203175945175"  />
+</p>
+<p><img loading="lazy" src="image-20230203175952791.png" alt="image-20230203175952791"  />
+</p>
+<h3 id="返回协程"><span>返回协程</span></h3>
+<h4 id="coroutinerunning"><span>coroutine.running()</span></h4>
+<p>返回当前正在运行的协程加一个布尔量. 如果当前运行的协程是主线程,其为真.</p>
+<p><img loading="lazy" src="image-20230203180146123.png" alt="image-20230203180146123"  />
+</p>
+<p><img loading="lazy" src="image-20230203180405493.png" alt="image-20230203180405493"  />
+</p>
+<p><img loading="lazy" src="image-20230203180440062.png" alt="image-20230203180440062"  />
+</p>
+<h3 id="获取协程状态"><span>获取协程状态</span></h3>
+<h4 id="coroutinestatusco"><span>coroutine.status(co)</span></h4>
+<p>以字符串形式返回协程 <code>co</code> 的状态.</p>
+<p><img loading="lazy" src="image-20230203201733333.png" alt="image-20230203201733333"  />
+</p>
+<p>具体情况<code>4</code>中</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>running</td>
+<td>运行</td>
+</tr>
+<tr>
+<td>dead</td>
+<td>死亡</td>
+</tr>
+<tr>
+<td>suspended</td>
+<td>挂起</td>
+</tr>
+<tr>
+<td>normal</td>
+<td>正常</td>
+</tr>
+</tbody>
+</table>
+<h3 id="协程是否可以让出"><span>协程是否可以让出</span></h3>
+<h4 id="coroutineisyieldableco"><span>coroutine.isyieldable(co)</span></h4>
+<p>如果协程 <code>co</code> 可以让出，则返回真。<code>co</code> 默认为正在运行的协程。</p>
+<p>主要是靠这个宏来判断</p>
+<p><img loading="lazy" src="image-20230203202044510.png" alt="image-20230203202044510"  />
+</p>
+
+
+        </div>
+        <div class="post-reward">
+            <div style="padding: 0 0 0 0; margin: 0 0 0 0; width: 100%; font-size:16px; text-align: center;">
+                <div id="QR" style="opacity: 0;">
+                    <div id="wechat" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="wechat_qr" src="https://frog-game.github.io/img/wechat_pay.png" alt="wechat_pay"></a>
+                        <p>微信</p>
+                    </div>
+                    <div id="alipay" style="display: inline-block">
+                        <a class="fancybox" rel="group">
+                            <img id="alipay_qr" src="https://frog-game.github.io/img/alipay_pay.png" alt="alipay"></a>
+                        <p>支付宝</p>
+                    </div>
+                </div>
+                <button id="rewardButton"
+                        onclick="
+                    var qr = document.getElementById('QR');
+                    if (qr.style.opacity === '0') {
+                        qr.style.opacity='1';
+                    } else {
+                        qr.style.opacity='0'
+                    }"
+                >
+                    <span>🧧 鼓励</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="post-footer">
+            
+<nav class="paginav">
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4stack/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>[Lua5.4.4源码]栈</span>
+  </a>
+</nav>
+
+        </footer>
+    </div>
+
+
+
+<div>
+    <div class="pagination__title">
+        <span class="pagination__title-h" style="font-size: 20px;">💬评论</span>
+        <hr />
+    </div>
+
+    <div id="tcomment"></div>
+
+    <script src="https://cdn.staticfile.org/twikoo/1.6.7/twikoo.all.min.js">
+    </script>
+    
+
+    
+
+    <script>
+        twikoo.init({
+            envId: "https://www.frog-game.work/", 
+            el: "#tcomment",
+            lang: 'zh-CN',
+            region: "ap-beijing",
+            path: window.TWIKOO_MAGIC_PATH||window.location.pathname,
+            
+            
+            
+            
+            
+            
+            
+        });
+    </script>
+
+</div>
+</article>
+</main>
+
+
+<script async src="https://unpkg.com/mermaid@8.8.1/dist/mermaid.min.js"></script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+<footer class="footer">
+    <span>
+        Copyright
+        &copy;
+        2020-2023 
+        <a href="https://frog-game.github.io/" style="color:#939393;">frog&#39;s Blog</a>
+         All Rights Reserved
+    </span>
+
+    <a href="https://beian.miit.gov.cn/" target="_blank" style="color:#939393;">备案号</a>&nbsp;
+
+    <span>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=null"style="display:inline-block;text-decoration:none;height:20px;color:#939393;">
+            <img src="https://frog-game.github.io/img/beian.png" style="float:left;margin: 0px 5px 0px 0px;"/>
+            公网安备
+        </a>
+    </span>
+
+    <span id="busuanzi_container">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        总访客数: <span id="busuanzi_value_site_uv"></span>
+        总访问量: <span id="busuanzi_value_site_pv"></span>
+    </span>
+    
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <span class="topInner">
+        <svg class="topSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+            <path d="M12 6H0l6-6z"/>
+        </svg>
+        <span id="read_progress"></span>
+    </span>
+</a>
+
+<script>
+    document.addEventListener('scroll', function (e) {
+        const readProgress = document.getElementById("read_progress");
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        
+        readProgress.innerText = ((scrollTop / (scrollHeight - clientHeight)).toFixed(2) * 100).toFixed(0);
+    })
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+
+<script>
+    document.body.addEventListener('copy', function (e) {
+        if (window.getSelection().toString() && window.getSelection().toString().length > 50) {
+            let clipboardData = e.clipboardData || window.clipboardData;
+            if (clipboardData) {
+                e.preventDefault();
+                let htmlData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                let textData = window.getSelection().toString() +
+                    '\r\n\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                clipboardData.setData('text/html', htmlData);
+                clipboardData.setData('text/plain', textData);
+            }
+        }
+    });
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = '📄复制';
+
+        function copyingDone() {
+            copybutton.innerText = '👌🏻已复制!';
+            setTimeout(() => {
+                copybutton.innerText = '📄复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                let text = codeblock.textContent +
+                    '\r\n————————————————\r\n' +
+                    '版权声明：本文为「'+"frog's Blog"+'」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。' +
+                    '\r\n原文链接：' + location.href;
+                navigator.clipboard.writeText(text);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) {
+            }
+            ;
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
