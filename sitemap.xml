@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4coroutine/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.coroutine/</loc>
     <lastmod>2023-02-03T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/posts/read/</loc>
@@ -20,22 +20,22 @@
     <loc>https://frog-game.github.io/tags/</loc>
     <lastmod>2023-02-03T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4stack/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.stack/</loc>
     <lastmod>2023-01-30T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4function/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.function/</loc>
     <lastmod>2023-01-29T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4table/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.table/</loc>
     <lastmod>2023-01-26T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.type/</loc>
     <lastmod>2023-01-24T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.string/</loc>
     <lastmod>2023-01-23T01:30:29+08:00</lastmod>
   </url><url>
-    <loc>https://frog-game.github.io/posts/read/lua5.4.4jiegoufenxi/</loc>
+    <loc>https://frog-game.github.io/posts/read/lua5.4.4.introduction/</loc>
     <lastmod>2023-01-22T01:30:29+08:00</lastmod>
   </url><url>
     <loc>https://frog-game.github.io/tags/hybridclr/</loc>

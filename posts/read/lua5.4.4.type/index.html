@@ -10,7 +10,7 @@
 <meta name="description" content="lua源码数据类型分析">
 <meta name="author" content="
 作者:&nbsp;frog">
-<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4.type/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.8b75bf56d6fb0c429b5f3ce03bce19c9ef1e90cc024b64bd12ec321c68cca894.css" integrity="sha256-i3W/Vtb7DEKbXzzgO84Zye8ekMwCS2S9EuwyHGjMqJQ=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
@@ -70,13 +70,13 @@ var _hmt = _hmt || [];
 <meta property="og:title" content="[Lua5.4.4源码]数据类型" />
 <meta property="og:description" content="lua源码数据类型分析" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4.type/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4.type/image-20230123132152317.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-01-24T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2023-01-24T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4.type/image-20230123132152317.png" />
 <meta name="twitter:title" content="[Lua5.4.4源码]数据类型"/>
 <meta name="twitter:description" content="lua源码数据类型分析"/>
 
@@ -102,7 +102,7 @@ var _hmt = _hmt || [];
       "@type": "ListItem",
       "position":  3 ,
       "name": "[Lua5.4.4源码]数据类型",
-      "item": "https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/"
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4.type/"
     }
   ]
 }
@@ -120,7 +120,7 @@ var _hmt = _hmt || [];
   "articleBody": "LUA_TNIL nil表示的意思就是无效值 如果赋值为nil,等价于就是删除,到时候GC判断没有任何关联,就会把这个值回收 LUA_TNIL 除了定义对外的LUA_VNIL nil类型,还会分为{LUA_VEMPTY:,LUA_VABSTKEY}这两个东西不对外,用于C层逻辑的判断 LUA_VEMPTY: 空槽位, C层用来占位和清除逻辑 LUA_VABSTKEY:C层用来查找Key时候找不到的时候返回类型 LUA_TBOOLEAN 在lua里面0也是真值,这点和其他语言比如C/C++等等语言不一样,要注意\n0:真\nnil:假\nfalse:假\n其他值:真\nLUA_TLIGHTUSERDATA 和 LUA_TUSERDATA 区别 LUA_TUSERDATA LUA_TLIGHTUSERDATA 作用 通常用来表示C中的结构体一小段固定的内存区域 通常用来表示C中的指针(void *) 内存管理 由Lua的垃圾回收器管理 使用者需要关心其内存 元表 有独立的元表 没有独立的元表 创建 void *lua_newuserdata(lua_State *L, size_t size) lua_pushlightuserdata(lua_State *L, void *p); 具体区别其实我们在lua源码中也能找到区别\n我们在源码中找到了这段代码可以看到这里根据类型返回了1和2两个不同的地址\n首先我们来说LUA_TUSERDATA\nLUA_TUSERDATA 1处我们返回的是一个宏,可以看到其实是返回的是一块实实在在的内存地址\n///计算用户数据的内存区域的偏移量 // offsetof是结构成员相对于结构开头的字节偏移量 #define udatamemoffset(nuv) \\ ((nuv) == 0 ? offsetof(Udata0, bindata) \\ : offsetof(Udata, uv) + (sizeof(UValue) * (nuv))) #define getudatamem(u)\t(cast_charp(u) + udatamemoffset((u)-\u003enuvalue)) //返回内存块的地址 从下图中我们也能看到LUA_TUSERDATA里面有 独立元表\nLUA_TUSERDATA实现例子 //c文件 //#include extern \"C\" { #include \"lua.h\" #include \"lauxlib.h\" #include \"lualib.h\" } #include using namespace std; static struct StudentTag { char *strName; // 学生姓名 char *strNum; // 学号 int iSex; // 学生性别 int iAge; // 学生年龄 }T; static int Student(lua_State *L) { size_t iBytes = sizeof(struct StudentTag); struct StudentTag *pStudent; pStudent = (struct StudentTag *)lua_newuserdata(L, iBytes); //设置元表 luaL_getmetatable(L, \"Student\"); lua_setmetatable(L, -2); //lua_pushnumber(L, 123); return 1; // 新的userdata已经在栈上了 } static int GetName(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushstring(L, pStudent-\u003estrName); return 1; } static int SetName(lua_State *L) { // 第一个参数是userdata struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); // 第二个参数是一个字符串 const char *pName = luaL_checkstring(L, 2); luaL_argcheck(L, pName != NULL \u0026\u0026 pName != \"\", 2, \"Wrong Parameter\"); pStudent-\u003estrName =(char*) pName; return 0; } static int GetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); lua_pushinteger(L, pStudent-\u003eiAge); return 1; } static int SetAge(lua_State *L) { struct StudentTag *pStudent = (struct StudentTag *)luaL_checkudata(L, 1, \"Student\"); int iAge = luaL_checkinteger(L, 2); luaL_argcheck(L, iAge \u003e= 6 \u0026\u0026 iAge \u003c= 100, 2, \"Wrong Parameter\"); pStudent-\u003eiAge = iAge; return 0; } static int GetSex(lua_State *L) { // 这里由你来补充 return 1; } static int SetSex(lua_State *L) { // 这里由你来补充 return 0; } static int GetNum(lua_State *L) { // 这里由你来补充 return 1; } static int SetNum(lua_State *L) { // 这里由你来补充 return 0; } static luaL_Reg arrayFunc_meta[] = { { \"getName\", GetName }, { \"setName\", SetName }, { \"getAge\", GetAge }, { \"setAge\", SetAge }, { \"getSex\", GetSex }, { \"setSex\", SetSex }, { \"getNum\", GetNum }, { \"setNum\", SetNum }, { NULL, NULL } }; static luaL_Reg arrayFunc[] = { { \"new\", Student}, { NULL, NULL } }; extern \"C\" _declspec(dllexport) int luaopen_mytestlib(lua_State *L) { // 创建一个新的元表 luaL_newmetatable(L, \"Student\"); // 元表.__index = 元表 lua_pushvalue(L, -1); lua_setfield(L, -2, \"__index\"); luaL_setfuncs(L, arrayFunc_meta, 0); luaL_newlib(L, arrayFunc); lua_pushvalue(L, -1); lua_setglobal(L, \"Sdudent\"); /* the module name */ return 1; } -- lua 文件 require \"mytestlib\" local objStudent = Sdudent.new() objStudent:setName(\"果冻\") local strName = objStudent:getName() print(strName ) for k,v in pairs(getmetatable(objStudent)) do print(tostring(k),tostring(v)) end LUA_TLIGHTUSERDATA 2处我们返回的也是个宏\n#define pvalue(o)\tcheck_exp(ttislightuserdata(o), val_(o).p) //获取light userdata的指针 进一步追踪我们可以看到p指针指向的是这个结构体,里面并没有元表相关的实现,所以后面元表相关的处理都得我们自己处理\n体外话为什么有时候用CJSON去反序列化的时候能看到打印table里面的值居然是null 比如这样的结果\n{\"key1\":\"value\",\"key\":null,\"key2\":\"value2\"} 首先看看lua_pushlightuserdata实现\n在看看cjson.so的实现\nlua_newtable(L); lua_pushlightuserdata(L, NULL); lua_setfield(L, -2, \"null\"); 我们进入lua_pushlightuserdata(L, NULL); 然后看到了 setpvalue(L-\u003etop, p)的调用\n这样在实际调用时, setpvalue(L-\u003etop, p) 相当于 void *p = NULL 最后是被封装到table变量里返回的\n这个点需要注意很容易造成bug\nLUA_TLIGHTUSERDATA实现例子 //C文件 #include #include #include using namespace std; extern \"C\" { #include \"lua.h\" #include \"lualib.h\" #include \"lauxlib.h\" } typedef struct { int x; int y; int z; }TData; static int getAttribute(lua_State* L) { TData *data = (TData*)lua_touserdata(L, 1); std::string attribute = luaL_checkstring(L, 2); int result = 0; if (attribute == \"x\") { result = data-\u003ex; } else if (attribute == \"y\") { result = data-\u003ey; } else { result = data-\u003ez; } lua_pushnumber(L, result); return 1; } static luaL_Reg dataLib[] = { { \"__index\", getAttribute }, { NULL, NULL } }; void getMetaTable(lua_State* L, luaL_Reg* methods) { lua_pushlightuserdata(L, methods); lua_gettable(L, LUA_REGISTRYINDEX); if (lua_isnil(L, -1)) { /* not found */ lua_pop(L, 1); lua_newtable(L); luaL_setfuncs(L, methods, 0); lua_pushlightuserdata(L, methods); lua_pushvalue(L, -2); lua_settable(L, LUA_REGISTRYINDEX); } } int main() { const char* filename = \"test.lua\"; lua_State *lua = luaL_newstate(); if (lua == NULL) { fprintf(stderr, \"open lua failed\"); return -1; } luaL_openlibs(lua); TData input = { 123, 231, 321 }; lua_pushlightuserdata(lua, \u0026input); getMetaTable(lua, dataLib); lua_setmetatable(lua, -2); lua_setglobal(lua, \"input\"); if (luaL_dofile(lua, filename)) { //luaL_error(lua, \"load file %s failed\", filename); } lua_getglobal(lua, \"data\"); int output = lua_tointeger(lua, -1); std::cout \u003c\u003c output \u003c\u003c std::endl; return 0; } --lua文件 data = input.x; print(data) LUA_TNUMBER lua5.3以后已经把这个数值类型分为了2中类型\nLUA_VNUMINT 整数类型 其实就是c中的longlong,占用8个字节 LUA_VNUMFLT 浮点类型 其实就是c中的double,占用8个字节 对应的源码如下\nLUA_TSTRING lua5.4将string分为了两种\nLUA_VSHRSTR:短字符串\n小于等于40字节的 hash值是在创建时就计算出来的 LUA_VLNGSTR 长字符串\n大于40字节的就是长字符串 真正需要它的hash值时，才会手动调用luaS_hashlongstr函数生成该值,lua内部现在只有在把长串作为table的key时，才会去计算它 字符串结构 存储位置 短字符串 相同hash字符串存储在 stringtable strt 链表结构上 一般短字符串会使用这种方式存储\n长字符串 因为长字符串是惰性生成的，只有在需要hash值得时候才会去创建,所以不会想短字符串一样存在global_State-\u003estrt里面的,而是真正生成一片Tstring内存空间,所以相同的长字符串会有不同的内存空间副本存储,这点需要特别注意\n缓存 为了提高查找命中率,lua作者还使用hashMap这种方式来提高命中率\n下图中N是数组行，M是数组列\ni的下标值通过unsigned int i = point2uint(str) % STRCACHE_N求得\nj的最大值固定就是下面的宏函数 STRCACHE_M 2\n鉴于篇幅长度,后面会专门出一篇文章详细的讲解lua的string里里外外\nLUA_TTABLE 表 lua 的table是个很神奇的结构,他是hash,数组的混合体,通过table可以很方便的实现模块,元表,环境,面向对象,stl,等等功能\ntable的源码结构\n结构示意图\n详细解释,会在单独出一篇文章\nLUA_TTHREAD thread即为线程,但是在lua中是没有线程的概念的，这个线程并不是真正意义上操作系统的线程,而更多的是一个能储存运行状态的数据结构,这个结构更多的是给协程**coroutine**使用的\n线程和协程的区别 线程消耗操作系统资源，协程可以靠编译语言实现，因此称为用户态线程量级更轻 线程并行，协程并发 线程同步，协程异步 线程抢占式，协程非抢占式，需要手动切换 线程上千，协程上万 线程切换需要上下文切换，协程切换不需要上下文切换，只在用户态进行切换 源码结构\n/// @brief Lua 主线程栈 数据结构 ///作用：管理整个栈和当前函数使用的栈的情况，最主要的功能就是函数调用以及和c的通信 struct lua_State { CommonHeader; lu_byte status;//当前状态机的状态,LUA_YIELD和LUA_OK为lua_State状态机的状态,这两个状态和协程有这对应关系,详见auxstatus函数 lu_byte allowhook;//是否允许hook unsigned short nci; /* number of items in 'ci' list *///ci列表中的条目数，存储一共多少个CallInfo StkId top; /* first free slot in the stack *///指向栈的顶部，压入数据，都通过移动栈顶指针来实现 global_State *l_G;//全局状态机，维护全局字符串表、内存管理函数、gc等信息 CallInfo *ci; /* call info for current function *///当前运行函数信息 StkId stack_last; /* end of stack (last element + 1) *///执行lua stack最后一个空闲的slot StkId stack; /* stack base *///stack基地址 UpVal *openupval; /* list of open upvalues in this stack */// upvalues open状态时候的的链表 StkId tbclist; /* list of to-be-closed variables *///此堆栈中所有活动的将要关闭的变量的列表 GCObject *gclist;//GC列表 struct lua_State *twups; /* list of threads with open upvalues *///twups 链表 所有带有 open upvalue 的 thread 都会放到这个链表中，这样提供了一个方便的遍历 thread 的途径，并且排除掉了没有 open upvalue 的 thread struct lua_longjmp *errorJmp; /* current error recover point *///发生错误的长跳转位置，用于记录当函数发生错误时跳转出去的位置 CallInfo base_ci; /* CallInfo for first level (C calling Lua) *///指向函数调用栈的栈底 volatile lua_Hook hook;//用户注册的hook回调函数 ptrdiff_t errfunc; /* current error handling function (stack index) *///发生错误的回调函数 l_uint32 nCcalls; /* number of nested (non-yieldable | C) calls */// 当前C函数的调用的深度 int oldpc; /* last pc traced *///最后一次执行的指令的位置 int basehookcount;//用户设置的执行指令数（在hookmask=LUA_MASK_COUNT生效） int hookcount;//运行时，跑了多少条指令 volatile l_signalT hookmask;//支持那些hook能力 }; 详细解释,会在单独出一篇文章\n值对象结构 /// @brief 实际存储的值 // GCObject和其他不需要进行进行GC的数据放在一个联合体里面构成了Value类型 // lua5.3以后 number类型就有了两个类型float和int 也就是下面的 lua_Number n和 lua_Integer i typedef union Value { struct GCObject *gc; /* collectable objects */// 可回收的对象 /*下面都是不可回收类型*/ void *p; /* light userdata *///轻量级userdata lua_CFunction f; /* light C functions *///函数指针 例如（typedef int (*lua_CFunction)(lua_State *L)） lua_Integer i; /* integer numbers *///整型 c中的longlong，占用8个字节 lua_Number n; /* float numbers *///浮点类型 c中的double，占用8个字节 } Value; 变量 说明 GCObject gc 用于垃圾回收 主要是为了连接垃圾回收对象的互相引用关系 void *p 为c中传入的指针，由c 分配和释放 light userdata lua_CFunction f 表示C导出给lua的函数指针，typedef int (*lua_CFunction) (lua_State *L) lua_Integer i 表示整数类型，typedef long long lua_Integer lua_Number n 表示双精度浮点类型，typedef double lua_Number 非GC对象 从上面可以看到非GC的对象有4中\nlight userdata C函数 整型 浮点型 int b(lua 5.4数字分为整数和浮点，而i正好也可以用作bool,所以把这个给**删除**,和 lua_Integer i 结合到一起了) GC对象 union GCUnion { GCObject gc; /* common header */ struct TString ts;//字符串 struct Udata u;//用户数据 union Closure cl;//闭包 struct Table h;//表 struct Proto p;//函数原型:存放函数字节码信息 struct lua_State th; /* thread *///线程 struct UpVal upv;//上值 }; 从上面的union结构体可以看到GC对象有6中\n字符串 userdata closure 闭包 table lua 函数原型 lua 线程 (其实就是协程) lua上值 CommonHeader类型 #define CommonHeader\tstruct GCObject *next; lu_byte tt; lu_byte marked next 指针 指向下一个GC对象 tt GC对象的实际类型(比如上面6中GC对象) marked 标识GC的状态 TValuefields 类型 #define TValuefields Value value_; int tt_ Value：存储具体数据的值 tt_：表示这个值的类型，即所有的基础数据类型 ",
   "wordCount" : "3853",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png","datePublished": "2023-01-24T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4.type/image-20230123132152317.png","datePublished": "2023-01-24T01:30:29+08:00",
   "dateModified": "2023-01-24T01:30:29+08:00",
   "author":[{
     "@type": "Person",
@@ -128,7 +128,7 @@ var _hmt = _hmt || [];
   }],
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/"
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4.type/"
   },
   "publisher": {
     "@type": "Organization",
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4shujuleixing/image-20230123132152317.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4.type/image-20230123132152317.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
@@ -935,12 +935,12 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4table/">
+  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4.table/">
     <span class="title">« 上一页</span>
     <br>
     <span>[Lua5.4.4源码]表</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4zifuchuan/">
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4.string/">
     <span class="title">下一页 »</span>
     <br>
     <span>[Lua5.4.4源码]字符串</span>

@@ -10,7 +10,7 @@
 <meta name="description" content="lua源码栈分析">
 <meta name="author" content="
 作者:&nbsp;frog">
-<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4stack/">
+<link rel="canonical" href="https://frog-game.github.io/posts/read/lua5.4.4.stack/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.8b75bf56d6fb0c429b5f3ce03bce19c9ef1e90cc024b64bd12ec321c68cca894.css" integrity="sha256-i3W/Vtb7DEKbXzzgO84Zye8ekMwCS2S9EuwyHGjMqJQ=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
         onload="hljs.initHighlightingOnLoad();"></script>
@@ -70,13 +70,13 @@ var _hmt = _hmt || [];
 <meta property="og:title" content="[Lua5.4.4源码]栈" />
 <meta property="og:description" content="lua源码栈分析" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4stack/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4stack/image-20230128162747397.png" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-01-30T01:30:29&#43;08:00" />
 <meta property="article:modified_time" content="2023-01-30T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4stack/image-20230128162747397.png" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png" />
 <meta name="twitter:title" content="[Lua5.4.4源码]栈"/>
 <meta name="twitter:description" content="lua源码栈分析"/>
 
@@ -102,7 +102,7 @@ var _hmt = _hmt || [];
       "@type": "ListItem",
       "position":  3 ,
       "name": "[Lua5.4.4源码]栈",
-      "item": "https://frog-game.github.io/posts/read/lua5.4.4stack/"
+      "item": "https://frog-game.github.io/posts/read/lua5.4.4.stack/"
     }
   ]
 }
@@ -120,7 +120,7 @@ var _hmt = _hmt || [];
   "articleBody": "调用栈,数据栈 数据栈数据结构 /// @brief 数据栈指针结构 typedef union StackValue { TValue val; struct { TValuefields; unsigned short delta;//相邻 tbc 变量在栈中的距离 } tbclist;//此堆栈中所有活动的将要关闭的变量的列表 } StackValue; //栈指针 typedef StackValue *StkId; struct lua_State { ... StkId top; /* first free slot in the stack *///指向栈的顶部，压入数据，都通过移动栈顶指针来实现 StkId stack_last; /* end of stack (last element + 1) *///最后可用的位置数据栈 正常的栈操作在[stack, stack_last]之间 StkId stack; /* stack base *///栈的起始地址 StkId tbclist; /* list of to-be-closed variables *///记录着最后一个tbc节点,栈缩容时会判断节点是否在缩容空间内,如果在那么就根据这个节点调用缩容空间内所有tbc变量的 __close() 元方法 }; //数据栈大小 #define stacksize(th)\tcast_int((th)-\u003estack_last - (th)-\u003estack) 调用栈数据结构 调用栈,数据栈初始化 这两个栈的初始化通过stack_init函数初始化\n大概示意图如下\n一开始线程创建一个大小为BASIC_STACK_SIZE + EXTRA_STACK的StackValue数组 数据栈stack指针,tbclist指针,top指针都指向这个数组的首地址 数据栈stack_last指针,指向数据栈的末尾,也就是stack + BASIC_STACK_SIZE的位置 未完待续\n",
   "wordCount" : "482",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/read/lua5.4.4stack/image-20230128162747397.png","datePublished": "2023-01-30T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png","datePublished": "2023-01-30T01:30:29+08:00",
   "dateModified": "2023-01-30T01:30:29+08:00",
   "author":[{
     "@type": "Person",
@@ -128,7 +128,7 @@ var _hmt = _hmt || [];
   }],
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://frog-game.github.io/posts/read/lua5.4.4stack/"
+    "@id": "https://frog-game.github.io/posts/read/lua5.4.4.stack/"
   },
   "publisher": {
     "@type": "Organization",
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4stack/image-20230128162747397.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
@@ -418,12 +418,12 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4coroutine/">
+  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/">
     <span class="title">« 上一页</span>
     <br>
     <span>[Lua5.4.4源码]协程</span>
   </a>
-  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4function/">
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4.function/">
     <span class="title">下一页 »</span>
     <br>
     <span>[Lua5.4.4源码]函数</span>
