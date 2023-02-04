@@ -117,8 +117,8 @@ var _hmt = _hmt || [];
   "keywords": [
     ""
   ],
-  "articleBody": "函数原型 上面proto的大部分参数来源是lcode.c ,ldump.c,llex.c,lparser.c,lundumpc这几个文件赋予的\nlocvars在这里并不指实际的局部变量,实际的局部变量存在数据栈中,存的只是也写解析lua文件以后的一些数据\nupvalues 也不是指upvalues变量,而实际存储他们的位置在CClosure-\u003eupvalue和LClosure-\u003eupvals中\nnumparams表示函数有几个参数,is_vararg表示参数是否为可变参数列表,例如这个函数声明\nfunction f1(a1, a2, ...) ...... end 三个点…表示这是一个可变参数的函数.f1()在这里的numparams为2,并且is_vararg的值为1.\nmaxstacksize字段 编译过程计算得到代表本proto需用到的局部变量数量的最大值,从第一个型参开始计算(不包含不定参数...因为哪个没法知道确切的数量 实际调用时传给不定参数...的实参在L-\u003efunc----\u003eL-\u003ebase之间,数量在OP_VARARG指令中已给出计算公式\n变量的查找 局部变量,全局变量,上值其实在编译期就知道结果了主要是通过下面singlevar和singlevaraux两个函数确定 我们可以通过这两个函数的分析,可以看出,在查找变量的方式如下\n总结\n局部变量存在数据栈中 上值存在CClosure-\u003eupvalue和LClosure-\u003eupvals中 全局变量存在_ENV中 在Lua中,函数参数也是局部变量 尾调用 function f() … return g() end 因为调用g()后,f()中不再执行任何代码,所以不需要保留f()的调用栈信息,Lua做了这样的优化,称为尾调用消除,g()返回后,控制点直接返回到调用f()的地方,有点类似c语言的goto语句,这样做也能减少栈的空间\nlua函数种类 从lua的源码中我们可以看出lua一共分为3种\n宏 类型 注解 LUA_VLCL Lua闭包 用lua脚本写的函数.有上值,运行时需要闭包LClosure,函数原型Proto LUA_VLCF 轻量C函数 用C写,没有上值.运行时不须要闭包,函数原型lua_CFunction LUA_VCCL C语言闭包 用C写,有上值.运行时需要闭包CClosure,函数原型lua_CFunction 闭包 C闭包 Lua在执行到fucntion ... end表达式或者c层调用lua_pushcclosure\n会创建一个函数对象,内存布局如下\nlua闭包 lua闭包和C闭包不太一样它的动态内容里面不是Tvalue类型而是UpVal类型,为啥要这样类型呢,主要还是因为Lua层的代码需要更多的信息处理,比如不同函数层次的调用,函数return之后上值的处理,UpVal还提供还原函数和子函数之间共享数据的方法\n内存布局如下\nupvalue 提供一种闭包之间共享数据的方法\nUpVal有两种状态open状态 和close状态\nopen状态:还在lua函数的block中,所以是open状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向数据栈数据的位置 close状态:退出lua函数的block后,变成了close状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向TValue value成员,也就是存放close值得地方 闭包的创建 从上我们可以看出当虚拟机执行OP_CLOSURE指令的时候,就进入luaF_newLclosure函数创建一个lua闭包,并根据proto-\u003esizeupvalues数量对上值进行填充,这里有个注意点,就是上值的填充会根据instack标识来判断是直接从上值列表进行赋值,还是需要通过luaF_findupval来从L-\u003eopenupval列表中查找上值,找不到创建一个新的upval挂载入虚拟机openupval\ninstack指明这个upvalue会存在哪里,有两种情况要考虑：\nuv如果是上一层函数的局部变量,且这个上层函数还在活动中,那么该局部变量一定还在上层函数的栈中.此时,instack为1,表明它在栈中,idx指定在栈中的索引相对于上层函数的栈基址.\nuv如果是上一层函数之外的局部变量,就像下面代码这样：\nlocal x = 1 local function func() local function innerfunc() return x + 1 end end x在上两层函数之外声明,Lua是这样解决这个问题的：首先func会把x当成upvalue记录下来,然后innerfunc再从func的upvalue数组寻找.所以这种情况下,instack为0,则idx表示上层函数uv列表的索引.\n闭包的关闭 当函数执行完毕会调用luaF_close\n其实这里可以发现函数没有关闭时,引用的内存还是openupval上,关闭后就重新赋值了一份,这个时候upval就不是共享的了,每个闭包一份了\n因为有upval的存在这个也是因为lua比较难正确性热更新的其中一个原因\nupvalue的3中情况 upvalue不共享情况 function　f1(n) --　函数参数也是局部变量 local　function　f2() print(n)　--　引用外包函数的局部变量 end return　f2 end g1　=　f1(1979) g1()　--　打印出1979 g2　=　f1(500) g2()　--　打印出500 这种情况其实就是因为f1在退出自己的block的时候重新赋值了一份,这个时候upval就不是共享的了,而是单独存在了一份,这也说明了一个问题,当你在次调用f1的时候,它因为不是共享所以不会在利用前一次调用f1时候生成的upval\n一个函数创建的闭包共享一份upvalue function　Create(n) local　function　foo1() print(n) end local　function　foo2() n　=　n　+　10 end return　foo1,foo2 end f1,f2　=　Create(1979)--创建闭包 f1()　--　打印1979 f2() f1()　--　打印1989 f2() f1()　--　打印1999 f1,f2闭包共享create函数的局部变量n\n同一闭包创建的其他的闭包共享一份upvalue function　Test(n) local　function　foo() local　function　inner1() print(n) end local　function　inner2() n　=　n　+　10 end return　inner1,inner2 end return　foo end t　=　Test(1979)--创建闭包（共享一份upvalue） f1,f2　=　t()--创建闭包 f1()　--　打印1979 f2() f1()　--　打印1989 g1,g2　=　t() g1()　--　打印1989 g2() g1()　--　打印1999 f1()　--　打印1999 g1和g2与f1和f2共享同一个upvalue.因为g1和g2与f1和f2都是同一个闭包t 创建的,所以它们引用的upvalue (变量n)实际也是同一个变量,而它们的upvalue引用都会指向同一个地方\n更详细的注释请去我的GitHub地址 以下是我几乎每行都加了注释的GitHub地址\nlfunc.h注释地址\nlfunch注释\nlfunc.c注释地址\nlfunc.c注释\n",
-  "wordCount" : "2583",
+  "articleBody": "函数原型 上面proto的大部分参数来源是lcode.c ,ldump.c,llex.c,lparser.c,lundumpc这几个文件赋予的\nlocvars在这里并不指实际的局部变量,实际的局部变量存在数据栈中,存的只是也写解析lua文件以后的一些数据\nupvalues 也不是指upvalues变量,而实际存储他们的位置在CClosure-\u003eupvalue和LClosure-\u003eupvals中\nnumparams表示函数有几个参数,is_vararg表示参数是否为可变参数列表,例如这个函数声明\nfunction f1(a1, a2, ...) ...... end 三个点…表示这是一个可变参数的函数.f1()在这里的numparams为2,并且is_vararg的值为1.\nmaxstacksize字段 编译过程计算得到代表本proto需用到的局部变量数量的最大值,从第一个型参开始计算(不包含不定参数...因为哪个没法知道确切的数量 实际调用时传给不定参数...的实参在L-\u003efunc----\u003eL-\u003ebase之间,数量在OP_VARARG指令中已给出计算公式\n变量的查找 局部变量,全局变量,上值其实在编译期就知道结果了主要是通过下面singlevar和singlevaraux两个函数确定 我们可以通过这两个函数的分析,可以看出,在查找变量的方式如下\n总结\n局部变量存在数据栈中\n上值存在CClosure-\u003eupvalue和LClosure-\u003eupvals中\n全局变量存在_ENV中\n在Lua中,函数参数也是局部变量\n这里面还有一个lua5.4新增的新特性变量一个是TBC局部变量,还有一个是const局部变量\nconst局部变量\n从上面我们可以看到如果const类型的是只读数据,也就是赋值以后就确定下来了,不能在重新赋值\nlocal b \u003cconst\u003e = 1 b = 2 我们从源码中可以看到有这样的函数check_readonly用来判断入股是const类型的变量,而且要进行赋值,那么我们就报\nattempt to assign to const variable这样的报错提示\n我们运行下上面的代码\n发现的确如我们预想的那样\n如果上述的代码,因为const类型变量是在编译时常量,不是指令类型的,所以我们也可以发现如果是下面这种类型的写法\nlocal b \u003cconst\u003e = 1 c = b + 2 可以发现在lua在编译时就会直接把b替换成1,然后直接把表达式计算出来得到3直接付给c,这样做因为不是指令级别的,所以可以很大程度上的减少对寄存器的访问,所以如果发现自己的需求有大量的数值常量,比如游戏的配置表,就可以定义为const局部变量类型\n反编译看下字节码\n从上面我们可以看出并没有b变量的任何操作,然后再1号位置直接把结果3付给了_ENV.c 等价于_ENV.c=3\nclose变量\nclose变量To-be-closed Variables需要和close元方法结合使用，在变量超出作用域时，会调用变量的close元方法__close,close变量一般用于需要及时释放的资源的情况,多用这个其实也能减轻gc的负担\n举个栗子\nlocal t = {} setmetatable(t, {__close=function() print('To-be-closed Variables is closed') --接下来我们就可以在这个里面是否自己想要释放的资源 end}) local function func() local a \u003cclose\u003e = t; end func() 通过如上图的源码的话,我们就可以调用__closed来释放对应资源了,当然如果你不写__closed元方法,lua也会给你相应的错误提示的\n尾调用 function f() … return g() end 因为调用g()后,f()中不再执行任何代码,所以不需要保留f()的调用栈信息,Lua做了这样的优化,称为尾调用消除,g()返回后,控制点直接返回到调用f()的地方,有点类似c语言的goto语句,这样做也能减少栈的空间\nlua函数种类 从lua的源码中我们可以看出lua一共分为3种\n宏 类型 注解 LUA_VLCL Lua闭包 用lua脚本写的函数.有上值,运行时需要闭包LClosure,函数原型Proto LUA_VLCF 轻量C函数 用C写,没有上值.运行时不须要闭包,函数原型lua_CFunction LUA_VCCL C语言闭包 用C写,有上值.运行时需要闭包CClosure,函数原型lua_CFunction 闭包 C闭包 Lua在执行到fucntion ... end表达式或者c层调用lua_pushcclosure\n会创建一个函数对象,内存布局如下\nlua闭包 lua闭包和C闭包不太一样它的动态内容里面不是Tvalue类型而是UpVal类型,为啥要这样类型呢,主要还是因为Lua层的代码需要更多的信息处理,比如不同函数层次的调用,函数return之后上值的处理,UpVal还提供还原函数和子函数之间共享数据的方法\n内存布局如下\nupvalue 提供一种闭包之间共享数据的方法\nUpVal有两种状态open状态 和close状态\nopen状态:还在lua函数的block中,所以是open状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向数据栈数据的位置 close状态:退出lua函数的block后,变成了close状态,并且放入L-\u003eopenupval链表当中,同时TValue *v指针指向TValue value成员,也就是存放close值得地方 闭包的创建 从上我们可以看出当虚拟机执行OP_CLOSURE指令的时候,就进入luaF_newLclosure函数创建一个lua闭包,并根据proto-\u003esizeupvalues数量对上值进行填充,这里有个注意点,就是上值的填充会根据instack标识来判断是直接从上值列表进行赋值,还是需要通过luaF_findupval来从L-\u003eopenupval列表中查找上值,找不到创建一个新的upval挂载入虚拟机openupval\ninstack指明这个upvalue会存在哪里,有两种情况要考虑：\nuv如果是上一层函数的局部变量,且这个上层函数还在活动中,那么该局部变量一定还在上层函数的栈中.此时,instack为1,表明它在栈中,idx指定在栈中的索引相对于上层函数的栈基址.\nuv如果是上一层函数之外的局部变量,就像下面代码这样：\nlocal x = 1 local function func() local function innerfunc() return x + 1 end end x在上两层函数之外声明,Lua是这样解决这个问题的：首先func会把x当成upvalue记录下来,然后innerfunc再从func的upvalue数组寻找.所以这种情况下,instack为0,则idx表示上层函数uv列表的索引.\n闭包的关闭 当函数执行完毕会调用luaF_close\n其实这里可以发现函数没有关闭时,引用的内存还是openupval上,关闭后就重新赋值了一份,这个时候upval就不是共享的了,每个闭包一份了\n因为有upval的存在这个也是因为lua比较难正确性热更新的其中一个原因\nupvalue的3中情况 upvalue不共享情况 function　f1(n) --　函数参数也是局部变量 local　function　f2() print(n)　--　引用外包函数的局部变量 end return　f2 end g1　=　f1(1979) g1()　--　打印出1979 g2　=　f1(500) g2()　--　打印出500 这种情况其实就是因为f1在退出自己的block的时候重新赋值了一份,这个时候upval就不是共享的了,而是单独存在了一份,这也说明了一个问题,当你在次调用f1的时候,它因为不是共享所以不会在利用前一次调用f1时候生成的upval\n一个函数创建的闭包共享一份upvalue function　Create(n) local　function　foo1() print(n) end local　function　foo2() n　=　n　+　10 end return　foo1,foo2 end f1,f2　=　Create(1979)--创建闭包 f1()　--　打印1979 f2() f1()　--　打印1989 f2() f1()　--　打印1999 f1,f2闭包共享create函数的局部变量n\n同一闭包创建的其他的闭包共享一份upvalue function　Test(n) local　function　foo() local　function　inner1() print(n) end local　function　inner2() n　=　n　+　10 end return　inner1,inner2 end return　foo end t　=　Test(1979)--创建闭包（共享一份upvalue） f1,f2　=　t()--创建闭包 f1()　--　打印1979 f2() f1()　--　打印1989 g1,g2　=　t() g1()　--　打印1989 g2() g1()　--　打印1999 f1()　--　打印1999 g1和g2与f1和f2共享同一个upvalue.因为g1和g2与f1和f2都是同一个闭包t 创建的,所以它们引用的upvalue (变量n)实际也是同一个变量,而它们的upvalue引用都会指向同一个地方\n更详细的注释请去我的GitHub地址 以下是我几乎每行都加了注释的GitHub地址\nlfunc.h注释地址\nlfunch注释\nlfunc.c注释地址\nlfunc.c注释\n",
+  "wordCount" : "3289",
   "inLanguage": "en",
   "image":"https://frog-game.github.io/posts/read/lua5.4.4.function/image-20230129232157578.png","datePublished": "2023-01-29T01:30:29+08:00",
   "dateModified": "2023-01-29T01:30:29+08:00",
@@ -238,7 +238,7 @@ var _hmt = _hmt || [];
             <div class="post-description">
                 lua源码函数分析
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2023-01-29 01:30:29 +0800 CST'>2023-01-29</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-29&nbsp;|&nbsp;字数:&nbsp;2583字&nbsp;|&nbsp;时长:&nbsp;6分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2023-01-29 01:30:29 +0800 CST'>2023-01-29</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-29&nbsp;|&nbsp;字数:&nbsp;3289字&nbsp;|&nbsp;时长:&nbsp;7分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -401,10 +401,82 @@ var _hmt = _hmt || [];
 </p>
 <p><strong>总结</strong></p>
 <ol>
-<li><code>局部变量</code>存在数据栈中</li>
-<li><code>上值</code>存在<code>CClosure-&gt;upvalue和LClosure-&gt;upvals</code>中</li>
-<li><code>全局变量</code>存在<code>_ENV</code>中</li>
-<li>在<code>Lua</code>中,函数参数也是局部变量</li>
+<li>
+<p><code>局部变量</code>存在数据栈中</p>
+</li>
+<li>
+<p><code>上值</code>存在<code>CClosure-&gt;upvalue和LClosure-&gt;upvals</code>中</p>
+</li>
+<li>
+<p><code>全局变量</code>存在<code>_ENV</code>中</p>
+</li>
+<li>
+<p>在<code>Lua</code>中,函数参数也是局部变量</p>
+</li>
+<li>
+<p>这里面还有一个<code>lua5.4</code>新增的新特性变量一个是<code>TBC</code>局部变量,还有一个是<code>const</code>局部变量</p>
+<p><img loading="lazy" src="image-20230204171430249.png" alt="image-20230204171430249"  />
+</p>
+<ol>
+<li>
+<p><code>const</code>局部变量</p>
+<ul>
+<li>
+<p>从上面我们可以看到如果const类型的是只读数据,也就是赋值以后就确定下来了,不能在重新赋值</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> b <span style="color:#39c">&lt;</span>const<span style="color:#39c">&gt;</span> <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
+</span></span><span style="display:flex;"><span>b <span style="color:#39c">=</span> <span style="color:#cd00cd">2</span>
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230204192544884.png" alt="image-20230204192544884"  />
+</p>
+<p>我们从源码中可以看到有这样的函数<code>check_readonly</code>用来判断入股是<code>const类型的变量</code>,而且要进行赋值,那么我们就报</p>
+<p><code>attempt to assign to const variable</code>这样的报错提示</p>
+<p>我们运行下上面的代码</p>
+<p><img loading="lazy" src="image-20230204193024974.png" alt="image-20230204193024974"  />
+</p>
+<p>发现的确如我们预想的那样</p>
+</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>
+<p>如果上述的代码,因为<code>const</code>类型变量是在编译时常量,不是指令类型的,所以我们也可以发现如果是下面这种类型的写法</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> b <span style="color:#39c">&lt;</span>const<span style="color:#39c">&gt;</span> <span style="color:#39c">=</span> <span style="color:#cd00cd">1</span>
+</span></span><span style="display:flex;"><span>c <span style="color:#39c">=</span> b <span style="color:#39c">+</span> <span style="color:#cd00cd">2</span>
+</span></span></code></pre></div><p>可以发现在<code>lua</code>在编译时就会直接把<code>b</code>替换成<code>1</code>,然后直接把表达式计算出来得到<code>3</code>直接付给<code>c</code>,这样做因为不是指令级别的,所以可以很大程度上的减少对寄存器的访问,所以如果发现自己的需求有大量的数值常量,比如游戏的配置表,就可以定义为<code>const</code>局部变量类型</p>
+<p>反编译看下字节码</p>
+<p><img loading="lazy" src="image-20230204224939077.png" alt="image-20230204224939077"  />
+</p>
+<p>从上面我们可以看出并没有<code>b</code>变量的任何操作,然后再<code>1</code>号位置直接把结果<code>3</code>付给了<code>_ENV.c</code> 等价于<code>_ENV.c=3</code></p>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p><code>close</code>变量</p>
+<p><code>close</code>变量<code>To-be-closed Variables</code>需要和<code>close</code>元方法结合使用，在变量超出作用域时，会调用变量的<code>close</code>元方法<code>__close</code>,<code>close</code>变量一般用于需要及时释放的资源的情况,多用这个其实也能减轻<code>gc</code>的负担</p>
+<p>举个栗子</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> t <span style="color:#39c">=</span> {}
+</span></span><span style="display:flex;"><span>setmetatable(t, {__close<span style="color:#39c">=</span><span style="color:#cdcd00">function</span>() 
+</span></span><span style="display:flex;"><span>	print(<span style="color:#cd0000">&#39;To-be-closed Variables is closed&#39;</span>) 
+</span></span><span style="display:flex;"><span>	<span style="color:#000080">--接下来我们就可以在这个里面是否自己想要释放的资源</span>
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> <span style="color:#cdcd00">function</span> func()
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">local</span> a <span style="color:#39c">&lt;</span>close<span style="color:#39c">&gt;</span> <span style="color:#39c">=</span> t;
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func()
+</span></span></code></pre></div><p><img loading="lazy" src="image-20230204231327182.png" alt="image-20230204231327182"  />
+</p>
+<p><img loading="lazy" src="image-20230204230935580.png" alt="image-20230204230935580"  />
+</p>
+<p><img loading="lazy" src="image-20230204230954981.png" alt="image-20230204230954981"  />
+</p>
+<p>通过如上图的源码的话,我们就可以调用<code>__closed</code>来释放对应资源了,当然如果你不写<code>__closed</code>元方法,<code>lua</code>也会给你相应的错误提示的</p>
+<p><img loading="lazy" src="image-20230204231748419.png" alt="image-20230204231748419"  />
+</p>
+</li>
+</ol>
+</li>
 </ol>
 <h2 id="尾调用"><span>尾调用</span></h2>
 <div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span> f()
