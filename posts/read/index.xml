@@ -8,7 +8,7 @@
     <language>zh-cn</language>
     <lastBuildDate>Wed, 08 Feb 2023 01:30:29 +0800</lastBuildDate><atom:link href="https://frog-game.github.io/posts/read/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>[Lua5.4.4源码]栈</title>
+      <title>[Lua5.4.4源码].栈</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.stack/</link>
       <pubDate>Wed, 08 Feb 2023 01:30:29 +0800</pubDate>
       
@@ -17,7 +17,7 @@
     </item>
     
     <item>
-      <title>[Lua5.4.4源码]协程</title>
+      <title>[Lua5.4.4源码].协程</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.coroutine/</link>
       <pubDate>Fri, 03 Feb 2023 01:30:29 +0800</pubDate>
       
@@ -26,7 +26,7 @@
     </item>
     
     <item>
-      <title>[Lua5.4.4源码]函数</title>
+      <title>[Lua5.4.4源码].函数</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.function/</link>
       <pubDate>Sun, 29 Jan 2023 01:30:29 +0800</pubDate>
       
@@ -35,7 +35,7 @@
     </item>
     
     <item>
-      <title>[Lua5.4.4源码]表</title>
+      <title>[Lua5.4.4源码].表</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.table/</link>
       <pubDate>Thu, 26 Jan 2023 01:30:29 +0800</pubDate>
       
@@ -44,7 +44,7 @@
     </item>
     
     <item>
-      <title>[Lua5.4.4源码]数据类型</title>
+      <title>[Lua5.4.4源码].数据类型</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.type/</link>
       <pubDate>Tue, 24 Jan 2023 01:30:29 +0800</pubDate>
       
@@ -53,7 +53,7 @@
     </item>
     
     <item>
-      <title>[Lua5.4.4源码]字符串</title>
+      <title>[Lua5.4.4源码].字符串</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.string/</link>
       <pubDate>Mon, 23 Jan 2023 01:30:29 +0800</pubDate>
       
@@ -62,7 +62,7 @@
     </item>
     
     <item>
-      <title>[Lua5.4.4源码]结构分析</title>
+      <title>[Lua5.4.4源码].结构分析</title>
       <link>https://frog-game.github.io/posts/read/lua5.4.4.introduction/</link>
       <pubDate>Sun, 22 Jan 2023 01:30:29 +0800</pubDate>
       
