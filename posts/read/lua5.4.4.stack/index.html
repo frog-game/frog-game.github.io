@@ -71,12 +71,12 @@ var _hmt = _hmt || [];
 <meta property="og:description" content="lua源码栈分析" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/" />
-<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-01-30T01:30:29&#43;08:00" />
-<meta property="article:modified_time" content="2023-01-30T01:30:29&#43;08:00" />
+<meta property="og:image" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230205232132197.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-08T01:30:29&#43;08:00" />
+<meta property="article:modified_time" content="2023-02-08T01:30:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png" />
+<meta name="twitter:image" content="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230205232132197.png" />
 <meta name="twitter:title" content="[Lua5.4.4源码]栈"/>
 <meta name="twitter:description" content="lua源码栈分析"/>
 
@@ -117,11 +117,11 @@ var _hmt = _hmt || [];
   "keywords": [
     ""
   ],
-  "articleBody": "调用栈,数据栈 数据栈数据结构 /// @brief 数据栈指针结构 typedef union StackValue { TValue val; struct { TValuefields; unsigned short delta;//相邻 tbc 变量在栈中的距离 } tbclist;//此堆栈中所有活动的将要关闭的变量的列表 } StackValue; //栈指针 typedef StackValue *StkId; struct lua_State { ... StkId top; /* first free slot in the stack *///指向栈的顶部，压入数据，都通过移动栈顶指针来实现 StkId stack_last; /* end of stack (last element + 1) *///最后可用的位置数据栈 正常的栈操作在[stack, stack_last]之间 StkId stack; /* stack base *///栈的起始地址 StkId tbclist; /* list of to-be-closed variables *///记录着最后一个tbc节点,栈缩容时会判断节点是否在缩容空间内,如果在那么就根据这个节点调用缩容空间内所有tbc变量的 __close() 元方法 }; //数据栈大小 #define stacksize(th)\tcast_int((th)-\u003estack_last - (th)-\u003estack) 调用栈数据结构 调用栈,数据栈初始化 这两个栈的初始化通过stack_init函数初始化\n大概示意图如下\n一开始线程创建一个大小为BASIC_STACK_SIZE + EXTRA_STACK的StackValue数组 数据栈stack指针,tbclist指针,top指针都指向这个数组的首地址 数据栈stack_last指针,指向数据栈的末尾,也就是stack + BASIC_STACK_SIZE的位置 未完待续\n",
-  "wordCount" : "482",
+  "articleBody": "调用栈,数据栈 数据栈数据结构 /// @brief 数据栈指针结构 typedef union StackValue { TValue val; struct { TValuefields; unsigned short delta;//相邻 tbc 变量在栈中的距离 } tbclist;//此堆栈中所有活动的将要关闭的变量的列表 } StackValue; //栈指针 typedef StackValue *StkId; struct lua_State { ... StkId top; /* first free slot in the stack *///指向栈的顶部,压入数据,都通过移动栈顶指针来实现 StkId stack_last; /* end of stack (last element + 1) *///最后可用的位置数据栈 正常的栈操作在[stack, stack_last]之间 StkId stack; /* stack base *///栈的起始地址 StkId tbclist; /* list of to-be-closed variables *///记录着最后一个tbc节点,栈缩容时会判断节点是否在缩容空间内,如果在那么就根据这个节点调用缩容空间内所有tbc变量的 __close() 元方法 }; //数据栈大小 #define stacksize(th)\tcast_int((th)-\u003estack_last - (th)-\u003estack) 调用栈数据结构 调用栈,数据栈初始化 这两个栈的初始化通过stack_init函数初始化\n大概示意图如下\n在64位机器上,64位lua exe 我们能得到sizeof(StackValue) =16 一开始线程创建一个大小为BASIC_STACK_SIZE + EXTRA_STACK 40个的StackValue的基础空间 数据栈stack_last指针,指向stack + BASIC_STACK_SIZE的位置,也就是40号位置的起始地址 数据栈 stack指针,tbclist指针,都指向首地址,也就是0号位置的起始地址 数据栈 top指针指向函数调用栈func + 1的位置,也就是栈顶位置或者说他是下一个free位置也行,因为0号位置给了func,所以top指针需要指向下一个free位置,也就是1号位置的起始地址 函数调用栈top指向函数调用栈的空间末尾,也就是20号位置的末尾,21号位置的起始地址 callInfo是当前函数A调用函数B的调用关系调用链,callInfo base_ci 指向调用链的起始,也就是函数帧第一层 callInfo ci指向当前执行的函数帧,这里图上只的是函数B 这里归纳总结起来有3个主要空间\n[数据栈stack指针,数据栈stack_last指针]表示数据栈空间\n[函数调用栈func指针,数据栈top指针]标识函数调用栈空间\nTBC变量空间\n我们可以看到当lua栈存了tbc变量的时候,他聪明的用了一个L-\u003etbclist指针指向了最后一个tbc变量,然后每一个tbc的变量内部都有一个delta字段,来表示相邻的两个tbc变量差多少偏移量,从而让每个tbc变量都能够串连起来,这个思路lua table里面插入值的时候有hash冲突时候利用next字段的偏移量串连上冲突值一个思路\ntbc变量的插入 从上面我们可以看出\n插入一个新的tbc变量的时候,只能插入到当前tbc变量的屁股后面, 检测完这些以后,那么它就会检测一下你是不是关联了__closed元方法 如果超过了unsigend short最大值,那么就会创建虚拟节点 当前面都过就到了两个关键点,一个是算相邻两个tbc的距离,一个是把tbclist指针指向最新的tbc变量位置 tbc变量的删除\n和下图类似\nLua调用C C层注册过程,并提供Lua接口过程 //能够被Lua调用的C函数必须是这种规则 函数的返回值int值表示C函数返回值的个数 typedef int (*lua_CFunction)(lua_State *L) 可能有人会问,为啥一定要这种样子的函数指针呢,让我们追溯源码了解一下\n我们以这个为例\n我们一步步分析\nluaopen_coroutine 这个函数有个前缀luaopen_ 这个是lua C库中开放函数的前缀,这样你就可以在lua文件中直接调用coroutine开头的函数了,比如上面的coroutine.create coroutine.resume 等等\n注意这里能直接调用luaopen_coroutine是因为这里已经注册到全局表了,而如果是自己自定义的那么就的通过require你的so文件,并从so文件中找到luaopen_开头的函数\n接下来我们调用 luaL_newlib(L, co_funcs)函数,并传递了一个funcs数组,执行完这个以后我们就创建了一个全局的table表,用来存funcs数组里面一一对应的函数,比如lua中调用coroutine.create 等价于就是调用C语言的luaB_cocreate函数\n从上图中我们可以看到还调用了luaL_setfuncs函数,这个是lua为啥能调用c代码的核心地方\n通过源码分析,我们可以看出这里其实就是把所有luaL_Reg数组中的函数注册到通过luaL_newlib创建的table中\n图上1号位置完美的解释了为什么funcs数组要以 结尾\n2号位置就是真正的把luaL_newlib创建的table和funcs数组一一关联起来,也就是形如t[l-\u003ename] = func 形式通过这样的操作就能够实现lua中调用coroutine.create 然后跑到c语言的luaB_cocreate函数继续执行下面的逻辑了\n回到一下这个问题\n我们从这个箭头位置可以看到luaL_Reg其实指向的就是那个func数组第二列的c函数位置,比如下面话红线的位置就是func指向的地方\n调用过程 首先我们以如下代码作为例子\n//c层代码 #include extern \"C\" { #include #include #include } int main(int ar) { lua_State* L = luaL_newstate();//创建主线程栈 luaL_openlibs(L);//打开常规的lua标准库 luaL_dofile(L, \"helloworld.lua\");//加载并运行指定的文件 return 0; } local ff = function(a, b) local c = a +b print(\"start yield\") local x,y, z= coroutine.yield(c) print(\"restart co\", x,y,z) return x + y + z + c end local co = coroutine.create( ff ) 执行这段代码调用链如下\n通过以上的调用链流程我们就完美的调用到了对应的C函数\n更通俗的来讲就是如果想要Lua能调用C层那么我们就的在C层把对应的函数指针,注册到通过luaL_newlib函数new出来的table中,等待Lua通过luaL_dofile函数去加载lua文件并调用lua_pcallk去一步步找Lua函数对应的的C函数指针,从而达到Lua能调用C的要求\n这里在重点说一下luaL_loadfilex里面加载Lua文件的过程,当知道了这块过程以后,能初步的知道Lua解析文件后生成指令的大概过程,得到了指令以后,Lua就可以通过luaV_execute去找目标C函数指针调用C函数了\n来到f_parser这个地方的时候,我们可以看到如果是二进制文件,那么就是直接执行luaU_undump,如果是文本,那么就直接执行luaY_parser,因为我们是文本lua文件,所以我们进入的是luaY_parser\n从上图中我们可以看到当进行语法分析的时候,会创建一个LexState结构用于存储语法分析结果,FuncState结果用于存储函数状态,并创建了一个函数原型, 函数原型里面会保存当前函数的形参,局部变量,上值,等等一些信息, 便于后面变成指令执行,最后返回了一个LClosure结构出去\n接下来就会在执行body函数的时候把形参和OP_CLOSURE 等等相关指令创建出来,这样就便于后面luaV_execute函数去执行相关的指令了,从而在执行lua函数的时候通过找到对应的C函数指针而往下执行\n简介流程\nC调用Lua extern \"C\" { #include #include #include } lua_State* L; int luaadd(int x, int y) { int sum; /*函数名*/ lua_getglobal(L, \"add\"); /*参数入栈*/ lua_pushnumber(L, x); /*参数入栈*/ lua_pushnumber(L, y); /*开始调用函数，有2个参数，1个返回值*/ lua_call(L, 2, 1); /*取出返回值*/ sum = (int)lua_tonumber(L, -1); /*清除返回值的栈*/ lua_pop(L, 1); return sum; } int main(int argc, char* argv[]) { int sum; L = luaL_newstate(); /* 创建lua状态机 */ luaL_openlibs(L); /* 打开Lua状态机中所有Lua标准库 */ /*加载lua脚本*/ luaL_dofile(L, \"helloworld.lua\"); /*调用C函数，这个里面会调用lua函数*/ sum = luaadd(99, 10); printf(\"The sum is %d \\n\", sum); /*清除Lua*/ lua_close(L); return 0; } function add(x,y) return x + y end 执行luaL_dofile(L, “helloworld.lua”) 效果会如下面流程图的一样\n把相应的指令,proto,局部变量,全局变量,上值等等其他都创建好,等待C语言的调用\n接下来我们一步步往下走\n执行sum = luaadd(99, 10); 执行lua_getglobal(L, “add”); 执行 lua_pushnumber(L, x);lua_pushnumber(L, y); 执行 lua_call(L, 2, 1); 执行 sum = (int)lua_tonumber(L, -1); 执行 lua_pop(L, 1); 这样就实现了C调用Lua的过程\n总结 从中可以看出不管是Lua调用C还是C调用Lua都离不开lua文件中需要去luaL_dofile解析Lua文件,生成相关的指令,函数原型,等等\n但是Lua调用C的时候还必须把luaL_Reg数组中的函数注册到lua虚拟机中,这样才能实现Lua调用C\n也有人说loadstring也能实现次功能,但是看完源码以后其实他类似于luaL_dofile的加载,没太大区别,只是一个是执行字符串块,一个是执行lua文件\n更详细的注释请去我的GitHub地址 以下是我几乎每行都加了注释的GitHub地址\nldo.c注释地址\nldo.c注释\nlparser.c注释地址\nlparser.c注释\n",
+  "wordCount" : "3420",
   "inLanguage": "en",
-  "image":"https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png","datePublished": "2023-01-30T01:30:29+08:00",
-  "dateModified": "2023-01-30T01:30:29+08:00",
+  "image":"https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230205232132197.png","datePublished": "2023-02-08T01:30:29+08:00",
+  "dateModified": "2023-02-08T01:30:29+08:00",
   "author":[{
     "@type": "Person",
     "name": "frog"
@@ -238,7 +238,7 @@ var _hmt = _hmt || [];
             <div class="post-description">
                 lua源码栈分析
             </div>
-            <div class="post-meta">创建:&nbsp;<span title='2023-01-30 01:30:29 +0800 CST'>2023-01-30</span>&nbsp;|&nbsp;更新:&nbsp;2023-01-30&nbsp;|&nbsp;字数:&nbsp;482字&nbsp;|&nbsp;时长:&nbsp;1分钟&nbsp;|&nbsp;
+            <div class="post-meta">创建:&nbsp;<span title='2023-02-08 01:30:29 +0800 CST'>2023-02-08</span>&nbsp;|&nbsp;更新:&nbsp;2023-02-08&nbsp;|&nbsp;字数:&nbsp;3420字&nbsp;|&nbsp;时长:&nbsp;7分钟&nbsp;|&nbsp;
 作者:&nbsp;frog
 
 
@@ -255,7 +255,7 @@ var _hmt = _hmt || [];
 
 </div>
         </header> 
-<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230128162747397.png" alt="">
+<figure class="entry-cover1"><img loading="lazy" src="https://frog-game.github.io/posts/read/lua5.4.4.stack/image-20230205232132197.png" alt="">
         
 </figure>
         <aside id="toc-container" class="toc-container wide">
@@ -274,10 +274,41 @@ var _hmt = _hmt || [];
                 <li>
                     <a href="#%e8%b0%83%e7%94%a8%e6%a0%88%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" aria-label="调用栈数据结构">调用栈数据结构</a></li>
                 <li>
-                    <a href="#%e8%b0%83%e7%94%a8%e6%a0%88%e6%95%b0%e6%8d%ae%e6%a0%88%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="调用栈,数据栈初始化">调用栈,数据栈初始化</a>
+                    <a href="#%e8%b0%83%e7%94%a8%e6%a0%88%e6%95%b0%e6%8d%ae%e6%a0%88%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="调用栈,数据栈初始化">调用栈,数据栈初始化</a></li></ul>
                 </li>
-            </ul>
-            </li>
+                <li>
+                    <a href="#lua%e8%b0%83%e7%94%a8c" aria-label="Lua调用C">Lua调用C</a><ul>
+                        
+                <li>
+                    <a href="#c%e5%b1%82%e6%b3%a8%e5%86%8c%e8%bf%87%e7%a8%8b%e5%b9%b6%e6%8f%90%e4%be%9blua%e6%8e%a5%e5%8f%a3%e8%bf%87%e7%a8%8b" aria-label="C层注册过程,并提供Lua接口过程">C层注册过程,并提供Lua接口过程</a></li>
+                <li>
+                    <a href="#%e8%b0%83%e7%94%a8%e8%bf%87%e7%a8%8b" aria-label="调用过程">调用过程</a></li></ul>
+                </li>
+                <li>
+                    <a href="#c%e8%b0%83%e7%94%a8lua" aria-label="C调用Lua">C调用Lua</a><ul>
+                        
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8clual_dofilel-helloworldlua" aria-label="执行luaL_dofile(L, &amp;ldquo;helloworld.lua&amp;rdquo;)">执行luaL_dofile(L, &ldquo;helloworld.lua&rdquo;)</a></li>
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8csum--luaadd99-10" aria-label="执行sum = luaadd(99, 10);">执行sum = luaadd(99, 10);</a><ul>
+                        
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8clua_getgloball-add" aria-label="执行lua_getglobal(L, &amp;ldquo;add&amp;rdquo;);">执行lua_getglobal(L, &ldquo;add&rdquo;);</a></li>
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8c---lua_pushnumberl-xlua_pushnumberl-y" aria-label="执行   lua_pushnumber(L, x);lua_pushnumber(L, y);">执行   lua_pushnumber(L, x);lua_pushnumber(L, y);</a></li>
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8c-lua_calll-2-1" aria-label="执行 lua_call(L, 2, 1);">执行 lua_call(L, 2, 1);</a></li>
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8c--sum--intlua_tonumberl--1" aria-label="执行  sum = (int)lua_tonumber(L, -1);">执行  sum = (int)lua_tonumber(L, -1);</a></li>
+                <li>
+                    <a href="#%e6%89%a7%e8%a1%8c-lua_popl-1" aria-label="执行 lua_pop(L, 1);">执行 lua_pop(L, 1);</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e8%af%a6%e7%bb%86%e7%9a%84%e6%b3%a8%e9%87%8a%e8%af%b7%e5%8e%bb%e6%88%91%e7%9a%84github%e5%9c%b0%e5%9d%80" aria-label="更详细的注释请去我的GitHub地址">更详细的注释请去我的GitHub地址</a>
+                </li>
             </ul>
         </div>
         </details>
@@ -360,7 +391,7 @@ var _hmt = _hmt || [];
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#cdcd00">struct</span> lua_State {
 </span></span><span style="display:flex;"><span>  ...
-</span></span><span style="display:flex;"><span>  StkId top;  <span style="color:#000080">/* first free slot in the stack */</span><span style="color:#000080">//指向栈的顶部，压入数据，都通过移动栈顶指针来实现
+</span></span><span style="display:flex;"><span>  StkId top;  <span style="color:#000080">/* first free slot in the stack */</span><span style="color:#000080">//指向栈的顶部,压入数据,都通过移动栈顶指针来实现
 </span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>  StkId stack_last;  <span style="color:#000080">/* end of stack (last element + 1) */</span><span style="color:#000080">//最后可用的位置数据栈 正常的栈操作在[stack, stack_last]之间
 </span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>  StkId stack;  <span style="color:#000080">/* stack base */</span><span style="color:#000080">//栈的起始地址
 </span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>  StkId tbclist;  <span style="color:#000080">/* list of to-be-closed variables */</span><span style="color:#000080">//记录着最后一个tbc节点,栈缩容时会判断节点是否在缩容空间内,如果在那么就根据这个节点调用缩容空间内所有tbc变量的 __close() 元方法
@@ -376,14 +407,233 @@ var _hmt = _hmt || [];
 <p><img loading="lazy" src="image-20230128163001482.png" alt="image-20230128163001482"  />
 </p>
 <p>大概示意图如下</p>
-<p><img loading="lazy" src="image-20230128162747397.png" alt="image-20230128162747397"  />
+<p><img loading="lazy" src="image-20230205232132197.png" alt="image-20230205232132197"  />
 </p>
 <ol>
-<li>一开始线程创建一个大小为<code>BASIC_STACK_SIZE + EXTRA_STACK</code>的<code>StackValue</code>数组</li>
-<li>数据栈<code>stack指针</code>,<code>tbclist指针</code>,<code>top指针</code>都指向这个数组的首地址</li>
-<li>数据栈<code>stack_last指针</code>,指向数据栈的末尾,也就是<code>stack + BASIC_STACK_SIZE</code>的位置</li>
+<li>在<code>64</code>位机器上,<code>64位lua exe</code> 我们能得到<code>sizeof(StackValue) =16</code></li>
+<li>一开始线程创建一个大小为<code>BASIC_STACK_SIZE + EXTRA_STACK</code> <code>40</code>个的<code>StackValue</code>的基础空间</li>
+<li>数据栈<code>stack_last指针</code>,指向<code>stack + BASIC_STACK_SIZE</code>的位置,也就是<code>40</code>号位置的起始地址</li>
+<li>数据栈 <code>stack指针</code>,<code>tbclist指针</code>,都指向首地址,也就是<code>0</code>号位置的起始地址</li>
+<li>数据栈 <code>top指针</code>指向函数调用栈<code>func + 1</code>的位置,也就是栈顶位置或者说他是下一个<code>free</code>位置也行,因为<code>0</code>号位置给了<code>func</code>,所以<code>top</code>指针需要指向下一个<code>free</code>位置,也就是<code>1</code>号位置的起始地址</li>
+<li>函数调用栈<code>top</code>指向函数调用栈的空间末尾,也就是<code>20</code>号位置的末尾,<code>21</code>号位置的起始地址</li>
+<li><code>callInfo</code>是当前函数<code>A</code>调用函数<code>B</code>的调用关系调用链,<code>callInfo base_ci</code> 指向调用链的起始,也就是函数帧第一层 <code>callInfo ci</code>指向当前执行的函数帧,这里图上只的是函数<code>B</code></li>
 </ol>
-<p>未完待续</p>
+<p>这里归纳总结起来有3个主要空间</p>
+<ol>
+<li>
+<p>[数据栈<code>stack</code>指针,数据栈<code>stack_last</code>指针]表示数据栈空间</p>
+</li>
+<li>
+<p>[函数调用栈<code>func</code>指针,数据栈<code>top</code>指针]标识函数调用栈空间</p>
+</li>
+<li>
+<p><code>TBC</code>变量空间</p>
+<p><img loading="lazy" src="image-20230205195101576.png" alt="image-20230205195101576"  />
+</p>
+<p>我们可以看到当<code>lua</code>栈存了<code>tbc</code>变量的时候,他聪明的用了一个<code>L-&gt;tbclist</code>指针指向了最后一个<code>tbc</code>变量,然后每一个<code>tbc</code>的变量内部都有一个<code>delta</code>字段,来表示相邻的两个<code>tbc</code>变量差多少偏移量,从而让每个<code>tbc</code>变量都能够串连起来,这个思路<code>lua table</code>里面插入值的时候有<code>hash</code>冲突时候利用<code>next</code>字段的偏移量串连上冲突值一个思路</p>
+<p><img loading="lazy" src="image-20230205194916231.png" alt="image-20230205194916231"  />
+</p>
+</li>
+</ol>
+<ul>
+<li>
+<p><code>tbc</code>变量的插入
+<img loading="lazy" src="image-20230205200354853.png" alt="image-20230205200354853"  />
+</p>
+<p>从上面我们可以看出</p>
+<ol>
+<li>插入一个新的<code>tbc</code>变量的时候,只能插入到当前<code>tbc</code>变量的屁股后面,</li>
+<li>检测完这些以后,那么它就会检测一下你是不是关联了<code>__closed</code>元方法</li>
+<li>如果超过了<code>unsigend short</code>最大值,那么就会创建虚拟节点</li>
+<li>当前面都过就到了两个关键点,一个是算相邻两个<code>tbc</code>的距离,一个是把<code>tbclist</code>指针指向最新的<code>tbc</code>变量位置</li>
+</ol>
+</li>
+<li>
+<p><code>tbc</code>变量的删除</p>
+<p><img loading="lazy" src="image-20230205201531172.png" alt="image-20230205201531172"  />
+</p>
+<p>和下图类似</p>
+<p><img loading="lazy" src="image-20230205201759258.png" alt="image-20230205201759258"  />
+</p>
+</li>
+</ul>
+<h2 id="lua调用c"><span>Lua调用C</span></h2>
+<h3 id="c层注册过程并提供lua接口过程"><span>C层注册过程,并提供Lua接口过程</span></h3>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">//能够被Lua调用的C函数必须是这种规则 函数的返回值int值表示C函数返回值的个数
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#cdcd00">typedef</span> <span style="color:#00cd00">int</span> (<span style="color:#39c">*</span>lua_CFunction)(lua_State <span style="color:#39c">*</span>L)
+</span></span></code></pre></div><p>可能有人会问,为啥一定要这种样子的函数指针呢,让我们追溯源码了解一下</p>
+<p>我们以这个为例</p>
+<p><img loading="lazy" src="image-20230206135742291.png" alt="image-20230206135742291"  />
+</p>
+<p>我们一步步分析</p>
+<ol>
+<li>
+<p><code>luaopen_coroutine</code> 这个函数有个前缀<code>luaopen_</code> 这个是<code>lua</code> <code>C</code>库中开放函数的前缀,这样你就可以在<code>lua</code>文件中直接调用<code>coroutine</code>开头的函数了,比如上面的<code>coroutine.create </code>  <code>coroutine.resume</code> 等等</p>
+</li>
+<li>
+<p>注意这里能直接调用<code>luaopen_coroutine</code>是因为这里已经注册到全局表了,而如果是自己自定义的那么就的通过<code>require</code>你的<code>so</code>文件,并从<code>so</code>文件中找到<code>luaopen_</code>开头的函数</p>
+</li>
+<li>
+<p>接下来我们调用 <code>luaL_newlib(L, co_funcs)</code>函数,并传递了一个<code>funcs</code>数组,执行完这个以后我们就创建了一个全局的<code>table</code>表,用来存<code>funcs</code>数组里面一一对应的函数,比如<code>lua</code>中调用<code>coroutine.create</code> 等价于就是调用<code>C</code>语言的<code>luaB_cocreate</code>函数</p>
+<p><img loading="lazy" src="image-20230206151356386.png" alt="image-20230206151356386"  />
+</p>
+<p>从上图中我们可以看到还调用了<code>luaL_setfuncs</code>函数,这个是<code>lua</code>为啥能调用<code>c</code>代码的核心地方</p>
+<p><img loading="lazy" src="image-20230206151642848.png" alt="image-20230206151642848"  />
+</p>
+<p>通过源码分析,我们可以看出这里其实就是把所有<code>luaL_Reg</code>数组中的函数注册到通过<code>luaL_newlib</code>创建的<code>table</code>中</p>
+<p>图上<code>1</code>号位置完美的解释了为什么<code>funcs</code>数组要以<img loading="lazy" src="image-20230206151833328.png" alt="image-20230206151833328"  />
+结尾</p>
+<p><code>2</code>号位置就是真正的把<code>luaL_newlib</code>创建的<code>table</code>和<code>funcs</code>数组一一关联起来,也就是形如<code>t[l-&gt;name]</code> = <code>func</code> 形式通过这样的操作就能够实现<code>lua</code>中调用<code>coroutine.create</code> 然后跑到<code>c</code>语言的<code>luaB_cocreate</code>函数继续执行下面的逻辑了</p>
+<p>回到一下这个问题</p>
+<p><img loading="lazy" src="image-20230206152410699.png" alt="image-20230206152410699"  />
+</p>
+<p><img loading="lazy" src="image-20230206152506949.png" alt="image-20230206152506949"  />
+</p>
+<p>我们从这个箭头位置可以看到<code>luaL_Reg</code>其实指向的就是那个<code>func</code>数组第二列的<code>c</code>函数位置,比如下面话红线的位置就是<code>func</code>指向的地方</p>
+<p><img loading="lazy" src="image-20230206152718919.png" alt="image-20230206152718919"  />
+</p>
+</li>
+</ol>
+<h3 id="调用过程"><span>调用过程</span></h3>
+<p>首先我们以如下代码作为例子</p>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#000080">//c层代码
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;stdio.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span><span style="color:#cdcd00">extern</span> <span style="color:#cd0000">&#34;C&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lua.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lualib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lauxlib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">int</span> main(<span style="color:#00cd00">int</span> ar)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	lua_State<span style="color:#39c">*</span> L <span style="color:#39c">=</span> luaL_newstate();<span style="color:#000080">//创建主线程栈
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	luaL_openlibs(L);<span style="color:#000080">//打开常规的lua标准库
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	luaL_dofile(L, <span style="color:#cd0000">&#34;helloworld.lua&#34;</span>);<span style="color:#000080">//加载并运行指定的文件
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>	<span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#00cd00">local</span> ff <span style="color:#39c">=</span> <span style="color:#cdcd00">function</span>(a, b) 
+</span></span><span style="display:flex;"><span>       <span style="color:#00cd00">local</span> c <span style="color:#39c">=</span> a <span style="color:#39c">+</span>b
+</span></span><span style="display:flex;"><span>        print(<span style="color:#cd0000">&#34;start yield&#34;</span>)
+</span></span><span style="display:flex;"><span>       <span style="color:#00cd00">local</span> x,y, z<span style="color:#39c">=</span> coroutine.yield(c)
+</span></span><span style="display:flex;"><span>       print(<span style="color:#cd0000">&#34;restart co&#34;</span>,  x,y,z)
+</span></span><span style="display:flex;"><span>       <span style="color:#cdcd00">return</span> x <span style="color:#39c">+</span> y <span style="color:#39c">+</span> z <span style="color:#39c">+</span> c
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">local</span> co <span style="color:#39c">=</span> coroutine.create(
+</span></span><span style="display:flex;"><span>    ff
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>执行这段代码调用链如下</p>
+<p><img loading="lazy" src="image-20230207173415702.png" alt="image-20230207173415702"  />
+</p>
+<p>通过以上的调用链流程我们就完美的调用到了对应的<code>C</code>函数</p>
+<p>更通俗的来讲就是如果想要<code>Lua</code>能调用<code>C</code>层那么我们就的在<code>C</code>层把对应的函数指针,注册到通过<code>luaL_newlib</code>函数<code>new</code>出来的<code>table</code>中,等待<code>Lua</code>通过<code>luaL_dofile</code>函数去加载<code>lua</code>文件并调用<code>lua_pcallk</code>去一步步找<code>Lua</code>函数对应的的<code>C</code>函数指针,从而达到<code>Lua</code>能调用<code>C</code>的要求</p>
+<p>这里在重点说一下<code>luaL_loadfilex</code>里面加载<code>Lua</code>文件的过程,当知道了这块过程以后,能初步的知道<code>Lua</code>解析文件后生成指令的大概过程,得到了指令以后,<code>Lua</code>就可以通过<code>luaV_execute</code>去找目标<code>C</code>函数指针调用<code>C</code>函数了</p>
+<p><img loading="lazy" src="image-20230207192112666.png" alt="image-20230207192112666"  />
+</p>
+<p><img loading="lazy" src="image-20230207192148688.png" alt="image-20230207192148688"  />
+</p>
+<p><img loading="lazy" src="image-20230207192351032.png" alt="image-20230207192351032"  />
+</p>
+<p><img loading="lazy" src="image-20230207192501154.png" alt="image-20230207192501154"  />
+</p>
+<p>来到<code>f_parser</code>这个地方的时候,我们可以看到如果是二进制文件,那么就是直接执行<code>luaU_undump</code>,如果是文本,那么就直接执行<code>luaY_parser</code>,因为我们是文本<code>lua</code>文件,所以我们进入的是<code>luaY_parser</code></p>
+<p><img loading="lazy" src="image-20230207192654873.png" alt="image-20230207192654873"  />
+</p>
+<p>从上图中我们可以看到当进行语法分析的时候,会创建一个<code>LexState</code>结构用于存储语法分析结果<code>,FuncState</code>结果用于存储函数状态,并创建了一个<code>函数原型</code>, 函数原型里面会保存当前函数的<code>形参</code>,<code>局部变量</code>,<code>上值</code>,等等一些信息, 便于后面变成指令执行,最后返回了一个<code>LClosure</code>结构出去</p>
+<p><img loading="lazy" src="image-20230207221009352.png" alt="image-20230207221009352"  />
+</p>
+<p>接下来就会在执行<code>body</code>函数的时候把<code>形参</code>和<code>OP_CLOSURE</code> 等等相关指令创建出来,这样就便于后面<code>luaV_execute</code>函数去执行相关的指令了,从而在执行<code>lua</code>函数的时候通过找到<code>对应的C函数指针</code>而往下执行</p>
+<p>简介流程</p>
+<p><img loading="lazy" src="image-20230207211822225.png" alt="image-20230207211822225"  />
+</p>
+<h2 id="c调用lua"><span>C调用Lua</span></h2>
+<div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#cdcd00">extern</span> <span style="color:#cd0000">&#34;C&#34;</span> {
+</span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lua.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lualib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080">#include</span> <span style="color:#000080">&lt;lauxlib.h&gt;</span><span style="color:#000080">
+</span></span></span><span style="display:flex;"><span><span style="color:#000080"></span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lua_State<span style="color:#39c">*</span> L;
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">int</span>
+</span></span><span style="display:flex;"><span>luaadd(<span style="color:#00cd00">int</span> x, <span style="color:#00cd00">int</span> y)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">int</span> sum;
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*函数名*/</span>
+</span></span><span style="display:flex;"><span>    lua_getglobal(L, <span style="color:#cd0000">&#34;add&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*参数入栈*/</span>
+</span></span><span style="display:flex;"><span>    lua_pushnumber(L, x);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*参数入栈*/</span>
+</span></span><span style="display:flex;"><span>    lua_pushnumber(L, y);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*开始调用函数，有2个参数，1个返回值*/</span>
+</span></span><span style="display:flex;"><span>    lua_call(L, <span style="color:#cd00cd">2</span>, <span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*取出返回值*/</span>
+</span></span><span style="display:flex;"><span>    sum <span style="color:#39c">=</span> (<span style="color:#00cd00">int</span>)lua_tonumber(L, <span style="color:#39c">-</span><span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*清除返回值的栈*/</span>
+</span></span><span style="display:flex;"><span>    lua_pop(L, <span style="color:#cd00cd">1</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">return</span> sum;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#00cd00">int</span>
+</span></span><span style="display:flex;"><span>main(<span style="color:#00cd00">int</span> argc, <span style="color:#00cd00">char</span><span style="color:#39c">*</span> argv[])
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#00cd00">int</span> sum;
+</span></span><span style="display:flex;"><span>    L <span style="color:#39c">=</span> luaL_newstate();  <span style="color:#000080">/* 创建lua状态机 */</span>
+</span></span><span style="display:flex;"><span>    luaL_openlibs(L);   <span style="color:#000080">/* 打开Lua状态机中所有Lua标准库 */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*加载lua脚本*/</span>
+</span></span><span style="display:flex;"><span>    luaL_dofile(L, <span style="color:#cd0000">&#34;helloworld.lua&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*调用C函数，这个里面会调用lua函数*/</span>
+</span></span><span style="display:flex;"><span>    sum <span style="color:#39c">=</span> luaadd(<span style="color:#cd00cd">99</span>, <span style="color:#cd00cd">10</span>);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#cd0000">&#34;The sum is %d </span><span style="color:#cd0000">\n</span><span style="color:#cd0000">&#34;</span>, sum);
+</span></span><span style="display:flex;"><span>    <span style="color:#000080">/*清除Lua*/</span>
+</span></span><span style="display:flex;"><span>    lua_close(L);
+</span></span><span style="display:flex;"><span>    <span style="color:#cdcd00">return</span> <span style="color:#cd00cd">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#ccc;background-color:#000;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lua" data-lang="lua"><span style="display:flex;"><span><span style="color:#cdcd00">function</span> add(x,y)
+</span></span><span style="display:flex;"><span>      <span style="color:#cdcd00">return</span> x <span style="color:#39c">+</span> y
+</span></span><span style="display:flex;"><span><span style="color:#cdcd00">end</span> 
+</span></span></code></pre></div><h3 id="执行lual_dofilel-helloworldlua"><span>执行luaL_dofile(L, &ldquo;helloworld.lua&rdquo;)</span></h3>
+<p>效果会如下面流程图的一样</p>
+<p><img loading="lazy" src="image-20230207215908987.png" alt="image-20230207215908987"  />
+</p>
+<p>把相应的指令,<code>proto</code>,<code>局部变量</code>,<code>全局变量</code>,<code>上值</code>等等其他都创建好,等待<code>C</code>语言的调用</p>
+<p>接下来我们一步步往下走</p>
+<h3 id="执行sum--luaadd99-10"><span>执行sum = luaadd(99, 10);</span></h3>
+<h4 id="执行lua_getgloball-add"><span>执行lua_getglobal(L, &ldquo;add&rdquo;);</span></h4>
+<p><img loading="lazy" src="image-20230207223332547.png" alt="image-20230207223332547"  />
+</p>
+<h4 id="执行---lua_pushnumberl-xlua_pushnumberl-y"><span>执行   lua_pushnumber(L, x);lua_pushnumber(L, y);</span></h4>
+<p><img loading="lazy" src="image-20230207223843267.png" alt="image-20230207223843267"  />
+</p>
+<h4 id="执行-lua_calll-2-1"><span>执行 lua_call(L, 2, 1);</span></h4>
+<p><img loading="lazy" src="image-20230207224253952.png" alt="image-20230207224253952"  />
+</p>
+<h4 id="执行--sum--intlua_tonumberl--1"><span>执行  sum = (int)lua_tonumber(L, -1);</span></h4>
+<p><img loading="lazy" src="image-20230207224554191.png" alt="image-20230207224554191"  />
+</p>
+<h4 id="执行-lua_popl-1"><span>执行 lua_pop(L, 1);</span></h4>
+<p><img loading="lazy" src="image-20230207224704951.png" alt="image-20230207224704951"  />
+</p>
+<p>这样就实现了<code>C</code>调用<code>Lua</code>的过程</p>
+<h2 id="总结"><span>总结</span></h2>
+<p><img loading="lazy" src="image-20230207232354233.png" alt="image-20230207232354233"  />
+</p>
+<p>从中可以看出不管是<code>Lua调用C</code>还是<code>C调用Lua</code>都离不开<code>lua</code>文件中需要去<code>luaL_dofile</code>解析<code>Lua</code>文件,生成相关的指令,函数原型,等等</p>
+<p>但是<code>Lua</code>调用<code>C</code>的时候还必须把<code>luaL_Reg</code>数组中的函数注册到<code>lua</code>虚拟机中,这样才能实现<code>Lua调用C</code></p>
+<p>也有人说<code>loadstring</code>也能实现次功能,但是看完源码以后其实他类似于<code>luaL_dofile</code>的加载,没太大区别,只是一个是执行字符串块,一个是执行<code>lua</code>文件</p>
+<p><img loading="lazy" src="image-20230207234105901.png" alt="image-20230207234105901"  />
+</p>
+<h2 id="更详细的注释请去我的github地址"><span>更详细的注释请去我的GitHub地址</span></h2>
+<p>以下是我几乎每行都加了注释的<code>GitHub</code>地址</p>
+<ol>
+<li>
+<p><code>ldo.c</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/ldo.c"><strong>ldo.c注释</strong></a></p>
+</li>
+<li>
+<p><code>lparser.c</code>注释地址</p>
+<p><a href="https://github.com/frog-game/lua-5.4.4-comments/blob/master/src/lparser.c"><strong>lparser.c注释</strong></a></p>
+</li>
+</ol>
 
 
         </div>
@@ -418,15 +668,10 @@ var _hmt = _hmt || [];
         <footer class="post-footer">
             
 <nav class="paginav">
-  <a class="prev" href="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/">
-    <span class="title">« 上一页</span>
-    <br>
-    <span>[Lua5.4.4源码]协程</span>
-  </a>
-  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4.function/">
+  <a class="next" href="https://frog-game.github.io/posts/read/lua5.4.4.coroutine/">
     <span class="title">下一页 »</span>
     <br>
-    <span>[Lua5.4.4源码]函数</span>
+    <span>[Lua5.4.4源码]协程</span>
   </a>
 </nav>
 
